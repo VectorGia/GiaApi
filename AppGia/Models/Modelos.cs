@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppGia.Models
 {
+    #region Busqueda de Servidor
+    #region Modelo Login
     public class Login
     {
         [Required]
@@ -13,7 +15,9 @@ namespace AppGia.Models
         [Required]
         public string Password { set; get; }
     }
+    #endregion
 
+    #region Modelo Usuario
     public class User
     {
         [Required]
@@ -21,32 +25,119 @@ namespace AppGia.Models
 
         [Required]
         public string displayName { get; set; }
-
     }
+    #endregion
+    #endregion
 
+    #region Modelo Response
     public class Response
     {
-
-        public bool Message { set; get; }
+        public bool MESSAGE { set; get; }
     }
+    #endregion
 
+    #region Tabla Usuario
+    public class Usuario
+    {
+        public string STR_NOMBRE_USUARIO { get; set; }
+
+        public string STR_EMAIL_USUARIO { get; set; }
+
+        public bool BOOL_ESTATUS_USUARIO { get; set; }
+
+        //public ? FEC_MODIF { get; set; }
+    }
+    #endregion
+
+    #region Tabla Permisos
+    public class Permiso
+    {
+        public string STR_NOMBRE_PERMISO { get; set; }
+    }
+    #endregion
+
+    #region Tabla Pantallas
+    public class Pantalla
+    {
+        //public ? FEC_MODIF { get; set; }
+
+        public string STR_NOMBRE_PANTALLA { get; set; }
+    }
+    #endregion
+
+    #region Tabla Grupos
+    public class Grupo 
+    {
+        public string STR_NOMBRE_GRUPO { get; set; }
+    }
+    #endregion
+
+    #region Catalogo Rol
+    public class Rol 
+    {
+        public string STR_NOMBRE_ROL { get; set; }
+
+        public bool BOOL_ESTATUS_ROL { get; set; }
+
+        //public ? FEC_MODIF { get; set; }
+    }
+    #endregion
+
+    #region Catalogo Proyecto
+    public class Proyecto 
+    {
+        public string STR_NOMBRE_PROYECTO { get; set; }
+
+        public string STR_DESCRIPCION { get; set; }
+
+        public bool BOOL_STATUS { get; set; }
+
+        //public ? FEC_MODIF { get; set; }
+    }
+    #endregion
+
+    #region Catalogo Compañia
+    public class Compania 
+    {
+        public string STR_NOMBRE_COMPANIA { get; set; }
+
+        public string STR_ABREV_COMPANIA { get; set; }
+
+        public bool BOOL_ETL_COMPANIA { get; set; }
+
+        public string STR_CONEXION_COMPANIA { get; set; }
+
+        public string STR_MODELO_COMPANIA { get; set; }
+
+        public string STR_MONEDA_COMPANIA { get; set; }
+
+        public bool BOOL_ESTATUS_COMPANIA { get; set; }
+    }
+    #endregion
+
+    #region Modelo Centro de costos
     public class CentroCostos
     {
-        [Key]
-        public string id_cc { get; set; }
+        //[Key]
+        ////public string id_cc { get; set; }
+        //public string STR_IDCENTROCOSTO { get; set; }
         [Required]
-        public string name_cc { get; set; }
+        //public string name_cc { get; set; }
+        public string STR_NOMBRE_CC { get; set; }
         [Required]
-        public string categoria { get; set; }
+        //public string categoria { get; set; }
+        public string STR_CATEGORIA_CC { get; set; }
         [Required]
-        public string estatus { get; set; }
+        //public string estatus { get; set; }
+        public string BOOL_eSTATUS_CC { get; set; }
         [Required]
-        public string gerente { get; set; }
-        [Required]
-        public string id_empresa { get; set; }
-        [Required]
-        public string id_proyecto { get; set; }
-       
-        
+        public string GERENTE__COMPANIA { get; set; }
+        //[Required]
+        //public string id_empresa { get; set; }
+        //[Required]
+        //public string id_proyecto { get; set; }
+
     }
+    #endregion
 }
+
