@@ -46,7 +46,11 @@ namespace AppGia.Models
         public string id_empresa { get; set; }
         [Required]
         public string id_proyecto { get; set; }
-       
+    }
+
+    public class Grupo
+    {
         
+        public string STR_NOMBRE_GRUPO { get; set; }
     }
 }
