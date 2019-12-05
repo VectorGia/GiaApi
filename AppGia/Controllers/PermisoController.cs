@@ -7,32 +7,31 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GrupoController : ControllerBase
+    public class PermisoController : ControllerBase
     {
-        GrupoDataAccessLayer objgrupo = new GrupoDataAccessLayer();
-
-        // GET: api/Grupo
+        PermisoDataAccessLayer objPermiso = new PermisoDataAccessLayer();
+        // GET: api/Centro
         [HttpGet]
-        public IEnumerable<Grupo> Get()
+        public IEnumerable<Permiso> Get()
         {
-            return objgrupo.GetAllGrupos();
+            return objPermiso.GetAllPermisos();
         }
 
-        //// GET: api/Grupo/5
+        //// GET: api/Centro/5
         //[HttpGet("{id}", Name = "")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST: api/Grupo
+        // POST: api/Centro
         [HttpPost]
-        public int Create([FromBody]Grupo grup )
+        public int Create([FromBody] Permiso permiso)
         {
-            return objgrupo.addGrupo(grup);
+            return objPermiso.addPermiso(permiso);
         }
 
-        //// PUT: api/Grupo/5
+        //// PUT: api/Centro/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{

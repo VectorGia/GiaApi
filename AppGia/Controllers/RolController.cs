@@ -7,15 +7,15 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GrupoController : ControllerBase
+    public class RolController : ControllerBase
     {
-        GrupoDataAccessLayer objgrupo = new GrupoDataAccessLayer();
+        RolDataAccessLayer objRol = new RolDataAccessLayer();
 
         // GET: api/Grupo
         [HttpGet]
-        public IEnumerable<Grupo> Get()
+        public IEnumerable<Rol> Get()
         {
-            return objgrupo.GetAllGrupos();
+            return objRol.GetAllRoles();
         }
 
         //// GET: api/Grupo/5
@@ -27,9 +27,9 @@ namespace AppGia.Controllers
 
         // POST: api/Grupo
         [HttpPost]
-        public int Create([FromBody]Grupo grup )
+        public int Create([FromBody]Rol rol)
         {
-            return objgrupo.addGrupo(grup);
+            return objRol.addRol(rol);
         }
 
         //// PUT: api/Grupo/5

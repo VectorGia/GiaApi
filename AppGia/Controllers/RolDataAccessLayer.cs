@@ -7,16 +7,16 @@ using Npgsql;
 
 namespace AppGia.Controllers
 {
-    public class GrupoDataAccessLayer
+    public class RolDataAccessLayer
     {
         private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
-        public IEnumerable<Grupo> GetAllGrupos()
+        public IEnumerable<Rol> GetAllRoles()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_GRUPO" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "TAB_ROL" + cod + "";
             try
             {
-                List<Grupo> lstgrupo = new List<Grupo>();
+                List<Rol> lstrol = new List<Rol>();
 
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
@@ -26,15 +26,15 @@ namespace AppGia.Controllers
 
                     while (rdr.Read())
                     {
-                        Grupo grupo = new Grupo();
-                        grupo.STR_NOMBRE_GRUPO = rdr["STR_NOMBRE_GRUPO"].ToString();
+                        Rol rol = new Rol();
+                        rol.STR_NOMBRE_ROL = rdr["STR_NOMBRE_ROL"].ToString();
 
-                        lstgrupo.Add(grupo);
+                        lstrol.Add(rol);
                     }
                     con.Close();
                 }
 
-                return lstgrupo;
+                return lstrol;
             }
             catch
             {
@@ -42,17 +42,17 @@ namespace AppGia.Controllers
             }
         }
 
-        public int addGrupo(Grupo grupo)
+        public int addRol(Rol rol)
         {
-            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + ") VALUES " +
-                "(@STR_NOMBRE_GRUPO)";
+            string add = "INSERT INTO" + cod + "TAB_ROL" + cod + "(" + cod + "STR_NOMBRE_ROL" + cod + ") VALUES " +
+                "(@STR_NOMBRE_ROL)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
 
                     con.Open();
                     cmd.ExecuteNonQuery();

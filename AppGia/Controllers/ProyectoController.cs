@@ -7,32 +7,32 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GrupoController : ControllerBase
+    public class ProyectoController : ControllerBase
     {
-        GrupoDataAccessLayer objgrupo = new GrupoDataAccessLayer();
+        ProyectoDataAccessLayer objProyecto = new ProyectoDataAccessLayer();
 
-        // GET: api/Grupo
+        // GET: api/Compania
         [HttpGet]
-        public IEnumerable<Grupo> Get()
+        public IEnumerable<Proyecto> Get()
         {
-            return objgrupo.GetAllGrupos();
+            return objProyecto.GetAllProyectos();
         }
 
-        //// GET: api/Grupo/5
-        //[HttpGet("{id}", Name = "")]
+        // GET: api/Compania/5
+        //[HttpGet("{id}", Name = "Get")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST: api/Grupo
+        // POST: api/Compania
         [HttpPost]
-        public int Create([FromBody]Grupo grup )
+        public int Create([FromBody]Proyecto proy)
         {
-            return objgrupo.addGrupo(grup);
+            return objProyecto.addProyecto(proy);
         }
 
-        //// PUT: api/Grupo/5
+        //// PUT: api/Compania/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{

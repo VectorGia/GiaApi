@@ -7,32 +7,31 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GrupoController : ControllerBase
+    public class PantallaController : ControllerBase
     {
-        GrupoDataAccessLayer objgrupo = new GrupoDataAccessLayer();
-
-        // GET: api/Grupo
+        PantallaDataAccessLayer objPantalla = new PantallaDataAccessLayer();
+        // GET: api/Centro
         [HttpGet]
-        public IEnumerable<Grupo> Get()
+        public IEnumerable<Pantalla> Get()
         {
-            return objgrupo.GetAllGrupos();
+            return objPantalla.GetAllPantallas();
         }
 
-        //// GET: api/Grupo/5
+        //// GET: api/Centro/5
         //[HttpGet("{id}", Name = "")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST: api/Grupo
+        // POST: api/Centro
         [HttpPost]
-        public int Create([FromBody]Grupo grup )
+        public int Create([FromBody] Pantalla pantalla)
         {
-            return objgrupo.addGrupo(grup);
+            return objPantalla.addPantalla(pantalla);
         }
 
-        //// PUT: api/Grupo/5
+        //// PUT: api/Centro/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{

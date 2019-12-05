@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AppGia.Models;
+
 
 namespace AppGia.Controllers
 {
@@ -11,14 +10,20 @@ namespace AppGia.Controllers
     [ApiController]
     public class CompaniaController : ControllerBase
     {
+        CompaniaDataAccessLayer objCompania = new CompaniaDataAccessLayer();
+
         // GET: api/Compania
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Compania> Get()
         {
-            return new string[] { "value1", "value2" };
+            return objCompania.GetAllCompanias();
         }
 
+<<<<<<< HEAD
         //// GET: api/Compania/5
+=======
+        // GET: api/Compania/5
+>>>>>>> 66851b5e273fa8258515a35d3f2489ba07263c5e
         //[HttpGet("{id}", Name = "Get")]
         //public string Get(int id)
         //{
@@ -27,8 +32,9 @@ namespace AppGia.Controllers
 
         // POST: api/Compania
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Create([FromBody]Compania comp)
         {
+            return objCompania.addCompania(comp);
         }
 
         //// PUT: api/Compania/5
