@@ -13,13 +13,13 @@ namespace AppGia.Controllers
         char cod = '"';
         public IEnumerable<Grupo> GetAllGrupos()
         {
-            string cadena = "SELECT * FROM"+cod+"TAB_GRUPO"+cod+""; 
+            string cadena = "SELECT * FROM" + cod + "TAB_GRUPO" + cod + "";
             try
             {
                 List<Grupo> lstgrupo = new List<Grupo>();
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena,con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
@@ -43,11 +43,11 @@ namespace AppGia.Controllers
 
         public int addGrupo(Grupo grupo)
         {
-            string add = "INSERT INTO"+cod+"TAB_GRUPO"+cod+"("+cod+"STR_NOMBRE_GRUPO" +cod+") VALUES " +
+            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + ") VALUES " +
                 "(@STR_NOMBRE_GRUPO)";
             try
             {
-                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
