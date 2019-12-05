@@ -47,6 +47,7 @@ namespace AppGia.Models
 
         [Required]
         public string displayName { get; set; }
+
         public string STR_NOMBRE_USUARIO { get; set; }
 
         public string STR_EMAIL_USUARIO { get; set; }
