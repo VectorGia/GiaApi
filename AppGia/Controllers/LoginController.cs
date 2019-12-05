@@ -42,17 +42,17 @@ namespace AppGia.Controllers
                 DirectorySearcher dir = new DirectorySearcher(entry);
                 dir.ToString();
                 SearchResult result = dir.FindOne();
-                return new Response { Message = true };
+                return new Response { MESSAGE = true };
 
             }
             catch (DirectoryServicesCOMException cex)
             {
-                return new Response { Message = false };
+                return new Response { MESSAGE = false };
             }
 
             catch (Exception ex)
             {
-                return new Response { Message = false };
+                return new Response { MESSAGE = false };
             }
         }
 

@@ -14,9 +14,9 @@ namespace AppGia.Controllers
     {
         // GET: api/UsersAD
         [HttpGet]
-        public List<User> Get()
+        public List<Usuario> Get()
         {
-            List<User> rst = new List<User>();
+            List<Usuario> rst = new List<Usuario>();
 
             string path = "LDAP://ServerOmnisys.local/CN=users, DC=Infogia, DC=local", us = "Administrador", pass = "Omnisys1958";
             DirectoryEntry adSearchRoot = new DirectoryEntry(path, us, pass);
@@ -26,7 +26,7 @@ namespace AppGia.Controllers
             SearchResult result;
             SearchResultCollection iResult = adSearcher.FindAll();
 
-            User item;
+            Usuario item;
             if (iResult != null)
             {
                 for (int counter = 3; counter < iResult.Count; counter++)
@@ -34,7 +34,7 @@ namespace AppGia.Controllers
                     result = iResult[counter];
                     if (result.Properties.Contains("samaccountname"))
                     {
-                        item = new User();
+                        item = new Usuario();
 
                         item.userName = (String)result.Properties["samaccountname"][0];
 
