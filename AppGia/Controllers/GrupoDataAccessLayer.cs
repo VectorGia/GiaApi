@@ -17,6 +17,7 @@ namespace AppGia.Controllers
             try
             {
                 List<Grupo> lstgrupo = new List<Grupo>();
+
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena,con);

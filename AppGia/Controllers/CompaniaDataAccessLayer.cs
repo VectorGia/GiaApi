@@ -26,6 +26,7 @@ namespace AppGia.Controllers
                         Compania compania = new Compania();
                         // id
                         compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
+                        // nombre
                         compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
                         //abrev
                         compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString();
@@ -35,6 +36,11 @@ namespace AppGia.Controllers
                         compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString();
                         //moneda
                         compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString();
+
+                        //public string STR_USUARIO_ETL { get; set; }
+                        //public string STR_CONTRASENIA_ETL { get; set; }
+                        //public string STR_PUERTO_COMPANIA { get; set; }
+                        //public string STR_BD_COMPANIA { get; set; }
 
                         lstCompania.Add(compania);
                     }
