@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
+
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
@@ -12,6 +9,7 @@ namespace AppGia.Controllers
     public class GrupoController : ControllerBase
     {
         GrupoDataAccessLayer objgrupo = new GrupoDataAccessLayer();
+
         // GET: api/Grupo
         [HttpGet]
         public IEnumerable<Grupo> Get()
