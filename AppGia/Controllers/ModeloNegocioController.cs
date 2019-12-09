@@ -4,18 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using AppGia.Models;
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ModeloNegocioController : ControllerBase
     {
+        ModeloNegocioDataAccessLayer objModelo = new ModeloNegocioDataAccessLayer;
         // GET: api/ModeloNegocio
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<ModeloNegocio> Get()
         {
-            return new string[] { "value1", "value2" };
+            return objModelo.GetAllModeloNegocios();
         }
 
         // GET: api/ModeloNegocio/5
