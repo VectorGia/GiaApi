@@ -24,12 +24,12 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Proyecto proyecto = new Proyecto();
-                      
+
                         proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString();
                         proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString();
-                        proyecto.STR_DESCRIPCION = rdr["STR_DESCRIPCION"].ToString();                
+                        proyecto.STR_DESCRIPCION = rdr["STR_DESCRIPCION"].ToString();
                         proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString();
-                        
+
                         lstProyecto.Add(proyecto);
                     }
                     con.Close();
@@ -56,6 +56,53 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
                     cmd.Parameters.AddWithValue("@STR_DESCRIPCION", proyecto.STR_DESCRIPCION);
                     cmd.Parameters.AddWithValue("STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return 1;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public int UpdateProyecto(Proyecto proyecto)
+        {
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
+
+                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
+                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", proyecto.STR_DESCRIPCION);
+                    cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return 1;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public int DeleteProyecto(int id)
+        {
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
+
+
+                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();

@@ -47,6 +47,7 @@ namespace AppGia.Models
 
         [Required]
         public string displayName { get; set; }
+
         public string STR_NOMBRE_USUARIO { get; set; }
 
         public string STR_EMAIL_USUARIO { get; set; }
@@ -159,33 +160,48 @@ namespace AppGia.Models
         //[Key]
         //public string id_cc { get; set; }
 
-        [Key]
-        public string id_cc { get; set; }
+        //[Key]
+        //public string id_cc { get; set; }
 
         public string STR_IDCENTROCOSTO { get; set; }
-        [Required]
-        public string name_cc { get; set; }
-        public string STR_NOMBRE_CC { get; set; }
-        [Required]
-        public string categoria { get; set; }
-        public string STR_CATEGORIA_CC { get; set; }
-        [Required]
-        public string estatus { get; set; }
-        public string BOOL_eSTATUS_CC { get; set; }
-        [Required]
 
-        public string id_proyecto { get; set; }
+
+        //[Required]
+        //public string name_cc { get; set; }
+        public string STR_NOMBRE_CC { get; set; }
+
+        //[Required]
+        //public string categoria { get; set; }
+        public string STR_CATEGORIA_CC { get; set; }
+
+
+        //[Required]
+        //public string estatus { get; set; }
+
+        public string BOOL_eSTATUS_CC { get; set; }
+
+        //[Required]
+        //public string id_proyecto { get; set; }
 
         public string GERENTE__COMPANIA { get; set; }
 
-        [Required]
-        public string gerente { get; set; }
-        [Required]
-        public string id_empresa { get; set; }
+        //[Required]
+        //public string gerente { get; set; }
+        //[Required]
+        //public string id_empresa { get; set; }
 
     }
 
-   
+
+    #endregion
+
+    #region Modelo de Negocios
+
+    public class ModeloNegocio
+    {
+        public string STR_NOMBRE { get; set; }
+        public string STR_MONTOS { get; set; }
+    }
     #endregion
 }
 

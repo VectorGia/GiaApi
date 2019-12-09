@@ -51,8 +51,52 @@ namespace AppGia.Controllers
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return 1;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public int UpdateGrupo(Grupo grupo)
+        {
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
+
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return 1;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public int DeleteGrupo(int id)
+        {
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
+
+
+                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
