@@ -13,7 +13,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<ModeloNegocio> GetAllModeloNegocios()
         {
-            string consulta = "SELECT * FROM" +cod+ "TBL_MODELO" +cod+"";
+            string consulta = "SELECT * FROM" +cod+ "TBL_MODELO_NEGOCIO" +cod+"";
             try
             {
                 List<ModeloNegocio> lstmodelo = new List<ModeloNegocio>();
@@ -26,13 +26,40 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         ModeloNegocio modeloNegocio = new ModeloNegocio();
-                        modeloNegocio.STR_NOMBRE = rdr["STR_NOMBRE"].ToString();
+                        modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString();
 
                         lstmodelo.Add(modeloNegocio);
                     }
                     con.Close();
                 }
                 return lstmodelo;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public int addModelo(ModeloNegocio modeloNegocio)
+        {
+            string addModelo = "INSERT INTO"+cod+"TBL_MODELO_NEGOCIO"+cod+"("+cod+ "STR_NOMBREMODELONEGOCIO" + cod
+                +","+cod+"STR_IDCOMPANIA"+cod+","+cod+ "STR_CUENTASMODELO" + cod+","+cod+ "STR_TIPOMONTO" + cod+")";
+
+            try
+            {
+                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
+                    cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO);
+                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", modeloNegocio.STR_IDCOMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_CUENTASMODELO", modeloNegocio.STR_CUENTASMODELO);
+                    cmd.Parameters.AddWithValue("@STR_TIPOMONTO", modeloNegocio.STR_TIPOMONTO);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return 1;
             }
             catch
             {

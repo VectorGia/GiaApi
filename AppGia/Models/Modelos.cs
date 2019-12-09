@@ -199,8 +199,10 @@ namespace AppGia.Models
 
     public class ModeloNegocio
     {
-        public string STR_NOMBRE { get; set; }
-        public string STR_MONTOS { get; set; }
+        public string STR_NOMBREMODELONEGOCIO { get; set; }
+        public string STR_TIPOMONTO { get; set; }
+        public string STR_IDCOMPANIA { get; set; }
+        public string STR_CUENTASMODELO { get; set; }
     }
     #endregion
 }
