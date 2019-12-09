@@ -13,7 +13,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<ModeloNegocio> GetAllModeloNegocios()
         {
-            string consulta = "SELECT * FROM" +cod+ "TBL_MODELO_NEGOCIO" +cod+"";
+            string consulta = "SELECT * FROM" +cod+ "TAB_MODELO_NEGOCIO" +cod+"";
             try
             {
                 List<ModeloNegocio> lstmodelo = new List<ModeloNegocio>();
@@ -42,8 +42,9 @@ namespace AppGia.Controllers
 
         public int addModelo(ModeloNegocio modeloNegocio)
         {
-            string addModelo = "INSERT INTO"+cod+"TBL_MODELO_NEGOCIO"+cod+"("+cod+ "STR_NOMBREMODELONEGOCIO" + cod
-                +","+cod+"STR_IDCOMPANIA"+cod+","+cod+ "STR_CUENTASMODELO" + cod+","+cod+ "STR_TIPOMONTO" + cod+")";
+            string addModelo = "INSERT INTO"+cod+"TAB_MODELO_NEGOCIO"+cod+"("+cod+ "STR_NOMBREMODELONEGOCIO" + cod
+                +","+cod+"STR_IDCOMPANIA"+cod+","+cod+ "STR_CUENTASMODELO" + cod+","+cod+ "STR_TIPOMONTO" + cod+") VALUES " +
+                "(@STR_NOMBREMODELONEGOCIO,@STR_IDCOMPANIA,@STR_CUENTASMODELO,@STR_TIPOMONTO)";
 
             try
             {

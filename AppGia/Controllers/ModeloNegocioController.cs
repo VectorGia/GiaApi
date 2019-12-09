@@ -28,8 +28,9 @@ namespace AppGia.Controllers
 
         // POST: api/ModeloNegocio
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Create([FromBody] ModeloNegocio negocio)
         {
+            return objModelo.addModelo(negocio);
         }
 
         //// PUT: api/ModeloNegocio/5
