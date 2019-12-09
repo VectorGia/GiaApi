@@ -45,16 +45,17 @@ namespace AppGia.Controllers
 
         public int addProyecto(Proyecto proyecto)
         {
-            string add = "INSERT INTO" + cod + "TAB_PROYECTO" + cod + "(" + cod + "STR_NOMBRE_PROYECTO" + cod + ") VALUES " +
-                "(@STR_NOMBRE_PROYECTO)";
+            string add = "INSERT INTO" + cod + "TAB_PROYECTO" + cod + "("+cod+"STR_IDPROYECTO"+cod+","+ cod + "STR_NOMBRE_PROYECTO" + cod + ","+cod+"STR_DESCRIPCION"+cod+","+cod+"STR_RESPONSABLE"+cod+") VALUES " +
+                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@STR_DESCRIPCION,@STR_RESPONSABLE)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
+                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
-
+                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", proyecto.STR_DESCRIPCION);
+                    cmd.Parameters.AddWithValue("STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
