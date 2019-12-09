@@ -16,7 +16,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<Compania> GetAllCompanias()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_COMPANIA" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "";
             try
             {
                 List<Compania> lstcompania = new List<Compania>();
@@ -56,10 +56,21 @@ namespace AppGia.Controllers
 
         public int addCompania(Compania compania)
         {
-            string add = "INSERT INTO" + cod + "TAB_COMPANIA" + cod + "(" + cod + "STR_IDCOMPANIA" + cod +","+cod+ "STR_NOMBRE_COMPANIA"+cod+","+
-                cod+"STR_ABREV_COMPANIA"+cod+","+cod+"BOOL_ETL_COMPANIA"+cod+","+cod+"STR_HOST_COMPANIA"+cod+","+cod+"STR_PUERTO_COMPANIA"+cod+","+cod+"STR_USUARIO_ETL"+cod+
-                ","+cod+"STR_CONTRASENIA"+cod+","+cod+"STR_BD_COMPANIA"+cod+","+cod+"STR_MONEDA_COMPANIA"+cod+") VALUES " +
-                "(@STR_IDCOMPANIA,@STR_NOMBRE_COMPANIA,@STR_ABREV_COMPANIA,@BOOL_ETL_COMPANIA,@STR_HOST_COMPANIA,@STR_PUERTO_COMPANIA,@STR_USUARIO_ETL,@STR_CONTRASEÑA,@STR_BD_COMPANIA,@STR_MONEDA_COMPANIA)";
+            string add = "INSERT INTO" + cod +
+                "CAT_COMPANIA" + cod +
+                "("+cod+"STR_NOMBRE_COMPANIA"+cod+
+                ","+cod+"STR_ABREV_COMPANIA"+cod+
+                ","+cod+"BOOL_ETL_COMPANIA"+cod+
+                ","+cod+"STR_HOST_COMPANIA"+cod+
+                ","+cod+"STR_MONEDA_COMPANIA"+cod+
+                ","+cod+"STR_IDCOMPANIA"+cod+
+                ","+cod+"STR_USUARIO_ETL"+cod+
+                ","+cod+"STR_CONTRASENIA_ETL"+cod+
+                ","+cod+"STR_PUERTO_COMPANIA"+cod+
+                ","+cod+"STR_BD_COMPANIA"+cod+
+                ","+cod+"BOOL_ESTATUS_LOGICO_COMPANIA"+cod+
+                ") VALUES " +
+                "(@STR_NOMBRE_COMPANIA,@STR_ABREV_COMPANIA,@BOOL_ETL_COMPANIA,@STR_HOST_COMPANIA,@STR_MONEDA_COMPANIA,@STR_IDCOMPANIA,@STR_USUARIO_ETL,@STR_CONTRASENIA_ETL,@STR_PUERTO_COMPANIA,@STR_BD_COMPANIA,@BOOL_ESTATUS_LOGICO_COMPANIA)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -67,7 +78,16 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
                     cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
-
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
+                    cmd.Parameters.AddWithValue("@BOOL_ETL_COMPANIA", compania.BOOL_ETL_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_HOST_COMPANIA", compania.STR_HOST_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_MONEDA_COMPANIA", compania.STR_MONEDA_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_USUARIO_ETL", compania.STR_USUARIO_ETL);
+                    cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", compania.STR_CONTRASENIA_ETL);
+                    cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", compania.STR_PUERTO_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();

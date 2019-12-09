@@ -19,11 +19,11 @@ namespace AppGia.Controllers
             return objCompania.GetAllCompanias();
         }
 
-<<<<<<< HEAD
+
         //// GET: api/Compania/5
-=======
+
         // GET: api/Compania/5
->>>>>>> 66851b5e273fa8258515a35d3f2489ba07263c5e
+
         //[HttpGet("{id}", Name = "Get")]
         //public string Get(int id)
         //{

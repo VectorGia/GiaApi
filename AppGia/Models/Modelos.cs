@@ -148,7 +148,7 @@ namespace AppGia.Models
 
         public string STR_BD_COMPANIA { get; set; }
 
-        //public bool BOOL_ESTATUS_COMPANIA { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_COMPANIA { get; set; }
     }
     #endregion
 
