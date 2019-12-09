@@ -6,12 +6,12 @@ namespace AppGia.Controllers
 {
     public class CentroCostosDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=Gia;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
         public IEnumerable<CentroCostos> GetAllCentros()
         {
 
-            string consulta = "SELECT * FROM"+cod+"CentroCostos"+cod+"";
+            string consulta = "SELECT * FROM"+cod+"CAT_CENTROCOSTO"+cod+"";
             try
             {
                 List<CentroCostos> lstcentros = new List<CentroCostos>();
@@ -30,8 +30,9 @@ namespace AppGia.Controllers
                         centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString();
                         centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString();
                         centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString();
-                        centroCC.BOOL_eSTATUS_CC = rdr["BOOL_eSTATUS_CC"].ToString();
-                        centroCC.GERENTE__COMPANIA = rdr["GERENTE__COMPANIA"].ToString();
+                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString();
+                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString();
+              
 
                         lstcentros.Add(centroCC);
                     }
@@ -47,8 +48,8 @@ namespace AppGia.Controllers
 
         public int AddCentro(CentroCostos centroCC)
         {
-            string add = "INSERT INTO "+cod+ "CAT_CENTROCOSTO" + cod+"("+cod+ "STR_IDCENTROCOSTO" + cod+","+cod+ "STR_NOMBRE_CC" + cod+","+cod+ "STR_CATEGORIA_CC" + cod+","+cod+ "BOOL_eSTATUS_CC" + cod+","+cod+ "GERENTE__COMPANIA" + cod+")"  +
-                "VALUES (@STR_IDCENTROCOSTO,@STR_NOMBRE_CC,@STR_CATEGORIA_CC,@BOOL_eSTATUS_CC,@GERENTE__COMPANIA)";
+            string add = "INSERT INTO "+cod+ "CAT_CENTROCOSTO" + cod+"("+cod+ "STR_IDCENTROCOSTO" + cod+","+cod+ "STR_NOMBRE_CC" + cod+","+cod+ "STR_CATEGORIA_CC" + cod+","+cod+ "STR_ESTATUS_CC" + cod+","+cod+ "STR_GERENTE_CC" + cod+")"  +
+                "VALUES (@STR_IDCENTROCOSTO,@STR_NOMBRE_CC,@STR_CATEGORIA_CC,@STR_ESTATUS_CC,@STR_GERENTE_CC)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -59,8 +60,9 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCC.STR_IDCENTROCOSTO);
                     cmd.Parameters.AddWithValue("STR_NOMBRE_CC", centroCC.STR_NOMBRE_CC);
                     cmd.Parameters.AddWithValue("STR_CATEGORIA_CC", centroCC.STR_CATEGORIA_CC);
-                    cmd.Parameters.AddWithValue("BOOL_eSTATUS_CC", centroCC.BOOL_eSTATUS_CC);
-                    cmd.Parameters.AddWithValue("GERENTE__COMPANIA", centroCC.GERENTE__COMPANIA);
+                    cmd.Parameters.AddWithValue("STR_ESTATUS_CC", centroCC.STR_ESTATUS_CC);
+                    cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCC.STR_GERENTE_CC);
+                    
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -85,8 +87,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCC.STR_IDCENTROCOSTO);
                     cmd.Parameters.AddWithValue("STR_NOMBRE_CC", centroCC.STR_NOMBRE_CC);
                     cmd.Parameters.AddWithValue("STR_CATEGORIA_CC", centroCC.STR_CATEGORIA_CC);
-                    cmd.Parameters.AddWithValue("BOOL_eSTATUS_CC", centroCC.BOOL_eSTATUS_CC);
-                    cmd.Parameters.AddWithValue("GERENTE__COMPANIA", centroCC.GERENTE__COMPANIA);
+                    cmd.Parameters.AddWithValue("BOOL_eSTATUS_CC", centroCC.STR_ESTATUS_CC);
+                    cmd.Parameters.AddWithValue("GERENTE__COMPANIA", centroCC.STR_GERENTE_CC);
 
                     con.Open();
                     cmd.ExecuteNonQuery();

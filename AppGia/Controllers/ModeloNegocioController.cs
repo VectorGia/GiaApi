@@ -11,7 +11,7 @@ namespace AppGia.Controllers
     [ApiController]
     public class ModeloNegocioController : ControllerBase
     {
-        ModeloNegocioDataAccessLayer objModelo = new ModeloNegocioDataAccessLayer;
+        ModeloNegocioDataAccessLayer objModelo = new ModeloNegocioDataAccessLayer();
         // GET: api/ModeloNegocio
         [HttpGet]
         public IEnumerable<ModeloNegocio> Get()
@@ -19,12 +19,12 @@ namespace AppGia.Controllers
             return objModelo.GetAllModeloNegocios();
         }
 
-        // GET: api/ModeloNegocio/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //// GET: api/ModeloNegocio/5
+        //[HttpGet("{id}", Name = "Get")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST: api/ModeloNegocio
         [HttpPost]
@@ -32,16 +32,16 @@ namespace AppGia.Controllers
         {
         }
 
-        // PUT: api/ModeloNegocio/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT: api/ModeloNegocio/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE: api/ApiWithActions/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

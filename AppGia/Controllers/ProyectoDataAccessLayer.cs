@@ -11,7 +11,7 @@ namespace AppGia.Controllers
         char cod = '"';
         public IEnumerable<Proyecto> GetAllProyectos()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_PROYECTO" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "CAT_PROYECTO" + cod + "";
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
@@ -27,7 +27,7 @@ namespace AppGia.Controllers
 
                         proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString();
                         proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString();
-                        proyecto.STR_DESCRIPCION = rdr["STR_DESCRIPCION"].ToString();
+                        proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
                         proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString();
 
                         lstProyecto.Add(proyecto);
@@ -45,8 +45,8 @@ namespace AppGia.Controllers
 
         public int addProyecto(Proyecto proyecto)
         {
-            string add = "INSERT INTO" + cod + "TAB_PROYECTO" + cod + "("+cod+"STR_IDPROYECTO"+cod+","+ cod + "STR_NOMBRE_PROYECTO" + cod + ","+cod+"STR_DESCRIPCION"+cod+","+cod+"STR_RESPONSABLE"+cod+") VALUES " +
-                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@STR_DESCRIPCION,@STR_RESPONSABLE)";
+            string add = "INSERT INTO" + cod + "CAT_PROYECTO" + cod + "("+cod+"STR_IDPROYECTO"+cod+","+ cod + "STR_NOMBRE_PROYECTO" + cod + ","+cod+ "BOOL_ESTATUS_PROYECTO" + cod+","+cod+"STR_RESPONSABLE"+cod+") VALUES " +
+                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -54,7 +54,7 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
-                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", proyecto.STR_DESCRIPCION);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -78,7 +78,7 @@ namespace AppGia.Controllers
 
                     cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
-                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", proyecto.STR_DESCRIPCION);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
 
                     con.Open();

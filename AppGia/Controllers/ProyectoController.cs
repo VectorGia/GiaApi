@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
-
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
@@ -10,29 +12,28 @@ namespace AppGia.Controllers
     public class ProyectoController : ControllerBase
     {
         ProyectoDataAccessLayer objProyecto = new ProyectoDataAccessLayer();
-
-        // GET: api/Compania
+        // GET: api/Proyecto
         [HttpGet]
         public IEnumerable<Proyecto> Get()
         {
             return objProyecto.GetAllProyectos();
         }
 
-        // GET: api/Compania/5
+        //// GET: api/Proyecto/5
         //[HttpGet("{id}", Name = "Get")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST: api/Compania
+        // POST: api/Proyecto
         [HttpPost]
-        public int Create([FromBody]Proyecto proy)
+        public int Create([FromBody]Proyecto proyecto)
         {
-            return objProyecto.addProyecto(proy);
+            return objProyecto.addProyecto(proyecto);
         }
 
-        //// PUT: api/Compania/5
+        //// PUT: api/Proyecto/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{

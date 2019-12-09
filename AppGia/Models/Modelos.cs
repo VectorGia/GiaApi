@@ -114,15 +114,12 @@ namespace AppGia.Models
     {
         public string STR_NOMBRE_PROYECTO { get; set; }
 
-        public string STR_DESCRIPCION { get; set; }
-
         public string STR_RESPONSABLE { get; set; }
 
         public string STR_IDPROYECTO { get; set; }
 
-        //public bool BOOL_STATUS_LOGICO { get; set; }
-
-        //public ? FEC_MODIF { get; set; }
+        public bool BOOL_ESTATUS_PROYECTO { get; set; }
+    
     }
     #endregion
 
@@ -157,38 +154,20 @@ namespace AppGia.Models
     public class CentroCostos
     {
 
-        //[Key]
-        //public string id_cc { get; set; }
-
-        //[Key]
-        //public string id_cc { get; set; }
 
         public string STR_IDCENTROCOSTO { get; set; }
 
-
-        //[Required]
-        //public string name_cc { get; set; }
         public string STR_NOMBRE_CC { get; set; }
 
-        //[Required]
-        //public string categoria { get; set; }
         public string STR_CATEGORIA_CC { get; set; }
 
+        //public string BOOL_ESTATUS_CC { get; set; }
 
-        //[Required]
-        //public string estatus { get; set; }
+        public string STR_GERENTE_CC { get; set; }
 
-        public string BOOL_eSTATUS_CC { get; set; }
+        public string STR_ESTATUS_CC { get; set; }
 
-        //[Required]
-        //public string id_proyecto { get; set; }
-
-        public string GERENTE__COMPANIA { get; set; }
-
-        //[Required]
-        //public string gerente { get; set; }
-        //[Required]
-        //public string id_empresa { get; set; }
+   
 
     }
 
