@@ -65,10 +65,10 @@ namespace AppGia.Controllers
             }
         }
         
-            public int UpdateGrupo(Grupo grupo)
+            public int UpdateGrupo(string id, Grupo grupo)
             {
             //string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
-            string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + "," + cod + "BOOL_ESTATUS_LOGICO_GRUPO" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
+            string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + id;
             try
                 {
                     using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -76,7 +76,7 @@ namespace AppGia.Controllers
                         NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                         //cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
                         cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
-                        cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = grupo.BOOL_ESTATUS_LOGICO_GRUPO });
+                       
                         con.Open();
                         int cantFilas = cmd.ExecuteNonQuery();
                         con.Close();
