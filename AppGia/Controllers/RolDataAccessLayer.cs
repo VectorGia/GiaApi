@@ -86,16 +86,19 @@ namespace AppGia.Controllers
             }
         }
 
-        public int DeleteRol(int id)
+        public int Delete(Rol  rol)
         {
+            rol.BOOL_ESTATUS_ROL = true;
+            rol.INT_IDROL_P = 1;
+
+
+            string delete = "UPDATE " + cod + "CAT_ROL" + cod + "SET" + cod + "BOOL_ESTATUS_ROL" + cod + "='" + rol.BOOL_ESTATUS_ROL + "' WHERE" + cod + "INT_IDROL_P" + cod + "='" + rol.INT_IDROL_P + "'";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
-
-
-                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_ROL);
 
                     con.Open();
                     cmd.ExecuteNonQuery();

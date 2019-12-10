@@ -106,10 +106,11 @@ namespace AppGia.Models
     {
         public string STR_NOMBRE_ROL { get; set; }
 
+        public bool BOOL_ESTATUS_ROL { get; set; }
 
-        //public bool BOOL_ESTATUS_ROL { get; set; }
+        public DateTime FEC_MODIF { get; set; }
 
-        //public ? FEC_MODIF { get; set; }
+        public int INT_IDROL_P { get; set; }
     }
     #endregion
 
@@ -123,7 +124,15 @@ namespace AppGia.Models
         public string STR_IDPROYECTO { get; set; }
 
         public bool BOOL_ESTATUS_PROYECTO { get; set; }
-    
+
+        public bool BOOL_ESTATUS_LOGICO_PROYECTO { get; set; }
+
+        public DateTime FEC_MODIF { get; set; }
+
+        public int INT_IDPROYECTO_P { get; set; }
+
+        public int INT_IDPANTALLA_F { get; set; }
+
     }
     #endregion
 
@@ -151,6 +160,13 @@ namespace AppGia.Models
         public string STR_BD_COMPANIA { get; set; }
 
         public bool BOOL_ESTATUS_LOGICO_COMPANIA { get; set; }
+
+        public int INT_IDCOMPANIA_P { get; set; }
+
+        public int INT_IDPROYECTO_F { get; set; }
+
+        public int INT_IDCENTROCOSTO_F { get; set; }
+
     }
     #endregion
 
@@ -165,13 +181,14 @@ namespace AppGia.Models
 
         public string STR_CATEGORIA_CC { get; set; }
 
-        //public string BOOL_ESTATUS_CC { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_CENTROCOSTO { get; set; }
 
         public string STR_GERENTE_CC { get; set; }
 
         public string STR_ESTATUS_CC { get; set; }
 
-   
+        public string INT_IDCENTROCOSTO_P { get; set; }
+
 
     }
 
