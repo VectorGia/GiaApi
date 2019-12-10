@@ -93,7 +93,11 @@ namespace AppGia.Models
     #region Tabla Grupos
     public class Grupo 
     {
+        public int INT_IDGRUPO_P { get; set; }
+
         public string STR_NOMBRE_GRUPO { get; set; }
+
+        public bool BOOL_ESTATUS_LOGICO_GRUPO { get; set; }
     }
     #endregion
 
