@@ -87,7 +87,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCC.STR_IDCENTROCOSTO);
                     cmd.Parameters.AddWithValue("STR_NOMBRE_CC", centroCC.STR_NOMBRE_CC);
                     cmd.Parameters.AddWithValue("STR_CATEGORIA_CC", centroCC.STR_CATEGORIA_CC);
-                    cmd.Parameters.AddWithValue("BOOL_eSTATUS_CC", centroCC.STR_ESTATUS_CC);
+                    cmd.Parameters.AddWithValue("STR_ESTATUS_CC", centroCC.STR_ESTATUS_CC);
                     cmd.Parameters.AddWithValue("GERENTE__COMPANIA", centroCC.STR_GERENTE_CC);
 
                     con.Open();

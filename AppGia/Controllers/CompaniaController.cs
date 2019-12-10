@@ -37,16 +37,18 @@ namespace AppGia.Controllers
             return objCompania.addCompania(comp);
         }
 
-        //// PUT: api/Compania/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/Compania/5
+        [HttpPut("{id}")]
+        public int Put(string id, [FromBody] Compania comp)
+        {
+            return objCompania.Delete(id, comp);
+        }
 
-        //// DELETE: api/ApiWithActions/5
+        ////DELETE: api/ApiWithActions/5
         //[HttpDelete("{id}")]
-        //public void Delete(int id)
+        //public int Delete([FromBody] Compania comp)
         //{
+        //    return objCompania.Delete(comp);
         //}
     }
 }

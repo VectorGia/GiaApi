@@ -100,5 +100,28 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
+        public int Delete( string id, Compania compania)
+        {
+            string status = "false";
+            string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + status + "' WHERE"+cod+ "STR_IDCOMPANIA" +cod+"='"+id+"'";
+            try
+            {
+                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+                return 1;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }
