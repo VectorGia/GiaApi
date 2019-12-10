@@ -64,28 +64,33 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-
-        public int UpdateGrupo(Grupo grupo)
-        {
+        
+            public int UpdateGrupo(Grupo grupo)
+            {
+            //string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
+            string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + "," + cod + "BOOL_ESTATUS_LOGICO_GRUPO" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
             try
-            {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
-
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+                    using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                    {
+                        NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                        //cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
+                        cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
+                        cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = grupo.BOOL_ESTATUS_LOGICO_GRUPO });
+                        con.Open();
+                        int cantFilas = cmd.ExecuteNonQuery();
+                        con.Close();
+                        return cantFilas;
+                    }
+                    //return 1;
                 }
-                return 1;
+                catch
+                {
+                    throw;
+                }
             }
-            catch
-            {
-                throw;
-            }
-        }
+
+    
 
         public int DeleteGrupo(int id)
         {
