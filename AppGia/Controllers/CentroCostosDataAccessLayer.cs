@@ -102,16 +102,16 @@ namespace AppGia.Controllers
             }
         }
 
-        public int DeleteCentro(int id)
+        public int Delete(string id, CentroCostos centroCC)
         {
+            string status = "false";
+            string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + status + "' WHERE" + cod + "STR_IDCOMPANIA" + cod + "='" + id + "'";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
-                    
-
-                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", centroCC.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -124,5 +124,8 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
+
+
     }
 }

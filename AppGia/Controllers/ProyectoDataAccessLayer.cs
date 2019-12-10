@@ -93,16 +93,21 @@ namespace AppGia.Controllers
             }
         }
 
-        public int DeleteProyecto(int id)
+        public int Delete(Proyecto proyecto)
         {
+
+            proyecto.BOOL_ESTATUS_PROYECTO = true; /// Esto debe ser el valor la caja de texto
+            proyecto.INT_IDPROYECTO_P = 1; /// Esto debe ser el valor la caja de texto
+
+
+            string delete = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + proyecto.BOOL_ESTATUS_LOGICO_PROYECTO + "' WHERE" + cod + "INT_IDPROYECTO_P" + cod + "='" + proyecto.INT_IDPROYECTO_P + "'";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
 
-
-                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
