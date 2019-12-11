@@ -62,12 +62,12 @@ namespace AppGia.Controllers
 
         }
 
-        // GET: api/UsersAD/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //// GET: api/UsersAD/5
+        //[HttpGet("{id}", Name = "")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST: api/UsersAD
         [HttpPost]

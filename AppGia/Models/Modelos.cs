@@ -205,7 +205,7 @@ namespace AppGia.Models
 
         public string STR_ESTATUS_CC { get; set; }
 
-        public string INT_IDCENTROCOSTO_P { get; set; }
+        public int INT_IDCENTROCOSTO_P { get; set; }
 
 
     }
