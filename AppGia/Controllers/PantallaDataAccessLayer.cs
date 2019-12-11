@@ -62,42 +62,42 @@ namespace AppGia.Controllers
             {
                 throw;
             }
-        } 
-        
-        public int UpdatePantalla(Pantalla pantalla)
-            {
+        }
 
-                string add = "UPDATE " + cod + "TAB_PANTALLA" + cod +
-                " SET " + cod + "INT_IDROL_F" + cod + "= " + "'" + "@INT_IDROL_F" + "'" + ","
-                + cod + "FEC_MODIF" + cod + "= " + "'" + "@FEC_MODIF" + "'" + ","
-                + cod + "STR_NOMBRE_PANTALLA" + cod + "= " + "'" + "@STR_NOMBRE_PANTALLA" + "'"            
-                + " WHERE " + cod + "INT_IDPANTALLA_P" + cod + " = " + "@INT_IDPANTALLA_P";
+        public int UpdatePantalla(Pantalla pantalla)
+        {
+
+            string add = "UPDATE " + cod + "TAB_PANTALLA" + cod +
+            " SET " + cod + "INT_IDROL_F" + cod + "= " + "@INT_IDROL_F" + ","
+            + cod + "FEC_MODIF_PANTALLA" + cod + "= " + "@FEC_MODIF_PANTALLA" + ","
+            + cod + "STR_NOMBRE_PANTALLA" + cod + "= " + "@STR_NOMBRE_PANTALLA"
+            + " WHERE " + cod + "INT_IDPANTALLA_P" + cod + " = " + "@INT_IDPANTALLA_P";
 
             try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    {
-                        NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPANTALLA_P", Value = pantalla.INT_IDPANTALLA_P});
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPANTALLA_P", Value = pantalla.INT_IDPANTALLA_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_F", Value = pantalla.INT_IDROL_F });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.TimestampTz, ParameterName = "@FEC_MODIF", Value = pantalla.FEC_MODIF });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PANTALLA", Value = pantalla.STR_NOMBRE_PANTALLA });                  
-                    
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.TimestampTz, ParameterName = "@FEC_MODIF_PANTALLA", Value = pantalla.FEC_MODIF_PANTALLA });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PANTALLA", Value = pantalla.STR_NOMBRE_PANTALLA });
+
                     con.Open();
-                        int cantFilas = cmd.ExecuteNonQuery();
-                        con.Close();
-                        return cantFilas;
-                    }
-                    //return 1;
-                }
-                catch
-                {
-                    throw;
+                    int cantFilas = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilas;
                 }
             }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                throw;
+            }
+        }
 
-       
+
 
         //public int DeletePantalla(int id)
         //{
@@ -122,9 +122,11 @@ namespace AppGia.Controllers
         //    }
         //}
 
- public int DeleteGrupo(Pantalla pantalla)
+        public int DeletePantalla(Pantalla pantalla)
         {
-            string add = "UPDATE " + cod + "TAB_PANTALLA" + cod + " SET " + cod + "BOOL_ESTATUS_LOGICO_PANT" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_PANT" + "'" + " WHERE " + cod + "INT_IDPANTALLA_P" + cod + " = " + "@INT_IDPANTALLA_P";
+            string add = "UPDATE " + cod + "TAB_PANTALLA" + cod
+                + " SET " + cod + "BOOL_ESTATUS_LOGICO_PANT" + cod + "= " + "@BOOL_ESTATUS_LOGICO_PANT"
+                + " WHERE " + cod + "INT_IDPANTALLA_P" + cod + " = " + "@INT_IDPANTALLA_P";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -137,10 +139,10 @@ namespace AppGia.Controllers
                     con.Close();
                     return cantFilas;
                 }
-                //return 1;
             }
-            catch
+            catch (Exception ex)
             {
+                string error = ex.Message;
                 throw;
             }
         }
