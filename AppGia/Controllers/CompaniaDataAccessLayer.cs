@@ -101,10 +101,14 @@ namespace AppGia.Controllers
             }
         }
 
-        public int Delete( string id, Compania compania)
+        public int Delete(Compania compania)
         {
-            string status = "false";
-            string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + status + "' WHERE"+cod+ "STR_IDCOMPANIA" +cod+"='"+id+"'";
+           
+            compania.BOOL_ESTATUS_LOGICO_COMPANIA = true;
+            compania.INT_IDCOMPANIA_P=1;
+
+
+            string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + compania.BOOL_ESTATUS_LOGICO_COMPANIA + "' WHERE"+cod+ "INT_IDCOMPANIA_P" + cod+"='"+ compania.INT_IDCOMPANIA_P + "'";
             try
             {
                 using(NpgsqlConnection con = new NpgsqlConnection(connectionString))

@@ -32,11 +32,12 @@ namespace AppGia.Controllers
             return objgrupo.addGrupo(grup);
         }
 
-        //// PUT: api/Grupo/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/Grupo/5
+        [HttpPut("{STR_NOMBRE_GRUPO}")]
+        public int Put(string id, [FromBody] Grupo group)
+        {
+            return objgrupo.UpdateGrupo(id, group);
+        }
 
         //// DELETE: api/ApiWithActions/5
         //[HttpDelete("{id}")]
