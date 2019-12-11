@@ -42,6 +42,19 @@ namespace AppGia.Models
     #region Tabla Usuario
     public class Usuario
     {
+        public string SRT_DISPLAYNAME_USUARIO { get; set; }
+        public string STR_EMAIL_USUARIO { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_USUARIO { get; set; }
+        public int INT_IDROL { get; set; }
+        public DateTime FEC_MODIF { get; set; }
+        public int INT_IDPANTALLA_F { get; set; }
+        public int INT_IDPROYECTO_F { get; set; }
+        public int INT_IDCOMPANIA_F { get; set; }
+        public int STR_IDCENTROCOSTO_F { get; set; }
+        public int INT_IDGRUPO_F { get; set; }
+        public int INT_IDUSUARIO_P { get; set; }
+        public string STR_USERNAME_USUARIO { get; set; }
+        public string STR_PUESTO { get; set; }
 
         public string userName { get; set; }
 
@@ -50,9 +63,9 @@ namespace AppGia.Models
 
         public string STR_NOMBRE_USUARIO { get; set; }
 
-        public string STR_EMAIL_USUARIO { get; set; }
+        
        
-        public bool BOOL_ESTATUS_USUARIO { get; set; }
+        //public bool BOOL_ESTATUS_USUARIO { get; set; }
 
         //[Required]
         //public string userName { get; set; }
@@ -62,7 +75,7 @@ namespace AppGia.Models
         //[Required]
         //public string displayName { get; set; }
 
-        public string SRT_DISPLAYNAME_USUARIO { get; set; }
+        
 
         /// <summary>
         /// ///////////////////
@@ -78,15 +91,20 @@ namespace AppGia.Models
     public class Permiso
     {
         public string STR_NOMBRE_PERMISO { get; set; }
+        public int INT_IDPERMISO_P { get; set; }
+        public int INT_IDROL { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_PERM { get; set; }
     }
     #endregion
 
     #region Tabla Pantallas
     public class Pantalla
     {
-        //public ? FEC_MODIF { get; set; }
-
         public string STR_NOMBRE_PANTALLA { get; set; }
+        public int INT_IDROL_F { get; set; }
+        public DateTime FEC_MODIF { get; set; }
+        public int INT_IDPANTALLA_P { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_PANT { get; set; }
     }
     #endregion
 
@@ -199,10 +217,13 @@ namespace AppGia.Models
 
     public class ModeloNegocio
     {
+        public int INT_IDMODELONEGOCIO_P { get; set; }
         public string STR_NOMBREMODELONEGOCIO { get; set; }
         public string STR_TIPOMONTO { get; set; }
         public string STR_IDCOMPANIA { get; set; }
         public string STR_CUENTASMODELO { get; set; }
+        public int INT_COMPANIA_F { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_MODE_NEGO { get; set; }
     }
     #endregion
 }

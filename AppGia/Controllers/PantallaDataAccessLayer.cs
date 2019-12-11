@@ -62,23 +62,82 @@ namespace AppGia.Controllers
             {
                 throw;
             }
-        }
-
+        } 
+        
         public int UpdatePantalla(Pantalla pantalla)
+            {
+
+                string add = "UPDATE " + cod + "TAB_PANTALLA" + cod +
+                " SET " + cod + "INT_IDROL_F" + cod + "= " + "'" + "@INT_IDROL_F" + "'" + ","
+                + cod + "FEC_MODIF" + cod + "= " + "'" + "@FEC_MODIF" + "'" + ","
+                + cod + "STR_NOMBRE_PANTALLA" + cod + "= " + "'" + "@STR_NOMBRE_PANTALLA" + "'"            
+                + " WHERE " + cod + "INT_IDPANTALLA_P" + cod + " = " + "@INT_IDPANTALLA_P";
+
+            try
+                {
+                    using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                    {
+                        NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPANTALLA_P", Value = pantalla.INT_IDPANTALLA_P});
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_F", Value = pantalla.INT_IDROL_F });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.TimestampTz, ParameterName = "@FEC_MODIF", Value = pantalla.FEC_MODIF });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PANTALLA", Value = pantalla.STR_NOMBRE_PANTALLA });                  
+                    
+                    con.Open();
+                        int cantFilas = cmd.ExecuteNonQuery();
+                        con.Close();
+                        return cantFilas;
+                    }
+                    //return 1;
+                }
+                catch
+                {
+                    throw;
+                }
+            }
+
+       
+
+        //public int DeletePantalla(int id)
+        //{
+        //    try
+        //    {
+        //        using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+        //        {
+        //            NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
+
+
+        //            cmd.Parameters.AddWithValue("STR_NOMBRE_PANTALLA", id);
+
+        //            con.Open();
+        //            cmd.ExecuteNonQuery();
+        //            con.Close();
+        //        }
+        //        return 1;
+        //    }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //}
+
+ public int DeleteGrupo(Pantalla pantalla)
         {
+            string add = "UPDATE " + cod + "TAB_PANTALLA" + cod + " SET " + cod + "BOOL_ESTATUS_LOGICO_PANT" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_PANT" + "'" + " WHERE " + cod + "INT_IDPANTALLA_P" + cod + " = " + "@INT_IDPANTALLA_P";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
-
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PANTALLA", pantalla.STR_NOMBRE_PANTALLA);
-
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPANTALLA_P", Value = pantalla.INT_IDPANTALLA_P });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_PANT", Value = pantalla.BOOL_ESTATUS_LOGICO_PANT });
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilas;
                 }
-                return 1;
+                //return 1;
             }
             catch
             {
@@ -86,27 +145,5 @@ namespace AppGia.Controllers
             }
         }
 
-        public int DeletePantalla(int id)
-        {
-            try
-            {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
-
-
-                    cmd.Parameters.AddWithValue("STR_NOMBRE_PANTALLA", id);
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                }
-                return 1;
-            }
-            catch
-            {
-                throw;
-            }
-        }
     }
 }
