@@ -17,12 +17,12 @@ namespace AppGia.Controllers
             return objcentro.GetAllCentros();
         }
 
-        //// GET: api/Centro/5
-        //[HttpGet("{id}", Name = "")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET: api/Centro/5
+        [HttpGet("{id}", Name = "GetCentro")]
+        public CentroCostos Get(int id)
+        {
+            return objcentro.GetCentroData(id);
+        }
 
         // POST: api/Centro
         [HttpPost]

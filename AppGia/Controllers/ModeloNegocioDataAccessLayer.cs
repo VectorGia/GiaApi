@@ -26,6 +26,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         ModeloNegocio modeloNegocio = new ModeloNegocio();
+                        modeloNegocio.INT_IDMODELONEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELONEGOCIO_P"]);
                         modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString();
 
                         lstmodelo.Add(modeloNegocio);

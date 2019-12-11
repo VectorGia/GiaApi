@@ -142,7 +142,7 @@ namespace AppGia.Controllers
         {
            
             string update = "UPDATE " + cod + "CAT_COMPANIA" 
-                + cod + "SET" + cod + "STR_IDCOMPANIA" + cod + "= " + "@STR_IDCOMPANIA" +","
+                + cod + "SET" + cod + "STR_IDCOMPANIA" + cod + "=" + "@STR_IDCOMPANIA" +","
                 + cod + "STR_NOMBRE_COMPANIA"+ cod + "= " + "@STR_NOMBRE_COMPANIA" + ","
                 + cod + "STR_ABREV_COMPANIA" + cod + "= " + "@STR_ABREV_COMPANIA"  + ","
                 + cod + "BOOL_ETL_COMPANIA"  + cod + "= " + "@BOOL_ETL_COMPANIA"   + ","

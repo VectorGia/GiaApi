@@ -191,8 +191,7 @@ namespace AppGia.Models
     #region Modelo Centro de costos
     public class CentroCostos
     {
-
-
+        public string STR_TIPO_CC { get; set; }
         public string STR_IDCENTROCOSTO { get; set; }
 
         public string STR_NOMBRE_CC { get; set; }

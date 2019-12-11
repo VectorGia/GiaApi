@@ -42,6 +42,7 @@ namespace AppGia.Controllers
         }
 
         //DELETE: api/ApiWithActions/5
+   
         [HttpDelete("{id}")]
         public int Delete(string id, [FromBody] Compania comp)
         {
