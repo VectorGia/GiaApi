@@ -64,16 +64,27 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateRol(Rol rol)
+        public int update(Rol rol)
         {
+
+            string update = "UPDATE " + cod + "CAT_ROL" + cod + "SET"
+
+          + cod + "STR_NOMBRE_ROL" + cod + " = '" + rol.STR_NOMBRE_ROL + "' ,"
+          + cod + "BOOL_ESTATUS_LOGICO_ROL" + cod + " = '" + rol.BOOL_ESTATUS_LOGICO_ROL + "' ,"
+          + cod + "FEC_MODIF_ROL" + cod + " = '" + rol.FEC_MODIF_ROL + "' "
+          + " WHERE" + cod + "INT_IDROL_P" + cod + "=" + rol.INT_IDROL_P;
+
+
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+
 
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
-
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", rol.FEC_MODIF_ROL);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
@@ -84,21 +95,23 @@ namespace AppGia.Controllers
             {
                 throw;
             }
+
+
+
+
+
         }
 
-        public int Delete(Rol  rol)
+        public int Delete(Rol rol)
         {
-            rol.BOOL_ESTATUS_ROL = true;
-            rol.INT_IDROL_P = 1;
 
-
-            string delete = "UPDATE " + cod + "CAT_ROL" + cod + "SET" + cod + "BOOL_ESTATUS_ROL" + cod + "='" + rol.BOOL_ESTATUS_ROL + "' WHERE" + cod + "INT_IDROL_P" + cod + "='" + rol.INT_IDROL_P + "'";
+            string delete = "UPDATE " + cod + "CAT_ROL" + cod + "SET" + cod + "BOOL_ESTATUS_ROL" + cod + "='" + rol.BOOL_ESTATUS_LOGICO_ROL + "' WHERE" + cod + "INT_IDROL_P" + cod + "='" + rol.INT_IDROL_P + "'";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_ROL);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
