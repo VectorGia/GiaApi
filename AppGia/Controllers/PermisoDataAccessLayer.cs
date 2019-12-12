@@ -89,9 +89,9 @@ namespace AppGia.Controllers
                 }
                 //return 1;
             }
-            catch (Exception ex)
+            catch
             {
-                string error = ex.Message;
+               
                 throw;
             }
         }

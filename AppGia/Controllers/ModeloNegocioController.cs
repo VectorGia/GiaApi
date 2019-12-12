@@ -33,11 +33,12 @@ namespace AppGia.Controllers
             return objModelo.addModelo(negocio);
         }
 
-        //// PUT: api/ModeloNegocio/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/ModeloNegocio/5
+        [HttpPut("{id}")]
+        public int Put([FromBody] ModeloNegocio negocio)
+        {
+            return objModelo.UpdateModelo(negocio);
+        }
 
         //// DELETE: api/ApiWithActions/5
         //[HttpDelete("{id}")]

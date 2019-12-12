@@ -90,9 +90,9 @@ namespace AppGia.Controllers
                     return cantFilas;
                 }
             }
-            catch (Exception ex)
+            catch 
             {
-                string error = ex.Message;
+                
                 throw;
             }
         }
@@ -140,9 +140,9 @@ namespace AppGia.Controllers
                     return cantFilas;
                 }
             }
-            catch (Exception ex)
+            catch 
             {
-                string error = ex.Message;
+                
                 throw;
             }
         }

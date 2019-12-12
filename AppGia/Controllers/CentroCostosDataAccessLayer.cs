@@ -27,7 +27,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         CentroCostos centroCC = new CentroCostos();
-                        centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"])
+                        centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
                         centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString();
                         centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString();
                         centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString();

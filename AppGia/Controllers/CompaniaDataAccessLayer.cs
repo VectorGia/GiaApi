@@ -138,9 +138,10 @@ namespace AppGia.Controllers
         }
 
 
-        public int Update(string id, Compania compania)
+        public int Update(Compania compania)
+            
         {
-           
+            //compania.INT_IDCOMPANIA_P = Convert.ToInt32(id);
             string update = "UPDATE " + cod + "CAT_COMPANIA" 
                 + cod + "SET" + cod + "STR_IDCOMPANIA" + cod + "= " + "@STR_IDCOMPANIA" +","
                 + cod + "STR_NOMBRE_COMPANIA"+ cod + "= " + "@STR_NOMBRE_COMPANIA" + ","
@@ -152,7 +153,7 @@ namespace AppGia.Controllers
                 + cod + "STR_CONTRASENIA_ETL"+ cod + "= " + "@STR_CONTRASENIA_ETL" + ","
                 + cod + "STR_PUERTO_COMPANIA"+ cod + "= " + "@STR_PUERTO_COMPANIA" + ","
                 + cod + "STR_BD_COMPANIA"    + cod + "= " + "@STR_BD_COMPANIA"
-                + " WHERE "+cod+"INT_IDCOMPANIA_P"+cod+ "=" + id;
+                + " WHERE "+cod+"INT_IDCOMPANIA_P"+cod+ "=" + "@INT_IDCOMPANIA_P";
 
             try
             {
@@ -169,7 +170,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", compania.STR_CONTRASENIA_ETL);
                     cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", compania.STR_PUERTO_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
-
+                    cmd.Parameters.AddWithValue("@INT_IDCOMPANIA_P", compania.INT_IDCOMPANIA_P);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
