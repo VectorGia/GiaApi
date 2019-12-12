@@ -11,7 +11,7 @@ namespace AppGia.Controllers
 {
     public class CompaniaDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
 
         public IEnumerable<Compania> GetAllCompanias()
@@ -54,7 +54,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public Compania GetCompaniaData(int id)
+        public Compania GetCompaniaData(string id)
         {
             try
             {
@@ -185,7 +185,9 @@ namespace AppGia.Controllers
         public int Delete(string id, Compania compania)
         {
             string status = "false";
-            string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + status + "' WHERE" + cod + "STR_IDCOMPANIA" + cod + "='" + id + "'";
+            string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" 
+                + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + status + "' " +
+                "WHERE" + cod + "STR_IDCOMPANIA" + cod + "='" + id + "'";
            
             try
             {

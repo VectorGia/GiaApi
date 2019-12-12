@@ -7,7 +7,7 @@ namespace AppGia.Controllers
 {
     public class CentroCostosDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
         public IEnumerable<CentroCostos> GetAllCentros()
         {
@@ -27,10 +27,8 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         CentroCostos centroCC = new CentroCostos();
-<<<<<<< HEAD
+
                         centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString();
-=======
->>>>>>> berry
                         centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
                         centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString();
                         centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString();

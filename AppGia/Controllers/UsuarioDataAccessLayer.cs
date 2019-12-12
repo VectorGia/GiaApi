@@ -7,7 +7,7 @@ namespace AppGia.Controllers
 {
     public class UsuarioDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
         public IEnumerable<Usuario> GetAllUsuarios()
         {
