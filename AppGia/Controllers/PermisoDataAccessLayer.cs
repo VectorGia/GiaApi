@@ -68,8 +68,8 @@ namespace AppGia.Controllers
         {
 
             string add = "UPDATE " + cod + "TAB_PERMISO" + cod +
-            " SET " + cod + "STR_NOMBRE_PERMISO" + cod + "= " + "'" + "@STR_NOMBRE_PERMISO" + "'" + ","
-            + cod + "INT_IDROL" + cod + "= " + "'" + "@INT_IDROL" + "'"          
+            " SET " + cod + "STR_NOMBRE_PERMISO" + cod + "= " + "@STR_NOMBRE_PERMISO" + ","
+            + cod + "INT_IDROL" + cod + " = " + "@INT_IDROL"
             + " WHERE " + cod + "INT_IDPERMISO_P" + cod + " = " + "@INT_IDPERMISO_P";
 
             try
@@ -78,9 +78,9 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });                                    
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.TimestampTz, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL", Value = permiso.INT_IDROL });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
 
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
@@ -91,6 +91,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+               
                 throw;
             }
         }
@@ -118,9 +119,11 @@ namespace AppGia.Controllers
         //    }
         //}
 
-        public int DeleteGrupo(Permiso permiso)
+        public int DeletePermiso(Permiso permiso)
         {
-            string add = "UPDATE " + cod + "TAB_PERMISO" + cod + " SET " + cod + "BOOL_ESTATUS_LOGICO_PERM" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_PERM" + "'" + " WHERE " + cod + "INT_IDPERMISO_P" + cod + " = " + "@INT_IDPERMISO_P";
+            string add = "UPDATE " + cod + "TAB_PERMISO" + cod
+                + " SET " + cod + "BOOL_ESTATUS_LOGICO_PERM" + cod + "= " + "@BOOL_ESTATUS_LOGICO_PERM"
+                + " WHERE " + cod + "INT_IDPERMISO_P" + cod + " = " + "@INT_IDPERMISO_P";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -133,7 +136,6 @@ namespace AppGia.Controllers
                     con.Close();
                     return cantFilas;
                 }
-                //return 1;
             }
             catch
             {

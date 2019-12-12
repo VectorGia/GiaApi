@@ -28,7 +28,9 @@ namespace AppGia.Controllers
                         ModeloNegocio modeloNegocio = new ModeloNegocio();
                         modeloNegocio.INT_IDMODELONEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELONEGOCIO_P"]);
                         modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString();
-
+                        modeloNegocio.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
+                        modeloNegocio.STR_CUENTASMODELO = rdr["STR_CUENTASMODELO"].ToString();
+                        modeloNegocio.STR_TIPOMONTO = rdr["STR_TIPOMONTO"].ToString();
                         lstmodelo.Add(modeloNegocio);
                     }
                     con.Close();
@@ -74,50 +76,50 @@ namespace AppGia.Controllers
         /// </summary>
         /// <param name="modeloNegocio"></param>
         /// <returns></returns>
- public int UpdateModelo(ModeloNegocio modeloNegocio)
-            {         
-            string add = "UPDATE " + cod + "TAB_MODELO_NEGOCIO" + cod + 
-                " SET " + cod + "STR_NOMBREMODELONEGOCIO" + cod + "= " + "'" + "@STR_NOMBREMODELONEGOCIO" + "'"+","
-                +cod+ "STR_CUENTASMODELO" + cod + "= " + "'" + "@STR_CUENTASMODELO" + "'" + ","
-                + cod + "STR_TIPOMONTO" + cod + "= " + "'" + "@STR_TIPOMONTO" + "'" + ","
-                + cod + "STR_IDCOMPANIA" + cod + "= " + "'" + "@STR_IDCOMPANIA" + "'" + ","
-                + cod + "INT_COMPANIA_F" + cod + "= " + "@INT_COMPANIA_F" 
+        public int UpdateModelo( ModeloNegocio modeloNegocio)
+        {
+            string add = "UPDATE " + cod + "TAB_MODELO_NEGOCIO" + cod +
+                " SET " + cod + "STR_NOMBREMODELONEGOCIO" + cod + "= " + "@STR_NOMBREMODELONEGOCIO" + ","
+                + cod + "STR_CUENTASMODELO" + cod + "= " + "@STR_CUENTASMODELO" + ","
+                + cod + "STR_TIPOMONTO" + cod + "= " + "@STR_TIPOMONTO" + ","
+                + cod + "STR_IDCOMPANIA" + cod + "= " + "@STR_IDCOMPANIA" 
                 + " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + "@INT_IDMODELONEGOCIO_P";
             try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    {
-                        NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_CUENTASMODELO", Value = modeloNegocio.STR_CUENTASMODELO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_TIPOMONTO", Value = modeloNegocio.STR_TIPOMONTO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_IDCOMPANIA", Value = modeloNegocio.STR_IDCOMPANIA });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_COMPANIA_F", Value = modeloNegocio.INT_COMPANIA_F });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
                     con.Open();
-                        int cantFilas = cmd.ExecuteNonQuery();
-                        con.Close();
-                        return cantFilas;
-                    }
-                    //return 1;
+                    int cantFilas = cmd.ExecuteNonQuery();
+                    con.Close();
+                   
                 }
-                catch
-                {
-                    throw;
-                }
+                return 1;
             }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                throw;
+            }
+        }
 
-
- public int DeleteGrupo(ModeloNegocio modeloNegocio)
+        public int DeleteModelo(ModeloNegocio modeloNegocio)
         {
-            string add = "UPDATE " + cod + "TAB_MODELO_NEGOCIO" + cod + " SET " + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_MODE_NEGO" + "'" + " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + "@INT_IDMODELONEGOCIO_P";
+            string add = "UPDATE " + cod + "TAB_MODELO_NEGOCIO" + cod +
+                " SET " + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_MODE_NEGO" +
+                " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + "@INT_IDMODELONEGOCIO_P";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_MODE_NEGO", Value = modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO });
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
@@ -125,11 +127,11 @@ namespace AppGia.Controllers
                 }
                 //return 1;
             }
-            catch
+            catch (Exception ex)
             {
+                string error = ex.Message;
                 throw;
             }
         }
-
     }
 }
