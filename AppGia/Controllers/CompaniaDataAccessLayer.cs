@@ -106,21 +106,21 @@ namespace AppGia.Controllers
 
             string update = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET"
 
-            + cod + "INT_IDPROYECTO_F" + cod + " = " + compania.INT_IDPROYECTO_F + ","
-            + cod + "INT_IDCENTROCOSTO_F" + cod + " = " + compania.INT_IDCENTROCOSTO_F + ","
-            + cod + "STR_NOMBRE_COMPANIA" + cod + " = '" + compania.STR_NOMBRE_COMPANIA + "' ,"
-            + cod + "STR_ABREV_COMPANIA" + cod + " = '" + compania.STR_ABREV_COMPANIA + "' ,"
-            + cod + "STR_HOST_COMPANIA" + cod + " = '" + compania.STR_HOST_COMPANIA + "' ,"
-            + cod + "STR_MONEDA_COMPANIA" + cod + " = '" + compania.STR_MONEDA_COMPANIA + "' ,"
-            + cod + "STR_IDCOMPANIA" + cod + " = '" + compania.STR_IDCOMPANIA + "' ,"
-            + cod + "STR_USUARIO_ETL" + cod + " = '" + compania.STR_USUARIO_ETL + "' ,"
-            + cod + "STR_CONTRASENIA_ETL" + cod + " = '" + compania.STR_CONTRASENIA_ETL + "' ,"
-            + cod + "STR_PUERTO_COMPANIA" + cod + " = '" + compania.STR_PUERTO_COMPANIA + "' ,"
-            + cod + "STR_BD_COMPANIA" + cod + " = '" + compania.STR_BD_COMPANIA + "' ,"
-            + cod + "BOOL_ETL_COMPANIA" + cod + " = '" + compania.BOOL_ETL_COMPANIA + "' ,"
-            + cod + "FEC_MODIF_COMPANIA" + cod + "= '" + compania.FEC_MODIF_COMPANIA + "' ,"
-            + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "= '" + compania.BOOL_ESTATUS_LOGICO_COMPANIA + "' "
-            + " WHERE" + cod + "INT_IDCOMPANIA_P" + cod + "=" + compania.INT_IDCOMPANIA_P;
+            + cod + "INT_IDPROYECTO_F" + cod + " = " + "@INT_IDPROYECTO_F" + ","
+            + cod + "INT_IDCENTROCOSTO_F" + cod + " = " + "@INT_IDCENTROCOSTO_F" + ","
+            + cod + "STR_NOMBRE_COMPANIA" + cod + " = '" + "@STR_NOMBRE_COMPANIA" + "' ,"
+            + cod + "STR_ABREV_COMPANIA" + cod + " = '" + "@STR_ABREV_COMPANIA" + "' ,"
+            + cod + "STR_HOST_COMPANIA" + cod + " = '" + "@STR_HOST_COMPANIA" + "' ,"
+            + cod + "STR_MONEDA_COMPANIA" + cod + " = '" + "@STR_MONEDA_COMPANIA" + "' ,"
+            + cod + "STR_IDCOMPANIA" + cod + " = '" + "@STR_IDCOMPANIA" + "' ,"
+            + cod + "STR_USUARIO_ETL" + cod + " = '" + "@STR_USUARIO_ETL" + "' ,"
+            + cod + "STR_CONTRASENIA_ETL" + cod + " = '" + "@STR_CONTRASENIA_ETL" + "' ,"
+            + cod + "STR_PUERTO_COMPANIA" + cod + " = '" + "@STR_PUERTO_COMPANIA" + "' ,"
+            + cod + "STR_BD_COMPANIA" + cod + " = '" + "@STR_BD_COMPANIA" + "' ,"
+            + cod + "BOOL_ETL_COMPANIA" + cod + " = '" + "@BOOL_ETL_COMPANIA" + "' ,"
+            + cod + "FEC_MODIF_COMPANIA" + cod + "= '" + "@FEC_MODIF_COMPANIA" + "' ,"
+            + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "= '" + "@BOOL_ESTATUS_LOGICO_COMPANIA" + "' "
+            + " WHERE" + cod + "INT_IDCOMPANIA_P" + cod + "=" + "@INT_IDCOMPANIA_P";
 
             try
             {
@@ -128,20 +128,20 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                    cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
-                    cmd.Parameters.AddWithValue("@INT_IDCENTROCOSTO_F", compania.INT_IDCENTROCOSTO_F);
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_HOST_COMPANIA", compania.STR_HOST_COMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_MONEDA_COMPANIA", compania.STR_MONEDA_COMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_USUARIO_ETL", compania.STR_USUARIO_ETL);
-                    cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", compania.STR_CONTRASENIA_ETL);
-                    cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", compania.STR_PUERTO_COMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
-                    cmd.Parameters.AddWithValue("@BOOL_ETL_COMPANIA", compania.BOOL_ETL_COMPANIA);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", compania.FEC_MODIF_COMPANIA);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
+                    cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", NpgsqlTypes.NpgsqlDbType.Integer,compania.INT_IDPROYECTO_F);
+                    cmd.Parameters.AddWithValue("@INT_IDCENTROCOSTO_F", NpgsqlTypes.NpgsqlDbType.Integer, compania.INT_IDCENTROCOSTO_F);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text,compania.STR_NOMBRE_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_ABREV_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_HOST_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_HOST_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_MONEDA_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_MONEDA_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_IDCOMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_USUARIO_ETL", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_USUARIO_ETL);
+                    cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_CONTRASENIA_ETL);
+                    cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_PUERTO_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.STR_BD_COMPANIA);
+                    cmd.Parameters.AddWithValue("@BOOL_ETL_COMPANIA", NpgsqlTypes.NpgsqlDbType.Text, compania.BOOL_ETL_COMPANIA);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", NpgsqlTypes.NpgsqlDbType.Date, compania.FEC_MODIF_COMPANIA);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", NpgsqlTypes.NpgsqlDbType.Boolean, compania.BOOL_ESTATUS_LOGICO_COMPANIA);
 
 
                     con.Open();
