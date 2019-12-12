@@ -157,7 +157,7 @@ namespace AppGia.Models
     #region Catalogo Compañia
     public class Compania 
     {
-        public string STR_NOMBRE_COMPANIA { get; set; }
+        public string stR_NOMBRE_COMPANIA { get; set; }
 
         public string STR_ABREV_COMPANIA { get; set; }
         

@@ -11,7 +11,7 @@ namespace AppGia.Controllers
 {
     public class CompaniaDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
 
         public IEnumerable<Compania> GetAllCompanias()
@@ -32,7 +32,7 @@ namespace AppGia.Controllers
                         Compania compania = new Compania();
                         compania.INT_IDCOMPANIA_P = Convert.ToInt32(rdr["INT_IDCOMPANIA_P"]);
                         compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
-                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
+                        compania.stR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
                         compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString();
                         compania.BOOL_ETL_COMPANIA = Convert.ToBoolean(rdr["BOOL_ETL_COMPANIA"]);
                         compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString();
@@ -70,7 +70,7 @@ namespace AppGia.Controllers
                     {
 
                         compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
-                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
+                        compania.stR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
                         compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString();
                         compania.BOOL_ETL_COMPANIA = Convert.ToBoolean(rdr["BOOL_ETL_COMPANIA"]);
                         compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString();
@@ -114,7 +114,7 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
                     cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.stR_NOMBRE_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
                     cmd.Parameters.AddWithValue("@BOOL_ETL_COMPANIA", compania.BOOL_ETL_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_HOST_COMPANIA", compania.STR_HOST_COMPANIA);
@@ -161,8 +161,8 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
                     cmd.Parameters.AddWithValue("STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_NOMBRE_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.stR_NOMBRE_COMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
                     cmd.Parameters.AddWithValue("@BOOL_ETL_COMPANIA", compania.BOOL_ETL_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_HOST_COMPANIA", compania.STR_HOST_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_MONEDA_COMPANIA", compania.STR_MONEDA_COMPANIA);
@@ -172,10 +172,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
                     cmd.Parameters.AddWithValue("@INT_IDCOMPANIA_P", compania.INT_IDCOMPANIA_P);
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                   int cantf = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantf;
                 }
-                return 1;
+                //return 1;
             }
             catch
             {
