@@ -45,7 +45,15 @@ namespace AppGia.Controllers
 
         public int addProyecto(Proyecto proyecto)
         {
-            string add = "INSERT INTO" + cod + "CAT_PROYECTO" + cod + "("+cod+"STR_IDPROYECTO"+cod+","+ cod + "STR_NOMBRE_PROYECTO" + cod + ","+cod+ "BOOL_ESTATUS_PROYECTO" + cod+","+cod+"STR_RESPONSABLE"+cod+","+cod+ "FEC_MODIF"+cod+","+cod+ "BOOL_ESTATUS_LOGICO_PROYECTO" + cod+") VALUES " +
+            string add = "INSERT INTO" 
+                +cod+ "CAT_PROYECTO" +cod+ "("
+                +cod+"STR_IDPROYECTO"+cod+","
+                +cod+"STR_NOMBRE_PROYECTO" + cod + ","
+                +cod+ "BOOL_ESTATUS_PROYECTO" + cod+","
+                +cod+"STR_RESPONSABLE"+cod+","
+                +cod+ "FEC_MODIF"+cod+","
+                +cod+ "INT_IDPANTALLA_F" +cod+","
+                +cod+ "BOOL_ESTATUS_LOGICO_PROYECTO" + cod+") VALUES " +
                 "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE,@FEC_MODIF,@BOOL_ESTATUS_LOGICO_PROYECTO)";
             try
             {
