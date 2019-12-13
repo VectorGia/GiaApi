@@ -185,10 +185,8 @@ namespace AppGia.Models
 
         public int INT_IDCENTROCOSTO_F { get; set; }
 
-<<<<<<< HEAD
-=======
         public DateTime FEC_MODIF_COMPANIA { get; set; }
->>>>>>> Berry
+
 
     }
     #endregion
@@ -196,11 +194,9 @@ namespace AppGia.Models
     #region Modelo Centro de costos
     public class CentroCostos
     {
-<<<<<<< HEAD
-        public string STR_TIPO_CC { get; set; }
-=======
 
->>>>>>> Berry
+        public string STR_TIPO_CC { get; set; }
+
         public string STR_IDCENTROCOSTO { get; set; }
 
         public string STR_NOMBRE_CC { get; set; }
@@ -217,7 +213,7 @@ namespace AppGia.Models
 
         public DateTime FEC_MODIF_CC { get; set; }
 
-        public string STR_TIPO_CC { get; set; }
+       
     }
 
 
