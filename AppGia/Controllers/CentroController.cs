@@ -19,7 +19,7 @@ namespace AppGia.Controllers
 
         // GET: api/Centro/5
         [HttpGet("{id}", Name = "GetCentro")]
-        public CentroCostos Get(int id)
+        public CentroCostos GetCentro(int id)
         {
             return objcentro.GetCentroData(id);
         }
@@ -31,16 +31,18 @@ namespace AppGia.Controllers
                 return objcentro.AddCentro(centro);
             }
 
-        //// PUT: api/Centro/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/Centro/5
+        [HttpPut("{id}")]
+        public int Put(string id, [FromBody] CentroCostos centro)
+        {
+            return objcentro.update(id, centro);
+        }
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public int Delete(string id)
+        {
+            return objcentro.Delete(id);
+        }
     }
 }
