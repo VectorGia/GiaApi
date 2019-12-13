@@ -21,7 +21,7 @@ namespace AppGia.Controllers
 
 
         // GET: api/Compania/5
-        [HttpGet("{id}", Name = "Getcom")]
+        [HttpGet("{id}", Name = "Get")]
         public Compania Details(string id)
         {
             return objCompania.GetCompaniaData(id);
@@ -36,9 +36,9 @@ namespace AppGia.Controllers
 
         // PUT: api/Compania/5
         [HttpPut("{id}")]
-        public int Put([FromBody] Compania comp)
+        public int Put(string id,[FromBody] Compania comp)
         {
-            return objCompania.Update(comp);
+            return objCompania.Update(id, comp);
         }
 
         //DELETE: api/ApiWithActions/5
