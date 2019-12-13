@@ -105,7 +105,6 @@ namespace AppGia.Controllers
         {
 
             string update = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET"
-
             + cod + "INT_IDPROYECTO_F" + cod + " = " + "@INT_IDPROYECTO_F" + ","
             + cod + "INT_IDCENTROCOSTO_F" + cod + " = " + "@INT_IDCENTROCOSTO_F" + ","
             + cod + "STR_NOMBRE_COMPANIA" + cod + " = '" + "@STR_NOMBRE_COMPANIA" + "' ,"
@@ -143,16 +142,18 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", NpgsqlTypes.NpgsqlDbType.Date, compania.FEC_MODIF_COMPANIA);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", NpgsqlTypes.NpgsqlDbType.Boolean, compania.BOOL_ESTATUS_LOGICO_COMPANIA);
 
-
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantF=  cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantF;
                 }
-                return 1;
+                
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                string error = ex.Message;
+                int numError = 0;
+                return numError;
             }
         }
 
