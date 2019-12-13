@@ -191,7 +191,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", compania.STR_CONTRASENIA_ETL);
                     cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", compania.STR_PUERTO_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
-                
+                    cmd.Parameters.AddWithValue("@INT_IDCENTROCOSTO_F", compania.INT_IDCENTROCOSTO_F);
+                    cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
+
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();

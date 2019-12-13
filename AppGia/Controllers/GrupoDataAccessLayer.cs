@@ -52,7 +52,7 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
-
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_GRUPO", grupo.BOOL_ESTATUS_LOGICO_GRUPO);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
