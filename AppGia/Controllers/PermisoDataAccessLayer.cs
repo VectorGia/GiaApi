@@ -51,6 +51,8 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                    
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PERM", permiso.BOOL_ESTATUS_LOGICO_PERM);
+
 
                     con.Open();
                     cmd.ExecuteNonQuery();

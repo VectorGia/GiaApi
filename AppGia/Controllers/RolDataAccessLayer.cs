@@ -52,6 +52,7 @@ namespace AppGia.Controllers
                    
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
                     cmd.ExecuteNonQuery();

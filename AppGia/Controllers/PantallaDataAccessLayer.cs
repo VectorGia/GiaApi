@@ -53,6 +53,7 @@ namespace AppGia.Controllers
 
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PANTALLA", pantalla.STR_NOMBRE_PANTALLA);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_PANTALLA", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PANT", pantalla.BOOL_ESTATUS_LOGICO_PANT);
 
                     con.Open();
                     cmd.ExecuteNonQuery();

@@ -42,48 +42,27 @@ namespace AppGia.Models
     #region Tabla Usuario
     public class Usuario
     {
-        public string SRT_DISPLAYNAME_USUARIO { get; set; }
+        [Required]
+        public string STR_DISPLAYNAME_USUARIO { get; set; }
         public string STR_EMAIL_USUARIO { get; set; }
-        public bool BOOL_ESTATUS_LOGICO_USUARIO { get; set; }
+        
         public int INT_IDROL { get; set; }
-        public DateTime FEC_MODIF { get; set; }
         public int INT_IDPANTALLA_F { get; set; }
         public int INT_IDPROYECTO_F { get; set; }
         public int INT_IDCOMPANIA_F { get; set; }
-        public int STR_IDCENTROCOSTO_F { get; set; }
+        public int INT_IDCENTROCOSTO_F { get; set; }
         public int INT_IDGRUPO_F { get; set; }
         public int INT_IDUSUARIO_P { get; set; }
         public string STR_USERNAME_USUARIO { get; set; }
         public string STR_PUESTO { get; set; }
-
-        public string userName { get; set; }
+        public string STR_NOMBRE_USUARIO { get; set; }
+        public bool BOOL_PUESTO { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_USUARIO { get; set; }
+        public DateTime FEC_MODIF { get; set; }
 
         [Required]
         public string displayName { get; set; }
-
-        public string STR_NOMBRE_USUARIO { get; set; }
-
-        
-       
-        //public bool BOOL_ESTATUS_USUARIO { get; set; }
-
-        //[Required]
-        //public string userName { get; set; }
-
-        public string SRT_USERNAME_USUARIO { get; set; }
-
-        //[Required]
-        //public string displayName { get; set; }
-
-        
-
-        /// <summary>
-        /// ///////////////////
-        /// </summary>
-
-        public bool SRT_PUESTO { get; set; }
-
-        //public ? FEC_MODIF { get; set; }
+        public string userName { get; set; }
     }
     #endregion
 

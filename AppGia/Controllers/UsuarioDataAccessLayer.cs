@@ -28,9 +28,9 @@ namespace AppGia.Controllers
                         usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString();
                         usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
                         //usuario.BOOL_ESTATUS_USUARIO = Convert.ToBoolean(rdr["BOOL_ESTATUS_USUARIO"]);
-                        usuario.SRT_USERNAME_USUARIO = rdr["SRT_USERNAME_USUARIO"].ToString();
-                        usuario.SRT_DISPLAYNAME_USUARIO = rdr["SRT_DISPLAYNAME_USUARIO"].ToString();
-                        usuario.SRT_PUESTO = Convert.ToBoolean(rdr["SRT_PUESTO"]);
+                        usuario.STR_USERNAME_USUARIO = rdr["SRT_USERNAME_USUARIO"].ToString();
+                        usuario.STR_DISPLAYNAME_USUARIO = rdr["SRT_DISPLAYNAME_USUARIO"].ToString();
+                        usuario.BOOL_PUESTO = Convert.ToBoolean(rdr["SRT_PUESTO"]);
 
                         lstUsuario.Add(usuario);
                     }
@@ -58,9 +58,9 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_USUARIO", usuario.STR_NOMBRE_USUARIO);
                     cmd.Parameters.AddWithValue("@STR_EMAIL_USUARIO", usuario.STR_EMAIL_USUARIO);
                     //cmd.Parameters.AddWithValue("@BOOL_ESTATUS_USUARIO", usuario.BOOL_ESTATUS_USUARIO);
-                    cmd.Parameters.AddWithValue("@SRT_USERNAME_USUARIO", usuario.SRT_USERNAME_USUARIO);
-                    cmd.Parameters.AddWithValue("@SRT_DISPLAYNAME_USUARIO", usuario.SRT_DISPLAYNAME_USUARIO);
-                    cmd.Parameters.AddWithValue("@SRT_PUESTO", usuario.SRT_PUESTO);
+                    cmd.Parameters.AddWithValue("@SRT_USERNAME_USUARIO", usuario.STR_USERNAME_USUARIO);
+                    cmd.Parameters.AddWithValue("@SRT_DISPLAYNAME_USUARIO", usuario.STR_DISPLAYNAME_USUARIO);
+                    cmd.Parameters.AddWithValue("@SRT_PUESTO", usuario.STR_PUESTO);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -95,9 +95,9 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_USERNAME_USUARIO", Value = usuario.SRT_USERNAME_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_DISPLAYNAME_USUARIO", Value = usuario.SRT_DISPLAYNAME_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_PUESTO", Value = usuario.SRT_PUESTO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_DISPLAYNAME_USUARIO", Value = usuario.STR_DISPLAYNAME_USUARIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_PUESTO", Value = usuario.STR_PUESTO });
 
 
                     con.Open();
