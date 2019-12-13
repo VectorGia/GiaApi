@@ -94,7 +94,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
                     cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF", proyecto.FEC_MODIF);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
 
                     con.Open();

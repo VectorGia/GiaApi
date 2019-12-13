@@ -51,6 +51,7 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                    
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -83,7 +84,7 @@ namespace AppGia.Controllers
 
 
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", rol.FEC_MODIF_ROL);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
                     con.Open();
                     cmd.ExecuteNonQuery();

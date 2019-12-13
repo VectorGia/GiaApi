@@ -35,6 +35,7 @@ namespace AppGia.Controllers
                         centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString();
                         centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString();
                         centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString();
+
               
 
                         lstcentros.Add(centroCC);
@@ -98,7 +99,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("STR_CATEGORIA_CC", centroCC.STR_CATEGORIA_CC);
                     cmd.Parameters.AddWithValue("STR_ESTATUS_CC", centroCC.STR_ESTATUS_CC);
                     cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCC.STR_GERENTE_CC);
-                    
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -140,7 +141,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CATEGORIA_CC", centrocosto.STR_CATEGORIA_CC);
                     cmd.Parameters.AddWithValue("@STR_GERENTE_CC", centrocosto.STR_GERENTE_CC);
                     cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centrocosto.STR_ESTATUS_CC);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_CENTROCOSTO", centrocosto.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_CENTROCOSTO",centrocosto.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
 
                     con.Open();
                     cmd.ExecuteNonQuery();

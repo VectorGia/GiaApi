@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using AppGia.Models;
 using Npgsql;
+using System;
 
 
 namespace AppGia.Controllers
@@ -51,6 +52,7 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PANTALLA", pantalla.STR_NOMBRE_PANTALLA);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_PANTALLA", DateTime.Now);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
