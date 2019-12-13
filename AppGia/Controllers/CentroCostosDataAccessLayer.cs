@@ -141,8 +141,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CATEGORIA_CC", centrocosto.STR_CATEGORIA_CC);
                     cmd.Parameters.AddWithValue("@STR_GERENTE_CC", centrocosto.STR_GERENTE_CC);
                     cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centrocosto.STR_ESTATUS_CC);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_CENTROCOSTO",centrocosto.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
+                    cmd.Parameters.AddWithValue("@STR_TIPO_CC", centrocosto.STR_TIPO_CC);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_CENTROCOSTO",centrocosto.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
+                    
 
                     con.Open();
                     cmd.ExecuteNonQuery();
