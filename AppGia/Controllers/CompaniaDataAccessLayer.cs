@@ -140,6 +140,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@INT_IDCENTROCOSTO_F", compania.INT_IDCENTROCOSTO_F);
                     cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
+                    cmd.Parameters.AddWithValue("@", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
+
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();

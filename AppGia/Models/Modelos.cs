@@ -120,20 +120,20 @@ namespace AppGia.Models
     #endregion
 
     #region Catalogo Rol
-    public class Rol 
+    public class Rol
     {
         public string STR_NOMBRE_ROL { get; set; }
 
-        public bool BOOL_ESTATUS_ROL { get; set; }
+        public bool BOOL_ESTATUS_LOGICO_ROL { get; set; }
 
-        public DateTime FEC_MODIF { get; set; }
+        public DateTime FEC_MODIF_ROL { get; set; }
 
         public int INT_IDROL_P { get; set; }
     }
     #endregion
 
     #region Catalogo Proyecto
-    public class Proyecto 
+    public class Proyecto
     {
         public string STR_NOMBRE_PROYECTO { get; set; }
 
@@ -155,12 +155,12 @@ namespace AppGia.Models
     #endregion
 
     #region Catalogo Compañia
-    public class Compania 
+    public class Compania
     {
         public string STR_NOMBRE_COMPANIA { get; set; }
 
         public string STR_ABREV_COMPANIA { get; set; }
-        
+
         public string STR_IDCOMPANIA { get; set; }
 
         public bool BOOL_ETL_COMPANIA { get; set; }
@@ -185,6 +185,10 @@ namespace AppGia.Models
 
         public int INT_IDCENTROCOSTO_F { get; set; }
 
+<<<<<<< HEAD
+=======
+        public DateTime FEC_MODIF_COMPANIA { get; set; }
+>>>>>>> Berry
 
     }
     #endregion
@@ -192,7 +196,11 @@ namespace AppGia.Models
     #region Modelo Centro de costos
     public class CentroCostos
     {
+<<<<<<< HEAD
         public string STR_TIPO_CC { get; set; }
+=======
+
+>>>>>>> Berry
         public string STR_IDCENTROCOSTO { get; set; }
 
         public string STR_NOMBRE_CC { get; set; }
@@ -207,7 +215,9 @@ namespace AppGia.Models
 
         public int INT_IDCENTROCOSTO_P { get; set; }
 
+        public DateTime FEC_MODIF_CC { get; set; }
 
+        public string STR_TIPO_CC { get; set; }
     }
 
 

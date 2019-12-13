@@ -68,18 +68,33 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateProyecto(Proyecto proyecto)
+        public int update(Proyecto proyecto)
         {
+            string update = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET"
+
+          + cod + "INT_IDPANTALLA_F" + cod + " = " + proyecto.INT_IDPANTALLA_F + ","
+          + cod + "STR_NOMBRE_PROYECTO" + cod + " = '" + proyecto.STR_NOMBRE_PROYECTO + "' ,"
+          + cod + "STR_RESPONSABLE" + cod + " = '" + proyecto.STR_RESPONSABLE + "' ,"
+          + cod + "STR_IDPROYECTO" + cod + " = '" + proyecto.STR_IDPROYECTO + "' ,"
+          + cod + "BOOL_ESTATUS_PROYECTO" + cod + " = '" + proyecto.BOOL_ESTATUS_PROYECTO + "' ,"
+          + cod + "FEC_MODIF" + cod + " = '" + proyecto.FEC_MODIF + "' ,"
+          + cod + "BOOL_ESTATUS_LOGICO_PROYECTO" + cod + "= '" + proyecto.BOOL_ESTATUS_LOGICO_PROYECTO + "' "
+          + " WHERE" + cod + "INT_IDPROYECTO_P" + cod + "=" + proyecto.INT_IDPROYECTO_P;
+
+
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
+                    cmd.Parameters.AddWithValue("@INT_IDPANTALLA_F", proyecto.INT_IDPANTALLA_F);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF", proyecto.FEC_MODIF);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -91,14 +106,11 @@ namespace AppGia.Controllers
             {
                 throw;
             }
+
         }
 
         public int Delete(Proyecto proyecto)
         {
-
-            proyecto.BOOL_ESTATUS_PROYECTO = true; /// Esto debe ser el valor la caja de texto
-            proyecto.INT_IDPROYECTO_P = 1; /// Esto debe ser el valor la caja de texto
-
 
             string delete = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + proyecto.BOOL_ESTATUS_LOGICO_PROYECTO + "' WHERE" + cod + "INT_IDPROYECTO_P" + cod + "='" + proyecto.INT_IDPROYECTO_P + "'";
             try
@@ -119,5 +131,6 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
     }
 }
