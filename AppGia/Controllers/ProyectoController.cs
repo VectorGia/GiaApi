@@ -39,10 +39,11 @@ namespace AppGia.Controllers
         //{
         //}
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public int Delete(string id)
+        {
+            return objProyecto.Delete(id);
+        }
     }
 }
