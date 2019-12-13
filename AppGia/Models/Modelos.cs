@@ -185,6 +185,7 @@ namespace AppGia.Models
 
         public int INT_IDCENTROCOSTO_F { get; set; }
 
+
     }
     #endregion
 
