@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
 using System.DirectoryServices;
 using Npgsql;
+using System.Data;
 
 namespace AppGia.Controllers
 {
@@ -58,7 +59,7 @@ namespace AppGia.Controllers
 
             adSearcher.Dispose();
             adSearchRoot.Dispose();
-            return rst;            
+            return rst;
         }
 
         // GET: api/UsersAD/5
@@ -97,7 +98,7 @@ namespace AppGia.Controllers
 
             for (int i = 0; i < numeroUsuarios; i++)
             {
-                if (lstUsu[i].STR_DISPLAYNAME_USUARIO != null)                
+                if (lstUsu[i].STR_DISPLAYNAME_USUARIO != null)
                 {
                     usuario.STR_DISPLAYNAME_USUARIO = lstUsu[i].STR_DISPLAYNAME_USUARIO;
                 }
@@ -201,8 +202,86 @@ namespace AppGia.Controllers
                 {
                     usuario.STR_PUESTO = "sin nombre";
                 }
-                addUsuario(usuario);
+
+                //Validación para no duplicar Usuarios
+                bool existe = validacionUsuario(usuario);
+
+                if (existe == false)
+                {
+                    addUsuario(usuario);
+                }
+                else
+                {
+                    continue;
+                }
+
             }
+        }
+
+        public bool validacionUsuario(Usuario usuario)
+        {
+
+            string consulta = "SELECT " + 1 + " from " + cod + "TAB_USUARIO" + cod + " WHERE " + cod + "STR_USERNAME_USUARIO" + cod + " LIKE " + "'%" + usuario.STR_USERNAME_USUARIO + "%'";
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    con.Open();
+                    bool esRepetida = Convert.ToBoolean(cmd.ExecuteScalar());
+                    con.Close();
+                    return esRepetida;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                    con.Close();
+                throw ex;
+            }
+
+        }
+
+        public DataTable Dat_getObtieneUsuarios(Usuario usuario)
+        {
+            string select = "SELECT " + cod + "STR_USERNAME_USUARIO" + cod + " from" + cod + "TAB_USUARIO" + cod;
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(select, con);
+                    NpgsqlDataAdapter da = new NpgsqlDataAdapter(select, con);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                    con.Close();
+                throw ex;
+            }
+        }
+
+        public List<Usuario> List_obtieneUsuarios(Usuario usuario)
+        {
+            List<Usuario> lstUsuario = new List<Usuario>();
+            DataTable dt = new DataTable();
+            dt = Dat_getObtieneUsuarios(usuario);
+
+            foreach (DataRow r in dt.Rows)
+            {
+                Usuario ent = new Usuario();
+                ent.userName = Convert.ToString(r["STR_USERNAME_USUARIO"]);
+                lstUsuario.Add(ent);
+            }
+            return lstUsuario;
         }
 
         public int addUsuario(Usuario usuario)
