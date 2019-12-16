@@ -205,5 +205,7 @@ namespace AppGia.Models
         public string STR_CUENTASMODELO { get; set; }
     }
     #endregion
+
+    //aqui estuvo juan
 }
 
