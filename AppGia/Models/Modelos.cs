@@ -52,6 +52,8 @@ namespace AppGia.Models
 
         public string STR_USERNAME_USUARIO { get; set; }
 
+        public string STR_PASSWORD_USUARIO { get; set; }
+
         public string STR_EMAIL_USUARIO { get; set; }
        
         public bool BOOL_ESTATUS_USUARIO { get; set; }
