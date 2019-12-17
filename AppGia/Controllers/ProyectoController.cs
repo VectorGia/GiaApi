@@ -19,12 +19,12 @@ namespace AppGia.Controllers
             return objProyecto.GetAllProyectos();
         }
 
-        //// GET: api/Proyecto/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET: api/Proyecto/5
+        [HttpGet("{id}", Name = "GetProyecto")]
+        public Proyecto GetProyecto(string id)
+        {
+            return objProyecto.GetProyectoData(id);
+        }
 
         // POST: api/Proyecto
         [HttpPost]
@@ -33,16 +33,18 @@ namespace AppGia.Controllers
             return objProyecto.addProyecto(proyecto);
         }
 
-        //// PUT: api/Proyecto/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/Proyecto/5
+        [HttpPut("{id}")]
+        public int Put(string id, [FromBody] Proyecto proyecto)
+        {
+            return objProyecto.update(id, proyecto);
+        }
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public int Delete(string id)
+        {
+            return objProyecto.Delete(id);
+        }
     }
 }

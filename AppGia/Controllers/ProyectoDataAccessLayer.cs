@@ -11,7 +11,7 @@ namespace AppGia.Controllers
         char cod = '"';
         public IEnumerable<Proyecto> GetAllProyectos()
         {
-            string cadena = "SELECT * FROM" + cod + "CAT_PROYECTO" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "CAT_PROYECTO" + cod + "WHERE " + cod + "BOOL_ESTATUS_LOGICO_PROYECTO" + cod + "=" + true;
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
@@ -25,6 +25,8 @@ namespace AppGia.Controllers
                     {
                         Proyecto proyecto = new Proyecto();
 
+                        proyecto.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);
+                        proyecto.INT_IDPANTALLA_F = Convert.ToInt32(rdr["INT_IDPANTALLA_F"]);
                         proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString();
                         proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString();
                         proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
@@ -43,10 +45,46 @@ namespace AppGia.Controllers
             }
         }
 
+        public Proyecto GetProyectoData(string id)
+        {
+            try
+            {
+                Proyecto proyecto = new Proyecto();
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    string consulta = "SELECT * FROM" + cod + "CAT_PROYECTO" + cod + "WHERE" + cod + "INT_IDPROYECTO_P" + cod + "=" + id;
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+
+                        proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString();
+                        proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString();
+                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString();
+                        proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
+                    }
+                }
+                return proyecto;
+            }
+            catch
+            {
+                throw;
+            }
+        }
         public int addProyecto(Proyecto proyecto)
         {
-            string add = "INSERT INTO" + cod + "CAT_PROYECTO" + cod + "("+cod+"STR_IDPROYECTO"+cod+","+ cod + "STR_NOMBRE_PROYECTO" + cod + ","+cod+ "BOOL_ESTATUS_PROYECTO" + cod+","+cod+"STR_RESPONSABLE"+cod+") VALUES " +
-                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE)";
+            string add = "INSERT INTO" 
+                +cod+ "CAT_PROYECTO" +cod+ "("
+                +cod+"STR_IDPROYECTO"+cod+","
+                +cod+"STR_NOMBRE_PROYECTO" + cod + ","
+                +cod+ "BOOL_ESTATUS_PROYECTO" + cod+","
+                +cod+"STR_RESPONSABLE"+cod+","
+                +cod+ "FEC_MODIF"+cod+","
+                +cod+ "INT_IDPANTALLA_F" +cod+","
+                +cod+ "BOOL_ESTATUS_LOGICO_PROYECTO" + cod+") VALUES " +
+                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE,@FEC_MODIF,@INT_IDPANTALLA_F,@BOOL_ESTATUS_LOGICO_PROYECTO)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -55,7 +93,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
-                    cmd.Parameters.AddWithValue("STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+                    cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@INT_IDPANTALLA_F", proyecto.INT_IDPANTALLA_F);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
@@ -68,18 +109,32 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateProyecto(Proyecto proyecto)
+        public int update(string id, Proyecto proyecto)
         {
+            string update = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET"
+
+         
+          + cod + "STR_NOMBRE_PROYECTO" + cod + " = '" + proyecto.STR_NOMBRE_PROYECTO + "' ,"
+          + cod + "STR_RESPONSABLE" + cod + " = '" + proyecto.STR_RESPONSABLE + "' ,"
+          + cod + "STR_IDPROYECTO" + cod + " = '" + proyecto.STR_IDPROYECTO + "' ,"
+          + cod + "BOOL_ESTATUS_PROYECTO" + cod + " = '" + proyecto.BOOL_ESTATUS_PROYECTO + "'"
+          + " WHERE" + cod + "INT_IDPROYECTO_P" + cod + "=" + id;
+
+
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spUpdateCentroCostos", con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
+             
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
+
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -91,22 +146,19 @@ namespace AppGia.Controllers
             {
                 throw;
             }
+
         }
 
-        public int Delete(Proyecto proyecto)
+        public int Delete(string id)
         {
-
-            proyecto.BOOL_ESTATUS_PROYECTO = true; /// Esto debe ser el valor la caja de texto
-            proyecto.INT_IDPROYECTO_P = 1; /// Esto debe ser el valor la caja de texto
-
-
-            string delete = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + proyecto.BOOL_ESTATUS_LOGICO_PROYECTO + "' WHERE" + cod + "INT_IDPROYECTO_P" + cod + "='" + proyecto.INT_IDPROYECTO_P + "'";
+            bool status = false;
+            string delete = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_PROYECTO" + cod + "='" + status + "' WHERE" + cod + "INT_IDPROYECTO_P" + cod + "='" + id + "'";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
+                   
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -119,5 +171,6 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
     }
 }

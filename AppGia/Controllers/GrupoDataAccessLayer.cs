@@ -43,16 +43,19 @@ namespace AppGia.Controllers
         }
 
         public int addGrupo(Grupo grupo)
+
         {
-            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + ") VALUES " +
-                "(@STR_NOMBRE_GRUPO)";
+           
+            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + "," + cod + "BOOL_ESTATUS_LOGICO_GRUPO"+cod+","+cod+ "FEC_MODIF_GRUPO"+cod+") VALUES " +
+                "(@STR_NOMBRE_GRUPO,@BOOL_ESTATUS_LOGICO_GRUPO,@FEC_MODIF_GRUPO)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
-
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_GRUPO", grupo.BOOL_ESTATUS_LOGICO_GRUPO);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_GRUPO", DateTime.Now);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
@@ -64,50 +67,56 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-        
-            public int UpdateGrupo(string id, Grupo grupo)
-            {
-            //string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
-            string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET " + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "'" + "@STR_NOMBRE_GRUPO" + "'" + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + id;
-            try
-                {
-                    using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    {
-                        NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                        //cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
-                        cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
-                       
-                        con.Open();
-                        int cantFilas = cmd.ExecuteNonQuery();
-                        con.Close();
-                        return cantFilas;
-                    }
-                    //return 1;
-                }
-                catch
-                {
-                    throw;
-                }
-            }
 
-    
-
-        public int DeleteGrupo(int id)
+        public int UpdateGrupo(Grupo grupo)
         {
+            string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET "
+                + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "@STR_NOMBRE_GRUPO"
+                + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
-
-
-                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
-
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilas;
                 }
-                return 1;
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="grupo"></param>
+        /// <returns>cantF</returns>
+        public int DeleteGrupo(Grupo grupo)
+        {
+            string add = "UPDATE " + cod + "TAB_GRUPO" + cod +
+                " SET " + cod + "BOOL_ESTATUS_LOGICO_GRUPO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_GRUPO" +
+                " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
+            try
+            {
+                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = grupo.BOOL_ESTATUS_LOGICO_GRUPO });
+                    con.Open();
+                    int cantFilas = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilas;
+                }
+                //return 1;
             }
             catch
             {
