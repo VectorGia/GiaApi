@@ -49,7 +49,6 @@ namespace AppGia.Models
         public string displayname { get; set; }
 
 
-
         public int INT_IDUSUARIO_P { get; set; }
 
         public string STR_USERNAME_USUARIO { get; set; }

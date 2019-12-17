@@ -83,16 +83,17 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateUsuario(Usuario usuario)
+        public int updateUsuario(Usuario usuario)
         {
 
             string add = "UPDATE " + cod + "TAB_USUARIO" + cod +
-            " SET " + cod + "STR_NOMBRE_USUARIO" + cod + "= " + "'" + "@STR_NOMBRE_USUARIO" + "'" + ","
-            + cod + "STR_EMAIL_USUARIO" + cod + "= " + "'" + "@STR_EMAIL_USUARIO" + "'" + ","
-            + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "= " + "'" + "@BOOL_ESTATUS_LOGICO_USUARIO" + "'" + ","
-            + cod + "SRT_USERNAME_USUARIO" + cod + "= " + "'" + "@SRT_USERNAME_USUARIO" + "'" + ","
-            + cod + "SRT_DISPLAYNAME_USUARIO" + cod + "= " + "'" + "@SRT_DISPLAYNAME_USUARIO" + "'" + ","
-            + cod + "SRT_PUESTO" + cod + "= " + "'" + "@SRT_PUESTO" + "'"
+            " SET " + cod + "STR_NOMBRE_USUARIO" + cod + "= " + "@STR_NOMBRE_USUARIO" + ","
+            + cod + "STR_EMAIL_USUARIO" + cod + "= " + "@STR_EMAIL_USUARIO" + ","
+            + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_USUARIO" + ","
+            + cod + "STR_USERNAME_USUARIO" + cod + "= " + "@STR_USERNAME_USUARIO" + ","
+            + cod + "STR_PASSWORD_USUARIO" + cod + "= " + "@STR_PASSWORD_USUARIO" + ","
+            + cod + "FEC_MODIF_USUARIO" + cod + "= " + "@FEC_MODIF_USUARIO" + ","
+            + cod + "STR_PUESTO" + cod + "= " + "@STR_PUESTO"
             + " WHERE " + cod + "INT_IDUSUARIO_P" + cod + " = " + "@INT_IDUSUARIO_P";
 
             try
@@ -105,8 +106,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_PUESTO", Value = usuario.STR_PUESTO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PASSWORD_USUARIO", Value = usuario.STR_PASSWORD_USUARIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = usuario.FEC_MODIF_USUARIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO });
 
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
@@ -124,28 +127,37 @@ namespace AppGia.Controllers
 
         }
 
-        public int DeleteUsuario(int id)
+        public int deleteUsuario(Usuario usuario)
         {
+
+            string delete = "UPDATE " + cod + "TAB_USUARIO" + cod +
+            " SET " + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_USUARIO"
+            + " WHERE " + cod + "INT_IDUSUARIO_P" + cod + " = " + "@INT_IDUSUARIO_P";
+
             try
             {
-
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
 
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDUSUARIO_P", Value = usuario.INT_IDUSUARIO_P });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
 
-                    cmd.Parameters.AddWithValue("STR_IDCENTROCOSTO", id);
 
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilas;
                 }
-                return 1;
+
             }
+
             catch
             {
                 throw;
+
             }
+
         }
 
     }
