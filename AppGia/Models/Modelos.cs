@@ -42,35 +42,25 @@ namespace AppGia.Models
     #region Tabla Usuario
     public class Usuario
     {
+        [Required]
 
         public string userName { get; set; }
 
-        [Required]
-        public string displayName { get; set; }
+        public string displayname { get; set; }
 
-        public string STR_NOMBRE_USUARIO { get; set; }
+        public int INT_IDUSUARIO_P { get; set; }
+
+        public string STR_USERNAME_USUARIO { get; set; }
 
         public string STR_EMAIL_USUARIO { get; set; }
        
         public bool BOOL_ESTATUS_USUARIO { get; set; }
 
-        //[Required]
-        //public string userName { get; set; }
+        public string STR_PUESTO { get; set; }
 
-        public string SRT_USERNAME_USUARIO { get; set; }
+        public string STR_DISPLAYNAME_USUARIO { get; set; }
 
-        //[Required]
-        //public string displayName { get; set; }
-
-        public string SRT_DISPLAYNAME_USUARIO { get; set; }
-
-        /// <summary>
-        /// ///////////////////
-        /// </summary>
-
-        public bool SRT_PUESTO { get; set; }
-
-        //public ? FEC_MODIF { get; set; }
+        public DateTime FEC_MODIF_USUARIO { get; set; }
     }
     #endregion
 
@@ -206,6 +196,5 @@ namespace AppGia.Models
     }
     #endregion
 
-    //aqui estuvo juan
 }
 

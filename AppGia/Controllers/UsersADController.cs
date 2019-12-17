@@ -40,7 +40,8 @@ namespace AppGia.Controllers
 
                         if (result.Properties.Contains("displayname"))
                         {
-                            item.displayName = (String)result.Properties["displayname"][0];
+                         
+                            item.displayname = (String)result.Properties["displayname"][0];
                         }
 
                         rst.Add(item);

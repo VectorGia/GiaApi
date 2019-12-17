@@ -41,7 +41,7 @@ namespace AppGia.Controllers
         [HttpPut("{id}")]
         public int Put(string id, [FromBody] Compania comp)
         {
-            return objCompania.Delete(id, comp);
+            return objCompania.Delete(comp);
         }
 
         ////DELETE: api/ApiWithActions/5
