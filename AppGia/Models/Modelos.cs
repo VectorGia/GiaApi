@@ -43,20 +43,18 @@ namespace AppGia.Models
     public class Usuario
     {
         [Required]
-        public string STR_DISPLAYNAME_USUARIO { get; set; }
+        public int INT_IDUSUARIO_P { get; set; }
+        public string STR_NOMBRE_USUARIO { get; set; }
+        public string STR_USERNAME_USUARIO { get; set; }
+        public string STR_PUESTO { get; set; }
         public string STR_EMAIL_USUARIO { get; set; }
-        
+        public string STR_PASSWORD_USUARIO { get; set; }
         public int INT_IDROL { get; set; }
         public int INT_IDPANTALLA_F { get; set; }
         public int INT_IDPROYECTO_F { get; set; }
         public int INT_IDCOMPANIA_F { get; set; }
         public int INT_IDCENTROCOSTO_F { get; set; }
         public int INT_IDGRUPO_F { get; set; }
-        public int INT_IDUSUARIO_P { get; set; }
-        public string STR_USERNAME_USUARIO { get; set; }
-        public string STR_PUESTO { get; set; }
-        public string STR_NOMBRE_USUARIO { get; set; }
-        public bool BOOL_PUESTO { get; set; }
         public bool BOOL_ESTATUS_LOGICO_USUARIO { get; set; }
         public DateTime FEC_MODIF { get; set; }
 
@@ -95,6 +93,8 @@ namespace AppGia.Models
         public string STR_NOMBRE_GRUPO { get; set; }
 
         public bool BOOL_ESTATUS_LOGICO_GRUPO { get; set; }
+
+        public DateTime FEC_MODIF_GRUPO { get; set; }
     }
     #endregion
 

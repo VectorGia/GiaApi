@@ -29,8 +29,8 @@ namespace AppGia.Controllers
                         usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
                         //usuario.BOOL_ESTATUS_USUARIO = Convert.ToBoolean(rdr["BOOL_ESTATUS_USUARIO"]);
                         usuario.STR_USERNAME_USUARIO = rdr["SRT_USERNAME_USUARIO"].ToString();
-                        usuario.STR_DISPLAYNAME_USUARIO = rdr["SRT_DISPLAYNAME_USUARIO"].ToString();
-                        usuario.BOOL_PUESTO = Convert.ToBoolean(rdr["SRT_PUESTO"]);
+                        //usuario.STR_DISPLAYNAME_USUARIO = rdr["SRT_DISPLAYNAME_USUARIO"].ToString();
+                      
 
                         lstUsuario.Add(usuario);
                     }
@@ -47,7 +47,13 @@ namespace AppGia.Controllers
 
         public int addUsuario(Usuario usuario)
         {
-            string add = "INSERT INTO" + cod + "TAB_USUARIO" + cod + "(" + cod + "STR_NOMBRE_USUARIO" + cod + ") VALUES " +
+            string add = "INSERT INTO" + cod + "TAB_USUARIO" + cod + "(" 
+                + cod + "STR_NOMBRE_USUARIO"   + cod + "," 
+                + cod + "SRT_USERNAME_USUARIO" + cod + ","
+                + cod + "SRT_PUESTO" + cod + "," 
+                + cod + "STR_EMAIL_USUARIO"    + cod + ","
+                + cod + "STR_PASSWORD_USUARIO" + cod + ") " +
+                "VALUES " +
                 "(@STR_NOMBRE_USUARIO)";
             try
             {
@@ -56,11 +62,11 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_USUARIO", usuario.STR_NOMBRE_USUARIO);
-                    cmd.Parameters.AddWithValue("@STR_EMAIL_USUARIO", usuario.STR_EMAIL_USUARIO);
-                    //cmd.Parameters.AddWithValue("@BOOL_ESTATUS_USUARIO", usuario.BOOL_ESTATUS_USUARIO);
                     cmd.Parameters.AddWithValue("@SRT_USERNAME_USUARIO", usuario.STR_USERNAME_USUARIO);
-                    cmd.Parameters.AddWithValue("@SRT_DISPLAYNAME_USUARIO", usuario.STR_DISPLAYNAME_USUARIO);
+                    //cmd.Parameters.AddWithValue("@SRT_DISPLAYNAME_USUARIO", usuario.STR_DISPLAYNAME_USUARIO);
                     cmd.Parameters.AddWithValue("@SRT_PUESTO", usuario.STR_PUESTO);
+                    cmd.Parameters.AddWithValue("@STR_EMAIL_USUARIO", usuario.STR_EMAIL_USUARIO);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_USUARIO", usuario.BOOL_ESTATUS_LOGICO_USUARIO);
 
                     con.Open();
                     cmd.ExecuteNonQuery();
@@ -96,7 +102,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_DISPLAYNAME_USUARIO", Value = usuario.STR_DISPLAYNAME_USUARIO });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_DISPLAYNAME_USUARIO", Value = usuario.STR_DISPLAYNAME_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@SRT_PUESTO", Value = usuario.STR_PUESTO });
 
 

@@ -43,9 +43,11 @@ namespace AppGia.Controllers
         }
 
         public int addGrupo(Grupo grupo)
+
         {
-            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + ") VALUES " +
-                "(@STR_NOMBRE_GRUPO)";
+           
+            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + "," + cod + "BOOL_ESTATUS_LOGICO_GRUPO"+cod+","+cod+ "FEC_MODIF_GRUPO"+cod+") VALUES " +
+                "(@STR_NOMBRE_GRUPO,@BOOL_ESTATUS_LOGICO_GRUPO,@FEC_MODIF_GRUPO)";
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
@@ -53,6 +55,7 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_GRUPO", grupo.BOOL_ESTATUS_LOGICO_GRUPO);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_GRUPO", DateTime.Now);
                     con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
