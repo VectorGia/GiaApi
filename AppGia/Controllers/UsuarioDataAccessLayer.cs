@@ -27,13 +27,13 @@ namespace AppGia.Controllers
         /// y los regresa en una lista para su consumo
         /// </summary>
         /// <returns></returns>
- 
-    public int InsertaUsuarios(Usuario usuario)
 
+        public int InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
+            UsersADController prueba = new UsersADController();
+            lstUsu = prueba.Get();
 
-            //lstUsu = GetAllUsuarios();
             int numeroUsuarios = lstUsu.Count();
 
 
