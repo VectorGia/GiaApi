@@ -12,6 +12,7 @@ namespace AppGia.Controllers
     [ApiController]
     public class UsersADController : ControllerBase
     {
+        UsuarioDataAccessLayer objusuario = new UsuarioDataAccessLayer();
         // GET: api/UsersAD
         [HttpGet]
         public List<Usuario> Get()
@@ -72,8 +73,9 @@ namespace AppGia.Controllers
 
         // POST: api/UsersAD
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Post([FromBody] Usuario usuario)
         {
+            return objusuario.InsertaUsuarios(usuario);
         }
 
         // PUT: api/UsersAD/5

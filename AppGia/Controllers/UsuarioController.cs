@@ -26,12 +26,12 @@ namespace AppGia.Controllers
         {
             return "value";
         }
-
+       
         // POST: api/Usuario
         [HttpPost]
         public int Post([FromBody] Usuario usuario)
         {
-            return objusuario.addUsuario(usuario);
+            return objusuario.InsertaUsuarios(usuario);
         }
 
         // PUT: api/Usuario/5

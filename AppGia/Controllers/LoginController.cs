@@ -32,6 +32,8 @@ namespace AppGia.Controllers
         public Response Login(Login lg)
         {
 
+            string consulta = "SELECT ";
+
             string dominio = "infogia";
             string path = "LDAP://ServerOmnisys/CN=users, DC=Infogia, DC=local";
             string domainAndUsername = dominio + @"\" + lg.UserName;

@@ -16,7 +16,7 @@ namespace AppGia.Controllers
             //private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
 
             char cod = '"';
-
+            
             Usuario usuario = new Usuario();
             public UsuarioDataAccessLayer()
             {
@@ -42,7 +42,7 @@ namespace AppGia.Controllers
                 Usuario item;
                 if (iResult != null)
                 {
-                    for (int counter = 0; counter < iResult.Count; counter++)
+                    for (int counter = 3; counter < iResult.Count; counter++)
                     {
                         result = iResult[counter];
                         if (result.Properties.Contains("samaccountname"))
@@ -72,7 +72,7 @@ namespace AppGia.Controllers
 
                 // aqui debemos de hacer el insert 
             }
-        public void InsertaUsuarios(Usuario usuario)
+        public int InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
 
@@ -159,6 +159,7 @@ namespace AppGia.Controllers
                 }
 
             }
+            return 1;
         }
             public int addUsuario(Usuario usuario)
             {
