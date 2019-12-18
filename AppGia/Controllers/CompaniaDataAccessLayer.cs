@@ -91,7 +91,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public int addCompania(Compania compania)
+        public int AddCompania(Compania compania)
         {
             string add = "INSERT INTO" + cod +
                 "CAT_COMPANIA" + cod +

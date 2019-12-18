@@ -19,8 +19,8 @@ namespace AppGia.Controllers
         }
 
         // GET: api/Relaciones/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetRelaciones")]
+        public string GetRelaciones(int id)
         {
             return "value";
         }
