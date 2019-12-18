@@ -38,10 +38,9 @@ namespace AppGia.Controllers
 
                         item.userName = (String)result.Properties["samaccountname"][0];
 
-                        if (result.Properties.Contains("displayName"))
+                        if (result.Properties.Contains("password"))
                         {
-                         
-                            item.displayName = (String)result.Properties["displayName"][0];
+                            item.STR_PASSWORD_USUARIO = (String)result.Properties["password"][0];
                         }
 
                         rst.Add(item);

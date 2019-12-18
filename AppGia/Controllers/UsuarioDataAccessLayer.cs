@@ -41,18 +41,29 @@ namespace AppGia.Controllers
             {
                 for (int counter = 0; counter < iResult.Count; counter++)
                 {
+                    item = new Usuario();
                     result = iResult[counter];
+
                     if (result.Properties.Contains("samaccountname"))
                     {
-                        item = new Usuario();
+                       
 
                         item.userName = (String)result.Properties["samaccountname"][0];
 
-                        if (result.Properties.Contains("displayName"))
+                        if (result.Properties.Contains("mail"))
                         {
-                            item.displayName = (String)result.Properties["displayName"][0];
+                            item.STR_EMAIL_USUARIO = (String)result.Properties["mail"][0];
+                        }
+                        //nombre de usuario
+                        if (result.Properties.Contains("name"))
+                        {
+                            item.STR_NOMBRE_USUARIO = (String)result.Properties["name"][0];
                         }
 
+
+                       
+
+                        
                         rst.Add(item); /*Ya se tiene los usuarios del Active Directory*/
                     }
                 }
