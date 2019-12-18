@@ -13,11 +13,12 @@ namespace AppGia.Controllers
     public class UsuarioController : ControllerBase
     {
         UsuarioDataAccessLayer objusuario = new UsuarioDataAccessLayer();
+        UsersADController objUserAD = new UsersADController();
         // GET: api/Usuario
         [HttpGet]
         public IEnumerable<Usuario> Get()
         {
-            return objusuario.GetAllUsuarios();
+            return objUserAD.Get();
         }
 
         // GET: api/Usuario/5

@@ -24,67 +24,11 @@ namespace AppGia.Controllers
         /// y los regresa en una lista para su consumo
         /// </summary>
         /// <returns></returns>
-        public List<Usuario> GetAllUsuarios()
-        {
-            List<Usuario> rst = new List<Usuario>();
-
-            string path = "LDAP://ServerOmnisys.local/CN=users, DC=Infogia, DC=local", us = "Administrador", pass = "Omnisys1958";
-            DirectoryEntry adSearchRoot = new DirectoryEntry(path, us, pass);
-            DirectorySearcher adSearcher = new DirectorySearcher(adSearchRoot);
-
-            adSearcher.Filter = "(&(objectClass=user)(objectCategory=person))";
-            SearchResult result;
-            SearchResultCollection iResult = adSearcher.FindAll();
-
-            Usuario item;
-            if (iResult != null)
-            {
-                for (int counter = 0; counter < iResult.Count; counter++)
-                {
-                    item = new Usuario();
-                    result = iResult[counter];
-
-                    if (result.Properties.Contains("samaccountname"))
-                    {
-                       
-
-                        item.userName = (String)result.Properties["samaccountname"][0];
-
-                        if (result.Properties.Contains("mail"))
-                        {
-                            item.STR_EMAIL_USUARIO = (String)result.Properties["mail"][0];
-                        }
-                        //nombre de usuario
-                        if (result.Properties.Contains("name"))
-                        {
-                            item.STR_NOMBRE_USUARIO = (String)result.Properties["name"][0];
-                        }
-
-
-                       
-
-                        
-                        rst.Add(item); /*Ya se tiene los usuarios del Active Directory*/
-                    }
-                }
-            }
-            else
-            {
-                // PONER SI VIENE NULLO
-            }
-
-            adSearcher.Dispose();
-            adSearchRoot.Dispose();
-
-            return rst;
-
-            // aqui debemos de hacer el insert 
-        }
         public void InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
-
-            lstUsu = GetAllUsuarios();
+            UsersADController prueba = new UsersADController();
+            lstUsu = prueba.Get();
             int numeroUsuarios = lstUsu.Count();
 
 

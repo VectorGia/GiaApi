@@ -1,29 +1,20 @@
-﻿using System;
+﻿using AppGia.Models;
+using Npgsql;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using AppGia.Models;
+using System.Data;
+using System.Data.SqlClient;
 using System.DirectoryServices;
+using System.Linq;
+using System.Web;
 
 namespace AppGia.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginDataAccessLayer
     {
-        // GET: api/Login
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        [HttpPost]
         public Response Login(Login lg)
         {
-
             string dominio = "infogia";
             string path = "LDAP://ServerOmnisys/CN=users, DC=Infogia, DC=local";
             string domainAndUsername = dominio + @"\" + lg.UserName;
@@ -47,5 +38,6 @@ namespace AppGia.Controllers
                 return new Response { MESSAGE = false };
             }
         }
+      }
     }
-}
+
