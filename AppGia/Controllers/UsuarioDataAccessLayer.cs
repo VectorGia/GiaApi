@@ -27,56 +27,43 @@ namespace AppGia.Controllers
             /// y los regresa en una lista para su consumo
             /// </summary>
             /// <returns></returns>
-            public List<Usuario> GetAllUsuarios()
+            public IEnumerable<Usuario> GetAllUsuarios()
             {
-                List<Usuario> rst = new List<Usuario>();
-
-                string path = "LDAP://ServerOmnisys.local/CN=users, DC=Infogia, DC=local", us = "Administrador", pass = "Omnisys1958";
-                DirectoryEntry adSearchRoot = new DirectoryEntry(path, us, pass);
-                DirectorySearcher adSearcher = new DirectorySearcher(adSearchRoot);
-
-                adSearcher.Filter = "(&(objectClass=user)(objectCategory=person))";
-                SearchResult result;
-                SearchResultCollection iResult = adSearcher.FindAll();
-
-                Usuario item;
-                if (iResult != null)
+               string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "";
+            try
+            {
+                List<Usuario> lstusuario = new List<Usuario>();
+                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    for (int counter = 3; counter < iResult.Count; counter++)
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
                     {
-                        result = iResult[counter];
-                        if (result.Properties.Contains("samaccountname"))
-                        {
-                            item = new Usuario();
+                        Usuario usuario = new Usuario();
+                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
+                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString();
+                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString();
+                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString();
+                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
+                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString();
 
-                            item.userName = (String)result.Properties["samaccountname"][0];
-
-                            if (result.Properties.Contains("displayname"))
-                            {
-                                item.displayname = (String)result.Properties["displayname"][0];
-                            }
-
-                            rst.Add(item); /*Ya se tiene los usuarios del Active Directory*/
-                        }
+                        lstusuario.Add(usuario);
                     }
+                    con.Close();
                 }
-                else
-                {
-                    // PONER SI VIENE NULLO
-                }
-
-                adSearcher.Dispose();
-                adSearchRoot.Dispose();
-
-                return rst;
-
-                // aqui debemos de hacer el insert 
+                return lstusuario;
             }
+            catch
+            {
+                throw;
+            }
+        }
         public int InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
 
-            lstUsu = GetAllUsuarios();
+            //lstUsu = ();
             int numeroUsuarios = lstUsu.Count();
 
 
@@ -174,7 +161,6 @@ namespace AppGia.Controllers
                             + " VALUES ( @STR_USERNAME_USUARIO" + ","
                             + "@STR_PASSWORD_USUARIO" + ","
                             + "@STR_EMAIL_USUARIO" + ","
-                            + "@STR_EMAIL_USUARIO" + ","
                             + "@BOOL_ESTATUS_LOGICO_USUARIO" + ","
                             + "@STR_PUESTO" + ","
                             + "@STR_NOMBRE_USUARIO" + ","
@@ -192,7 +178,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = usuario.FEC_MODIF_USUARIO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = DateTime.Now });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO.Trim() });
 
                     con.Open();

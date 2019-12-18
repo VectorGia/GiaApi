@@ -42,7 +42,7 @@ namespace AppGia.Models
     #region Tabla Usuario
     public class Usuario
     {
-        [Required]
+        
 
         public string userName { get; set; }
 
@@ -216,5 +216,11 @@ namespace AppGia.Models
     }
     #endregion
 
+    #region Relaciones
+    public class ROL_PERMISOS
+    {
+
+    }
+    #endregion
 }
 

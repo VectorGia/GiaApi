@@ -31,7 +31,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Post([FromBody] Usuario usuario)
         {
-            return objusuario.InsertaUsuarios(usuario);
+            return objusuario.addUsuario(usuario);
         }
 
         // PUT: api/Usuario/5

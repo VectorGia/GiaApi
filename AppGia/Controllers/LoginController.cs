@@ -44,6 +44,7 @@ namespace AppGia.Controllers
                 DirectorySearcher dir = new DirectorySearcher(entry);
                 dir.ToString();
                 SearchResult result = dir.FindOne();
+
                 return new Response { MESSAGE = true };
 
             }
