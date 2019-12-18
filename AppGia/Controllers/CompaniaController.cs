@@ -31,7 +31,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody]Compania comp)
         {
-            return objCompania.addCompania(comp);
+            return objCompania.AddCompania(comp);
         }
 
         // PUT: api/Compania/5

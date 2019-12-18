@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppGia.Models
 {
-    #region Busqueda de Servidor
+    
     #region Modelo Login
     public class Login
     {
@@ -15,20 +15,6 @@ namespace AppGia.Models
         [Required]
         public string Password { set; get; }
     }
-    //#endregion
-
-    //#region Modelo Usuario
-    //public class User
-    //{
-    //    [Required]
-    //    public string userName { get; set; }
-
-    //    [Required]
-    //    public string displayName { get; set; }
-    //}
-    #endregion
-
-    //#endregion
 
     #endregion
 
@@ -42,11 +28,14 @@ namespace AppGia.Models
     #region Tabla Usuario
     public class Usuario
     {
+<<<<<<< HEAD
         
+=======
+>>>>>>> juan
 
         public string userName { get; set; }
 
-        public string displayname { get; set; }
+        public string displayName { get; set; }
 
 
         public int INT_IDUSUARIO_P { get; set; }
@@ -56,7 +45,7 @@ namespace AppGia.Models
         public string STR_PASSWORD_USUARIO { get; set; }
 
         public string STR_EMAIL_USUARIO { get; set; }
-       
+
         public bool BOOL_ESTATUS_LOGICO_USUARIO { get; set; }
 
         public string STR_PUESTO { get; set; }
@@ -99,6 +88,20 @@ namespace AppGia.Models
         public bool BOOL_ESTATUS_LOGICO_GRUPO { get; set; }
 
         public DateTime FEC_MODIF_GRUPO { get; set; }
+    }
+    #endregion
+
+    #region Tabla Relaciones
+
+    public class Relacion
+    {
+        public int INT_IDUSUARIO_F { set; get; }
+        public int INT_IDGRUPO_F { set; get; }
+        public int INT_IDROL_F { set; get; }
+        public DateTime FEC_MODIF_RELACIONES { set; get; }
+        public bool BOOL_ESTATUS_RELACION { set; get; }
+        public int INT_IDRELACION_P { set; get; }
+
     }
     #endregion
 
@@ -216,11 +219,16 @@ namespace AppGia.Models
     }
     #endregion
 
+<<<<<<< HEAD
     #region Relaciones
     public class ROL_PERMISOS
     {
 
     }
     #endregion
+=======
+
+
+>>>>>>> juan
 }
 

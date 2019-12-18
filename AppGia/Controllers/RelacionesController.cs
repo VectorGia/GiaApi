@@ -4,38 +4,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using AppGia.Models;
 
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class RelacionesController : ControllerBase
     {
-        UsuarioDataAccessLayer objusuario = new UsuarioDataAccessLayer();
-        UsersADController objUserAD = new UsersADController();
-        // GET: api/Usuario
+        // GET: api/Relaciones
         [HttpGet]
-        public IEnumerable<Usuario> Get()
+        public IEnumerable<string> Get()
         {
-            return objUserAD.Get();
+            return new string[] { "value1", "value2" };
         }
 
-        // GET: api/Usuario/5
-        [HttpGet("{id}", Name = "GetUsuario")]
-        public string GetUsuario(int id)
+        // GET: api/Relaciones/5
+        [HttpGet("{id}", Name = "GetRelaciones")]
+        public string GetRelaciones(int id)
         {
             return "value";
         }
-       
-        // POST: api/Usuario
+
+        // POST: api/Relaciones
         [HttpPost]
-        public int Post([FromBody] Usuario usuario)
+        public void Post([FromBody] string value)
         {
-            return objusuario.addUsuario(usuario);
         }
 
-        // PUT: api/Usuario/5
+        // PUT: api/Relaciones/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
