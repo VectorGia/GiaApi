@@ -13,20 +13,20 @@ namespace AppGia.Controllers
     public class UsuarioDataAccessLayer
     {
         string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
-        char cod = '"';
+            char cod = '"';
+            
+            Usuario usuario = new Usuario();
+            public UsuarioDataAccessLayer()
+            {
+                //Constructor
+            }
 
-        Usuario usuario = new Usuario();
-
-        /// <summary>
-        /// Obtiene los usuarios que se ecuentran dentro del servicio de activeDirectory 
-        /// y los regresa en una lista para su consumo
-        /// </summary>
-        /// <returns></returns>
-        public void InsertaUsuarios(Usuario usuario)
+        public int InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
             UsersADController prueba = new UsersADController();
             lstUsu = prueba.Get();
+
             int numeroUsuarios = lstUsu.Count();
 
 
@@ -109,6 +109,7 @@ namespace AppGia.Controllers
                 }
 
             }
+            return 1;
         }
         public int addUsuario(Usuario usuario)
         {
@@ -132,17 +133,17 @@ namespace AppGia.Controllers
             try
             {
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PASSWORD_USUARIO", Value = usuario.STR_PASSWORD_USUARIO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PASSWORD_USUARIO", Value = usuario.STR_PASSWORD_USUARIO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = usuario.FEC_MODIF_USUARIO });
-
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = DateTime.Now });
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();

@@ -27,7 +27,7 @@ namespace AppGia.Controllers
         {
             return "value";
         }
-
+       
         // POST: api/Usuario
         [HttpPost]
         public int Post([FromBody] Usuario usuario)

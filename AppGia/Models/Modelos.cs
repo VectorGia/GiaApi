@@ -216,6 +216,5 @@ namespace AppGia.Models
     #endregion
 
 
-
 }
 

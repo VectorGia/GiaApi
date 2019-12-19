@@ -1,4 +1,5 @@
-﻿using AppGia.Models;
+
+using AppGia.Models;
 using Npgsql;
 using System;
 using System.Collections.Generic;
