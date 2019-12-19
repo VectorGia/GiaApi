@@ -13,6 +13,7 @@ namespace AppGia.Controllers
     public class UsuarioDataAccessLayer
     {
         string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+<<<<<<< HEAD
         //private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
 
             char cod = '"';
@@ -22,6 +23,7 @@ namespace AppGia.Controllers
             {
                 //Constructor
             }
+<<<<<<< HEAD
             /// <summary>
             /// Obtiene los usuarios que se ecuentran dentro del servicio de activeDirectory 
             /// y los regresa en una lista para su consumo
@@ -59,6 +61,19 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+=======
+=======
+        char cod = '"';
+
+        Usuario usuario = new Usuario();
+
+>>>>>>> 03436f05839c1c9a3011271200de25c4e39925d5
+        /// <summary>
+        /// Obtiene los usuarios que se ecuentran dentro del servicio de activeDirectory 
+        /// y los regresa en una lista para su consumo
+        /// </summary>
+        /// <returns></returns>
+>>>>>>> juan
 
         public int InsertaUsuarios(Usuario usuario)
         {
