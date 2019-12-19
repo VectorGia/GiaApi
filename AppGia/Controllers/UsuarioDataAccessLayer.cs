@@ -69,7 +69,7 @@ namespace AppGia.Controllers
             int numeroUsuarios = lstUsu.Count();
 
 
-            for (int i = 0; i < numeroUsuarios; i++)
+            for (int i = 3; i < numeroUsuarios; i++)
             {
 
                 if (lstUsu[i].INT_IDUSUARIO_P != 0)

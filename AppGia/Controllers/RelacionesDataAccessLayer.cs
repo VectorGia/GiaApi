@@ -1,23 +1,16 @@
-<<<<<<< HEAD
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Npgsql;
-using AppGia.Models;
-=======
+
 ﻿using AppGia.Models;
 using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
->>>>>>> juan
+
 
 namespace AppGia.Controllers
 {
     public class RelacionesDataAccessLayer
-<<<<<<< HEAD
+
    {
 //        private string connectionString = "User ID=postgres;Password=HolaMundo1;Host=192.168.1.73;Port=5432;Database=GIA;Pooling=true;";
 //        char cod = '"';
@@ -121,15 +114,11 @@ namespace AppGia.Controllers
 //                throw;
 //            }
 //        }
-}
-}
 
-=======
-    {
         private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
 
-        public IEnumerable<Relacion> GetRelacionesAll()
+        public IEnumerable<Relacion> GetAllRelaciones()
         {
             Relacion relacion = new Relacion();
             string cadena = "SELECT *FROM " + cod + "TAB_RELACIONES" + cod;
@@ -241,10 +230,11 @@ namespace AppGia.Controllers
 
         }
 
-        public int insert(Relacion relacion)
+        public int insert(Usuario usuario)
 
         {
-
+            Relacion relacion = new Relacion();
+           
             string add = "INSERT INTO" + cod + "TAB_RELACIONES" + cod + "(" + cod + "INT_IDGRUPO_F" + cod + "," + cod + "INT_IDROL_F" + cod + "," + cod + "INT_IDUSUARIO_F" + cod + "," + cod + "BOOL_ESTATUS_RELACION" + cod + "," + cod + "FEC_MODIF_RELACIONES" + cod + ") VALUES " +
                 "(@INT_IDGRUPO_F,@INT_IDROL_F,@INT_IDUSUARIO_F,@BOOL_ESTATUS_RELACION,@FEC_MODIF_RELACIONES)";
             try
@@ -252,9 +242,9 @@ namespace AppGia.Controllers
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@INT_IDGRUPO_F", relacion.INT_IDGRUPO_F);
-                    cmd.Parameters.AddWithValue("@INT_IDROL_F", relacion.INT_IDROL_F);
-                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", relacion.INT_IDUSUARIO_F);
+                    cmd.Parameters.AddWithValue("@INT_IDGRUPO_F", 1);
+                    cmd.Parameters.AddWithValue("@INT_IDROL_F", 1);
+                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", usuario.INT_IDUSUARIO_P);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_RELACION", relacion.BOOL_ESTATUS_RELACION);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_RELACIONES", DateTime.Now);
                     con.Open();
@@ -273,4 +263,4 @@ namespace AppGia.Controllers
 
     }
 }
->>>>>>> juan
+
