@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
 using System.DirectoryServices;
+using Npgsql;
 
 namespace AppGia.Controllers
 {
@@ -34,7 +35,21 @@ namespace AppGia.Controllers
                 DirectorySearcher dir = new DirectorySearcher(entry);
                 dir.ToString();
                 SearchResult result = dir.FindOne();
-                return new Response { MESSAGE = true };
+                Relacion relacion = new Relacion();
+
+                LoginDataAccessLayer loginDLayer = new LoginDataAccessLayer();
+                loginDLayer.validacionLoginUsuario(relacion, lg);
+
+                bool existe = loginDLayer.validacionLoginUsuario(relacion, lg);
+
+                if (existe == true)
+                {
+                    return new Response { MESSAGE = true };
+                }
+                else
+                {
+                    return new Response { MESSAGE = false }; 
+                }
 
             }
             catch (DirectoryServicesCOMException cex)
