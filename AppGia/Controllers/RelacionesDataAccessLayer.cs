@@ -156,7 +156,6 @@ namespace AppGia.Controllers
         public int update(Relacion relacion)
         {
 
-
             string add = "UPDATE " + cod + "TAB_RELACIONES" + cod +
             " SET " + cod + "INT_IDGRUPO_F" + cod + "= " + "@INT_IDGRUPO_F" + ","
             + cod + "INT_IDROL_F" + cod + "= " + "@INT_IDROL_F" + ","

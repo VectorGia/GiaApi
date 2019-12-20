@@ -37,10 +37,7 @@ namespace AppGia.Controllers
                 DirectorySearcher dir = new DirectorySearcher(entry);
                 dir.ToString();
                 SearchResult result = dir.FindOne();
-<<<<<<< HEAD
-
-                return new Response { MESSAGE = true };
-=======
+                
                 Relacion relacion = new Relacion();
 
                 LoginDataAccessLayer loginDLayer = new LoginDataAccessLayer();
@@ -56,7 +53,6 @@ namespace AppGia.Controllers
                 {
                     return new Response { MESSAGE = false }; 
                 }
->>>>>>> juan
 
             }
             catch (DirectoryServicesCOMException cex)
