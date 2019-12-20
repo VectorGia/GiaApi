@@ -13,6 +13,7 @@ namespace AppGia.Controllers
     public class UsuarioDataAccessLayer
     {
         string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+
             char cod = '"';
             
             Usuario usuario = new Usuario();
@@ -20,6 +21,45 @@ namespace AppGia.Controllers
             {
                 //Constructor
             }
+
+
+            /// <summary>
+            /// Obtiene los usuarios que se ecuentran dentro del servicio de activeDirectory 
+            /// y los regresa en una lista para su consumo
+            /// </summary>
+            /// <returns></returns>
+            public IEnumerable<Usuario> GetAllUsuarios()
+            {
+               string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "";
+            try
+            {
+                List<Usuario> lstusuario = new List<Usuario>();
+                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        Usuario usuario = new Usuario();
+                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
+                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString();
+                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString();
+                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString();
+                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
+                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString();
+
+                        lstusuario.Add(usuario);
+                    }
+                    con.Close();
+                }
+                return lstusuario;
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         public int InsertaUsuarios(Usuario usuario)
         {
@@ -30,7 +70,7 @@ namespace AppGia.Controllers
             int numeroUsuarios = lstUsu.Count();
 
 
-            for (int i = 0; i < numeroUsuarios; i++)
+            for (int i = 3; i < numeroUsuarios; i++)
             {
 
                 if (lstUsu[i].INT_IDUSUARIO_P != 0)

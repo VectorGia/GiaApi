@@ -97,6 +97,7 @@ namespace AppGia.Models
         public DateTime FEC_MODIF_RELACIONES { set; get; }
         public bool BOOL_ESTATUS_RELACION { set; get; }
         public int INT_IDRELACION_P { set; get; }
+        
 
     }
     #endregion
@@ -216,5 +217,15 @@ namespace AppGia.Models
     #endregion
 
 
+
+    #region Relaciones
+    public class ROL_PERMISOS
+    {
+
+    }
+    #endregion
+
+
 }
+
 

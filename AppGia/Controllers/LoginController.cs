@@ -35,6 +35,7 @@ namespace AppGia.Controllers
                 DirectorySearcher dir = new DirectorySearcher(entry);
                 dir.ToString();
                 SearchResult result = dir.FindOne();
+
                 Relacion relacion = new Relacion();
 
                 LoginDataAccessLayer loginDLayer = new LoginDataAccessLayer();

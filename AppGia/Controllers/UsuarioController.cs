@@ -18,7 +18,8 @@ namespace AppGia.Controllers
         [HttpGet]
         public IEnumerable<Usuario> Get()
         {
-            return objUserAD.Get();
+            
+            return objusuario.GetAllUsuarios();
         }
 
         // GET: api/Usuario/5
