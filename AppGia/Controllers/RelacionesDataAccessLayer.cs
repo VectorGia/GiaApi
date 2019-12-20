@@ -134,9 +134,9 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         relacion.INT_IDRELACION_P = Convert.ToInt32(rdr["INT_IDRELACION_P"]);
-                        relacion.INT_IDUSUARIO_F = Convert.ToInt32(rdr["INT_IDUSUARIO_F"]);
-                        relacion.INT_IDGRUPO_F = Convert.ToInt32(rdr["INT_IDGRUPO_F"]);
-                        relacion.INT_IDROL_F = Convert.ToInt32(rdr["INT_IDROL_F"]);
+                        relacion.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_F"]);
+                        relacion.INT_IDGRUPO_P = Convert.ToInt32(rdr["INT_IDGRUPO_F"]);
+                        relacion.INT_IDROL_P = Convert.ToInt32(rdr["INT_IDROL_F"]);
                         relacion.FEC_MODIF_RELACIONES = Convert.ToDateTime(rdr["FEC_MODIF_RELACIONES"]);
                         relacion.BOOL_ESTATUS_RELACION = Convert.ToBoolean(rdr["BOOL_ESTATUS_RELACION"]);
 
@@ -171,9 +171,9 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDRELACION_P", Value = relacion.INT_IDRELACION_P });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_F", Value = relacion.INT_IDGRUPO_F });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_F", Value = relacion.INT_IDROL_F });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDUSUARIO_F", Value = relacion.INT_IDUSUARIO_F });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_F", Value = relacion.INT_IDGRUPO_P });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_F", Value = relacion.INT_IDROL_P });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDUSUARIO_F", Value = relacion.INT_IDUSUARIO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_RELACION", Value = relacion.BOOL_ESTATUS_RELACION });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_RELACIONES", Value = relacion.FEC_MODIF_RELACIONES });
 
@@ -229,10 +229,10 @@ namespace AppGia.Controllers
 
         }
 
-        public int insert(Usuario usuario)
+        public int insert(Relacion relacion)
 
         {
-            Relacion relacion = new Relacion();
+            
            
             string add = "INSERT INTO" + cod + "TAB_RELACIONES" + cod + "(" + cod + "INT_IDGRUPO_F" + cod + "," + cod + "INT_IDROL_F" + cod + "," + cod + "INT_IDUSUARIO_F" + cod + "," + cod + "BOOL_ESTATUS_RELACION" + cod + "," + cod + "FEC_MODIF_RELACIONES" + cod + ") VALUES " +
                 "(@INT_IDGRUPO_F,@INT_IDROL_F,@INT_IDUSUARIO_F,@BOOL_ESTATUS_RELACION,@FEC_MODIF_RELACIONES)";
@@ -241,9 +241,9 @@ namespace AppGia.Controllers
                 using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@INT_IDGRUPO_F", 1);
-                    cmd.Parameters.AddWithValue("@INT_IDROL_F", 1);
-                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", usuario.INT_IDUSUARIO_P);
+                    cmd.Parameters.AddWithValue("@INT_IDGRUPO_F", relacion.INT_IDGRUPO_P);
+                    cmd.Parameters.AddWithValue("@INT_IDROL_F", relacion.INT_IDROL_P);
+                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", relacion.INT_IDUSUARIO_P);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_RELACION", relacion.BOOL_ESTATUS_RELACION);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_RELACIONES", DateTime.Now);
                     con.Open();

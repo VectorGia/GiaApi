@@ -11,7 +11,7 @@ namespace AppGia.Controllers
         char cod = '"';
         public IEnumerable<Rol> GetAllRoles()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_ROL" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "CAT_ROL" + cod + "";
             try
             {
                 List<Rol> lstrol = new List<Rol>();
@@ -26,6 +26,7 @@ namespace AppGia.Controllers
                     {
                         Rol rol = new Rol();
                         rol.STR_NOMBRE_ROL = rdr["STR_NOMBRE_ROL"].ToString();
+                        rol.INT_IDROL_P = Convert.ToInt32(rdr["INT_IDROL_P"]);
 
                         lstrol.Add(rol);
                     }

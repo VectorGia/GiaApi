@@ -28,6 +28,7 @@ namespace AppGia.Controllers
                     {
                         Grupo grupo = new Grupo();
                         grupo.STR_NOMBRE_GRUPO = rdr["STR_NOMBRE_GRUPO"].ToString();
+                        grupo.INT_IDGRUPO_P = Convert.ToInt32(rdr["INT_IDGRUPO_P"]);
 
                         lstgrupo.Add(grupo);
                     }
