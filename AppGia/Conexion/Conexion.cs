@@ -9,7 +9,7 @@ namespace AppGia.Conexion
 {
     public class Conexion
     {
-        {
+        
         NpgsqlConnection conP;
 
         public Conexion()
@@ -17,8 +17,9 @@ namespace AppGia.Conexion
             //Constructor
             var configuration = GetConfiguration();
             conP = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+      
         }
-
+        
         public IConfigurationRoot GetConfiguration()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -27,4 +28,4 @@ namespace AppGia.Conexion
 
     }
 }
-}
+

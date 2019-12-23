@@ -5,6 +5,7 @@ using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using AppGia.Conexion;
+
 namespace AppGia.Controllers
 {
     public class CentroCostosDataAccessLayer
@@ -24,6 +25,8 @@ namespace AppGia.Controllers
         //}
         //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
+        Conexion.Conexion con = new Conexion.Conexion();
+
         public IEnumerable<CentroCostos> GetAllCentros()
         {
 
@@ -34,9 +37,9 @@ namespace AppGia.Controllers
 
                 //using (NpgsqlConnection con = new NpgsqlConnection(ConnectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta,con);
 
-                    con.Open();
+                   
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
