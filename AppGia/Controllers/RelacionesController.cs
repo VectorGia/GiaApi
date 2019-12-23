@@ -28,9 +28,9 @@ namespace AppGia.Controllers
 
         // POST: api/Relaciones
         [HttpPost]
-        public int Post([FromBody] Usuario usuario)
+        public int Post([FromBody] Relacion relacion)
         {
-            return objrelacion.insert(usuario);
+            return objrelacion.insert(relacion);
         }
 
         // PUT: api/Relaciones/5

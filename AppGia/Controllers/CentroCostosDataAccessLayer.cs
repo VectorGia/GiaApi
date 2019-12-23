@@ -2,12 +2,27 @@
 using System.Collections.Generic;
 using AppGia.Models;
 using Npgsql;
-
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using AppGia.Conexion;
 namespace AppGia.Controllers
 {
     public class CentroCostosDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        //NpgsqlConnection con;
+        
+        //public CentroCostosDataAccessLayer()
+        //{
+        //    var configuration = GetConfiguration();
+        //    con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+        //}
+
+        //public IConfigurationRoot GetConfiguration()
+        //{
+        //    var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        //    return builder.Build();
+        //}
+        //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
         public IEnumerable<CentroCostos> GetAllCentros()
         {
@@ -17,7 +32,7 @@ namespace AppGia.Controllers
             {
                 List<CentroCostos> lstcentros = new List<CentroCostos>();
 
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(ConnectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
 
@@ -57,7 +72,7 @@ namespace AppGia.Controllers
             {
                 CentroCostos centroCC = new CentroCostos();
 
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
 
@@ -89,7 +104,7 @@ namespace AppGia.Controllers
                 "VALUES (@STR_TIPO_CC,@STR_IDCENTROCOSTO,@STR_NOMBRE_CC,@STR_CATEGORIA_CC,@STR_ESTATUS_CC,@STR_GERENTE_CC,@FEC_MODIF_CC,@BOOL_ESTATUS_LOGICO_CENTROCOSTO)";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
@@ -131,7 +146,7 @@ namespace AppGia.Controllers
 
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
@@ -163,7 +178,7 @@ namespace AppGia.Controllers
             string delete = "UPDATE " + cod + "CAT_CENTROCOSTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "='" +status+ "' WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "='" + id + "'";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
               
