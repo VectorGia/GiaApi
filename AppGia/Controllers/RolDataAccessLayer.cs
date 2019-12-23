@@ -42,7 +42,7 @@ namespace AppGia.Controllers
 
         public int addRol(Rol rol)
         {
-            string add = "INSERT INTO" + cod + "TAB_ROL" + cod + "(" + cod + "STR_NOMBRE_ROL" + cod + ") VALUES " +
+            string add = "INSERT INTO" + cod + "CAT_ROL" + cod + "(" + cod + "STR_NOMBRE_ROL" + cod + ") VALUES " +
                 "(@STR_NOMBRE_ROL)";
             try
             {
