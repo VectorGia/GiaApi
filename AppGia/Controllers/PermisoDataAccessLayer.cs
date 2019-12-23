@@ -7,7 +7,16 @@ namespace AppGia.Controllers
 {
     public class PermisoDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        ////private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        NpgsqlConnection con;
+        Conexion.Conexion conex = new Conexion.Conexion();
+       
+        public PermisoDataAccessLayer()
+        {
+            con = conex.ConnexionDB();
+
+        }
+
         char cod = '"';
         public IEnumerable<Permiso> GetAllPermisos()
         {
@@ -16,10 +25,11 @@ namespace AppGia.Controllers
             {
                 List<Permiso> lstpermiso = new List<Permiso>();
 
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //{
                     con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                   
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -29,13 +39,14 @@ namespace AppGia.Controllers
 
                         lstpermiso.Add(permiso);
                     }
-                    con.Close();
-                }
+                      conex.ConnexionDB().Close();
+                //}
 
                 return lstpermiso;
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -46,22 +57,23 @@ namespace AppGia.Controllers
                 "(@STR_NOMBRE_PERMISO)";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //{
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
                    
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PERM", permiso.BOOL_ESTATUS_LOGICO_PERM);
 
 
-                    con.Open();
+                    conex.ConnexionDB().Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
-                }
+                    conex.ConnexionDB().Close();
+                //}
                 return 1;
             }
             catch
             {
+                conex.ConnexionDB().Close();
                 throw;
             }
         }
@@ -76,24 +88,24 @@ namespace AppGia.Controllers
 
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //{
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
 
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL", Value = permiso.INT_IDROL });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
 
-                    con.Open();
+                    conex.ConnexionDB().Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    con.Close();
+                    conex.ConnexionDB().Close();
                     return cantFilas;
-                }
+                //}
                 //return 1;
             }
             catch
             {
-               
+                conex.ConnexionDB().Close();
                 throw;
             }
         }
@@ -128,19 +140,20 @@ namespace AppGia.Controllers
                 + " WHERE " + cod + "INT_IDPERMISO_P" + cod + " = " + "@INT_IDPERMISO_P";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                {
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_PERM", Value = permiso.BOOL_ESTATUS_LOGICO_PERM });
-                    con.Open();
+                    conex.ConnexionDB().Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    con.Close();
+                    conex.ConnexionDB().Close();
                     return cantFilas;
-                }
+                //}
             }
             catch
             {
+                conex.ConnexionDB().Close();
                 throw;
             }
         }
