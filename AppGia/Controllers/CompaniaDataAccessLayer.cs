@@ -11,8 +11,15 @@ namespace AppGia.Controllers
 {
     public class CompaniaDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        NpgsqlConnection conP2;
+        Conexion.Conexion conex = new Conexion.Conexion();
         char cod = '"';
+
+        public CompaniaDataAccessLayer()
+        {
+            conP2 = conex.ConnexionDB();
+        }
 
         public IEnumerable<Compania> GetAllCompanias()
         {
@@ -20,11 +27,11 @@ namespace AppGia.Controllers
             try
             {
                 List<Compania> lstcompania = new List<Compania>();
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, conP2);
 
-                    con.Open();
+                    conP2.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -45,12 +52,13 @@ namespace AppGia.Controllers
 
                         lstcompania.Add(compania);
                     }
-                    con.Close();
+                    conP2.Close();
                 }
                 return lstcompania;
             }
             catch
             {
+                conP2.Close();
                 throw;
             }
         }
@@ -60,11 +68,11 @@ namespace AppGia.Controllers
             try
             {
                 Compania compania = new Compania();
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" +id;
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
-                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, conP2);
+                    conP2.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -82,11 +90,13 @@ namespace AppGia.Controllers
                         compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString();
 
                     }
+                    conP2.Close();
                 }
                 return compania;
             }
             catch
             {
+                conP2.Close();
                 throw;
             }
         }
@@ -126,9 +136,10 @@ namespace AppGia.Controllers
                 "@BOOL_ESTATUS_LOGICO_COMPANIA)";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    conP2.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, conP2);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
                     cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
@@ -145,15 +156,15 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
 
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
+                    conP2.Close();
                 }
                 return 1;
 
             }
             catch
             {
+                conP2.Close();
                 throw;
             }
         }
@@ -178,9 +189,10 @@ namespace AppGia.Controllers
 
             try
             {
-                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+                    conP2.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, conP2);
                     cmd.Parameters.AddWithValue("STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
@@ -195,14 +207,14 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
 
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
+                    conP2.Close();
                 }
                 return 1;
             }
             catch
             {
+                conP2.Close();
                 throw;
             }
         }
@@ -215,19 +227,20 @@ namespace AppGia.Controllers
            
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    conP2.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, conP2);
                     
 
-                    con.Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
+                    conP2.Close();
                 }
                 return 1;
             }
             catch
             {
+                conP2.Close();
                 throw;
             }
 
