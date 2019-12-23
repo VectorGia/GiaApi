@@ -27,8 +27,6 @@ namespace AppGia.Controllers
             try
             {
                 List<CentroCostos> lstcentros = new List<CentroCostos>();
-
-                //using (NpgsqlConnection con = new NpgsqlConnection(ConnectionString))
                 {
 
                     con.Open();
