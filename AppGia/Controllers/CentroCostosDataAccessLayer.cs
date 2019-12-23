@@ -4,22 +4,24 @@ using AppGia.Models;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using AppGia.Conexion;
 namespace AppGia.Controllers
 {
     public class CentroCostosDataAccessLayer
     {
-        NpgsqlConnection con;
-        public CentroCostosDataAccessLayer()
-        {
-            var configuration = GetConfiguration();
-            con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
-        }
+        //NpgsqlConnection con;
+        
+        //public CentroCostosDataAccessLayer()
+        //{
+        //    var configuration = GetConfiguration();
+        //    con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+        //}
 
-        public IConfigurationRoot GetConfiguration()
-        {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            return builder.Build();
-        }
+        //public IConfigurationRoot GetConfiguration()
+        //{
+        //    var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        //    return builder.Build();
+        //}
         //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
         public IEnumerable<CentroCostos> GetAllCentros()
