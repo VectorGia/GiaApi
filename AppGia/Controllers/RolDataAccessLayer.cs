@@ -7,8 +7,15 @@ namespace AppGia.Controllers
 {
     public class RolDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        NpgsqlConnection con;
+        Conexion.Conexion conex = new Conexion.Conexion();
         char cod = '"';
+
+        public RolDataAccessLayer() {
+
+            con = conex.ConnexionDB();
+        }
+
         public IEnumerable<Rol> GetAllRoles()
         {
             string cadena = "SELECT * FROM" + cod + "CAT_ROL" + cod + "";
@@ -16,7 +23,7 @@ namespace AppGia.Controllers
             {
                 List<Rol> lstrol = new List<Rol>();
 
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+              
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                     con.Open();
@@ -37,6 +44,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -46,8 +54,7 @@ namespace AppGia.Controllers
             string add = "INSERT INTO" + cod + "CAT_ROL" + cod + "(" + cod + "STR_NOMBRE_ROL" + cod + ") VALUES " +
                 "(@STR_NOMBRE_ROL)";
             try
-            {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+            {    
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                    
@@ -63,6 +70,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -80,7 +88,6 @@ namespace AppGia.Controllers
 
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
@@ -96,13 +103,9 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
-
-
-
-
-
         }
 
         public int Delete(Rol rol)
@@ -111,7 +114,7 @@ namespace AppGia.Controllers
             string delete = "UPDATE " + cod + "CAT_ROL" + cod + "SET" + cod + "BOOL_ESTATUS_ROL" + cod + "='" + rol.BOOL_ESTATUS_LOGICO_ROL + "' WHERE" + cod + "INT_IDROL_P" + cod + "='" + rol.INT_IDROL_P + "'";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+         
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_LOGICO_ROL);
@@ -124,7 +127,9 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
+
             }
         }
     }

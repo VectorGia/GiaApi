@@ -10,26 +10,19 @@ namespace AppGia.Controllers
 {
     public class CentroCostosDataAccessLayer
     {
-        //NpgsqlConnection con;
-        
-        //public CentroCostosDataAccessLayer()
-        //{
-        //    var configuration = GetConfiguration();
-        //    con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
-        //}
 
-        //public IConfigurationRoot GetConfiguration()
-        //{
-        //    var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-        //    return builder.Build();
-        //}
-        //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        NpgsqlConnection con;
+        Conexion.Conexion conex = new Conexion.Conexion();
+        public CentroCostosDataAccessLayer()
+        {
+            con = conex.ConnexionDB();
+        }
+
         char cod = '"';
-        Conexion.Conexion con = new Conexion.Conexion();
 
         public IEnumerable<CentroCostos> GetAllCentros()
         {
-
+            
             string consulta = "SELECT * FROM"+cod+"CAT_CENTROCOSTO"+cod+ "WHERE " + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "=" + true; ;
             try
             {
@@ -37,9 +30,11 @@ namespace AppGia.Controllers
 
                 //using (NpgsqlConnection con = new NpgsqlConnection(ConnectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta,con);
 
-                   
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+
+              
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -58,12 +53,13 @@ namespace AppGia.Controllers
 
                         lstcentros.Add(centroCC);
                     }
-                    con.Close();
+                    conex.ConnexionDB().Close();
                 }
                 return lstcentros;
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -77,9 +73,9 @@ namespace AppGia.Controllers
 
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, conex.ConnexionDB());
 
-                    con.Open();
+                    
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -98,7 +94,9 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
+               
             }
         }
         public int AddCentro(CentroCostos centroCC)
@@ -109,7 +107,7 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
 
                     cmd.Parameters.AddWithValue("STR_TIPO_CC", centroCC.STR_TIPO_CC);
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCC.STR_IDCENTROCOSTO);
@@ -119,14 +117,15 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCC.STR_GERENTE_CC);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
                     cmd.Parameters.AddWithValue("BOOL_ESTATUS_LOGICO_CENTROCOSTO", centroCC.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
-                    con.Open();
+                   
                     cmd.ExecuteNonQuery();
-                    con.Close();
+                    conex.ConnexionDB().Close();
                 }
                 return 1;
             }
             catch
             {
+                conex.ConnexionDB().Close();
                 throw;
             }
         }
@@ -151,7 +150,7 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, conex.ConnexionDB());
 
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centrocosto.STR_IDCENTROCOSTO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_CC", centrocosto.STR_NOMBRE_CC);
@@ -159,13 +158,13 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_GERENTE_CC", centrocosto.STR_GERENTE_CC);
                     cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centrocosto.STR_ESTATUS_CC);
                     cmd.Parameters.AddWithValue("@STR_TIPO_CC", centrocosto.STR_TIPO_CC);
-       
-        
-                    
 
-                    con.Open();
+
+
+
+                    conex.ConnexionDB().Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
+                    conex.ConnexionDB().Open();
                 }
                 return 1;
             }
@@ -183,12 +182,12 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-              
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, conex.ConnexionDB());
 
-                    con.Open();
+
+                    conex.ConnexionDB().Open();
                     cmd.ExecuteNonQuery();
-                    con.Close();
+                    conex.ConnexionDB().Open();
                 }
                 return 1;
             }

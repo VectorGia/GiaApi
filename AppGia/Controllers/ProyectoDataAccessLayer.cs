@@ -7,15 +7,21 @@ namespace AppGia.Controllers
 {
     public class ProyectoDataAccessLayer
     {
-        private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
+        NpgsqlConnection con;
+        Conexion.Conexion conex = new Conexion.Conexion();
         char cod = '"';
+
+        public ProyectoDataAccessLayer() 
+        {
+            con = conex.ConnexionDB();
+        }
         public IEnumerable<Proyecto> GetAllProyectos()
         {
             string cadena = "SELECT * FROM" + cod + "CAT_PROYECTO" + cod + "WHERE " + cod + "BOOL_ESTATUS_LOGICO_PROYECTO" + cod + "=" + true;
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                     con.Open();
@@ -41,6 +47,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -50,7 +57,7 @@ namespace AppGia.Controllers
             try
             {
                 Proyecto proyecto = new Proyecto();
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+
                 {
                     string consulta = "SELECT * FROM" + cod + "CAT_PROYECTO" + cod + "WHERE" + cod + "INT_IDPROYECTO_P" + cod + "=" + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
@@ -70,6 +77,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -87,7 +95,6 @@ namespace AppGia.Controllers
                 "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE,@FEC_MODIF,@INT_IDPANTALLA_F,@BOOL_ESTATUS_LOGICO_PROYECTO)";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
@@ -105,6 +112,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }
@@ -123,7 +131,6 @@ namespace AppGia.Controllers
 
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
@@ -136,7 +143,6 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
 
 
-                    con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
                 }
@@ -144,6 +150,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
 
@@ -155,12 +162,11 @@ namespace AppGia.Controllers
             string delete = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_PROYECTO" + cod + "='" + status + "' WHERE" + cod + "INT_IDPROYECTO_P" + cod + "='" + id + "'";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
                    
 
-                    con.Open();
                     cmd.ExecuteNonQuery();
                     con.Close();
                 }
@@ -168,6 +174,7 @@ namespace AppGia.Controllers
             }
             catch
             {
+                con.Close();
                 throw;
             }
         }

@@ -12,55 +12,55 @@ namespace AppGia.Controllers
 {
     public class UsuarioDataAccessLayer
     {
-        string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
 
-            char cod = '"';
-            
-            Usuario usuario = new Usuario();
-            public UsuarioDataAccessLayer()
-            {
-                //Constructor
-            }
+        NpgsqlConnection con;
+        Conexion.Conexion conex = new Conexion.Conexion();
+        Usuario usuario = new Usuario();
+        
 
-
-            /// <summary>
-            /// Obtiene los usuarios que se ecuentran dentro del servicio de activeDirectory 
-            /// y los regresa en una lista para su consumo
-            /// </summary>
-            /// <returns></returns>
-            public IEnumerable<Usuario> GetAllUsuarios()
-            {
-               string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "";
-            try
-            {
-                List<Usuario> lstusuario = new List<Usuario>();
-                using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
-                    con.Open();
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
-                    {
-                        Usuario usuario = new Usuario();
-                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
-                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString();
-                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString();
-                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString();
-                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
-                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString();
-
-                        lstusuario.Add(usuario);
-                    }
-                    con.Close();
-                }
-                return lstusuario;
-            }
-            catch
-            {
-                throw;
-            }
+        char cod = '"';    
+  
+        public UsuarioDataAccessLayer()
+        {
+        con = conex.ConnexionDB();
         }
+        /// <summary>
+        /// Obtiene los usuarios que se ecuentran dentro del servicio de activeDirectory 
+        /// y los regresa en una lista para su consumo
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Usuario> GetAllUsuarios()
+        {
+            string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "";
+        try
+        {
+            List<Usuario> lstusuario = new List<Usuario>();
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                con.Open();
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    Usuario usuario = new Usuario();
+                    usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
+                    usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString();
+                    usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString();
+                    usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString();
+                    usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
+                    usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString();
 
+                    lstusuario.Add(usuario);
+                }
+                con.Close();
+            }
+            return lstusuario;
+        }
+        catch
+        {
+                con.Close();
+                throw;
+        }
+    }
         public int InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
@@ -172,7 +172,7 @@ namespace AppGia.Controllers
 
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+               
 
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
@@ -194,8 +194,8 @@ namespace AppGia.Controllers
             }
             catch (Exception ex)
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    con.Close();
+              
+                con.Close();
                 string error = ex.Message;
                 throw;
             }
@@ -213,8 +213,6 @@ namespace AppGia.Controllers
             string consulta = "SELECT " + 1 + " from " + cod + "TAB_USUARIO" + cod + " WHERE " + cod + "STR_USERNAME_USUARIO" + cod + " LIKE " + "'%" + usuario.STR_USERNAME_USUARIO + "%'";
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
@@ -226,8 +224,7 @@ namespace AppGia.Controllers
             }
             catch (Exception ex)
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    con.Close();
+                con.Close();
                 throw ex;
             }
 
@@ -239,7 +236,7 @@ namespace AppGia.Controllers
 
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+              
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(select, con);
                     NpgsqlDataAdapter da = new NpgsqlDataAdapter(select, con);
@@ -252,9 +249,8 @@ namespace AppGia.Controllers
                 }
             }
             catch (Exception ex)
-            {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    con.Close();
+            {                
+                con.Close();
                 throw ex;
             }
         }

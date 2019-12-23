@@ -53,7 +53,7 @@ namespace AppGia.Models
     }
     #endregion
 
-    #region Tabla Permisos
+    #region Tabla PermisosRoL
     public class Permiso
     {
         public string STR_NOMBRE_PERMISO { get; set; }
@@ -98,6 +98,20 @@ namespace AppGia.Models
         public bool BOOL_ESTATUS_RELACION { set; get; }
         public int INT_IDRELACION_P { set; get; }
         
+
+    }
+    #endregion
+
+    #region Tabla RelacionesRol
+
+    public class RelacionRol
+    {
+        public int INT_IDRELACION_P { set; get; }
+        public int INT_IDPERMISO_F { set; get; }
+        public int INT_IDROL_F { set; get; }
+        public DateTime FEC_MODIF_RELA_ROL_PERMISO { set; get; }
+        public bool BOOL_ESTATUS_LOGICO_RELA_ROL_PERMISO { set; get; }
+
 
     }
     #endregion
@@ -216,14 +230,6 @@ namespace AppGia.Models
     }
     #endregion
 
-
-
-    #region Relaciones
-    public class ROL_PERMISOS
-    {
-
-    }
-    #endregion
 
 
 }
