@@ -9,22 +9,31 @@ namespace AppGia.Conexion
 {
     public class Conexion
     {
-        {
-        NpgsqlConnection conP;
+        //NpgsqlConnection conP;
+            string cadena = "";
+            NpgsqlConnection cnnP;
 
-        public Conexion()
-        {
-            //Constructor
-            var configuration = GetConfiguration();
-            conP = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
-        }
+        //public Conexion()
+        //{
+        //    //Constructor
+        //    var configuration = GetConfiguration();
+        //    conP = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+        //}
 
-        public IConfigurationRoot GetConfiguration()
+        //public IConfigurationRoot GetConfiguration()
+        //{
+        //    var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        //    return builder.Build();
+        //}
+
+        public NpgsqlConnection ConnexionDB()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            return builder.Build();
+            cadena = "User ID = postgres; Password = omnisys; Host = 192.168.1.78; Port = 5432; Database = GIA; Pooling = true";
+            cnnP = new NpgsqlConnection(cadena);
+            //cnnP.Open();
+            return cnnP;
         }
 
     }
 }
-}
+
