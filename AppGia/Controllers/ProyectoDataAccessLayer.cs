@@ -132,6 +132,7 @@ namespace AppGia.Controllers
             try
             {
                 {
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
              
@@ -164,9 +165,9 @@ namespace AppGia.Controllers
             {
 
                 {
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                   
-
+                  
                     cmd.ExecuteNonQuery();
                     con.Close();
                 }
