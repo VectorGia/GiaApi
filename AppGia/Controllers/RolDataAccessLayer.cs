@@ -32,7 +32,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Rol rol = new Rol();
-                        rol.STR_NOMBRE_ROL = rdr["STR_NOMBRE_ROL"].ToString();
+                        rol.STR_NOMBRE_ROL = rdr["STR_NOMBRE_ROL"].ToString().Trim();
                         rol.INT_IDROL_P = Convert.ToInt32(rdr["INT_IDROL_P"]);
 
                         lstrol.Add(rol);
@@ -58,15 +58,15 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                    
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
@@ -92,14 +92,16 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
 
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
+
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
@@ -120,10 +122,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {

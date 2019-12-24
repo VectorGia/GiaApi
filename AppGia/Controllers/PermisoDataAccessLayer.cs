@@ -35,7 +35,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Permiso permiso = new Permiso();
-                        permiso.STR_NOMBRE_PERMISO = rdr["STR_NOMBRE_PERMISO"].ToString();
+                        permiso.STR_NOMBRE_PERMISO = rdr["STR_NOMBRE_PERMISO"].ToString().Trim();
 
                         lstpermiso.Add(permiso);
                     }
@@ -61,7 +61,7 @@ namespace AppGia.Controllers
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
                    
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PERM", permiso.BOOL_ESTATUS_LOGICO_PERM);
 
 

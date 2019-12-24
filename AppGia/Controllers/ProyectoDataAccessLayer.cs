@@ -33,10 +33,10 @@ namespace AppGia.Controllers
 
                         proyecto.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);
                         proyecto.INT_IDPANTALLA_F = Convert.ToInt32(rdr["INT_IDPANTALLA_F"]);
-                        proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString();
-                        proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString();
+                        proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString().Trim();
+                        proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString().Trim();
                         proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
-                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString();
+                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString().Trim();
 
                         lstProyecto.Add(proyecto);
                     }
@@ -67,9 +67,9 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
 
-                        proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString();
-                        proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString();
-                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString();
+                        proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString().Trim();
+                        proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString().Trim();
+                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString().Trim();
                         proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
                     }
                 }
@@ -97,18 +97,18 @@ namespace AppGia.Controllers
             {
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
+                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
-                    cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
+                    cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
                     cmd.Parameters.AddWithValue("@INT_IDPANTALLA_F", proyecto.INT_IDPANTALLA_F);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
@@ -116,6 +116,8 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
+        //cambios
 
         public int update(string id, Proyecto proyecto)
         {
@@ -132,21 +134,22 @@ namespace AppGia.Controllers
             try
             {
                 {
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
              
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO);
-                    cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE);
-                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE.Trim());
+                    cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
 
-
-                    cmd.ExecuteNonQuery();
+                    con.Open();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
@@ -164,13 +167,15 @@ namespace AppGia.Controllers
             {
 
                 {
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                   
 
-                    cmd.ExecuteNonQuery();
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
