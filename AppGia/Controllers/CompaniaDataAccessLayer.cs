@@ -12,13 +12,13 @@ namespace AppGia.Controllers
     public class CompaniaDataAccessLayer
     {
         //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
-        NpgsqlConnection conP2;
+        NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         char cod = '"';
 
         public CompaniaDataAccessLayer()
         {
-            conP2 = conex.ConnexionDB();
+            con = conex.ConnexionDB();
         }
 
         public IEnumerable<Compania> GetAllCompanias()
@@ -29,9 +29,9 @@ namespace AppGia.Controllers
                 List<Compania> lstcompania = new List<Compania>();
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, conP2);
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
 
-                    conP2.Open();
+                    con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -52,13 +52,13 @@ namespace AppGia.Controllers
 
                         lstcompania.Add(compania);
                     }
-                    conP2.Close();
+                    con.Close();
                 }
                 return lstcompania;
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
@@ -71,8 +71,8 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" +id;
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, conP2);
-                    conP2.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -90,13 +90,13 @@ namespace AppGia.Controllers
                         compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString();
 
                     }
-                    conP2.Close();
+                    con.Close();
                 }
                 return compania;
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
@@ -138,8 +138,8 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    conP2.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conP2);
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
                     cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA.Trim());
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
@@ -156,15 +156,16 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
 
-                    cmd.ExecuteNonQuery();
-                    conP2.Close();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+                
 
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
@@ -191,8 +192,8 @@ namespace AppGia.Controllers
             {
                 //using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    conP2.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(update, conP2);
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
                     cmd.Parameters.AddWithValue("STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
@@ -207,14 +208,15 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
 
-                    cmd.ExecuteNonQuery();
-                    conP2.Close();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
@@ -229,18 +231,19 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    conP2.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(delete, conP2);
-                    
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
 
-                    cmd.ExecuteNonQuery();
-                    conP2.Close();
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
 

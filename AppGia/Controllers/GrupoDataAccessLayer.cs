@@ -10,13 +10,13 @@ namespace AppGia.Controllers
     public class GrupoDataAccessLayer
     {
         //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
-        NpgsqlConnection conP2;
+        NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         char cod = '"';
 
         public GrupoDataAccessLayer()
         {
-            conP2 = conex.ConnexionDB();
+            con = conex.ConnexionDB();
         }
         public IEnumerable<Grupo> GetAllGrupos()
         {
@@ -27,8 +27,8 @@ namespace AppGia.Controllers
 
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, conP2);
-                    conP2.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
@@ -39,14 +39,14 @@ namespace AppGia.Controllers
 
                         lstgrupo.Add(grupo);
                     }
-                    conP2.Close();
+                    con.Close();
                 }
 
                 return lstgrupo;
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
@@ -62,19 +62,20 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conP2);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_GRUPO", grupo.BOOL_ESTATUS_LOGICO_GRUPO);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_GRUPO", DateTime.Now);
-                    conP2.Open();
-                    cmd.ExecuteNonQuery();
-                    conP2.Close();
+                    con.Open();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+                
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
@@ -88,18 +89,18 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conP2);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
-                    conP2.Open();
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conP2.Close();
+                    con.Close();
                     return cantFilas;
                 }
             }
             catch (Exception ex)
             {
-                conP2.Close();
+                con.Close();
                 string error = ex.Message;
                 throw;
             }
@@ -120,19 +121,19 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conP2);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = grupo.BOOL_ESTATUS_LOGICO_GRUPO });
-                    conP2.Open();
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conP2.Close();
+                    con.Close();
                     return cantFilas;
                 }
                 //return 1;
             }
             catch
             {
-                conP2.Close();
+                con.Close();
                 throw;
             }
         }
