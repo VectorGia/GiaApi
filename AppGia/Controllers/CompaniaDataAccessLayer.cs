@@ -156,10 +156,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
 
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+                
 
             }
             catch
@@ -207,10 +208,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
 
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
@@ -231,12 +233,13 @@ namespace AppGia.Controllers
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                    
 
-                    cmd.ExecuteNonQuery();
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {

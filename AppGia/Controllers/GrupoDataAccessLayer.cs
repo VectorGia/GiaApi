@@ -67,10 +67,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_GRUPO", grupo.BOOL_ESTATUS_LOGICO_GRUPO);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_GRUPO", DateTime.Now);
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+                
             }
             catch
             {
