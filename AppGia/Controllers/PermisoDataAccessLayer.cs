@@ -35,7 +35,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Permiso permiso = new Permiso();
-                        permiso.STR_NOMBRE_PERMISO = rdr["STR_NOMBRE_PERMISO"].ToString();
+                        permiso.STR_NOMBRE_PERMISO = rdr["STR_NOMBRE_PERMISO"].ToString().Trim();
 
                         lstpermiso.Add(permiso);
                     }
@@ -61,7 +61,7 @@ namespace AppGia.Controllers
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
                    
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PERM", permiso.BOOL_ESTATUS_LOGICO_PERM);
 
 
@@ -92,7 +92,7 @@ namespace AppGia.Controllers
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL", Value = permiso.INT_IDROL });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
 

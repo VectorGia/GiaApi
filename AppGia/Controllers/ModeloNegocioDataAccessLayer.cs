@@ -37,10 +37,10 @@ namespace AppGia.Controllers
                     {
                         ModeloNegocio modeloNegocio = new ModeloNegocio();
                         modeloNegocio.INT_IDMODELONEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELONEGOCIO_P"]);
-                        modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString();
-                        modeloNegocio.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
-                        modeloNegocio.STR_CUENTASMODELO = rdr["STR_CUENTASMODELO"].ToString();
-                        modeloNegocio.STR_TIPOMONTO = rdr["STR_TIPOMONTO"].ToString();
+                        modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString().Trim();
+                        modeloNegocio.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString().Trim();
+                        modeloNegocio.STR_CUENTASMODELO = rdr["STR_CUENTASMODELO"].ToString().Trim();
+                        modeloNegocio.STR_TIPOMONTO = rdr["STR_TIPOMONTO"].ToString().Trim();
                         lstmodelo.Add(modeloNegocio);
                     }
                     // con.Close();
@@ -67,10 +67,10 @@ namespace AppGia.Controllers
                // using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
                // {
                     NpgsqlCommand cmd = new NpgsqlCommand(addModelo, conex.ConnexionDB());
-                    cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO);
-                    cmd.Parameters.AddWithValue("@STR_TIPOMONTO", modeloNegocio.STR_TIPOMONTO);
-                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", modeloNegocio.STR_IDCOMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_CUENTASMODELO", modeloNegocio.STR_CUENTASMODELO);
+                    cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_TIPOMONTO", modeloNegocio.STR_TIPOMONTO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", modeloNegocio.STR_IDCOMPANIA.Trim());
+                    cmd.Parameters.AddWithValue("@STR_CUENTASMODELO", modeloNegocio.STR_CUENTASMODELO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MODE_NEGO", modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO);
 
                     conex.ConnexionDB().Open();
@@ -105,10 +105,10 @@ namespace AppGia.Controllers
                // using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_CUENTASMODELO", Value = modeloNegocio.STR_CUENTASMODELO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_TIPOMONTO", Value = modeloNegocio.STR_TIPOMONTO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_IDCOMPANIA", Value = modeloNegocio.STR_IDCOMPANIA });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_CUENTASMODELO", Value = modeloNegocio.STR_CUENTASMODELO.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_TIPOMONTO", Value = modeloNegocio.STR_TIPOMONTO.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_IDCOMPANIA", Value = modeloNegocio.STR_IDCOMPANIA.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
                     conex.ConnexionDB().Open();
                     int cantFilas = cmd.ExecuteNonQuery();
