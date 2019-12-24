@@ -152,11 +152,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", relacion.INT_IDUSUARIO_P);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_RELACION", relacion.BOOL_ESTATUS_RELACION);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_RELACIONES", DateTime.Now);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+              
             }
             catch
             {
