@@ -119,11 +119,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCC.STR_GERENTE_CC);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
                     cmd.Parameters.AddWithValue("BOOL_ESTATUS_LOGICO_CENTROCOSTO", centroCC.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
-                   
-                    cmd.ExecuteNonQuery();
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
@@ -162,10 +162,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centrocosto.STR_ESTATUS_CC);
                     cmd.Parameters.AddWithValue("@STR_TIPO_CC", centrocosto.STR_TIPO_CC);
 
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
@@ -184,10 +185,11 @@ namespace AppGia.Controllers
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, conex.ConnexionDB());
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {

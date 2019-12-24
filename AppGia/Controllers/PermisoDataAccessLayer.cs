@@ -66,10 +66,10 @@ namespace AppGia.Controllers
 
 
                     conex.ConnexionDB().Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFila = cmd.ExecuteNonQuery();
                     conex.ConnexionDB().Close();
                 //}
-                return 1;
+                    return cantFila;
             }
             catch
             {

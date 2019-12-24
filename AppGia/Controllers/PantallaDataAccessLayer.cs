@@ -65,11 +65,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PANT", pantalla.BOOL_ESTATUS_LOGICO_PANT);
 
                     conex.ConnexionDB().Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFila = cmd.ExecuteNonQuery();
                     conex.ConnexionDB().Close() ;
-
+                    return cantFila;
                 //}
-                return 1;
+                //return 1;
             }
             catch
             {
@@ -156,7 +156,7 @@ namespace AppGia.Controllers
             }
             catch 
             {
-                
+                conex.ConnexionDB().Close();
                 throw;
             }
         }

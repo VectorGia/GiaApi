@@ -74,10 +74,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MODE_NEGO", modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO);
 
                     conex.ConnexionDB().Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilas = cmd.ExecuteNonQuery();
                     conex.ConnexionDB().Close();
+                    return cantFilas;
                 //}
-                return 1;
+                //return 1;
             }
             catch
             {
@@ -112,9 +113,10 @@ namespace AppGia.Controllers
                     conex.ConnexionDB().Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     conex.ConnexionDB().Close();
-                   
+                    return cantFilas;
+
                 //}
-                return 1;
+                //return 1;
             }
             catch (Exception ex)
             {
