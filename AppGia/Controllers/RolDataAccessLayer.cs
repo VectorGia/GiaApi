@@ -63,10 +63,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
@@ -95,11 +95,13 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
+
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
@@ -120,10 +122,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
