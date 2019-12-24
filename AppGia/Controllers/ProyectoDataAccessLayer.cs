@@ -169,14 +169,10 @@ namespace AppGia.Controllers
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-<<<<<<< HEAD
-                  
-                    cmd.ExecuteNonQuery();
-=======
 
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
->>>>>>> juan
+
                     con.Close();
                     return cantFilAfec;
                 }
