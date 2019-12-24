@@ -43,11 +43,11 @@ namespace AppGia.Controllers
                 {
                     Usuario usuario = new Usuario();
                     usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
-                    usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString();
-                    usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString();
-                    usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString();
-                    usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString();
-                    usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString();
+                    usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString().Trim();
+                    usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString().Trim();
+                    usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString().Trim();
+                    usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
+                    usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString().Trim();
 
                     lstusuario.Add(usuario);
                 }
@@ -184,7 +184,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = DateTime.Now });
-
+                  
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
@@ -210,7 +210,7 @@ namespace AppGia.Controllers
         public bool validacionUsuario(Usuario usuario)
         {
 
-            string consulta = "SELECT " + 1 + " from " + cod + "TAB_USUARIO" + cod + " WHERE " + cod + "STR_USERNAME_USUARIO" + cod + " LIKE " + "'%" + usuario.STR_USERNAME_USUARIO + "%'";
+            string consulta = "SELECT " + 1 + " from " + cod + "TAB_USUARIO" + cod + " WHERE " + cod + "STR_USERNAME_USUARIO" + cod + " LIKE " + "'%" + usuario.STR_USERNAME_USUARIO.Trim() + "%'";
             try
             {
                 {
@@ -263,7 +263,7 @@ namespace AppGia.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 Usuario ent = new Usuario();
-                ent.userName = Convert.ToString(r["STR_USERNAME_USUARIO"]);
+                ent.userName = Convert.ToString(r["STR_USERNAME_USUARIO".Trim()]);
                 lstUsuario.Add(ent);
             }
             return lstUsuario;
