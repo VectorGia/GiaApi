@@ -117,6 +117,8 @@ namespace AppGia.Controllers
             }
         }
 
+        //cambios
+
         public int update(string id, Proyecto proyecto)
         {
             string update = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET"
