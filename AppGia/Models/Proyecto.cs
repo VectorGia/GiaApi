@@ -21,7 +21,6 @@ namespace AppGia.Models
 
         public int INT_IDPROYECTO_P { get; set; }
 
-        public int INT_IDPANTALLA_F { get; set; }
 
     }
 }

@@ -14,10 +14,8 @@ namespace AppGia.Controllers
         public ModeloNegocioDataAccessLayer()
         {
             con = conex.ConnexionDB();
-
         }
 
-        //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         char cod = '"';
 
         public IEnumerable<ModeloNegocio> GetAllModeloNegocios()
@@ -26,8 +24,7 @@ namespace AppGia.Controllers
             try
             {
                 List<ModeloNegocio> lstmodelo = new List<ModeloNegocio>();
-                //using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
+              
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     
@@ -37,15 +34,14 @@ namespace AppGia.Controllers
                     {
                         ModeloNegocio modeloNegocio = new ModeloNegocio();
                         modeloNegocio.INT_IDMODELONEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELONEGOCIO_P"]);
-                        modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString();
-                        modeloNegocio.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
-                        modeloNegocio.STR_CUENTASMODELO = rdr["STR_CUENTASMODELO"].ToString();
-                        modeloNegocio.STR_TIPOMONTO = rdr["STR_TIPOMONTO"].ToString();
+                        modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString().Trim();
+                        modeloNegocio.STR_CUENTASMODELO = rdr["STR_CUENTASMODELO"].ToString().Trim();
+                        modeloNegocio.STR_TIPOMONTO = rdr["STR_TIPOMONTO"].ToString().Trim();
+                        modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_MODE_NEGO"]);
                         lstmodelo.Add(modeloNegocio);
                     }
-                    // con.Close();
-                    conex.ConnexionDB().Close();
-                //}
+                   con.Close();
+                   
                 return lstmodelo;
             }
             catch
@@ -58,31 +54,28 @@ namespace AppGia.Controllers
         public int addModelo(ModeloNegocio modeloNegocio)
         {
             string addModelo = "INSERT INTO"+cod+"TAB_MODELO_NEGOCIO"+cod+"("+cod+ "STR_NOMBREMODELONEGOCIO" + cod
-                +","+cod+"STR_IDCOMPANIA"+cod+","+cod+ "STR_CUENTASMODELO" + cod+","+cod+ "STR_TIPOMONTO" + cod+") VALUES " +
-                "(@STR_NOMBREMODELONEGOCIO,@STR_IDCOMPANIA,@STR_CUENTASMODELO,@STR_TIPOMONTO)";
+                +","+cod+"STR_IDCOMPANIA"+cod+","+cod+ "STR_CUENTASMODELO" + cod+","+cod+ "STR_TIPOMONTO" + cod+ "," + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "," + cod + "FEC_MODIF_MODELONEGOCIO" + cod + ") VALUES " +
+                "(@STR_NOMBREMODELONEGOCIO,@STR_IDCOMPANIA,@STR_CUENTASMODELO,@STR_TIPOMONTO,@BOOL_ESTATUS_LOGICO_MODE_NEGO, @FEC_MODIF_MODELONEGOCIO)";
 
             try
             {
                 
-               // using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
-               // {
-                    NpgsqlCommand cmd = new NpgsqlCommand(addModelo, conex.ConnexionDB());
-                    cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO);
-                    cmd.Parameters.AddWithValue("@STR_TIPOMONTO", modeloNegocio.STR_TIPOMONTO);
-                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", modeloNegocio.STR_IDCOMPANIA);
-                    cmd.Parameters.AddWithValue("@STR_CUENTASMODELO", modeloNegocio.STR_CUENTASMODELO);
+                    NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
+                    cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_TIPOMONTO", modeloNegocio.STR_TIPOMONTO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_CUENTASMODELO", modeloNegocio.STR_CUENTASMODELO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MODE_NEGO", modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO);
 
-                    conex.ConnexionDB().Open();
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
+                    con.Close();
                     return cantFilas;
-                //}
-                //return 1;
+
             }
             catch
             {
-                conex.ConnexionDB().Close();
+                con.Close();
                 throw;
             }
         }
@@ -98,21 +91,22 @@ namespace AppGia.Controllers
                 " SET " + cod + "STR_NOMBREMODELONEGOCIO" + cod + "= " + "@STR_NOMBREMODELONEGOCIO" + ","
                 + cod + "STR_CUENTASMODELO" + cod + "= " + "@STR_CUENTASMODELO" + ","
                 + cod + "STR_TIPOMONTO" + cod + "= " + "@STR_TIPOMONTO" + ","
-                + cod + "STR_IDCOMPANIA" + cod + "= " + "@STR_IDCOMPANIA" 
+                + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_MODE_NEGO" + ","
+                + cod + "FEC_MODIF_MODELONEGOCIO" + cod + "= " + "@FEC_MODIF_MODELONEGOCIO" 
                 + " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + "@INT_IDMODELONEGOCIO_P";
             try
             {
                // using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 //{
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_CUENTASMODELO", Value = modeloNegocio.STR_CUENTASMODELO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_TIPOMONTO", Value = modeloNegocio.STR_TIPOMONTO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_IDCOMPANIA", Value = modeloNegocio.STR_IDCOMPANIA });
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_CUENTASMODELO", Value = modeloNegocio.STR_CUENTASMODELO.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_TIPOMONTO", Value = modeloNegocio.STR_TIPOMONTO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
-                    conex.ConnexionDB().Open();
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@FEC_MODIF_MODELONEGOCIO", Value = modeloNegocio.FEC_MODIF_MODELONEGOCIO });
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
+                    con.Close();
                     return cantFilas;
 
                 //}
@@ -120,7 +114,7 @@ namespace AppGia.Controllers
             }
             catch (Exception ex)
             {
-                conex.ConnexionDB().Close();
+                con.Close();
                 string error = ex.Message;
                 throw;
             }
@@ -133,21 +127,17 @@ namespace AppGia.Controllers
                 " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + "@INT_IDMODELONEGOCIO_P";
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_MODE_NEGO", Value = modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO });
-                    conex.ConnexionDB().Open();
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
+                    con.Close();
                     return cantFilas;
-                //}
-                //return 1;
             }
             catch (Exception ex)
             {
-                conex.ConnexionDB().Close();
+                con.Close();
                 string error = ex.Message;
                 throw;
             }

@@ -21,9 +21,9 @@ namespace AppGia.Controllers
 
         // GET: api/Proyecto/5
         [HttpGet("{id}", Name = "GetProyecto")]
-        public Proyecto GetProyecto(string id)
+        public Proyecto GetProyecto(Proyecto proyecto)
         {
-            return objProyecto.GetProyectoData(id);
+            return objProyecto.GetProyectoData(proyecto);
         }
 
         // POST: api/Proyecto
@@ -37,14 +37,14 @@ namespace AppGia.Controllers
         [HttpPut("{id}")]
         public int Put(string id, [FromBody] Proyecto proyecto)
         {
-            return objProyecto.update(id, proyecto);
+            return objProyecto.update(proyecto);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public int Delete(string id)
+        public int Delete(Proyecto proyecto)
         {
-            return objProyecto.Delete(id);
+            return objProyecto.Delete(proyecto);
         }
     }
 }

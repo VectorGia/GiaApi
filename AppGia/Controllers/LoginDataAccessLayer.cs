@@ -12,12 +12,18 @@ namespace AppGia.Controllers
 {
     public class LoginDataAccessLayer
     {
+        NpgsqlConnection con;
+        Conexion.Conexion conex = new Conexion.Conexion();
 
+        char cod = '"';
+        public LoginDataAccessLayer()
+        {
+         con = conex.ConnexionDB();
+        }
 
         public bool validacionLoginUsuario(Relacion relacion, Login lg)
         {
-            string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
-            char cod = '"';
+          
 
             string consulta = " select " + 1 + " from " + "(" + " select " + cod + "TAB_RELACIONES" + cod + "." + cod + "INT_IDGRUPO_F" + cod + "," + cod + "TAB_RELACIONES" + cod + "."
             + cod + "INT_IDUSUARIO_F" + cod + "," + cod + "TAB_USUARIO" + cod + "." + cod + "STR_NOMBRE_USUARIO" + cod + " from " + cod + "TAB_RELACIONES" + cod + " inner " + "  " + " join "
@@ -28,7 +34,7 @@ namespace AppGia.Controllers
             // string consulta = " SELECT " + 1 + " from " + cod + "TAB_RELACIONES" + cod + " WHERE " + cod + "INT_IDUSUARIO_F" + cod + " = " + relacion.INT_IDUSUARIO_F + " and " + cod + "INT_IDGRUPO_F" + cod + " = " + relacion.INT_IDGRUPO_F;
             try
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+              
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
@@ -40,8 +46,8 @@ namespace AppGia.Controllers
             }
             catch (Exception ex)
             {
-                using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                    con.Close();
+      
+             con.Close();
                 throw ex;
             }
         }
