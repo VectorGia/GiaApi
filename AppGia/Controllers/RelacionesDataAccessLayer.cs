@@ -145,6 +145,7 @@ namespace AppGia.Controllers
             {
 
                 {
+
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@INT_IDGRUPO_F", relacion.INT_IDGRUPO_P);
                     cmd.Parameters.AddWithValue("@INT_IDROL_F", relacion.INT_IDROL_P);

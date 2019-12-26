@@ -117,6 +117,8 @@ namespace AppGia.Controllers
             }
         }
 
+        //cambios
+
         public int update(string id, Proyecto proyecto)
         {
             string update = "UPDATE " + cod + "CAT_PROYECTO" + cod + "SET"
@@ -132,6 +134,7 @@ namespace AppGia.Controllers
             try
             {
                 {
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
              
@@ -164,10 +167,12 @@ namespace AppGia.Controllers
             {
 
                 {
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
+
                     con.Close();
                     return cantFilAfec;
                 }

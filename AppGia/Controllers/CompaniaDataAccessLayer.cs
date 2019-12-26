@@ -29,7 +29,7 @@ namespace AppGia.Controllers
                 List<Compania> lstcompania = new List<Compania>();
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena.Trim(), con);
 
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -39,16 +39,16 @@ namespace AppGia.Controllers
                         
                         Compania compania = new Compania();
                         compania.INT_IDCOMPANIA_P = Convert.ToInt32(rdr["INT_IDCOMPANIA_P"]);
-                        compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
-                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
-                        compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString();
+                        compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString().Trim();
+                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString().Trim();
+                        compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString().Trim();
                         compania.BOOL_ETL_COMPANIA = Convert.ToBoolean(rdr["BOOL_ETL_COMPANIA"]);
-                        compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString();
-                        compania.STR_PUERTO_COMPANIA = rdr["STR_PUERTO_COMPANIA"].ToString();
-                        compania.STR_USUARIO_ETL = rdr["STR_USUARIO_ETL"].ToString();
-                        compania.STR_CONTRASENIA_ETL = rdr["STR_CONTRASENIA_ETL"].ToString();
-                        compania.STR_BD_COMPANIA = rdr["STR_BD_COMPANIA"].ToString();
-                        compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString();
+                        compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString().Trim();
+                        compania.STR_PUERTO_COMPANIA = rdr["STR_PUERTO_COMPANIA"].ToString().Trim();
+                        compania.STR_USUARIO_ETL = rdr["STR_USUARIO_ETL"].ToString().Trim();
+                        compania.STR_CONTRASENIA_ETL = rdr["STR_CONTRASENIA_ETL"].ToString().Trim();
+                        compania.STR_BD_COMPANIA = rdr["STR_BD_COMPANIA"].ToString().Trim();
+                        compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString().Trim();
 
                         lstcompania.Add(compania);
                     }
@@ -71,23 +71,23 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" +id;
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
 
-                        compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString();
-                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString();
-                        compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString();
+                        compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString().Trim();
+                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString().Trim();
+                        compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString().Trim();
                         compania.BOOL_ETL_COMPANIA = Convert.ToBoolean(rdr["BOOL_ETL_COMPANIA"]);
-                        compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString();
-                        compania.STR_PUERTO_COMPANIA = rdr["STR_PUERTO_COMPANIA"].ToString();
-                        compania.STR_USUARIO_ETL = rdr["STR_USUARIO_ETL"].ToString();
-                        compania.STR_CONTRASENIA_ETL = rdr["STR_CONTRASENIA_ETL"].ToString();
-                        compania.STR_BD_COMPANIA = rdr["STR_BD_COMPANIA"].ToString();
-                        compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString();
+                        compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString().Trim();
+                        compania.STR_PUERTO_COMPANIA = rdr["STR_PUERTO_COMPANIA"].ToString().Trim();
+                        compania.STR_USUARIO_ETL = rdr["STR_USUARIO_ETL"].ToString().Trim();
+                        compania.STR_CONTRASENIA_ETL = rdr["STR_CONTRASENIA_ETL"].ToString().Trim();
+                        compania.STR_BD_COMPANIA = rdr["STR_BD_COMPANIA"].ToString().Trim();
+                        compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString().Trim();
 
                     }
                     con.Close();
@@ -139,9 +139,9 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), con);
                     //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
-                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
+                    cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA.Trim());
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
                     cmd.Parameters.AddWithValue("@BOOL_ETL_COMPANIA", compania.BOOL_ETL_COMPANIA);
@@ -193,7 +193,7 @@ namespace AppGia.Controllers
                 //using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(update.Trim(), con);
                     cmd.Parameters.AddWithValue("STR_IDCOMPANIA", compania.STR_IDCOMPANIA);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
@@ -232,7 +232,7 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete.Trim(), con);
 
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
