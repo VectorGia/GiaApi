@@ -44,7 +44,7 @@ namespace AppGia.Controllers
                         lstmodelo.Add(modeloNegocio);
                     }
                     // con.Close();
-                    conex.ConnexionDB().Close();
+                  
                 //}
                 return lstmodelo;
             }
@@ -63,19 +63,19 @@ namespace AppGia.Controllers
 
             try
             {
-                
-               // using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
-               // {
-                    NpgsqlCommand cmd = new NpgsqlCommand(addModelo, conex.ConnexionDB());
+                con.Open();
+                // using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
+                // {
+                NpgsqlCommand cmd = new NpgsqlCommand(addModelo, conex.ConnexionDB());
                     cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO);
                     cmd.Parameters.AddWithValue("@STR_TIPOMONTO", modeloNegocio.STR_TIPOMONTO);
                     cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", modeloNegocio.STR_IDCOMPANIA);
                     cmd.Parameters.AddWithValue("@STR_CUENTASMODELO", modeloNegocio.STR_CUENTASMODELO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MODE_NEGO", modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO);
 
-                    conex.ConnexionDB().Open();
+                    
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
+                   
                     return cantFilas;
                 //}
                 //return 1;
