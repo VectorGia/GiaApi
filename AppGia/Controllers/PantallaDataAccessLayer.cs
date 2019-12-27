@@ -34,7 +34,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Pantalla pantalla = new Pantalla();
-                        pantalla.STR_NOMBRE_PANTALLA = rdr["STR_NOMBRE_PANTALLA"].ToString();
+                        pantalla.STR_NOMBRE_PANTALLA = rdr["STR_NOMBRE_PANTALLA"].ToString().Trim();
 
                         lstpantalla.Add(pantalla);
                     }
@@ -60,7 +60,7 @@ namespace AppGia.Controllers
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
 
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PANTALLA", pantalla.STR_NOMBRE_PANTALLA);
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_PANTALLA", pantalla.STR_NOMBRE_PANTALLA.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF_PANTALLA", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PANT", pantalla.BOOL_ESTATUS_LOGICO_PANT);
 
@@ -96,7 +96,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPANTALLA_P", Value = pantalla.INT_IDPANTALLA_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_F", Value = pantalla.INT_IDROL_F });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.TimestampTz, ParameterName = "@FEC_MODIF_PANTALLA", Value = pantalla.FEC_MODIF_PANTALLA });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PANTALLA", Value = pantalla.STR_NOMBRE_PANTALLA });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PANTALLA", Value = pantalla.STR_NOMBRE_PANTALLA.Trim() });
 
                     conex.ConnexionDB().Open();
                     int cantFilas = cmd.ExecuteNonQuery();
