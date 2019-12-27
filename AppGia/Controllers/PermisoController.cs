@@ -1,46 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
-
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PermisoController : ControllerBase
     {
-        PermisoDataAccessLayer objPermiso = new PermisoDataAccessLayer();
-        // GET: api/Centro
+        PermisoDataAccessLayer permiso = new PermisoDataAccessLayer();
+        // GET: api/Permiso
         [HttpGet]
         public IEnumerable<Permiso> Get()
         {
-            return objPermiso.GetAllPermisos();
+            return permiso.GetAllPermisos();
         }
 
-        //// GET: api/Centro/5
-        //[HttpGet("{id}", Name = "")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // POST: api/Centro
-        [HttpPost]
-        public int Create([FromBody] Permiso permiso)
+        // GET: api/Permiso/5
+        [HttpGet("{id}", Name = "GetPermisos")]
+        public string GetPermisos(int id)
         {
-            return objPermiso.addPermiso(permiso);
+            return "value";
         }
 
-        //// PUT: api/Centro/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // POST: api/Permiso
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // PUT: api/Permiso/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE: api/ApiWithAction/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
     }
 }

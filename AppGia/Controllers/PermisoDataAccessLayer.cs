@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using AppGia.Models;
 using Npgsql;
-
+using System;
 
 namespace AppGia.Controllers
 {
@@ -32,6 +32,7 @@ namespace AppGia.Controllers
                     {
                         Permiso permiso = new Permiso();
                         permiso.STR_NOMBRE_PERMISO = rdr["STR_NOMBRE_PERMISO"].ToString().Trim();
+                    permiso.INT_IDPERMISO_P = Convert.ToInt32(rdr["INT_IDPERMISO_P"]);
                         lstpermiso.Add(permiso);
                     }
                       con.Close();

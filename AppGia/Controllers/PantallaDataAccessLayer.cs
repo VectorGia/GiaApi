@@ -33,6 +33,7 @@ namespace AppGia.Controllers
                     {
                         Pantalla pantalla = new Pantalla();
                         pantalla.STR_NOMBRE_PANTALLA = rdr["STR_NOMBRE_PANTALLA"].ToString().Trim();
+                    pantalla.INT_IDPANTALLA_P = Convert.ToInt32(rdr["INT_IDPANTALLA_P"]);
 
                         lstpantalla.Add(pantalla);
                     }
