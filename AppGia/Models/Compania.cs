@@ -31,10 +31,6 @@ namespace AppGia.Models
 
         public int INT_IDCOMPANIA_P { get; set; }
 
-        public int INT_IDPROYECTO_F { get; set; }
-
-        public int INT_IDCENTROCOSTO_F { get; set; }
-
         public DateTime FEC_MODIF_COMPANIA { get; set; }
 
     }

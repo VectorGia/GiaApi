@@ -7,14 +7,12 @@ namespace AppGia.Controllers
 {
     public class PermisoDataAccessLayer
     {
-        ////private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
        
         public PermisoDataAccessLayer()
         {
             con = conex.ConnexionDB();
-
         }
 
         char cod = '"';
@@ -25,8 +23,6 @@ namespace AppGia.Controllers
             {
                 List<Permiso> lstpermiso = new List<Permiso>();
 
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                    
@@ -36,11 +32,9 @@ namespace AppGia.Controllers
                     {
                         Permiso permiso = new Permiso();
                         permiso.STR_NOMBRE_PERMISO = rdr["STR_NOMBRE_PERMISO"].ToString().Trim();
-
                         lstpermiso.Add(permiso);
                     }
-                      conex.ConnexionDB().Close();
-                //}
+                      con.Close();
 
                 return lstpermiso;
             }
@@ -57,23 +51,20 @@ namespace AppGia.Controllers
                 "(@STR_NOMBRE_PERMISO)";
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
-                   
+
+                NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PERMISO", permiso.STR_NOMBRE_PERMISO.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PERM", permiso.BOOL_ESTATUS_LOGICO_PERM);
 
-
-                    conex.ConnexionDB().Open();
+                    con.Open();
                     int cantFila = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
-                //}
+                    con.Close();
+
                     return cantFila;
             }
             catch
             {
-                conex.ConnexionDB().Close();
+                con.Close();
                 throw;
             }
         }
@@ -82,26 +73,26 @@ namespace AppGia.Controllers
         {
 
             string add = "UPDATE " + cod + "TAB_PERMISO" + cod +
-            " SET " + cod + "STR_NOMBRE_PERMISO" + cod + "= " + "@STR_NOMBRE_PERMISO" + ","
-            + cod + "INT_IDROL" + cod + " = " + "@INT_IDROL"
+            " SET " + cod + "STR_NOMBRE_PERMISO" + cod + "= " + "@STR_NOMBRE_PERMISO" 
             + " WHERE " + cod + "INT_IDPERMISO_P" + cod + " = " + "@INT_IDPERMISO_P";
 
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
+
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
 
+<<<<<<< HEAD
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL", Value = permiso.INT_IDROL });
+=======
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO.Trim() });;
+>>>>>>> juan
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
 
-                    conex.ConnexionDB().Open();
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
+                    con.Close();
                     return cantFilas;
-                //}
-                //return 1;
             }
             catch
             {
@@ -110,28 +101,7 @@ namespace AppGia.Controllers
             }
         }
 
-        //public int DeletePermiso(int id)
-        //{
-        //    try
-        //    {
-        //        using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-        //        {
-        //            NpgsqlCommand cmd = new NpgsqlCommand("spDeleteCentroCostos", con);
 
-
-        //            cmd.Parameters.AddWithValue("STR_NOMBRE_PERMISO", id);
-
-        //            con.Open();
-        //            cmd.ExecuteNonQuery();
-        //            con.Close();
-        //        }
-        //        return 1;
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
 
         public int DeletePermiso(Permiso permiso)
         {
@@ -140,20 +110,19 @@ namespace AppGia.Controllers
                 + " WHERE " + cod + "INT_IDPERMISO_P" + cod + " = " + "@INT_IDPERMISO_P";
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
+
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_PERM", Value = permiso.BOOL_ESTATUS_LOGICO_PERM });
-                    conex.ConnexionDB().Open();
+                    con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
-                    conex.ConnexionDB().Close();
+                    con.Close();
                     return cantFilas;
-                //}
+             
             }
             catch
             {
-                conex.ConnexionDB().Close();
+                con.Close();
                 throw;
             }
         }

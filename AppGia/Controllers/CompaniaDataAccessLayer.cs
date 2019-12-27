@@ -11,7 +11,6 @@ namespace AppGia.Controllers
 {
     public class CompaniaDataAccessLayer
     {
-        //private string connectionString = "User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5432;Database=GIA;Pooling=true;";
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         char cod = '"';
@@ -27,9 +26,8 @@ namespace AppGia.Controllers
             try
             {
                 List<Compania> lstcompania = new List<Compania>();
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena.Trim(), con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
 
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -49,7 +47,8 @@ namespace AppGia.Controllers
                         compania.STR_CONTRASENIA_ETL = rdr["STR_CONTRASENIA_ETL"].ToString().Trim();
                         compania.STR_BD_COMPANIA = rdr["STR_BD_COMPANIA"].ToString().Trim();
                         compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString().Trim();
-
+                        compania.FEC_MODIF_COMPANIA = Convert.ToDateTime (rdr["FEC_MODIF_COMPANIA"]);
+                        compania.BOOL_ESTATUS_LOGICO_COMPANIA = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_COMPANIA"]);
                         lstcompania.Add(compania);
                     }
                     con.Close();
@@ -68,16 +67,15 @@ namespace AppGia.Controllers
             try
             {
                 Compania compania = new Compania();
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" +id;
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                    string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" + id;
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-
+                        compania.INT_IDCOMPANIA_P = Convert.ToInt32(rdr["INT_IDCOMPANIA_P"]);
                         compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString().Trim();
                         compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString().Trim();
                         compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString().Trim();
@@ -88,6 +86,8 @@ namespace AppGia.Controllers
                         compania.STR_CONTRASENIA_ETL = rdr["STR_CONTRASENIA_ETL"].ToString().Trim();
                         compania.STR_BD_COMPANIA = rdr["STR_BD_COMPANIA"].ToString().Trim();
                         compania.STR_MONEDA_COMPANIA = rdr["STR_MONEDA_COMPANIA"].ToString().Trim();
+                        compania.FEC_MODIF_COMPANIA = Convert.ToDateTime(rdr["FEC_MODIF_COMPANIA"]);
+                        compania.BOOL_ESTATUS_LOGICO_COMPANIA = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_COMPANIA"]);
 
                     }
                     con.Close();
@@ -115,8 +115,6 @@ namespace AppGia.Controllers
                 ","+cod+"STR_CONTRASENIA_ETL"+cod+
                 ","+cod+"STR_PUERTO_COMPANIA"+cod+
                 ","+cod+"STR_BD_COMPANIA"+cod+
-                ","+cod+"INT_IDCENTROCOSTO_F"+cod+
-                ","+cod+"INT_IDPROYECTO_F"+cod+
                 ","+cod+ "FEC_MODIF_COMPANIA"+cod+
                 "," +cod+"BOOL_ESTATUS_LOGICO_COMPANIA"+cod+
                 ") VALUES " +
@@ -130,17 +128,14 @@ namespace AppGia.Controllers
                 "@STR_CONTRASENIA_ETL," +
                 "@STR_PUERTO_COMPANIA," +
                 "@STR_BD_COMPANIA," +
-                "@INT_IDCENTROCOSTO_F," +
-                "@INT_IDPROYECTO_F," +
                 "@FEC_MODIF_COMPANIA,"+
                 "@BOOL_ESTATUS_LOGICO_COMPANIA)";
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+               
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), con);
-                    //cmd.Parameters.AddWithValue("@INT_IDGRUPO", grupo.INT_IDGRUPO);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@STR_IDCOMPANIA", compania.STR_IDCOMPANIA.Trim());
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_COMPANIA", compania.STR_NOMBRE_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_ABREV_COMPANIA", compania.STR_ABREV_COMPANIA);
@@ -151,8 +146,6 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", compania.STR_CONTRASENIA_ETL);
                     cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", compania.STR_PUERTO_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
-                    cmd.Parameters.AddWithValue("@INT_IDCENTROCOSTO_F", compania.INT_IDCENTROCOSTO_F);
-                    cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
 
@@ -170,11 +163,10 @@ namespace AppGia.Controllers
             }
         }
 
-
         public int Update(string id, Compania compania)
             
         {
-            //compania.INT_IDCOMPANIA_P = Convert.ToInt32(id);
+          
             string update = "UPDATE " + cod + "CAT_COMPANIA" 
                 + cod + "SET" + cod + "STR_IDCOMPANIA" + cod + "=" + "@STR_IDCOMPANIA" +","
                 + cod + "STR_NOMBRE_COMPANIA"+ cod + "= " + "@STR_NOMBRE_COMPANIA" + ","
@@ -184,13 +176,14 @@ namespace AppGia.Controllers
                 + cod + "STR_MONEDA_COMPANIA"+ cod + "= " + "@STR_MONEDA_COMPANIA" + ","
                 + cod + "STR_USUARIO_ETL"    + cod + "= " + "@STR_USUARIO_ETL"     + ","
                 + cod + "STR_CONTRASENIA_ETL"+ cod + "= " + "@STR_CONTRASENIA_ETL" + ","
-                + cod + "STR_PUERTO_COMPANIA"+ cod + "= " + "@STR_PUERTO_COMPANIA" + ","
+                + cod + "STR_PUERTO_COMPANIA" + cod + "= " + "@STR_PUERTO_COMPANIA" + ","
+                + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "= " + "@BOOL_ESTATUS_LOGICO_COMPANIA" + ","
+                + cod + "FEC_MODIF_COMPANIA" + cod + "= " + "@FEC_MODIF_COMPANIA" + ","
                 + cod + "STR_BD_COMPANIA"    + cod + "= " + "@STR_BD_COMPANIA"
                 + " WHERE "+cod+"INT_IDCOMPANIA_P"+cod+ "=" + id;
 
             try
             {
-                //using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update.Trim(), con);
@@ -204,8 +197,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CONTRASENIA_ETL", compania.STR_CONTRASENIA_ETL);
                     cmd.Parameters.AddWithValue("@STR_PUERTO_COMPANIA", compania.STR_PUERTO_COMPANIA);
                     cmd.Parameters.AddWithValue("@STR_BD_COMPANIA", compania.STR_BD_COMPANIA);
-                    cmd.Parameters.AddWithValue("@INT_IDCENTROCOSTO_F", compania.INT_IDCENTROCOSTO_F);
-                    cmd.Parameters.AddWithValue("@INT_IDPROYECTO_F", compania.INT_IDPROYECTO_F);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_COMPANIA", DateTime.Now);
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -229,7 +221,6 @@ namespace AppGia.Controllers
            
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete.Trim(), con);
@@ -247,28 +238,7 @@ namespace AppGia.Controllers
                 throw;
             }
 
-            //compania.BOOL_ESTATUS_LOGICO_COMPANIA = true;
-            //compania.INT_IDCOMPANIA_P=1;
-
-
-            //string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + compania.BOOL_ESTATUS_LOGICO_COMPANIA + "' WHERE"+cod+ "INT_IDCOMPANIA_P" + cod+"='"+ compania.INT_IDCOMPANIA_P + "'";
-            //try
-            //{
-            //    using(NpgsqlConnection con = new NpgsqlConnection(connectionString))
-            //    {
-            //        NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-            //        cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", compania.BOOL_ESTATUS_LOGICO_COMPANIA);
-
-            //        con.Open();
-            //        cmd.ExecuteNonQuery();
-            //        con.Close();
-            //    }
-            //    return 1;
-            //}
-            //catch
-            //{
-            //    throw;
-            //}
+        
         }
     }
 }

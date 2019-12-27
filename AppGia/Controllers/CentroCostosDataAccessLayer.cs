@@ -22,7 +22,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<CentroCostos> GetAllCentros()
         {
-            
+            //Obtiene todos los centros de costos habilitados "TRUE"
             string consulta = "SELECT * FROM"+cod+"CAT_CENTROCOSTO"+cod+ "WHERE " + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "=" + true; ;
             try
             {
@@ -30,26 +30,28 @@ namespace AppGia.Controllers
                 {
 
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
 
               
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-                        CentroCostos centroCC = new CentroCostos();
+                        CentroCostos centroCostos = new CentroCostos();
 
-                        centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
-                        centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
-                        centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
-                        centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
-                        centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
-                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
-                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
+                        centroCostos.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
+                        centroCostos.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
+                        centroCostos.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
+                        centroCostos.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
+                        centroCostos.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
+                        centroCostos.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
+                        centroCostos.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
+                        centroCostos.FEC_MODIF_CC = Convert.ToDateTime(rdr["FEC_MODIF_CC"]);
 
-              
 
-                        lstcentros.Add(centroCC);
+
+
+                        lstcentros.Add(centroCostos);
                     }
                     con.Close();
                 }
@@ -62,36 +64,35 @@ namespace AppGia.Controllers
             }
         }
 
-        public CentroCostos GetCentroData(int id)
+        //Obtiene los centro de costos por identificador unico 
+        public CentroCostos GetCentroData(string id)
         {
-            string consulta = "SELECT * FROM" + cod + "CAT_CENTROCOSTO" + cod + "WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + id; ;
+            string consulta = "SELECT * FROM" + cod + "CAT_CENTROCOSTO" + cod + "WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + id ;
             try
             {
-                CentroCostos centroCC = new CentroCostos();
-
-               
+                    CentroCostos centro = new CentroCostos();
                 {
-                    con.Close();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), conex.ConnexionDB());
-
-                    
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta,con);
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-                        
-                        centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
-                        centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
-                        centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
-                        centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
-                        centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
-                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
-                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
+
+                        centro.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
+                        centro.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
+                        centro.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
+                        centro.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
+                        centro.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
+                        centro.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
+                        centro.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
+                        centro.FEC_MODIF_CC = Convert.ToDateTime(rdr["FEC_MODIF_CC"]);
+
                     }
 
                     con.Close();
                 }
-                return centroCC;
+                return centro;
             }
             catch
             {
@@ -100,25 +101,26 @@ namespace AppGia.Controllers
                
             }
         }
-        public int AddCentro(CentroCostos centroCC)
+        public int AddCentro(CentroCostos centroCostos)
         {
             string add = "INSERT INTO "+cod+ "CAT_CENTROCOSTO" + cod+"("+cod+ "STR_TIPO_CC"+cod+"," + cod+ "STR_IDCENTROCOSTO" + cod+","+cod+ "STR_NOMBRE_CC" + cod+","+cod+ "STR_CATEGORIA_CC" + cod+","+cod+ "STR_ESTATUS_CC" + cod+","+cod+ "STR_GERENTE_CC" + cod+","+cod+ "FEC_MODIF_CC"+cod+"," + cod+"BOOL_ESTATUS_LOGICO_CENTROCOSTO"+cod+")" +
                 "VALUES (@STR_TIPO_CC,@STR_IDCENTROCOSTO,@STR_NOMBRE_CC,@STR_CATEGORIA_CC,@STR_ESTATUS_CC,@STR_GERENTE_CC,@FEC_MODIF_CC,@BOOL_ESTATUS_LOGICO_CENTROCOSTO)";
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
+               
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.AddWithValue("STR_TIPO_CC", centroCC.STR_TIPO_CC);
-                    cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCC.STR_IDCENTROCOSTO);
-                    cmd.Parameters.AddWithValue("STR_NOMBRE_CC", centroCC.STR_NOMBRE_CC);
-                    cmd.Parameters.AddWithValue("STR_CATEGORIA_CC", centroCC.STR_CATEGORIA_CC);
-                    cmd.Parameters.AddWithValue("STR_ESTATUS_CC", centroCC.STR_ESTATUS_CC);
-                    cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCC.STR_GERENTE_CC);
+                    cmd.Parameters.AddWithValue("STR_TIPO_CC", centroCostos.STR_TIPO_CC.Trim());
+                    cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCostos.STR_IDCENTROCOSTO.Trim());
+                    cmd.Parameters.AddWithValue("STR_NOMBRE_CC", centroCostos.STR_NOMBRE_CC.Trim());
+                    cmd.Parameters.AddWithValue("STR_CATEGORIA_CC", centroCostos.STR_CATEGORIA_CC.Trim());
+                    cmd.Parameters.AddWithValue("STR_ESTATUS_CC", centroCostos.STR_ESTATUS_CC.Trim());
+                    cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCostos.STR_GERENTE_CC.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
-                    cmd.Parameters.AddWithValue("BOOL_ESTATUS_LOGICO_CENTROCOSTO", centroCC.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
+                    cmd.Parameters.AddWithValue("BOOL_ESTATUS_LOGICO_CENTROCOSTO", centroCostos.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
+
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
@@ -132,36 +134,37 @@ namespace AppGia.Controllers
             }
         }
 
-        public int update(string id, CentroCostos centrocosto)
+        public int update(string id, CentroCostos centroCostos)
         {
 
             string update = "UPDATE " + cod + "CAT_CENTROCOSTO" + cod + "SET"
 
 
-            + cod + "STR_IDCENTROCOSTO" + cod + " = '" + centrocosto.STR_IDCENTROCOSTO + "' ,"
-            + cod + "STR_NOMBRE_CC" + cod + " = '" + centrocosto.STR_NOMBRE_CC + "' ,"
-            + cod + "STR_CATEGORIA_CC" + cod + " = '" + centrocosto.STR_CATEGORIA_CC + "' ,"
-            + cod + "STR_GERENTE_CC" + cod + " = '" + centrocosto.STR_GERENTE_CC + "' ,"
-            + cod + "STR_ESTATUS_CC" + cod + " = '" + centrocosto.STR_ESTATUS_CC + "' ,"
-            + cod + "STR_TIPO_CC" + cod + " = '" + centrocosto.STR_TIPO_CC + "'"
+            + cod + "STR_IDCENTROCOSTO" + cod + " = '" + centroCostos.STR_IDCENTROCOSTO + "' ,"
+            + cod + "STR_NOMBRE_CC" + cod + " = '" + centroCostos.STR_NOMBRE_CC + "' ,"
+            + cod + "STR_CATEGORIA_CC" + cod + " = '" + centroCostos.STR_CATEGORIA_CC + "' ,"
+            + cod + "STR_GERENTE_CC" + cod + " = '" + centroCostos.STR_GERENTE_CC + "' ,"
+            + cod + "STR_ESTATUS_CC" + cod + " = '" + centroCostos.STR_ESTATUS_CC + "' ,"
+            + cod + "FEC_MODIF_CC" + cod + " = " + "@FEC_MODIF_CC" + " ,"
+            + cod + "STR_TIPO_CC" + cod + " = '" + centroCostos.STR_TIPO_CC + "'"
  
             + " WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + id;
 
 
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
+                    
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(update.Trim(), conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                    cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centrocosto.STR_IDCENTROCOSTO);
-                    cmd.Parameters.AddWithValue("@STR_NOMBRE_CC", centrocosto.STR_NOMBRE_CC);
-                    cmd.Parameters.AddWithValue("@STR_CATEGORIA_CC", centrocosto.STR_CATEGORIA_CC);
-                    cmd.Parameters.AddWithValue("@STR_GERENTE_CC", centrocosto.STR_GERENTE_CC);
-                    cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centrocosto.STR_ESTATUS_CC);
-                    cmd.Parameters.AddWithValue("@STR_TIPO_CC", centrocosto.STR_TIPO_CC);
-
+                    cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCostos.STR_IDCENTROCOSTO.Trim());
+                    cmd.Parameters.AddWithValue("@STR_NOMBRE_CC", centroCostos.STR_NOMBRE_CC.Trim());
+                    cmd.Parameters.AddWithValue("@STR_CATEGORIA_CC", centroCostos.STR_CATEGORIA_CC.Trim());
+                    cmd.Parameters.AddWithValue("@STR_GERENTE_CC", centroCostos.STR_GERENTE_CC.Trim());
+                    cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centroCostos.STR_ESTATUS_CC.Trim());
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@STR_TIPO_CC", centroCostos.STR_TIPO_CC.Trim());
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -181,10 +184,9 @@ namespace AppGia.Controllers
             string delete = "UPDATE " + cod + "CAT_CENTROCOSTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "='" +status+ "' WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "='" + id + "'";
             try
             {
-                //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(delete.Trim(), conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;

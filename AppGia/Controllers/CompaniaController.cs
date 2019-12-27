@@ -29,16 +29,16 @@ namespace AppGia.Controllers
 
         // POST: api/Compania
         [HttpPost]
-        public int Create([FromBody]Compania comp)
+        public int Create([FromBody]Compania compania)
         {
-            return objCompania.AddCompania(comp);
+            return objCompania.AddCompania(compania);
         }
 
         // PUT: api/Compania/5
         [HttpPut("{id}")]
-        public int Put(string id,[FromBody] Compania comp)
+        public int Put(string id,[FromBody] Compania compania)
         {
-           return objCompania.Delete(id);
+           return objCompania.Update(id, compania);
 
           // return objCompania.Update(id, comp);
 

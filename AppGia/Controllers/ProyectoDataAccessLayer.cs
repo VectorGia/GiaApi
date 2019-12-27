@@ -31,11 +31,17 @@ namespace AppGia.Controllers
                     {
                         Proyecto proyecto = new Proyecto();
 
+<<<<<<< HEAD
                         proyecto.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);
+=======
+                        proyecto.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);    
+>>>>>>> juan
                         proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString().Trim();
                         proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString().Trim();
                         proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
                         proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString().Trim();
+                        proyecto.BOOL_ESTATUS_LOGICO_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_PROYECTO"]);
+                        proyecto.FEC_MODIF = Convert.ToDateTime(rdr["FEC_MODIF"]);
 
                         lstProyecto.Add(proyecto);
                     }
@@ -66,10 +72,13 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
 
+                        proyecto.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);
                         proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString().Trim();
                         proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString().Trim();
-                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString().Trim();
                         proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
+                        proyecto.STR_RESPONSABLE = rdr["STR_RESPONSABLE"].ToString().Trim();
+                        proyecto.BOOL_ESTATUS_LOGICO_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_PROYECTO"]);
+                        proyecto.FEC_MODIF = Convert.ToDateTime(rdr["FEC_MODIF"]);
                     }
                 }
                 return proyecto;
@@ -100,7 +109,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
+<<<<<<< HEAD
                     //cmd.Parameters.AddWithValue("@INT_IDPANTALLA_F", proyecto.INT_IDPANTALLA_F);
+=======
+>>>>>>> juan
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -125,6 +137,7 @@ namespace AppGia.Controllers
           + cod + "STR_NOMBRE_PROYECTO" + cod + " = '" + proyecto.STR_NOMBRE_PROYECTO + "' ,"
           + cod + "STR_RESPONSABLE" + cod + " = '" + proyecto.STR_RESPONSABLE + "' ,"
           + cod + "STR_IDPROYECTO" + cod + " = '" + proyecto.STR_IDPROYECTO + "' ,"
+          + cod + "FEC_MODIF" + cod + " = " + "@FEC_MODIF" + " ,"
           + cod + "BOOL_ESTATUS_PROYECTO" + cod + " = '" + proyecto.BOOL_ESTATUS_PROYECTO + "'"
           + " WHERE" + cod + "INT_IDPROYECTO_P" + cod + "=" + id;
 
@@ -139,11 +152,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_PROYECTO", proyecto.STR_NOMBRE_PROYECTO.Trim());
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE.Trim());
                     cmd.Parameters.AddWithValue("@STR_IDPROYECTO", proyecto.STR_IDPROYECTO.Trim());
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
+                   
 
-                    con.Open();
+            
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -165,12 +178,11 @@ namespace AppGia.Controllers
             {
 
                 {
-                    con.Open();
+                
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
 
-
+                    con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
-
                     con.Close();
                     return cantFilAfec;
                 }
