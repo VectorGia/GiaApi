@@ -30,7 +30,7 @@ namespace AppGia.Controllers
                 {
 
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
 
               
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -39,13 +39,13 @@ namespace AppGia.Controllers
                     {
                         CentroCostos centroCC = new CentroCostos();
 
-                        centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString();
+                        centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
                         centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
-                        centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString();
-                        centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString();
-                        centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString();
-                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString();
-                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString();
+                        centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
+                        centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
+                        centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
+                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
+                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
 
               
 
@@ -72,7 +72,7 @@ namespace AppGia.Controllers
                
                 {
                     con.Close();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), conex.ConnexionDB());
 
                     
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -80,13 +80,13 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         
-                        centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString();
+                        centroCC.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
                         centroCC.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
-                        centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString();
-                        centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString();
-                        centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString();
-                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString();
-                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString();
+                        centroCC.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
+                        centroCC.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
+                        centroCC.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
+                        centroCC.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
+                        centroCC.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
                     }
 
                     con.Close();
@@ -109,7 +109,7 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), conex.ConnexionDB());
 
                     cmd.Parameters.AddWithValue("STR_TIPO_CC", centroCC.STR_TIPO_CC);
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCC.STR_IDCENTROCOSTO);
@@ -119,11 +119,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("STR_GERENTE_CC", centroCC.STR_GERENTE_CC);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
                     cmd.Parameters.AddWithValue("BOOL_ESTATUS_LOGICO_CENTROCOSTO", centroCC.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
-                   
-                    cmd.ExecuteNonQuery();
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
             }
             catch
             {
@@ -153,7 +153,7 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(update, conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(update.Trim(), conex.ConnexionDB());
 
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centrocosto.STR_IDCENTROCOSTO);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_CC", centrocosto.STR_NOMBRE_CC);
@@ -162,10 +162,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centrocosto.STR_ESTATUS_CC);
                     cmd.Parameters.AddWithValue("@STR_TIPO_CC", centrocosto.STR_TIPO_CC);
 
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {
@@ -183,11 +184,12 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(delete, conex.ConnexionDB());
-                    cmd.ExecuteNonQuery();
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete.Trim(), conex.ConnexionDB());
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+
             }
             catch
             {

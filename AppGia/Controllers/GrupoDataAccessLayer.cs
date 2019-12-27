@@ -27,14 +27,14 @@ namespace AppGia.Controllers
 
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena.Trim(), con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
                         Grupo grupo = new Grupo();
-                        grupo.STR_NOMBRE_GRUPO = rdr["STR_NOMBRE_GRUPO"].ToString();
+                        grupo.STR_NOMBRE_GRUPO = rdr["STR_NOMBRE_GRUPO"].ToString().Trim();
                         grupo.INT_IDGRUPO_P = Convert.ToInt32(rdr["INT_IDGRUPO_P"]);
 
                         lstgrupo.Add(grupo);
@@ -62,15 +62,16 @@ namespace AppGia.Controllers
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
                     
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), con);
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_GRUPO", grupo.STR_NOMBRE_GRUPO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_GRUPO", grupo.BOOL_ESTATUS_LOGICO_GRUPO);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_GRUPO", DateTime.Now);
                     con.Open();
-                    cmd.ExecuteNonQuery();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
+                    return cantFilAfec;
                 }
-                return 1;
+                
             }
             catch
             {
@@ -88,7 +89,7 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
                     con.Open();
@@ -120,7 +121,7 @@ namespace AppGia.Controllers
             {
                 //using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = grupo.BOOL_ESTATUS_LOGICO_GRUPO });
                     con.Open();
