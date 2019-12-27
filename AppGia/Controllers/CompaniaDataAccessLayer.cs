@@ -37,8 +37,8 @@ namespace AppGia.Controllers
                         
                         Compania compania = new Compania();
                         compania.INT_IDCOMPANIA_P = Convert.ToInt32(rdr["INT_IDCOMPANIA_P"]);
-                        compania.STR_IDCOMPANIA = rdr["STR_IDCOMPASTR_NOMBRE_COMPANIANIA"].ToString().Trim();
-                        compania.STR_NOMBRE_COMPANIA = rdr[""].ToString().Trim();
+                        compania.STR_IDCOMPANIA = rdr["STR_IDCOMPANIA"].ToString().Trim();
+                        compania.STR_NOMBRE_COMPANIA = rdr["STR_NOMBRE_COMPANIA"].ToString().Trim();
                         compania.STR_ABREV_COMPANIA = rdr["STR_ABREV_COMPANIA"].ToString().Trim();
                         compania.BOOL_ETL_COMPANIA = Convert.ToBoolean(rdr["BOOL_ETL_COMPANIA"]);
                         compania.STR_HOST_COMPANIA = rdr["STR_HOST_COMPANIA"].ToString().Trim();
