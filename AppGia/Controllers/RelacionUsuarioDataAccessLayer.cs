@@ -150,6 +150,7 @@ namespace AppGia.Controllers
             {
 
                 {
+                    con.Open();
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@INT_IDUSUARIO_P", relacionusuario.INT_IDUSUARIO_P);

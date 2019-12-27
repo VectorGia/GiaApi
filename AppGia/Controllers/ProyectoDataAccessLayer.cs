@@ -32,7 +32,6 @@ namespace AppGia.Controllers
                         Proyecto proyecto = new Proyecto();
 
                         proyecto.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);
-                        proyecto.INT_IDPANTALLA_F = Convert.ToInt32(rdr["INT_IDPANTALLA_F"]);
                         proyecto.STR_IDPROYECTO = rdr["STR_IDPROYECTO"].ToString().Trim();
                         proyecto.STR_NOMBRE_PROYECTO = rdr["STR_NOMBRE_PROYECTO"].ToString().Trim();
                         proyecto.BOOL_ESTATUS_PROYECTO = Convert.ToBoolean(rdr["BOOL_ESTATUS_PROYECTO"]);
@@ -90,9 +89,8 @@ namespace AppGia.Controllers
                 +cod+ "BOOL_ESTATUS_PROYECTO" + cod+","
                 +cod+"STR_RESPONSABLE"+cod+","
                 +cod+ "FEC_MODIF"+cod+","
-                +cod+ "INT_IDPANTALLA_F" +cod+","
                 +cod+ "BOOL_ESTATUS_LOGICO_PROYECTO" + cod+") VALUES " +
-                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE,@FEC_MODIF,@INT_IDPANTALLA_F,@BOOL_ESTATUS_LOGICO_PROYECTO)";
+                "(@STR_IDPROYECTO,@STR_NOMBRE_PROYECTO,@BOOL_ESTATUS_PROYECTO,@STR_RESPONSABLE,@FEC_MODIF,@BOOL_ESTATUS_LOGICO_PROYECTO)";
             try
             {
                 {
@@ -102,7 +100,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_PROYECTO", proyecto.BOOL_ESTATUS_PROYECTO);
                     cmd.Parameters.AddWithValue("@STR_RESPONSABLE", proyecto.STR_RESPONSABLE.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@INT_IDPANTALLA_F", proyecto.INT_IDPANTALLA_F);
+                    //cmd.Parameters.AddWithValue("@INT_IDPANTALLA_F", proyecto.INT_IDPANTALLA_F);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_PROYECTO", proyecto.BOOL_ESTATUS_LOGICO_PROYECTO);
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();

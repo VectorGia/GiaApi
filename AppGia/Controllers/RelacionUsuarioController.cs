@@ -4,31 +4,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using AppGia.Models;
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class RelacionUsuarioController : ControllerBase
     {
+        RelacionUsuarioDataAccessLayer objrelacionUsuario = new RelacionUsuarioDataAccessLayer();
         // GET: api/RelacionUsuario
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Relacion_Usuario> Get()
         {
-            return new string[] { "value1", "value2" };
+            return objrelacionUsuario.GetAllRelacionUsuario();
         }
 
         // GET: api/RelacionUsuario/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        [HttpGet("{id}", Name = "GetRelacion")]
+        //public string GetRelacion(int id)
+        //{
+        //    //return objrelacionUsuario.GetAllRelacionUsuario(int);
+        //}
 
         // POST: api/RelacionUsuario
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Post([FromBody] Relacion_Usuario relacion)
         {
+            return objrelacionUsuario.insert(relacion);
         }
 
         // PUT: api/RelacionUsuario/5
