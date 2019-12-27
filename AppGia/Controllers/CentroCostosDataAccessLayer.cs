@@ -65,33 +65,34 @@ namespace AppGia.Controllers
         }
 
         //Obtiene los centro de costos por identificador unico 
-        public CentroCostos GetCentroData(CentroCostos centroCostos)
+        public CentroCostos GetCentroData(string id)
         {
-            string consulta = "SELECT * FROM" + cod + "CAT_CENTROCOSTO" + cod + "WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + centroCostos.INT_IDCENTROCOSTO_P ;
+            string consulta = "SELECT * FROM" + cod + "CAT_CENTROCOSTO" + cod + "WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + id ;
             try
             {
+                    CentroCostos centro = new CentroCostos();
                 {
-                    con.Close();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta ,con);
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta,con);
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
 
-                        centroCostos.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
-                        centroCostos.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
-                        centroCostos.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
-                        centroCostos.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
-                        centroCostos.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
-                        centroCostos.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
-                        centroCostos.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
-                        centroCostos.FEC_MODIF_CC = Convert.ToDateTime(rdr["FEC_MODIF_CC"]);
+                        centro.INT_IDCENTROCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROCOSTO_P"]);
+                        centro.STR_TIPO_CC = rdr["STR_TIPO_CC"].ToString().Trim();
+                        centro.STR_IDCENTROCOSTO = rdr["STR_IDCENTROCOSTO"].ToString().Trim();
+                        centro.STR_NOMBRE_CC = rdr["STR_NOMBRE_CC"].ToString().Trim();
+                        centro.STR_CATEGORIA_CC = rdr["STR_CATEGORIA_CC"].ToString().Trim();
+                        centro.STR_ESTATUS_CC = rdr["STR_ESTATUS_CC"].ToString().Trim();
+                        centro.STR_GERENTE_CC = rdr["STR_GERENTE_CC"].ToString().Trim();
+                        centro.FEC_MODIF_CC = Convert.ToDateTime(rdr["FEC_MODIF_CC"]);
 
                     }
 
                     con.Close();
                 }
-                return centroCostos;
+                return centro;
             }
             catch
             {
@@ -109,7 +110,7 @@ namespace AppGia.Controllers
                
                 {
                     con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add.Trim(), conex.ConnexionDB());
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
                     cmd.Parameters.AddWithValue("STR_TIPO_CC", centroCostos.STR_TIPO_CC.Trim());
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCostos.STR_IDCENTROCOSTO.Trim());
@@ -133,7 +134,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public int update(CentroCostos centroCostos)
+        public int update(string id, CentroCostos centroCostos)
         {
 
             string update = "UPDATE " + cod + "CAT_CENTROCOSTO" + cod + "SET"
@@ -144,17 +145,17 @@ namespace AppGia.Controllers
             + cod + "STR_CATEGORIA_CC" + cod + " = '" + centroCostos.STR_CATEGORIA_CC + "' ,"
             + cod + "STR_GERENTE_CC" + cod + " = '" + centroCostos.STR_GERENTE_CC + "' ,"
             + cod + "STR_ESTATUS_CC" + cod + " = '" + centroCostos.STR_ESTATUS_CC + "' ,"
-            + cod + "FEC_MODIF_CC" + cod + " = '" + centroCostos.FEC_MODIF_CC + "' ,"
-            + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + " = '" + centroCostos.BOOL_ESTATUS_LOGICO_CENTROCOSTO + "' ,"
+            + cod + "FEC_MODIF_CC" + cod + " = " + "@FEC_MODIF_CC" + " ,"
             + cod + "STR_TIPO_CC" + cod + " = '" + centroCostos.STR_TIPO_CC + "'"
  
-            + " WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + centroCostos.INT_IDCENTROCOSTO_P;
+            + " WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "=" + id;
 
 
             try
             {
                 {
                     
+                    con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
                     cmd.Parameters.AddWithValue("@STR_IDCENTROCOSTO", centroCostos.STR_IDCENTROCOSTO.Trim());
@@ -162,10 +163,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_CATEGORIA_CC", centroCostos.STR_CATEGORIA_CC.Trim());
                     cmd.Parameters.AddWithValue("@STR_GERENTE_CC", centroCostos.STR_GERENTE_CC.Trim());
                     cmd.Parameters.AddWithValue("@STR_ESTATUS_CC", centroCostos.STR_ESTATUS_CC.Trim());
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_CC", DateTime.Now);
                     cmd.Parameters.AddWithValue("@STR_TIPO_CC", centroCostos.STR_TIPO_CC.Trim());
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_CENTROCOSTO", centroCostos.BOOL_ESTATUS_LOGICO_CENTROCOSTO);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_CC", centroCostos.FEC_MODIF_CC);
-                    con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -179,10 +178,10 @@ namespace AppGia.Controllers
             }
         }
 
-        public int Delete(CentroCostos centroCostos)
+        public int Delete(string id)
         {
             bool status = false;
-            string delete = "UPDATE " + cod + "CAT_CENTROCOSTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "='" +status+ "' WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "='" + centroCostos.INT_IDCENTROCOSTO_P + "'";
+            string delete = "UPDATE " + cod + "CAT_CENTROCOSTO" + cod + "SET" + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "='" +status+ "' WHERE" + cod + "INT_IDCENTROCOSTO_P" + cod + "='" + id + "'";
             try
             {
                 {

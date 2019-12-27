@@ -19,12 +19,12 @@ namespace AppGia.Controllers
             return objModelo.GetAllModeloNegocios();
         }
 
-        //// GET: api/ModeloNegocio/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET: api/ModeloNegocio/5
+        [HttpGet("{id}", Name = "GetModelo")]
+        public ModeloNegocio GetModelo(string id)
+        {
+            return objModelo.GetModelo(id);
+        }
 
         // POST: api/ModeloNegocio
         [HttpPost]
@@ -35,15 +35,16 @@ namespace AppGia.Controllers
 
         // PUT: api/ModeloNegocio/5
         [HttpPut("{id}")]
-        public int Put([FromBody] ModeloNegocio negocio)
+        public int Put(string id, [FromBody] ModeloNegocio negocio)
         {
-            return objModelo.UpdateModelo(negocio);
+            return objModelo.UpdateModelo(id, negocio);
         }
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public int Delete(string id)
+        {
+            return objModelo.DeleteModelo(id);
+        }
     }
 }

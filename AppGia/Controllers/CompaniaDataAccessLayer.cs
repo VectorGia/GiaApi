@@ -62,13 +62,13 @@ namespace AppGia.Controllers
             }
         }
 
-        public Compania GetCompaniaData(Compania compania)
+        public Compania GetCompaniaData(string id)
         {
             try
             {
-           
+                Compania compania = new Compania();
                 {
-                    string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" +compania.INT_IDCOMPANIA_P;
+                    string consulta = "SELECT * FROM" + cod + "CAT_COMPANIA" + cod + "WHERE" +cod+ "INT_IDCOMPANIA_P"+cod+ "=" + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -163,7 +163,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public int Update(Compania compania)
+        public int Update(string id, Compania compania)
             
         {
           
@@ -180,7 +180,7 @@ namespace AppGia.Controllers
                 + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "= " + "@BOOL_ESTATUS_LOGICO_COMPANIA" + ","
                 + cod + "FEC_MODIF_COMPANIA" + cod + "= " + "@FEC_MODIF_COMPANIA" + ","
                 + cod + "STR_BD_COMPANIA"    + cod + "= " + "@STR_BD_COMPANIA"
-                + " WHERE "+cod+"INT_IDCOMPANIA_P"+cod+ "=" + compania.INT_IDCOMPANIA_P;
+                + " WHERE "+cod+"INT_IDCOMPANIA_P"+cod+ "=" + id;
 
             try
             {
@@ -212,12 +212,12 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-        public int Delete(Compania compania)
+        public int Delete(string id)
          {
             string status = "false";
             string delete = "UPDATE " + cod + "CAT_COMPANIA" + cod + "SET" 
                 + cod + "BOOL_ESTATUS_LOGICO_COMPANIA" + cod + "='" + status + "' " +
-                "WHERE" + cod + "INT_IDCOMPANIA_P" + cod + "='" + compania.INT_IDCOMPANIA_P + "'";
+                "WHERE" + cod + "INT_IDCOMPANIA_P" + cod + "='" + id + "'";
            
             try
             {
