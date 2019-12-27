@@ -80,13 +80,7 @@ namespace AppGia.Controllers
             {
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, conex.ConnexionDB());
-
-<<<<<<< HEAD
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL", Value = permiso.INT_IDROL });
-=======
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_PERMISO", Value = permiso.STR_NOMBRE_PERMISO.Trim() });;
->>>>>>> juan
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDPERMISO_P", Value = permiso.INT_IDPERMISO_P });
 
                     con.Open();

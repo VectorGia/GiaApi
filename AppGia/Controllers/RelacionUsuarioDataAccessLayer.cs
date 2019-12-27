@@ -144,8 +144,18 @@ namespace AppGia.Controllers
 
         {
 
-            string add = "INSERT INTO" + cod + "TAB_RELACION_USUARIO" + cod + "(" + cod + "INT_IDUSUARIO_P" + cod + ","+ cod + "INT_IDGRUPO_P" + cod + "," + cod + "INT_IDROL_P" + cod + "," + cod + "INT_IDPANTALLA_P" + cod + "," + cod + "INT_IDPERMISO_P" + cod + "," + cod + "BOOL_ESTATUS_LOGICO_RELUSU" + cod + "," + cod + "FEC_MODIF_RELUSU" + cod + ") VALUES " +
-                "(@INT_IDUSUARIO_P,@INT_IDGRUPO_P,@INT_IDROL_P,@INT_IDPANTALLA_P,@INT_IDPERMISO_P,@BOOL_ESTATUS_LOGICO_RELUSU,@FEC_MODIF_RELUSU)";
+            string add = "INSERT INTO" + cod + "TAB_RELACION_USUARIO" + cod + "(" 
+                + cod + "INT_IDUSUARIO_P" + cod + ","
+                + cod + "INT_IDGRUPO_P"   + cod + "," 
+                + cod + "INT_IDROL_P"     + cod + "," 
+                + cod + "INT_IDPANTALLA_P" + cod +"," 
+                + cod + "INT_IDPERMISO_P" + cod + "," 
+                + cod + "BOOL_ESTATUS_LOGICO_RELUSU" + cod + "," 
+                + cod + "FEC_MODIF_RELUSU" + cod + ") " +
+                "VALUES " +
+                "(@INT_IDUSUARIO_P,@INT_IDGRUPO_P," +
+                "@INT_IDROL_P,@INT_IDPANTALLA_P," +
+                "@INT_IDPERMISO_P,@BOOL_ESTATUS_LOGICO_RELUSU,@FEC_MODIF_RELUSU)";
             try
             {
 
