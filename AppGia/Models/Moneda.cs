@@ -14,5 +14,7 @@ namespace AppGia.Models
         public string STR_CLAVEDESC { get; set; }
 
         public string STR_PAIS { get; set; }
+
+        public bool BOOL_ESTATUS_MONEDA { get; set; }
     }
 }

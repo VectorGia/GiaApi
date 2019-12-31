@@ -39,7 +39,7 @@ namespace AppGia.Controllers
                         moneda.STR_DESCRIPCION = rdr["STR_DESCRIPCION"].ToString().Trim();
                         moneda.STR_CLAVEDESC = rdr["STR_CLAVEDESC"].ToString().Trim();
                         moneda.STR_PAIS = rdr["STR_PAIS"].ToString().Trim();
-
+                        moneda.BOOL_ESTATUS_MONEDA = Convert.ToBoolean( rdr["BOOL_ESTATUS_MONEDA"]);
                         lstNoneda.Add(moneda);
                     }
                     con.Close();
@@ -61,10 +61,12 @@ namespace AppGia.Controllers
                         + "(" 
                         + cod + "STR_DESCRIPCION" + cod + ","
                         + cod + "STR_CLAVEDESC" + cod + ","
-                        + cod + "STR_PAIS" + cod + ")"
+                        + cod + "STR_PAIS" + cod + ","
+                        + cod + "BOOL_ESTATUS_MONEDA" + cod + ")"
                         + " VALUES ( @STR_DESCRIPCION" + ","
                         + "@STR_CLAVEDESC" + ","
-                        + "@STR_PAIS" 
+                        + "@STR_PAIS" + ","
+                        + "@BOOL_ESTATUS_MONEDA"
                         + ")";
             try
             {
@@ -74,6 +76,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_DESCRIPCION", moneda.STR_DESCRIPCION.Trim());
                     cmd.Parameters.AddWithValue("@STR_CLAVEDESC",moneda.STR_CLAVEDESC.Trim());
                     cmd.Parameters.AddWithValue("@STR_PAIS", moneda.STR_PAIS.Trim());
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_MONEDA",moneda.BOOL_ESTATUS_MONEDA);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -95,7 +98,8 @@ namespace AppGia.Controllers
 
           + cod + "STR_DESCRIPCION" + cod + " = '" + moneda.STR_DESCRIPCION + "' ,"
           + cod + "STR_CLAVEDESC" + cod + " = '" + moneda.STR_CLAVEDESC + "' ,"
-          + cod + "STR_PAIS" + cod + " = '" + moneda.STR_PAIS + "' "
+          + cod + "STR_PAIS" + cod + " = '" + moneda.STR_PAIS + "' ,"
+          + cod + "BOOL_ESTATUS_MONEDA" + cod + " = '" + moneda.BOOL_ESTATUS_MONEDA + "' "
           + " WHERE" + cod + "INT_IDMONEDA" + cod + "=" + moneda.INT_IDMONEDA;
 
 
@@ -108,6 +112,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@STR_DESCRIPCION", moneda.STR_DESCRIPCION.Trim());
                     cmd.Parameters.AddWithValue("@STR_CLAVEDESC",moneda.STR_CLAVEDESC);
                     cmd.Parameters.AddWithValue("@STR_PAIS",moneda.STR_PAIS);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_MONEDA", moneda.BOOL_ESTATUS_MONEDA); 
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
