@@ -21,7 +21,7 @@ namespace AppGia.Controllers
         }
 
         // GET: api/EstatusETL/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetEstatusETL")]
         //public string Get(int id)
         //{
         //    return "value";

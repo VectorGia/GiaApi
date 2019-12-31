@@ -35,7 +35,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         estatusetl.INT_IDESTATUSETL_P = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
-                        estatusetl.VAR_DESCRIPCION = Convert.ToString(rdr["VAR_DESCRIPCION"]);
+                        estatusetl.VAR_DESCRIPCION = Convert.ToString(rdr["VAR_DESCRIPCION"]).Trim();
                         estatusetl.BOOL_ESTATUS_LOGICO_ESTETL = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_ESTETL"]);
                         estatusetl.FEC_MODIF_LOGETL = Convert.ToDateTime(rdr["FEC_MODIF_RELUSU"]);
                         lstEstatusETL.Add(estatusetl);
@@ -67,7 +67,7 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDESTATUSETL_P", Value = estatusetl.INT_IDESTATUSETL_P });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar, ParameterName = "@VAR_DESCRIPCION", Value = estatusetl.VAR_DESCRIPCION });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar, ParameterName = "@VAR_DESCRIPCION", Value = estatusetl.VAR_DESCRIPCION.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_ESTETL", Value = estatusetl.BOOL_ESTATUS_LOGICO_ESTETL });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_LOGETL", Value = DateTime.Now });
 
@@ -145,7 +145,7 @@ namespace AppGia.Controllers
                     con.Open();
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@VAR_DESCRIPCION", estatusetl.VAR_DESCRIPCION);
+                    cmd.Parameters.AddWithValue("@VAR_DESCRIPCION", estatusetl.VAR_DESCRIPCION.Trim());
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ESTETL", estatusetl.BOOL_ESTATUS_LOGICO_ESTETL);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_LOGETL", DateTime.Now);
                     int cantFilAfec = cmd.ExecuteNonQuery();
