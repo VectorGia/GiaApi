@@ -5,14 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace AppGia.Controllers
 {
     public class RelacionesDataAccessLayer
-
-
    {
-
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
 

@@ -132,7 +132,6 @@ namespace AppGia.Controllers
                 + cod + "STR_NOMBREMODELONEGOCIO" + cod + "= " + "@STR_NOMBREMODELONEGOCIO" + ","
                 + cod + "STR_CUENTASMODELO"       + cod + "= " + "@STR_CUENTASMODELO" + ","
                 + cod + "STR_TIPOMONTO"           + cod + "= " + "@STR_TIPOMONTO" + ","
-                + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_MODE_NEGO" + ","
                 + cod + "FEC_MODIF_MODELONEGOCIO" + cod + "= " + "@FEC_MODIF_MODELONEGOCIO" 
                 + " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + id;
             try
@@ -143,7 +142,6 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_CUENTASMODELO", Value = modeloNegocio.STR_CUENTASMODELO.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_TIPOMONTO", Value = modeloNegocio.STR_TIPOMONTO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "BOOL_ESTATUS_LOGICO_MODE_NEGO", Value = modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_MODELONEGOCIO", Value = DateTime.Now});
                     con.Open();

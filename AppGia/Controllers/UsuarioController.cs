@@ -24,9 +24,9 @@ namespace AppGia.Controllers
 
         // GET: api/Usuario/5
         [HttpGet("{id}", Name = "GetUsuario")]
-        public string GetUsuario(int id)
+        public Usuario GetUsuario(string id)
         {
-            return "value";
+            return objusuario.GetUsuario(id);
         }
        
         // POST: api/Usuario
