@@ -7,7 +7,7 @@ namespace AppGia.Models
 {
     public class Moneda
     {
-        public int INT_IDMONEDA { get; set; }
+        public int INT_IDMONEDA_P { get; set; }
 
         public string STR_DESCRIPCION { get; set; }
 
@@ -15,6 +15,7 @@ namespace AppGia.Models
 
         public string STR_PAIS { get; set; }
 
+        public bool BOOL_ESTATUS_LOGICO_MONEDA { get; set; }
         public bool BOOL_ESTATUS_MONEDA { get; set; }
     }
 }
