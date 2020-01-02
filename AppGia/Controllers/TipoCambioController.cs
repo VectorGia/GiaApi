@@ -4,18 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using AppGia.Models;
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class TipoCambioController : ControllerBase
     {
+        TipoCambioDataAccessLayer objCambio = new TipoCambioDataAccessLayer();
         // GET: api/TipoCambio
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<TipoCambio> Get()
         {
-            return new string[] { "value1", "value2" };
+            return objCambio.GetAllTipoCambio();
         }
 
         // GET: api/TipoCambio/5
@@ -27,8 +28,9 @@ namespace AppGia.Controllers
 
         // POST: api/TipoCambio
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Post([FromBody] TipoCambio cambio)
         {
+            return objCambio.insert(cambio);
         }
 
         // PUT: api/TipoCambio/5

@@ -9,7 +9,7 @@ namespace AppGia.Models
     {
         public int INT_ID_TIPOCAMBIO_P { get; set; }
         public Double DBL_TIPOCAMBIO_OFICIAL { get; set; }
-        public int INT_ID_MONEDA_F { get; set; }
+        public int INT_IDMONEDA_P { get; set; }
         public DateTime FEC_MODIF_TIPOCAMBIO { get; set; }
         public DateTime DAT__TIPOCAMBIO { get; set; }
         public bool BOOL_ESTATUS_TIPOCAMBIO { get; set; }

@@ -38,9 +38,9 @@ namespace AppGia.Controllers
                         TipoCambio tipoCambio = new TipoCambio();
                         tipoCambio.INT_ID_TIPOCAMBIO_P = Convert.ToInt32(rdr["INT_ID_TIPOCAMBIO_P"]);
                         tipoCambio.DBL_TIPOCAMBIO_OFICIAL = Convert.ToDouble( rdr["DBL_TIPOCAMBIO_OFICIAL"]);
-                        tipoCambio.INT_ID_MONEDA_F = Convert.ToInt32(rdr["INT_ID_MONEDA_F"]);
-                        tipoCambio.FEC_MODIF_TIPOCAMBIO = DateTime.Now;
-                        tipoCambio.DAT__TIPOCAMBIO = DateTime.Now;
+                        tipoCambio.INT_IDMONEDA_P = Convert.ToInt32(rdr["INT_IDMONEDA_P"]);
+                        tipoCambio.FEC_MODIF_TIPOCAMBIO = Convert.ToDateTime(rdr["FEC_MODIF_TIPOCAMBIO"]);
+                        tipoCambio.DAT__TIPOCAMBIO = Convert.ToDateTime(rdr["DAT__TIPOCAMBIO"]);
                         tipoCambio.BOOL_ESTATUS_TIPOCAMBIO = Convert.ToBoolean(rdr["BOOL_ESTATUS_TIPOCAMBIO"]);
 
 
@@ -65,12 +65,12 @@ namespace AppGia.Controllers
             string add = "INSERT INTO " + cod + "CAT_TIPOCAMBIO" + cod
                         + "("
                         + cod + "DBL_TIPOCAMBIO_OFICIAL" + cod + ","
-                        + cod + "INT_ID_MONEDA_F" + cod + ","
+                        + cod + "INT_IDMONEDA_P" + cod + ","
                         + cod + "FEC_MODIF_TIPOCAMBIO" + cod + ","
                         + cod + "DAT__TIPOCAMBIO" + cod + ","
                         + cod + "BOOL_ESTATUS_TIPOCAMBIO" + cod + ")"
                         + " VALUES ( @DBL_TIPOCAMBIO_OFICIAL" + ","
-                        + "@INT_ID_MONEDA_F" + ","
+                        + "@INT_IDMONEDA_P" + ","
                         + "@FEC_MODIF_TIPOCAMBIO" + ","
                         + "@DAT__TIPOCAMBIO" + ","
                         + "@BOOL_ESTATUS_TIPOCAMBIO" 
@@ -82,9 +82,9 @@ namespace AppGia.Controllers
 
                  
                     cmd.Parameters.AddWithValue("@DBL_TIPOCAMBIO_OFICIAL", tipoCambio.DBL_TIPOCAMBIO_OFICIAL);
-                    cmd.Parameters.AddWithValue("@INT_ID_MONEDA_F", tipoCambio.INT_ID_MONEDA_F);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAMBIO", tipoCambio.FEC_MODIF_TIPOCAMBIO);
-                    cmd.Parameters.AddWithValue("@DAT__TIPOCAMBIO", tipoCambio.DAT__TIPOCAMBIO);
+                    cmd.Parameters.AddWithValue("@INT_IDMONEDA_P", tipoCambio.INT_IDMONEDA_P);
+                    cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAMBIO", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DAT__TIPOCAMBIO", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_TIPOCAMBIO", tipoCambio.BOOL_ESTATUS_TIPOCAMBIO);
 
                     con.Open();
@@ -106,7 +106,7 @@ namespace AppGia.Controllers
             string update = "UPDATE " + cod + "CAT_TIPOCAMBIO" + cod + "SET"
 
           + cod + "DBL_TIPOCAMBIO_OFICIAL" + cod + " = '" + tipoCambio.DBL_TIPOCAMBIO_OFICIAL + "' ,"
-          + cod + "INT_ID_MONEDA_F" + cod + " = '" + tipoCambio.INT_ID_MONEDA_F + "' ,"
+          + cod + "INT_IDMONEDA_P" + cod + " = '" + tipoCambio.INT_IDMONEDA_P + "' ,"
           + cod + "FEC_MODIF_TIPOCAMBIO" + cod + " = '" + tipoCambio.FEC_MODIF_TIPOCAMBIO + "' ,"
           + cod + "DAT__TIPOCAMBIO" + cod + " = '" + tipoCambio.DAT__TIPOCAMBIO + "' ,"
           + cod + "BOOL_ESTATUS_TIPOCAMBIO" + cod + " = '" + tipoCambio.BOOL_ESTATUS_TIPOCAMBIO + "' "
@@ -120,7 +120,7 @@ namespace AppGia.Controllers
 
                     cmd.Parameters.AddWithValue("@INT_ID_TIPOCAMBIO_P", tipoCambio.INT_ID_TIPOCAMBIO_P);
                     cmd.Parameters.AddWithValue("@DBL_TIPOCAMBIO_OFICIAL", tipoCambio.DBL_TIPOCAMBIO_OFICIAL);
-                    cmd.Parameters.AddWithValue("@INT_ID_MONEDA_F", tipoCambio.INT_ID_MONEDA_F);
+                    cmd.Parameters.AddWithValue("@INT_IDMONEDA_P", tipoCambio.INT_IDMONEDA_P);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAMBIO", tipoCambio.FEC_MODIF_TIPOCAMBIO);
                     cmd.Parameters.AddWithValue("@DAT__TIPOCAMBIO", tipoCambio.DAT__TIPOCAMBIO);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_TIPOCAMBIO", tipoCambio.BOOL_ESTATUS_TIPOCAMBIO);
