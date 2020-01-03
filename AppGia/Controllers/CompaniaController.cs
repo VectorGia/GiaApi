@@ -11,11 +11,18 @@ namespace AppGia.Controllers
     public class CompaniaController : ControllerBase
     {
         CompaniaDataAccessLayer objCompania = new CompaniaDataAccessLayer();
-
+        BalanzaDataAccessLayer objBalanza = new BalanzaDataAccessLayer();
         // GET: api/Compania
         [HttpGet]
         public IEnumerable<Compania> Get()
         {
+            Balanza bal = new Balanza();
+            bal.TEXT_CTA = "00000012";
+            bal.TEXT_SCTA = "00000013";
+            bal.TEXT_SSCTA = "00000014";
+            bal.TEXT_DESCRIPCION = "Desc 1";
+            bal.TEXT_DESCRIPCION2 = "Desc 2 ";
+            objBalanza.AddBalanza(bal);
             return objCompania.GetAllCompanias();
         }
 
