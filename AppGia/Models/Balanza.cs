@@ -41,5 +41,11 @@ namespace AppGia.Models
         public string TEXT_DESCRIPCION { get; set; }
         public string TEXT_DESCRIPCION2 { get; set; }
         public int INT_INCLUIR_SUMA { get; set; }
+        public int INT_TIPO_EXTRACCION { get; set; }
+        public string TEXT_FECH_EXTR { get; set; }
+        public string TEXT_HORA { get; set; }
+        public int INT_ID_EMPRESA { get; set; }
+
+
     }
 }
