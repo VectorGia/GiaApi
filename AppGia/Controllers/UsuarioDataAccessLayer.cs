@@ -32,35 +32,67 @@ namespace AppGia.Controllers
         public IEnumerable<Usuario> GetAllUsuarios()
         {
             string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "";
-        try
-        {
-            List<Usuario> lstusuario = new List<Usuario>();
+            try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
-                con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    Usuario usuario = new Usuario();
-                    usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
-                    usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString().Trim();
-                    usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString().Trim();
-                    usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString().Trim();
-                    usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
-                    usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString().Trim();
+                List<Usuario> lstusuario = new List<Usuario>();
+                
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        Usuario usuario = new Usuario();
+                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
+                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString().Trim();
+                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString().Trim();
+                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString().Trim();
+                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
+                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString().Trim();
 
-                    lstusuario.Add(usuario);
-                }
+                        lstusuario.Add(usuario);
+                    }
                 con.Close();
-            }
+            
             return lstusuario;
-        }
-        catch
-        {
+            }
+            catch
+            {
                 con.Close();
                 throw;
+            }
         }
-    }
+        public Usuario GetUsuario(string id)
+        {
+            string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "WHERE" + cod + "INT_IDUSUARIO_P" + cod + "=" + id;
+            try
+            {
+                Usuario usuario = new Usuario();
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        
+                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
+                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString().Trim();
+                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString().Trim();
+                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString().Trim();
+                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
+                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString().Trim();
+
+
+                    }
+                    con.Close();
+                }
+                return usuario;
+            }
+            catch
+            {
+                con.Close();
+                throw;
+            }
+        }
         public int InsertaUsuarios(Usuario usuario)
         {
             List<Usuario> lstUsu = new List<Usuario>();
@@ -201,6 +233,8 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
+        
         /// <summary>
         /// Metodo que regresa una variable booleana para determinar si un un Usuario existe
         /// y asi determinar si se agrega o no se agrega a la base de datos

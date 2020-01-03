@@ -51,8 +51,13 @@ namespace AppGia.Controllers
 
         public int addRol(Rol rol)
         {
-            string add = "INSERT INTO" + cod + "CAT_ROL" + cod + "(" + cod + "STR_NOMBRE_ROL" + cod + ") VALUES " +
-                "(@STR_NOMBRE_ROL)";
+            string add = "INSERT INTO" + cod + 
+                "CAT_ROL" + cod + 
+                "("+cod+"STR_NOMBRE_ROL"          +cod+ 
+                ","+cod+"BOOL_ESTATUS_LOGICO_ROL" +cod+ 
+                ","+cod+"FEC_MODIF_ROL"           +cod+
+                ") VALUES " +
+                "(@STR_NOMBRE_ROL,@BOOL_ESTATUS_LOGICO_ROL,@FEC_MODIF_ROL)";
             try
             {    
                 {
