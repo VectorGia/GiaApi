@@ -54,8 +54,14 @@ namespace AppGia.Controllers
                      + cod + "INT_CC" + cod + ","
                      + cod + "TEXT_DESCRIPCION" + cod + ","
                      + cod + "TEXT_DESCRIPCION2" + cod + ","
-                     + cod + "INT_INCLUIR_SUMA" + cod + ")"
-                         + "VALUES "
+                     + cod + "INT_INCLUIR_SUMA" + cod + ","
+                     + cod + "INT_TIPO_EXTRACCION" + cod + ","
+                     + cod + "TEXT_FECH_EXTR" + cod + ","
+                     + cod + "TEXT_HORA" + cod + ","
+                     + cod + "INT_ID_EMPRESA" + cod + ")"
+
+
+            + "VALUES "
                              //+ "(@INT_IDBALANZA,"
                              + "(@TEXT_CTA,"
                              + "@TEXT_SCTA,"
@@ -89,7 +95,11 @@ namespace AppGia.Controllers
                              + "@INT_CC,"
                              + "@TEXT_DESCRIPCION,"
                              + "@TEXT_DESCRIPCION2,"
-                             + "@INT_INCLUIR_SUMA)";
+                             + "@INT_INCLUIR_SUMA,"
+                             + "@INT_TIPO_EXTRACCION,"
+                             + "@TEXT_FECH_EXTR,"
+                             + "@TEXT_HORA,"
+                             + "@INT_ID_EMPRESA)";
             try
             {
                 {
@@ -128,6 +138,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION.Trim());
                     cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION2.Trim());
                     cmd.Parameters.AddWithValue("@INT_INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_INCLUIR_SUMA);
+                    cmd.Parameters.AddWithValue("@INT_TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_TIPO_EXTRACCION);
+                    cmd.Parameters.AddWithValue("@TEXT_FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_FECH_EXTR.Trim());
+                    cmd.Parameters.AddWithValue("@TEXT_HORA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_HORA.Trim());
+                    cmd.Parameters.AddWithValue("@INT_ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_ID_EMPRESA);
                     con.Open();
                     int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                     con.Close();
