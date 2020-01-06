@@ -14,6 +14,7 @@ namespace AppGia.Controllers
 
     {
         BalanzaDataAccessLayer objBalanza = new BalanzaDataAccessLayer();
+        LogETLDataAccessLayer objlogetl = new LogETLDataAccessLayer();
         // GET: api/Balanza
         [HttpGet]
         public IEnumerable<string> Get()
@@ -38,6 +39,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody] Balanza balanza)
         {
+            
             return objBalanza.AddBalanza(balanza);
         }
 

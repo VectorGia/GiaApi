@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AppGia.Models;
 
 namespace AppGia.Controllers
 {
@@ -11,24 +12,26 @@ namespace AppGia.Controllers
     [ApiController]
     public class LogETLController : ControllerBase
     {
+        LogETLDataAccessLayer objlogetl = new LogETLDataAccessLayer();
         // GET: api/LogETL
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<LogEtl> Get()
         {
-            return new string[] { "value1", "value2" };
+            return objlogetl.GetAllLogETL();
         }
 
         // GET: api/LogETL/5
         [HttpGet("{id}", Name = "GetLogETL")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST: api/LogETL
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] LogEtl logetl)
         {
+            objlogetl.insert(logetl);
         }
 
         // PUT: api/LogETL/5

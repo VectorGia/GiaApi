@@ -35,7 +35,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         logetl.INT_IDLOGETL_P = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
-                        logetl.INT_IDETL_P = Convert.ToInt32(rdr["INT_IDETL_P"]);
+                        logetl.INT_IDBALANZA = Convert.ToInt32(rdr["INT_IDBALANZA"]);
                         logetl.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
                         logetl.FEC_ETL = Convert.ToDateTime(rdr["FEC_ETL"]);
                         logetl.INT_ESTATUS_ETL_P = Convert.ToInt32(rdr["INT_ESTATUS_ETL_P"]);
@@ -135,14 +135,14 @@ namespace AppGia.Controllers
         {
 
             string add = "INSERT INTO" + cod + "TAB_LOGETL" + cod + "("
-                + cod + "INT_IDETL_P" + cod + ","
+                + cod + "INT_IDBALANZA" + cod + ","
                 + cod + "INT_IDUSUARIO_P" + cod + ","
                 + cod + "FEC_ETL" + cod + ","
                 + cod + "INT_ESTATUS_ETL_P" + cod + ","
                 + cod + "BOOL_ESTATUS_LOGICO_LOGETL" + cod + ","
                 + cod + "FEC_MODIF_LOGETL" + cod + ") " +
                 "VALUES " +
-                "(@INT_IDETL_P," +
+                "(@INT_IDBALANZA," +
                 "@INT_IDUSUARIO_P," +
                 "@FEC_ETL," +
                 "@INT_ESTATUS_ETL_P," +
@@ -155,7 +155,7 @@ namespace AppGia.Controllers
                     con.Open();
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@INT_IDETL_P", logetl.INT_IDETL_P);
+                    cmd.Parameters.AddWithValue("@INT_IDBALANZA", logetl.INT_IDBALANZA);
                     cmd.Parameters.AddWithValue("@INT_IDUSUARIO_P", logetl.INT_IDUSUARIO_P);
                     cmd.Parameters.AddWithValue("@FEC_ETL", logetl.FEC_ETL);
                     cmd.Parameters.AddWithValue("@INT_ESTATUS_ETL_P", logetl.INT_ESTATUS_ETL_P);
