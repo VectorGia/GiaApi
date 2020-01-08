@@ -22,10 +22,10 @@ namespace AppGia.Controllers
 
         // GET: api/LogETL/5
         [HttpGet("{id}", Name = "GetLogETL")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        public LogEtl GetLogEtl()
+        {
+            return objlogetl.GetLogETLData();
+        }
 
         // POST: api/LogETL
         [HttpPost]
@@ -36,8 +36,9 @@ namespace AppGia.Controllers
 
         // PUT: api/LogETL/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public int Put(int id, string campo, int valor)
         {
+            return objlogetl.update(campo,valor,id);
         }
 
         // DELETE: api/ApiWithActions/5
