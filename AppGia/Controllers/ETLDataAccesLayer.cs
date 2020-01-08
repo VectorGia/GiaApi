@@ -11,7 +11,7 @@ namespace AppGia.Controllers
 {
     public class ETLDataAccesLayer
     {
-        
+        ConfigCorreoController configCorreo = new ConfigCorreoController();
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         NpgsqlCommand comP = new NpgsqlCommand();
@@ -341,12 +341,14 @@ namespace AppGia.Controllers
                     }
                     
                     con.Close();
+                    configCorreo.EnviarCorreo("La extracción para se genero correctamente", "ETL");
                     return cantFilaAfect;
                 }
             }
             catch (Exception ex)
             {
                 con.Close();
+                configCorreo.EnviarCorreo("La extracción para se genero incorrectamente", "ETL");
                 string error = ex.Message;
                 throw;
             }

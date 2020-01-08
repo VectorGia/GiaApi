@@ -45,7 +45,7 @@ namespace AppGia.Controllers
         {
         }
 
-        public void EnviarCorreo(){
+        public void EnviarCorreo(string cuerpoMensaje,string tituloMensaje){
 
             string listaDestinatarios = ListaCorreosDestinatarios().TrimEnd(',');
             List<ConfigCorreo> listaConfiguracionCorreo = new List<ConfigCorreo>() ;
@@ -53,9 +53,9 @@ namespace AppGia.Controllers
 
             System.Net.Mail.MailMessage mmsg = new System.Net.Mail.MailMessage();
             mmsg.To.Add(listaDestinatarios.ToString());
-            mmsg.Subject = "Correo ejemplo GIA";
+            mmsg.Subject = tituloMensaje;//"Correo ejemplo GIA";
             mmsg.SubjectEncoding = System.Text.Encoding.UTF8;
-            mmsg.Body = "Prueba de correo GIA";
+            mmsg.Body = cuerpoMensaje;//"Prueba de correo GIA";
             mmsg.BodyEncoding = System.Text.Encoding.UTF8;
             mmsg.IsBodyHtml = false;
             mmsg.From = new System.Net.Mail.MailAddress(listaConfiguracionCorreo[0].TEXT_FROM);
