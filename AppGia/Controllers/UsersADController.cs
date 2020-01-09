@@ -37,11 +37,11 @@ namespace AppGia.Controllers
                     {
                         item = new Usuario();
 
-                        item.userName = (String)result.Properties["samaccountname"][0];
+                        item.STR_USERNAME_USUARIO = (String)result.Properties["samaccountname"][0];
 
-                        if (result.Properties.Contains("password"))
+                        if (result.Properties.Contains("displayname"))
                         {
-                            item.STR_PASSWORD_USUARIO = (String)result.Properties["password"][0];
+                            item.STR_NOMBRE_USUARIO = (String)result.Properties["displayname"][0];
                         }
 
                         rst.Add(item);
@@ -56,7 +56,7 @@ namespace AppGia.Controllers
 
             adSearcher.Dispose();
             adSearchRoot.Dispose();
-
+            
             return rst;
 
             // aqui debemos de hacer elinssert 
@@ -72,9 +72,9 @@ namespace AppGia.Controllers
 
         // POST: api/UsersAD
         [HttpPost]
-        public int Post([FromBody] Usuario usuario)
+        public int Post()
         {
-            return objusuario.InsertaUsuarios(usuario);
+            return objusuario.InsertaUsuarios();
         }
 
         // PUT: api/UsersAD/5

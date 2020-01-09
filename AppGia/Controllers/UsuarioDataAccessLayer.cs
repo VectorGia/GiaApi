@@ -93,8 +93,9 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-        public int InsertaUsuarios(Usuario usuario)
+        public int InsertaUsuarios()
         {
+            Usuario usuario = new Usuario();
             List<Usuario> lstUsu = new List<Usuario>();
             UsersADController prueba = new UsersADController();
             lstUsu = prueba.Get();
@@ -102,7 +103,7 @@ namespace AppGia.Controllers
             int numeroUsuarios = lstUsu.Count();
 
 
-            for (int i = 3; i < numeroUsuarios; i++)
+            for (int i = 0; i < numeroUsuarios; i++)
             {
 
                 if (lstUsu[i].INT_IDUSUARIO_P != 0)
@@ -110,9 +111,9 @@ namespace AppGia.Controllers
                     usuario.INT_IDUSUARIO_P = lstUsu[i].INT_IDUSUARIO_P;
                 }
 
-                if (lstUsu[i].userName != null)
+                if (lstUsu[i].STR_USERNAME_USUARIO != null)
                 {
-                    usuario.STR_USERNAME_USUARIO = lstUsu[i].userName;
+                    usuario.STR_USERNAME_USUARIO = lstUsu[i].STR_USERNAME_USUARIO;
                 }
                 else
                 {

@@ -79,6 +79,7 @@ namespace AppGia.Controllers
                         relacionCompania.INT_IDCOMPANIA_P = Convert.ToInt32(rdr["INT_IDCOMPANIA_P"]);
                         relacionCompania.INT_IDMODELO_NEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELO_NEGOCIO_P"]);
                         relacionCompania.INT_IDPROYECTO_P = Convert.ToInt32(rdr["INT_IDPROYECTO_P"]);
+                        relacionCompania.INT_IDROL_P = Convert.ToInt32(rdr["INT_IDROL_P"]);
                         relacionCompania.INT_IDCENTROSCOSTO_P = Convert.ToInt32(rdr["INT_IDCENTROSCOSTO_P"]);
                         relacionCompania.BOOL_ESTATUS_LOGICO_RELACION_COMPANIA = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_RELACION_COMPANIA"]);
                         relacionCompania.FECH_MODIF_RELCOMP = Convert.ToDateTime(rdr["FECH_MODIF_RELCOMP"]);
@@ -181,11 +182,13 @@ namespace AppGia.Controllers
             string add = "INSERT INTO" + cod + "TAB_RELACION_COMPANIA" + 
                                          cod + "(" + cod + "INT_IDCOMPANIA_P" + 
                                          cod + "," + cod + "INT_IDMODELO_NEGOCIO_P" + 
-                                         cod + "," + cod + "INT_IDPROYECTO_P" + cod + "," +
-                                         cod + "INT_IDCENTROSCOSTO_P" + cod + "," + 
-                                         cod + "BOOL_ESTATUS_LOGICO_RELACION_COMPANIA" + cod + "," +
-                                         cod + "FECH_MODIF_RELCOMP" + cod + ") VALUES " +
-                "(@INT_IDCOMPANIA_P,@INT_IDMODELO_NEGOCIO_P,@INT_IDPROYECTO_P,@INT_IDCENTROSCOSTO_P,@BOOL_ESTATUS_LOGICO_RELACION_COMPANIA,@FECH_MODIF_RELCOMP)";
+                                         cod + "," + cod + "INT_IDPROYECTO_P" +
+                                         cod + "," + cod + "INT_IDROL_P" +
+                                         cod + "," + cod + "INT_IDCENTROSCOSTO_P" + 
+                                         cod + "," + cod + "BOOL_ESTATUS_LOGICO_RELACION_COMPANIA" + 
+                                         cod + "," + cod + "FECH_MODIF_RELCOMP" + 
+                                         cod + ") VALUES " +
+                "(@INT_IDCOMPANIA_P,@INT_IDMODELO_NEGOCIO_P,@INT_IDPROYECTO_P,@INT_IDROL_P,@INT_IDCENTROSCOSTO_P,@BOOL_ESTATUS_LOGICO_RELACION_COMPANIA,@FECH_MODIF_RELCOMP)";
             try
             {
 
@@ -193,6 +196,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@INT_IDCOMPANIA_P", relacionCompania.INT_IDCOMPANIA_P);
                     cmd.Parameters.AddWithValue("@INT_IDMODELO_NEGOCIO_P", relacionCompania.INT_IDMODELO_NEGOCIO_P);
                     cmd.Parameters.AddWithValue("@INT_IDPROYECTO_P", relacionCompania.INT_IDPROYECTO_P);
+                    cmd.Parameters.AddWithValue("@INT_IDROL_P", relacionCompania.INT_IDROL_P);
                     cmd.Parameters.AddWithValue("@INT_IDCENTROSCOSTO_P", relacionCompania.INT_IDCENTROSCOSTO_P);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_RELACION_COMPANIA", relacionCompania.BOOL_ESTATUS_LOGICO_RELACION_COMPANIA);
                     cmd.Parameters.AddWithValue("@FECH_MODIF_RELCOMP", DateTime.Now);

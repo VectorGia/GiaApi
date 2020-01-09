@@ -22,7 +22,7 @@ namespace AppGia.Controllers
             bal.TEXT_SSCTA = "00000014";
             bal.TEXT_DESCRIPCION = "Desc 1";
             bal.TEXT_DESCRIPCION2 = "Desc 2 ";
-            objBalanza.AddBalanza(bal);
+           // objBalanza.AddBalanza(bal);
             return objCompania.GetAllCompanias();
         }
 

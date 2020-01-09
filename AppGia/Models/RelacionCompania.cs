@@ -12,6 +12,7 @@ namespace AppGia.Models
         public int INT_IDMODELO_NEGOCIO_P { get; set; }
         public int INT_IDPROYECTO_P { get; set; }
         public int INT_IDCENTROSCOSTO_P { get; set; }
+        public int INT_IDROL_P { set; get; }
         public bool BOOL_ESTATUS_LOGICO_RELACION_COMPANIA { get; set; }
         public DateTime FECH_MODIF_RELCOMP { get; set; }
     }

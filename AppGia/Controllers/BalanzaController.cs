@@ -37,11 +37,11 @@ namespace AppGia.Controllers
 
         // POST: api/Centro
         [HttpPost]
-        public int Create([FromBody] Balanza balanza)
-        {
+        //public int Create([FromBody] Balanza balanza)
+        //{
             
-            return objBalanza.AddBalanza(balanza);
-        }
+        //    return objBalanza.AddBalanza(balanza);
+        //}
 
         // PUT: api/Balanza/5
         [HttpPut("{id}")]
