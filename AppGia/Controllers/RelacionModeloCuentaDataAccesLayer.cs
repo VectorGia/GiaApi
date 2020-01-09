@@ -206,8 +206,8 @@ namespace AppGia.Controllers
 
 
                 {
-                    con.Close();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, conex.ConnexionDB());
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
 
 
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
