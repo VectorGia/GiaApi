@@ -151,7 +151,7 @@ namespace AppGia.Controllers
         }
 
 
-        public int insert(RelacionModeloCta relacionModeloCta)
+        public int insertarModCta(RelacionModeloCta relacionModeloCta)
 
         {
             string add = "INSERT INTO" + cod + "TAB_RELMODELO_CTA" + cod + "("

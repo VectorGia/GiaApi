@@ -2,38 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AppGia.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using AppGia.Models;
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RelacionModeloCuentaController : ControllerBase
+    public class RelacionModeloCtaController : ControllerBase
     {
         RelacionModeloCuentaDataAccesLayer objModelo = new RelacionModeloCuentaDataAccesLayer();
-        // GET: api/RelacionModeloCuenta
+        // GET: api/RelacionModeloCta
         [HttpGet]
         public IEnumerable<RelacionModeloCta> Get()
         {
             return objModelo.GetAllRelacionModeloCta();
         }
 
-        // GET: api/RelacionModeloCuenta/5
-        [HttpGet("{id}", Name = "GetRelacionModeloCta")]
+        // GET: api/RelacionModeloCta/5
+        [HttpGet("{id}", Name = "GetModCta")]
         public RelacionModeloCta GetRelacionModeloCta(int id)
         {
             return objModelo.GetRelacionModeloCta(id);
         }
 
-        // POST: api/RelacionModeloCuenta
+        // POST: api/RelacionModeloCta
         [HttpPost]
-        public void Post([FromBody] string value)
+        public int Post([FromBody] RelacionModeloCta relacion)
         {
+            return objModelo.insertarModCta(relacion);
         }
 
-        // PUT: api/RelacionModeloCuenta/5
+        // PUT: api/RelacionModeloCta/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
