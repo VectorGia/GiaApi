@@ -50,10 +50,12 @@ namespace AppGia.Controllers
 
                 return lstRelacion;
             }
-            catch
+            catch (Exception ex)
             {
                 con.Close();
+                string error = ex.Message;
                 throw;
+
             }
         }
 
@@ -66,8 +68,8 @@ namespace AppGia.Controllers
 
 
                 {
-                    con.Close();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, conex.ConnexionDB());
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
 
 
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -89,9 +91,10 @@ namespace AppGia.Controllers
                 }
                 return relacionCompania;
             }
-            catch
+            catch  (Exception ex)
             {
                 con.Close();
+                string error = ex.Message;
                 throw;
 
             }
@@ -131,9 +134,10 @@ namespace AppGia.Controllers
 
             }
 
-            catch
+            catch (Exception ex)
             {
                 con.Close();
+                string error = ex.Message;
                 throw;
 
             }
@@ -166,9 +170,10 @@ namespace AppGia.Controllers
 
             }
 
-            catch
+            catch (Exception ex)
             {
                 con.Close();
+                string error = ex.Message;
                 throw;
 
             }
@@ -202,10 +207,12 @@ namespace AppGia.Controllers
                 
                     return cantFilas;
             }
-            catch
+            catch (Exception ex)
             {
                 con.Close();
+                string error = ex.Message;
                 throw;
+
             }
         }
 
