@@ -7,7 +7,7 @@ namespace AppGia.Models
 {
     public class RelacionModeloCta
     {
-        public int INT_IDREINT_IDRELMODCTALACION_COMPANIA { get; set; }
+        public int INT_IDRELMODCTA { get; set; }
         public string STR_CONCEPTO { get; set; }
         public string STR_CTA_INICIO { get; set; }
         public string STR_CTA_FIN { get; set; }
