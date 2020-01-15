@@ -25,8 +25,10 @@ namespace AppGia
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +42,7 @@ namespace AppGia
             {
                 app.UseHsts();
             }
+
             app.UseCors(x =>
             {
                 x
@@ -50,6 +53,7 @@ namespace AppGia
             });
             app.UseHttpsRedirection();
             app.UseMvc();
+            
         }
     }
 }

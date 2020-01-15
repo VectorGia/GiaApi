@@ -161,8 +161,6 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDRELACION_COMPANIA", Value = relacionCompania.INT_IDRELACION_COMPANIA });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_RELACION_COMPANIA", Value = relacionCompania.BOOL_ESTATUS_LOGICO_RELACION_COMPANIA });
 
-
-
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
