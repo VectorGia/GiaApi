@@ -5,13 +5,18 @@ using System.Threading.Tasks;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using AdoNetCore.AseClient;
+using System.Data.Odbc;
+
+
 namespace AppGia.Conexion
 {
     public class Conexion
     {
           string cadena = "";
           NpgsqlConnection con;
-
+          AseConnection sysCon;
+          OdbcConnection odbcCon;
 
         public IConfigurationRoot GetConfiguration()
         {
@@ -27,6 +32,43 @@ namespace AppGia.Conexion
             con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
             return con;
         }
+
+        public AseConnection ConexionSybase()
+
+        {
+            try {
+                var configuration = GetConfiguration();
+
+                sysCon = new AseConnection(configuration.GetSection("DataSybase").GetSection("ConnectionString").Value);
+                 
+                return sysCon;
+            }catch (InvalidOperationException ex ){
+                string error = ex.Message;
+                return null ;
+            }
+        }
+
+        public OdbcConnection ConexionSybaseodbc()
+
+        {
+            try
+            {
+                var configuration = GetConfiguration();
+
+                odbcCon = new OdbcConnection("DSN=GIAODBCPRUEBAS"); ////ODBCGIA
+
+                return odbcCon;
+            }
+            catch (InvalidOperationException ex)
+            {
+                string error = ex.Message;
+                return null;
+            }
+        }
+
+
+
+
 
     }
 }
