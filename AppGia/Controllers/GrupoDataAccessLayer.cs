@@ -19,7 +19,7 @@ namespace AppGia.Controllers
         }
         public IEnumerable<Grupo> GetAllGrupos()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_GRUPO" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "TAB_GRUPO" + cod + "WHERE " + cod + "BOOL_ESTATUS_LOGICO_GRUPO" + cod + "=" + true;
             try
             {
                 List<Grupo> lstgrupo = new List<Grupo>();
@@ -41,6 +41,32 @@ namespace AppGia.Controllers
                 }
 
                 return lstgrupo;
+            }
+            catch
+            {
+                con.Close();
+                throw;
+            }
+        }
+
+        public Grupo GetGrupo(string id)
+        {
+            string consulta = " SELECT * FROM " + cod + "TAB_GRUPO" + cod + "WHERE" + cod + "INT_IDGRUPO_P" + cod + "=" + id;
+            try
+            {
+                Grupo grupo = new Grupo();
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                con.Open();
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    grupo.INT_IDGRUPO_P = Convert.ToInt32(rdr["INT_IDGRUPO_P"]);
+                    grupo.STR_NOMBRE_GRUPO = rdr["STR_NOMBRE_GRUPO"].ToString().Trim();
+                }
+
+                con.Close();
+                return grupo;
+
             }
             catch
             {
@@ -78,18 +104,18 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateGrupo(Grupo grupo)
+        public int UpdateGrupo(string id, Grupo grupo)
         {
             string add = "UPDATE " + cod + "TAB_GRUPO" + cod + " SET "
                 + cod + "STR_NOMBRE_GRUPO" + cod + "= " + "@STR_NOMBRE_GRUPO"
-                + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
+                + " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + id;
             try
             {
 
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = grupo.STR_NOMBRE_GRUPO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
+                 
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
@@ -110,19 +136,18 @@ namespace AppGia.Controllers
         /// </summary>
         /// <param name="grupo"></param>
         /// <returns>cantF</returns>
-        public int DeleteGrupo(Grupo grupo)
+        public int DeleteGrupo(string id)
         {
+            bool status = false;
             string add = "UPDATE " + cod + "TAB_GRUPO" + cod +
-                " SET " + cod + "BOOL_ESTATUS_LOGICO_GRUPO" + cod + "= " + "@BOOL_ESTATUS_LOGICO_GRUPO" +
-                " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + "@INT_IDGRUPO_P";
+                " SET " + cod + "BOOL_ESTATUS_LOGICO_GRUPO" + cod + "= " + status +
+                " WHERE " + cod + "INT_IDGRUPO_P" + cod + " = " + id;
             try
             {
               
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = grupo.INT_IDGRUPO_P });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_GRUPO", Value = grupo.BOOL_ESTATUS_LOGICO_GRUPO });
-                    con.Open();
+                      con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilas;

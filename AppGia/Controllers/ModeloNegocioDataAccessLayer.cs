@@ -20,7 +20,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<ModeloNegocio> GetAllModeloNegocios()
         {
-            string consulta = "SELECT * FROM" +cod+ "TAB_MODELO_NEGOCIO" +cod+ "WHERE " + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "=" + true; ;
+            string consulta = "SELECT * FROM" +cod+ "TAB_MODELO_NEGOCIO" +cod+ "WHERE " + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "=" + true; 
             try
             {
                 List<ModeloNegocio> lstmodelo = new List<ModeloNegocio>();
