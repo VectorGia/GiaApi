@@ -45,6 +45,10 @@ namespace AppGia.Models
         public string TEXT_FECH_EXTR { get; set; }
         public string TEXT_HORA { get; set; }
         public int INT_ID_EMPRESA { get; set; }
+        public double DECI_CIERRE_CARGOS { get; set; }
+        public double DECI_CIERRE_ABONOS { get; set; }
+        public int INT_ACTA { get; set; }
+        public string TEXT_CC { get; set; }
 
 
     }
