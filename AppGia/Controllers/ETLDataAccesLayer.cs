@@ -676,8 +676,10 @@ namespace AppGia.Controllers
 
                    numReg= rdr["CONTADOR"].ToString().Trim();
                 }
-                int cantFilas = cmd.ExecuteNonQuery();             
+                // int cantFilas = cmd.ExecuteNonQuery();       
+                int cantFilas = rdr.FieldCount; 
                 odbcCon.Close();
+                
                 return cantFilas;
             }
             catch (Exception ex)
