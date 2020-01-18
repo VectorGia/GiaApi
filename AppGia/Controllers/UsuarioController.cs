@@ -38,14 +38,16 @@ namespace AppGia.Controllers
 
         // PUT: api/Usuario/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public int Put(string id, [FromBody] Usuario usuario)
         {
+            return objusuario.updateUsuario(id,usuario);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public int Delete(string id)
         {
+            return objusuario.DeleteUser(id);
         }
     }
 }

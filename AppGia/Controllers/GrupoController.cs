@@ -18,12 +18,12 @@ namespace AppGia.Controllers
             return objgrupo.GetAllGrupos();
         }
 
-        //// GET: api/Grupo/5
-        //[HttpGet("{id}", Name = "")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET: api/Grupo/5
+        [HttpGet("{id}", Name = "GetGrupo")]
+        public Grupo Get(string id)
+        {
+            return objgrupo.GetGrupo(id);
+        }
 
         // POST: api/Grupo
         [HttpPost]
@@ -33,16 +33,17 @@ namespace AppGia.Controllers
         }
 
         // PUT: api/Grupo/5
-        //[HttpPut("{STR_NOMBRE_GRUPO}")]
-        //public int Put(string id, [FromBody] Grupo group)
-        //{
-        //    return objgrupo.UpdateGrupo(id, group);
-        //}
+        [HttpPut("{id}")]
+        public int Put(string id, [FromBody] Grupo grupo)
+        {
+            return objgrupo.UpdateGrupo(id, grupo);
+        }
 
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public int Delete(string id)
+        {
+            return objgrupo.DeleteGrupo(id);
+        }
     }
 }

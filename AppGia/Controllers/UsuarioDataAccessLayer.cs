@@ -31,7 +31,7 @@ namespace AppGia.Controllers
         /// <returns></returns>
         public IEnumerable<Usuario> GetAllUsuarios()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "";
+            string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "WHERE " + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "=" + true; ;
             try
             {
                 List<Usuario> lstusuario = new List<Usuario>();
@@ -235,7 +235,63 @@ namespace AppGia.Controllers
             }
         }
 
-        
+        public int updateUsuario(string id, Usuario usuario)
+        {
+            string update = "UPDATE " + cod + "TAB_USUARIO" + cod +
+                " SET "
+                +cod+ "STR_USERNAME_USUARIO" +cod+ "= "+"@STR_USERNAME_USUARIO"+","
+                +cod+ "STR_PASSWORD_USUARIO" +cod+ "= "+"@STR_PASSWORD_USUARIO"+","
+                +cod+ "STR_EMAIL_USUARIO"    +cod+ "= "+"@STR_EMAIL_USUARIO"   +","
+                +cod+ "STR_PUESTO"           +cod+ "= "+"@STR_PUESTO"          +","
+                +cod+ "STR_NOMBRE_USUARIO"   +cod+ "= "+"@STR_NOMBRE_USUARIO"  +","
+                +cod+ "FEC_MODIF_USUARIO"    +cod+ "= "+"@FEC_MODIF_USUARIO" 
+                + " WHERE " +cod+ "INT_IDUSUARIO_P" +cod+ " = " + id;
+
+            try
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PASSWORD_USUARIO", Value = usuario.STR_PASSWORD_USUARIO.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = DateTime.Now });
+
+                con.Open();
+                int cantFilas = cmd.ExecuteNonQuery();
+                con.Close();
+                return cantFilas;
+            }
+            catch (Exception ex)
+            {
+                con.Close();
+                string error = ex.Message;
+                throw;
+            }
+        }
+
+        public int DeleteUser(string id)
+        {
+            bool status = false;
+            string add = "UPDATE " + cod + "TAB_USUARIO" + cod +
+                " SET " + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "= " + status +
+                " WHERE " + cod + "INT_IDUSUARIO_P" + cod + " = " + id;
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+
+                int cantFilas = cmd.ExecuteNonQuery();
+                con.Close();
+                return cantFilas;
+            }
+            catch (Exception ex)
+            {
+                con.Close();
+                string error = ex.Message;
+                throw;
+            }
+        }
         /// <summary>
         /// Metodo que regresa una variable booleana para determinar si un un Usuario existe
         /// y asi determinar si se agrega o no se agrega a la base de datos
