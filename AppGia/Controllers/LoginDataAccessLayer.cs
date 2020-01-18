@@ -23,7 +23,7 @@ namespace AppGia.Controllers
 
         public bool validacionLoginUsuario(Relacion relacion, Login lg)
         {
-
+            relacion.INT_IDGRUPO_P = 9;
             string consulta = " select " + 1 + " from " + "(" + " select " + cod + "TAB_RELACION_USUARIO" + cod + "." + cod + "INT_IDGRUPO_P" + cod + "," + cod + "TAB_RELACION_USUARIO" + cod + "."
              + cod + "INT_IDUSUARIO_P" + cod + "," + cod + "TAB_USUARIO" + cod + "." + cod + "STR_NOMBRE_USUARIO" + cod + " from " + cod + "TAB_RELACION_USUARIO" + cod + " inner " + "  " + " join "
              + cod + "TAB_USUARIO" + cod + " on " + cod + "TAB_RELACION_USUARIO" + cod + "." + cod + "INT_IDUSUARIO_P" + cod + "=" + cod + "TAB_USUARIO"
