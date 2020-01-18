@@ -44,15 +44,23 @@ namespace AppGia.Controllers
                 DireccionDriver = "C:\\Program Files\\SQL Anywhere 12\\Bin64\\dbodbc12.dll";
                 var datasourcesKey = Registry.LocalMachine.CreateSubKey(ODBC_PATH + "ODBC Data Sources");
 
+
+
                 if (datasourcesKey == null)
                 {
                     throw new Exception("La clave de registro ODBC no existe");
                 }
+            
+        
+                
 
-
+                //// Se crea el DSN en datasourcesKey aunque ya exista 
+                datasourcesKey.SetValue(DsnNombre, driver);
+                //// Borrado de DSN para Actualizar  datos en base de datos 
+                datasourcesKey.DeleteValue(DsnNombre);
+                /// Se crea DSN con datos actuales 
                 datasourcesKey.SetValue(DsnNombre, driver);
 
-                
 
                 var dsnKey = Registry.LocalMachine.CreateSubKey(ODBC_PATH + DsnNombre);
 
