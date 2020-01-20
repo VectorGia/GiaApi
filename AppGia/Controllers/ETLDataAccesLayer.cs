@@ -23,6 +23,7 @@ namespace AppGia.Controllers
         OdbcConnection odbcCon;
         OdbcCommand cmdETL = new OdbcCommand();
         char cod = '"';
+        DSNConfig dsn = new DSNConfig();
 
         SqlConnection conSQLETL = new SqlConnection();
         SqlCommand comSQLETL = new SqlCommand();
@@ -106,7 +107,7 @@ namespace AppGia.Controllers
         /// </summary>
         /// <param name="compania"></param>
         /// <returns>Extracción del SQL</returns>
-        public List<ScSaldoConCc> cadena_conexion_extrac(int id_compania)
+        public List<ScSaldoConCc> obtenerSalContCC(int id_compania)
         {
             string UserID = string.Empty;
             string Password = string.Empty;
@@ -117,6 +118,7 @@ namespace AppGia.Controllers
 
             List<Compania> lstCadena = new List<Compania>();
             lstCadena = CadenaConexionETL_lst(id_compania);
+            dsn.crearDSN(id_compania);
             UserID = lstCadena[0].STR_USUARIO_ETL;
             Password = lstCadena[0].STR_CONTRASENIA_ETL;
             Host = lstCadena[0].STR_HOST_COMPANIA;
@@ -545,7 +547,7 @@ namespace AppGia.Controllers
 
         }
 
-        public List<Balanza> lstBalanzaETL(int id_compania)
+        public List<Balanza> convertirTabBalanza(int id_compania)
         {
             List<Balanza> lstBalanza = new List<Balanza>();
 
@@ -592,7 +594,7 @@ namespace AppGia.Controllers
             //}
 
             List<ScSaldoConCc> lstSaldoCC = new List<ScSaldoConCc>();
-            lstSaldoCC = cadena_conexion_extrac(id_compania);
+            lstSaldoCC = obtenerSalContCC(id_compania);
 
             foreach (ScSaldoConCc saldoCC in lstSaldoCC) {
                 Balanza balanza = new Balanza();
@@ -692,10 +694,10 @@ namespace AppGia.Controllers
 
 
 
-        public int addTAB_BALANZA(int id_compania)
+        public int insertarTabBalanza(int id_compania)
         {
             List<Balanza> lstBala = new List<Balanza>();
-            lstBala = lstBalanzaETL(id_compania);
+            lstBala = convertirTabBalanza(id_compania);
 
                 string addBalanza = "INSERT INTO"
                 + cod + "TAB_BALANZA" + cod + "("

@@ -46,7 +46,7 @@ namespace AppGia.Controllers
 
         public void GenerarBalanza(int id) {
 
-            objETL.addTAB_BALANZA(id);
+            objETL.insertarTabBalanza(id);
 
         }
     }

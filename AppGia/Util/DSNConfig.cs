@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class DSN
+    public class DSNConfig
     {
-        public DSN()
+        public DSNConfig()
         {
             //Constructor
         }
@@ -68,9 +68,6 @@ namespace AppGia.Controllers
                 {
                     throw new Exception("No se creó la clave de registro ODBC para DSN");
                 }
-
-
-                
 
                 dsnKey.SetValue("Database", cia.STR_BD_COMPANIA);
                 dsnKey.SetValue("Description", Descri);
