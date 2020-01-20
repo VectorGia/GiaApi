@@ -48,14 +48,14 @@ namespace AppGia.Conexion
             }
         }
 
-        public OdbcConnection ConexionSybaseodbc()
+        public OdbcConnection ConexionSybaseodbc(string DsnName)
 
         {
             try
             {
                 var configuration = GetConfiguration();
-
-                odbcCon = new OdbcConnection("DSN=GIAODBCPRUEBAS"); ////ODBCGIA
+                odbcCon = new OdbcConnection("DSN="+DsnName);
+               // odbcCon = new OdbcConnection("DSN=GIAODBCPRUEBAS"); ////ODBCGIA
 
                 return odbcCon;
             }

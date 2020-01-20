@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.Odbc;
+using AppGia.Util.Models;
 
 namespace AppGia.Controllers
 {
@@ -23,7 +24,7 @@ namespace AppGia.Controllers
         OdbcConnection odbcCon;
         OdbcCommand cmdETL = new OdbcCommand();
         char cod = '"';
-        DSNConfig dsn = new DSNConfig();
+        DSNConfig dsnConfig = new DSNConfig();
 
         SqlConnection conSQLETL = new SqlConnection();
         SqlCommand comSQLETL = new SqlCommand();
@@ -33,7 +34,7 @@ namespace AppGia.Controllers
         public ETLDataAccesLayer() {
             con = conex.ConnexionDB();
             //conSc=conex.ConexionSybase();
-            odbcCon = conex.ConexionSybaseodbc();
+            //odbcCon = conex.ConexionSybaseodbc();
 
 
         }
@@ -98,9 +99,9 @@ namespace AppGia.Controllers
         }
 
 
-        
 
-      
+
+
         /// <summary>
         /// Crea la cadena de conexion segun lo guardado en la tabla compania
         /// realiza el select a la tabla Balanza
@@ -109,21 +110,23 @@ namespace AppGia.Controllers
         /// <returns>Extracción del SQL</returns>
         public List<ScSaldoConCc> obtenerSalContCC(int id_compania)
         {
-            string UserID = string.Empty;
-            string Password = string.Empty;
-            string Host = string.Empty;
-            string Port = string.Empty;
-            string DataBase = string.Empty;
-            string Cadena = string.Empty;
+            //string UserID = string.Empty;
+            //string Password = string.Empty;
+            //string Host = string.Empty;
+            //string Port = string.Empty;
+            //string DataBase = string.Empty;
+            //string Cadena = string.Empty;
 
-            List<Compania> lstCadena = new List<Compania>();
-            lstCadena = CadenaConexionETL_lst(id_compania);
-            dsn.crearDSN(id_compania);
-            UserID = lstCadena[0].STR_USUARIO_ETL;
-            Password = lstCadena[0].STR_CONTRASENIA_ETL;
-            Host = lstCadena[0].STR_HOST_COMPANIA;
-            Port = lstCadena[0].STR_PUERTO_COMPANIA;
-            DataBase = lstCadena[0].STR_BD_COMPANIA;
+            //List<Compania> lstCadena = new List<Compania>();
+            //lstCadena = CadenaConexionETL_lst(id_compania);
+
+
+
+            //UserID = lstCadena[0].STR_USUARIO_ETL;
+            //Password = lstCadena[0].STR_CONTRASENIA_ETL;
+            //Host = lstCadena[0].STR_HOST_COMPANIA;
+            //Port = lstCadena[0].STR_PUERTO_COMPANIA;
+            //DataBase = lstCadena[0].STR_BD_COMPANIA;
 
             /*Cadena de Postegres
             Cadena = "USER ID=" + UserID + ";" + "Password=" + Password + ";" + "Host=" + Host + ";" + "Port =" + Port + ";" + "DataBase=" + DataBase + ";" + "Pooling=true;";*/
@@ -133,7 +136,14 @@ namespace AppGia.Controllers
             //Cadena = "Data Source =" + Host +","+Port+ ";" + "Initial Catalog=" + DataBase + ";" + "Persist Security Info=True;" + "User ID=" + UserID + ";Password=" + Password;
             //conSQLETL = new SqlConnection(Cadena);
 
-           
+            /// creacion de odbc 
+            DSN dsn = new DSN();
+            dsn = dsnConfig.crearDSN(id_compania);
+
+            if (dsn.creado) { 
+            /// obtener conexion de Odbc creado 
+            odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
+
 
             try
             {
@@ -158,7 +168,7 @@ namespace AppGia.Controllers
                 //            + "[DECI_INCLUIR_SUMA]"
                 //            + " FROM [TAB_BALANZA_SQL]";
 
-                
+
                 //comSQLETL = new SqlCommand(add, conSQLETL);
                 //SqlDataAdapter da = new SqlDataAdapter(comSQLETL);
                 //DataTable dt = new DataTable();
@@ -204,6 +214,7 @@ namespace AppGia.Controllers
                             + "cc"
                             + " FROM sc_salcont_cc";
 
+
                 OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                 odbcCon.Open();
                 OdbcDataReader rdr = cmd.ExecuteReader();
@@ -246,14 +257,14 @@ namespace AppGia.Controllers
                     saldo.cc = Convert.ToString(rdr["cc"]);
 
                     listaSaldo.Add(saldo);
-                    
+
                 }
 
                 return listaSaldo;
 
                 ////OdbcCommand cmd = new OdbcCommand(consulta , odbcCon);
                 ////odbcCon.Open();
-               // OdbcDataReader rdr = cmd.ExecuteReader();
+                // OdbcDataReader rdr = cmd.ExecuteReader();
                 //OdbcDataAdapter da = new OdbcDataAdapter(cmdETL);
                 //DataTable dt = new DataTable();
                 //DataSet saldos = new DataSet();
@@ -261,9 +272,9 @@ namespace AppGia.Controllers
 
                 //return dt;
 
-                
+
                 ////
-                
+
 
 
 
@@ -278,6 +289,10 @@ namespace AppGia.Controllers
                 odbcCon.Close();
                 //// regresar emulacion sql 
                 //conSQLETL.Close();
+            }
+            }
+            else{
+                return null;
             }
         }
 

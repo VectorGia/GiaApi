@@ -1,4 +1,5 @@
 ﻿using AppGia.Models;
+using AppGia.Util.Models;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace AppGia.Controllers
             //Constructor
         }
 
-        public int crearDSN(int id_compania)
+        public DSN crearDSN(int id_compania)
         {
             //Obtener los datos de la Tab_Compania para crear el DSN
             ETLDataAccesLayer eTLDataAccesLayer = new ETLDataAccesLayer();
@@ -80,12 +81,21 @@ namespace AppGia.Controllers
                 dsnKey.SetValue("password", cia.STR_CONTRASENIA_ETL);
                 dsnKey.SetValue("Trusted_Connection", trustedConnection ? "Yes" : "No");
 
-                return 1;//se creo
+                DSN dsn = new DSN();
+                dsn.creado = true;
+                dsn.nombreDSN = DsnNombre;
+                return dsn ;
+                //return 1; //se creo
             }
             catch (Exception ex)
             {
                 string error = ex.Message;
-                return 0; //Nose creo
+
+                DSN dsn = new DSN();
+                dsn.creado = false ;
+                dsn.nombreDSN = DsnNombre;
+                return dsn;
+                //return 0; //Nose creo
             }
         }
     }
