@@ -73,7 +73,7 @@ namespace AppGia.Controllers
                 dsnKey.SetValue("Database", cia.STR_BD_COMPANIA);
                 dsnKey.SetValue("Description", Descri);
                 dsnKey.SetValue("Driver", DireccionDriver);
-                dsnKey.SetValue("User", "sa");
+                dsnKey.SetValue("User", cia.STR_USUARIO_ETL);
                 dsnKey.SetValue("Host", cia.STR_HOST_COMPANIA+":"+cia.STR_PUERTO_COMPANIA);
                 dsnKey.SetValue("Server", cia.STR_HOST_COMPANIA);
                 dsnKey.SetValue("Database", cia.STR_BD_COMPANIA);

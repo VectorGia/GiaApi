@@ -17,10 +17,10 @@ namespace AppGia.Controllers
 
         char cod = '"';
 
-        public int insertarBalanza(Balanza balanza)
+        public int AddBalanza(Balanza balanza)
         {
 
-            string insert = "INSERT INTO"
+            string addBalanza = "INSERT INTO"
                      + cod + "TAB_BALANZA" + cod + "("
                      //+ cod + "INT_IDBALANZA" + cod + ","
                      + cod + "TEXT_CTA" + cod + ","
@@ -104,7 +104,7 @@ namespace AppGia.Controllers
             try
             {
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(insert, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
                     //cmd.Parameters.AddWithValue("@INT_IDBALANZA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_IDBALANZA);
                     cmd.Parameters.AddWithValue("@TEXT_CTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_CTA.Trim());
                     cmd.Parameters.AddWithValue("@TEXT_SCTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_SCTA.Trim());
