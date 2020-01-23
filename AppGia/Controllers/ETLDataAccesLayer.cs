@@ -936,6 +936,7 @@ namespace AppGia.Controllers
 
         public int insertarTabBalanza(int id_compania)
         {
+            var transaction = con.BeginTransaction();
             List<Balanza> lstBala = new List<Balanza>();
             lstBala = obtenerSalContCCD(id_compania);
             //lstBala = convertirTabBalanza(id_compania);
@@ -1085,7 +1086,7 @@ namespace AppGia.Controllers
                         // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                         cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery()); 
                     }
-                    
+                    transaction.Commit();
                     con.Close();
                     configCorreo.EnviarCorreo("La extracción para se genero correctamente", "ETL");
                     return cantFilaAfect;
@@ -1093,6 +1094,7 @@ namespace AppGia.Controllers
             }
             catch (Exception ex)
             {
+                transaction.Rollback();
                 con.Close();
                 configCorreo.EnviarCorreo("La extracción para se genero incorrectamente", "ETL");
                 string error = ex.Message;
