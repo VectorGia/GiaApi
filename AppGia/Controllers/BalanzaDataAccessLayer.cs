@@ -17,6 +17,95 @@ namespace AppGia.Controllers
 
         char cod = '"';
 
+        public Balanza GetEncabezado(string cc, int anio)
+        {
+            string consulta = "select " + cod + "INT_YEAR" + cod + "," + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "STR_CONCEPTO" + cod + ", sum(" + cod + "DECI_SALINI" + cod + ") as " + cod + "DECI_SALINI" + cod + "," +
+            "sum(" + cod + "DECI_ENECARGOS" + cod + ") as " + cod + "DECI_ENECARGOS" + cod + ", sum(" + cod + "DECI_ENEABONOS" + cod + ") as " + cod + "DECI_ENEABONOS" + cod + "," +
+            "sum(" + cod + "DECI_FEBCARGOS" + cod + ") as " + cod + "DECI_FEBCARGOS" + cod + ", sum(" + cod + "DECI_FEBABONOS" + cod + ") as " + cod + "DECI_FEBABONOS" + cod + "," +
+            "sum(" + cod + "DECI_MARCARGOS" + cod + ") as " + cod + "DECI_MARCARGOS" + cod + ", sum(" + cod + "DECI_MARABONOS" + cod + ") as " + cod + "DECI_MARABONOS" + cod + "," +
+            "sum(" + cod + "DECI_ABRCARGOS" + cod + ") as " + cod + "DECI_ABRCARGOS" + cod + ", sum(" + cod + "DECI_ABRABONOS" + cod + ") as " + cod + "DECI_ABRABONOS" + cod + "," +
+            "sum(" + cod + "DECI_MAYCARGOS" + cod + ") as " + cod + "DECI_MAYCARGOS" + cod + ", sum(" + cod + "DECI_MAYABONOS" + cod + ") as " + cod + "DECI_MAYABONOS" + cod + "," +
+            "sum(" + cod + "DECI_JUNCARGOS" + cod + ") as " + cod + "DECI_JUNCARGOS" + cod + ", sum(" + cod + "DECI_JUNABONOS" + cod + ") as " + cod + "DECI_JUNABONOS" + cod + "," +
+            "sum(" + cod + "DECI_JULCARGOS" + cod + ") as " + cod + "DECI_JULCARGOS" + cod + ", sum(" + cod + "DECI_JULABONOS" + cod + ") as " + cod + "DECI_JULABONOS" + cod + "," +
+            "sum(" + cod + "DECI_AGOCARGOS" + cod + ") as " + cod + "DECI_AGOCARGOS" + cod + ", sum(" + cod + "DECI_AGOABONOS" + cod + ") as " + cod + "DECI_AGOABONOS" + cod + "," +
+            "sum(" + cod + "DECI_SEPCARGOS" + cod + ") as " + cod + "DECI_SEPCARGOS" + cod + ", sum(" + cod + "DECI_SEPABONOS" + cod + ") as " + cod + "DECI_SEPABONOS" + cod + "," +
+            "sum(" + cod + "DECI_OCTCARGOS" + cod + ") as " + cod + "DECI_OCTCARGOS" + cod + ", sum(" + cod + "DECI_OCTABONOS" + cod + ") as " + cod + "DECI_OCTABONOS" + cod + "," +
+            "sum(" + cod + "DECI_NOVCARGOS" + cod + ") as " + cod + "DECI_NOVCARGOS" + cod + ", sum(" + cod + "DECI_NOVABONOS" + cod + ") as " + cod + "DECI_NOVABONOS" + cod + "," +
+            "sum(" + cod + "DECI_DICCARGOS" + cod + ") as " + cod + "DECI_DICCARGOS" + cod + ", sum(" + cod + "DECI_DICABONOS" + cod + ") as " + cod + "DECI_DICABONOS" + cod +
+            " from " + cod + "TAB_BALANZA" + cod + ", " + cod + "TAB_RELMODELO_CTA" + cod +
+            " where " + cod + "TAB_BALANZA" + cod + "." + cod + "TEXT_CC" + cod + " = " + cc +
+            " and " + cod + "TAB_BALANZA" + cod + "." + cod + "INT_YEAR" + cod + " = " + anio +
+            " and " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "INT_IDRELMODCTA" + cod + " between 5 and 7" +
+            " and " + cod + "TAB_BALANZA" + cod + "." + cod + "TEXT_CTA" + cod + " between " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "STR_CTA_INICIO" + cod + " and " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "STR_CTA_FIN" + cod +
+            " group by " + cod + "TAB_BALANZA" + cod + "." + cod + "INT_YEAR" + cod + ", " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "STR_CONCEPTO" + cod +
+            " union " +
+            "select " + cod + "INT_YEAR" + cod + ", 'TOTAL' as " + cod + "STR_CONCEPTO" + cod + ", sum(" + cod + "DECI_SALINI" + cod + ") as " + cod + "DECI_SALINI" + cod + "," +
+            "sum(" + cod + "DECI_ENECARGOS" + cod + ") as " + cod + "DECI_ENECARGOS" + cod + ", sum(" + cod + "DECI_ENEABONOS" + cod + ") as " + cod + "DECI_ENEABONOS" + cod + "," +
+            "sum(" + cod + "DECI_FEBCARGOS" + cod + ") as " + cod + "DECI_FEBCARGOS" + cod + ", sum(" + cod + "DECI_FEBABONOS" + cod + ") as " + cod + "DECI_FEBABONOS" + cod + "," +
+            "sum(" + cod + "DECI_MARCARGOS" + cod + ") as " + cod + "DECI_MARCARGOS" + cod + ", sum(" + cod + "DECI_MARABONOS" + cod + ") as " + cod + "DECI_MARABONOS" + cod + "," +
+            "sum(" + cod + "DECI_ABRCARGOS" + cod + ") as " + cod + "DECI_ABRCARGOS" + cod + ", sum(" + cod + "DECI_ABRABONOS" + cod + ") as " + cod + "DECI_ABRABONOS" + cod + "," +
+            "sum(" + cod + "DECI_MAYCARGOS" + cod + ") as " + cod + "DECI_MAYCARGOS" + cod + ", sum(" + cod + "DECI_MAYABONOS" + cod + ") as " + cod + "DECI_MAYABONOS" + cod + "," +
+            "sum(" + cod + "DECI_JUNCARGOS" + cod + ") as " + cod + "DECI_JUNCARGOS" + cod + ", sum(" + cod + "DECI_JUNABONOS" + cod + ") as " + cod + "DECI_JUNABONOS" + cod + "," +
+            "sum(" + cod + "DECI_JULCARGOS" + cod + ") as " + cod + "DECI_JULCARGOS" + cod + ", sum(" + cod + "DECI_JULABONOS" + cod + ") as " + cod + "DECI_JULABONOS" + cod + "," +
+            "sum(" + cod + "DECI_AGOCARGOS" + cod + ") as " + cod + "DECI_AGOCARGOS" + cod + ", sum(" + cod + "DECI_AGOABONOS" + cod + ") as " + cod + "DECI_AGOABONOS" + cod + "," +
+            "sum(" + cod + "DECI_SEPCARGOS" + cod + ") as " + cod + "DECI_SEPCARGOS" + cod + ", sum(" + cod + "DECI_SEPABONOS" + cod + ") as " + cod + "DECI_SEPABONOS" + cod + "," +
+            "sum(" + cod + "DECI_OCTCARGOS" + cod + ") as " + cod + "DECI_OCTCARGOS" + cod + ", sum(" + cod + "DECI_OCTABONOS" + cod + ") as " + cod + "DECI_OCTABONOS" + cod + "," +
+            "sum(" + cod + "DECI_NOVCARGOS" + cod + ") as " + cod + "DECI_NOVCARGOS" + cod + ", sum(" + cod + "DECI_NOVABONOS" + cod + ") as " + cod + "DECI_NOVABONOS" + cod + "," +
+            "sum(" + cod + "DECI_DICCARGOS" + cod + ") as " + cod + "DECI_DICCARGOS" + cod + ", sum(" + cod + "DECI_DICABONOS" + cod + ") as " + cod + "DECI_DICABONOS" + cod +
+            " from " + cod + "TAB_BALANZA" + cod + ", " + cod + "TAB_RELMODELO_CTA" + cod +
+            " where " + cod + "TAB_BALANZA" + cod + "." + cod + "TEXT_CC" + cod + " = " + cc +
+            " and " + cod + "TAB_BALANZA" + cod + "." + cod + "INT_YEAR" + cod + " = " + anio +
+            " and " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "INT_IDRELMODCTA" + cod + " between 5 and 7" +
+            " and " + cod + "TAB_BALANZA" + cod + "." + cod + "TEXT_CTA" + cod + " between " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "STR_CTA_INICIO" + cod + " and " + cod + "TAB_RELMODELO_CTA" + cod + "." + cod + "STR_CTA_FIN" + cod +
+            " group by " + cod + "INT_YEAR" + cod;
+            try
+            {
+                Balanza balanza = new Balanza();
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                con.Open();
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    balanza.INT_YEAR = Convert.ToInt32(rdr["INT_YEAR"]);
+                    balanza.TEXT_DESCRIPCION = rdr["STR_CONCEPTO"].ToString().Trim();
+                    balanza.DECI_SALINI = Convert.ToInt32(rdr["DECI_SALINI"]);
+                    balanza.DECI_ENECARGOS = Convert.ToInt32(rdr["DECI_ENECARGOS"]);
+                    balanza.DECI_ENEABONOS = Convert.ToInt32(rdr["DECI_ENEABONOS"]);
+                    balanza.DECI_FEBCARGOS = Convert.ToInt32(rdr["DECI_FEBCARGOS"]);
+                    balanza.DECI_FEBABONOS = Convert.ToInt32(rdr["DECI_FEBABONOS"]);
+                    balanza.DECI_MARCARGOS = Convert.ToInt32(rdr["DECI_MARCARGOS"]);
+                    balanza.DECI_MARABONOS = Convert.ToInt32(rdr["DECI_MARABONOS"]);
+                    balanza.DECI_ABRCARGOS = Convert.ToInt32(rdr["DECI_ABRCARGOS"]);
+                    balanza.DECI_ABRABONOS = Convert.ToInt32(rdr["DECI_ABRABONOS"]);
+                    balanza.DECI_MAYCARGOS = Convert.ToInt32(rdr["DECI_MAYCARGOS"]);
+                    balanza.DECI_MAYABONOS = Convert.ToInt32(rdr["DECI_MAYABONOS"]);
+                    balanza.DECI_JUNCARGOS = Convert.ToInt32(rdr["DECI_JUNCARGOS"]);
+                    balanza.DECI_JUNABONOS = Convert.ToInt32(rdr["DECI_JUNABONOS"]);
+                    balanza.DECI_JULCARGOS = Convert.ToInt32(rdr["DECI_JULCARGOS"]);
+                    balanza.DECI_JULABONOS = Convert.ToInt32(rdr["DECI_JULABONOS"]);
+                    balanza.DECI_AGOCARGOS = Convert.ToInt32(rdr["DECI_AGOCARGOS"]);
+                    balanza.DECI_AGOABONOS = Convert.ToInt32(rdr["DECI_AGOABONOS"]);
+                    balanza.DECI_SEPCARGOS = Convert.ToInt32(rdr["DECI_SEPCARGOS"]);
+                    balanza.DECI_SEPABONOS = Convert.ToInt32(rdr["DECI_SEPABONOS"]);
+                    balanza.DECI_OCTCARGOS = Convert.ToInt32(rdr["DECI_OCTCARGOS"]);
+                    balanza.DECI_OCTABONOS = Convert.ToInt32(rdr["DECI_OCTABONOS"]);
+                    balanza.DECI_NOVCARGOS = Convert.ToInt32(rdr["DECI_NOVCARGOS"]);
+                    balanza.DECI_NOVABONOS = Convert.ToInt32(rdr["DECI_NOVABONOS"]);
+                    balanza.DECI_DICCARGOS = Convert.ToInt32(rdr["DECI_DICCARGOS"]);
+                    balanza.DECI_DICABONOS = Convert.ToInt32(rdr["DECI_DICABONOS"]);
+
+                }
+
+                con.Close();
+                return balanza;
+
+            }
+            catch
+            {
+                con.Close();
+                throw;
+            }
+        }
         public int AddBalanza(Balanza balanza)
         {
 

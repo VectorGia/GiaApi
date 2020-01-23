@@ -80,7 +80,7 @@ namespace AppGia.Controllers
         public int insertarCuentasPg(int id_compania)
         {
             List<Cuentas> listaCuentas = new List<Cuentas>();
-            listaCuentas = obtenerCuentasSybase(id_compania);
+            listaCuentas = obtenerCuentasSybase(id_compania); 
 
             //// por borrar 
             ////Cuentas pruebaCuenta = new Cuentas();
