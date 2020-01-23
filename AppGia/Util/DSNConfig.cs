@@ -28,6 +28,7 @@ namespace AppGia.Controllers
             cia.STR_PUERTO_COMPANIA = lstCia[0].STR_PUERTO_COMPANIA;
             cia.STR_BD_COMPANIA = lstCia[0].STR_BD_COMPANIA;
             cia.INT_IDCOMPANIA_P = lstCia[0].INT_IDCOMPANIA_P;
+            cia.STR_NOMBRE_COMPANIA = lstCia[0].STR_NOMBRE_COMPANIA;
 
             string ODBC_PATH = string.Empty;
             string driver = string.Empty;

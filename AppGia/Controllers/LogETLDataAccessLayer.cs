@@ -38,7 +38,7 @@ namespace AppGia.Controllers
                         logetl.FEC_ETL = Convert.ToDateTime(rdr["FEC_ETL"]);
                         logetl.INT_IDUSUARIO = Convert.ToInt32(rdr["INT_IDUSUARIO"]);
                         logetl.INT_IDESTATUSETL_P = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
-                        logetl.INT_IDBALANZA = Convert.ToInt32(rdr["INT_IDBALANZA"]);
+                        //logetl.INT_IDBALANZA = Convert.ToInt32(rdr["INT_IDBALANZA"]);
                         logetl.INT_TIPOETL = Convert.ToInt32(rdr["INT_TIPOETL"]);
                         lstLogETL.Add(logetl);
                     }
