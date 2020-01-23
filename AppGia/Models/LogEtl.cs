@@ -11,7 +11,7 @@ namespace AppGia.Models
         public DateTime FEC_ETL { set; get; }
         public int INT_IDUSUARIO { set; get; }
         public int INT_IDESTATUSETL_P { set; get; }
-        public int INT_IDBALANZA { set; get; }
+        //public int INT_IDBALANZA { set; get; }
         public int INT_TIPOETL { set; get; }
     }
 }

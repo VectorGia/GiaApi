@@ -141,14 +141,18 @@ namespace AppGia.Controllers
                      + cod + "DECI_NOVABONOS" + cod + ","
                      + cod + "DECI_DICCARGOS" + cod + ","
                      + cod + "DECI_DICABONOS" + cod + ","
-                     + cod + "INT_CC" + cod + ","
-                     + cod + "TEXT_DESCRIPCION" + cod + ","
-                     + cod + "TEXT_DESCRIPCION2" + cod + ","
+                     //+ cod + "INT_CC" + cod + ","
+                     //+ cod + "TEXT_DESCRIPCION" + cod + ","
+                     //+ cod + "TEXT_DESCRIPCION2" + cod + ","
                      + cod + "INT_INCLUIR_SUMA" + cod + ","
                      + cod + "INT_TIPO_EXTRACCION" + cod + ","
                      + cod + "TEXT_FECH_EXTR" + cod + ","
                      + cod + "TEXT_HORA" + cod + ","
-                     + cod + "INT_ID_EMPRESA" + cod + ")"
+                     + cod + "INT_ID_EMPRESA" + cod + ","
+                     + cod + "DECI_CIERRE_CARGOS" + cod + ","
+                     + cod + "DECI_CIERRE_ABONOS" + cod + ","
+                     + cod + "INT_ACTA" + cod + ","
+                     + cod + "TEXT_CC" + cod + ")"
 
 
             + "VALUES "
@@ -182,14 +186,18 @@ namespace AppGia.Controllers
                              + "@DECI_NOVABONOS,"
                              + "@DECI_DICCARGOS,"
                              + "@DECI_DICABONOS,"
-                             + "@INT_CC,"
-                             + "@TEXT_DESCRIPCION,"
-                             + "@TEXT_DESCRIPCION2,"
+                             //+ "@INT_CC,"
+                             //+ "@TEXT_DESCRIPCION,"
+                             //+ "@TEXT_DESCRIPCION2,"
                              + "@INT_INCLUIR_SUMA,"
                              + "@INT_TIPO_EXTRACCION,"
                              + "@TEXT_FECH_EXTR,"
                              + "@TEXT_HORA,"
-                             + "@INT_ID_EMPRESA)";
+                             + "@INT_ID_EMPRESA,"
+                             + "@DECI_CIERRE_CARGOS,"
+                             + "@DECI_CIERRE_ABONOS,"
+                             + "@INT_ACTA,"
+                             + "@TEXT_CC)";
             try
             {
                 {
@@ -224,14 +232,20 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@DECI_NOVABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_NOVABONOS);
                     cmd.Parameters.AddWithValue("@DECI_DICCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_DICCARGOS);
                     cmd.Parameters.AddWithValue("@DECI_DICABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_DICABONOS);
-                    cmd.Parameters.AddWithValue("@INT_CC", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_CC);
-                    cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION.Trim());
-                    cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION2.Trim());
+                    //cmd.Parameters.AddWithValue("@INT_CC", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_CC);
+                    //cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION.Trim());
+                    //cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION2.Trim());
                     cmd.Parameters.AddWithValue("@INT_INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_INCLUIR_SUMA);
                     cmd.Parameters.AddWithValue("@INT_TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_TIPO_EXTRACCION);
                     cmd.Parameters.AddWithValue("@TEXT_FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_FECH_EXTR.Trim());
                     cmd.Parameters.AddWithValue("@TEXT_HORA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_HORA.Trim());
                     cmd.Parameters.AddWithValue("@INT_ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_ID_EMPRESA);
+                    cmd.Parameters.AddWithValue("@DECI_CIERRE_CARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_CIERRE_CARGOS);
+                    cmd.Parameters.AddWithValue("@DECI_CIERRE_ABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_CIERRE_ABONOS);
+                    cmd.Parameters.AddWithValue("@INT_ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_ACTA);
+                    cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_CC);
+
+
                     con.Open();
                     int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                     con.Close();
