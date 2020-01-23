@@ -25,7 +25,7 @@ namespace AppGia.Controllers
             "sum(" + cod + "DECI_MARCARGOS" + cod + ") as " + cod + "DECI_MARCARGOS" + cod + ", sum(" + cod + "DECI_MARABONOS" + cod + ") as " + cod + "DECI_MARABONOS" + cod + "," +
             "sum(" + cod + "DECI_ABRCARGOS" + cod + ") as " + cod + "DECI_ABRCARGOS" + cod + ", sum(" + cod + "DECI_ABRABONOS" + cod + ") as " + cod + "DECI_ABRABONOS" + cod + "," +
             "sum(" + cod + "DECI_MAYCARGOS" + cod + ") as " + cod + "DECI_MAYCARGOS" + cod + ", sum(" + cod + "DECI_MAYABONOS" + cod + ") as " + cod + "DECI_MAYABONOS" + cod + "," +
-            "sum(" + cod + "DECI_JUNCARGOS" + cod + ") as " + cod + "DECI_JUNCARGOS" + cod + ", sum(" + cod + "DECI_JUNABONOS" + cod + ") as " + cod + "DECI_JUNABONOS" + cod + "," +
+            "sum(" + cod + "DECI_JUNCARGOS" + cod + ") as " + cod + "DECI_JUNCARGOS" + cod + ", sum (" + cod + "DECI_JUNABONOS" + cod + ") as " + cod + "DECI_JUNABONOS" + cod + "," +
             "sum(" + cod + "DECI_JULCARGOS" + cod + ") as " + cod + "DECI_JULCARGOS" + cod + ", sum(" + cod + "DECI_JULABONOS" + cod + ") as " + cod + "DECI_JULABONOS" + cod + "," +
             "sum(" + cod + "DECI_AGOCARGOS" + cod + ") as " + cod + "DECI_AGOCARGOS" + cod + ", sum(" + cod + "DECI_AGOABONOS" + cod + ") as " + cod + "DECI_AGOABONOS" + cod + "," +
             "sum(" + cod + "DECI_SEPCARGOS" + cod + ") as " + cod + "DECI_SEPCARGOS" + cod + ", sum(" + cod + "DECI_SEPABONOS" + cod + ") as " + cod + "DECI_SEPABONOS" + cod + "," +
