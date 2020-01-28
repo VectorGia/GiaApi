@@ -10,9 +10,9 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EstatusETLController : ControllerBase
+    public class ETLEstatusController : ControllerBase
     {
-        EstatusETLDataAccessLayer objestatusetl = new EstatusETLDataAccessLayer();
+        ETLEstatusDataAccessLayer objestatusetl = new ETLEstatusDataAccessLayer();
         // GET: api/EstatusETL
         [HttpGet]
         public IEnumerable<EstatusETL> Get()

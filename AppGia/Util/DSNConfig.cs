@@ -41,7 +41,7 @@ namespace AppGia.Controllers
             {
                 ODBC_PATH = "SOFTWARE\\ODBC\\ODBC.INI\\";
                 driver = "SQL Anywhere 12"; //Nombre del Driver
-                DsnNombre =cia.STR_NOMBRE_COMPANIA+"_"+cia.INT_IDCOMPANIA_P+"_"+cia.STR_HOST_COMPANIA; //nombre con el que se va identificar el DSN
+                DsnNombre =cia.INT_IDCOMPANIA_P+"_"+ cia.STR_NOMBRE_COMPANIA.Substring(0,15).Replace(" ","_")+"_"+cia.STR_HOST_COMPANIA; //nombre con el que se va identificar el DSN
                 Descri = "DNS_Sybase" + DsnNombre;
                 DireccionDriver = "C:\\Program Files\\SQL Anywhere 12\\Bin64\\dbodbc12.dll";
                 var datasourcesKey = Registry.LocalMachine.CreateSubKey(ODBC_PATH + "ODBC Data Sources");
@@ -95,7 +95,8 @@ namespace AppGia.Controllers
                 DSN dsn = new DSN();
                 dsn.creado = false ;
                 dsn.nombreDSN = DsnNombre;
-                return dsn;
+                throw;
+                //return dsn;
                 //return 0; //Nose creo
             }
         }
