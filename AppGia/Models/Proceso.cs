@@ -13,6 +13,6 @@ namespace AppGia.Models
         public DateTime fecha_fin { set; get; }
         public DateTime fecha_inicio { set; get; }
         public string mensaje { set; get; }
-        public string tipo { set; get; }
+        public string tipo { set; get; } 
     }
 }
