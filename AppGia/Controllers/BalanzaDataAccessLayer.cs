@@ -104,6 +104,7 @@ namespace AppGia.Controllers
             try
             {
                 {
+
                     NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
                     //cmd.Parameters.AddWithValue("@INT_IDBALANZA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_IDBALANZA);
                     cmd.Parameters.AddWithValue("@TEXT_CTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_CTA.Trim());

@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace AppGia.Models
 {
-    public class ETLProg
+    public class Etl_Estatus
     {
         public int id { set; get; }
-        public string fecha_extraccion { set; get; }
-        public string hora_extraccion { set; get; }
-       
+        public string descripcion { set; get; }
+        public bool activo { set; get; }
+        public DateTime fech_modificacion { set; get; }
     }
 }

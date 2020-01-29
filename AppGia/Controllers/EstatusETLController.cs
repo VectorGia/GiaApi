@@ -15,7 +15,7 @@ namespace AppGia.Controllers
         EstatusETLDataAccessLayer objestatusetl = new EstatusETLDataAccessLayer();
         // GET: api/EstatusETL
         [HttpGet]
-        public IEnumerable<EstatusETL> Get()
+        public IEnumerable<Etl_Estatus> Get()
         {
             return objestatusetl.GetAllEstatusETL();
         }
@@ -29,7 +29,7 @@ namespace AppGia.Controllers
 
         // POST: api/EstatusETL
         [HttpPost]
-        public int Post([FromBody] EstatusETL estatusetl)
+        public int Post([FromBody] Etl_Estatus estatusetl)
         {
             return objestatusetl.insert(estatusetl);
         }

@@ -19,15 +19,15 @@ namespace AppGia.Controllers
         {
             //Obtener los datos de la Tab_Compania para crear el DSN
             ETLDataAccesLayer eTLDataAccesLayer = new ETLDataAccesLayer();
-            List<Compania> lstCia = eTLDataAccesLayer.CadenaConexionETL_lst(id_compania);
+            List<Empresa> lstCia = eTLDataAccesLayer.CadenaConexionETL_lst(id_compania);
 
-            Compania cia = new Compania();
-            cia.STR_USUARIO_ETL = lstCia[0].STR_USUARIO_ETL;
-            cia.STR_CONTRASENIA_ETL = lstCia[0].STR_CONTRASENIA_ETL;
-            cia.STR_HOST_COMPANIA = lstCia[0].STR_HOST_COMPANIA;
-            cia.STR_PUERTO_COMPANIA = lstCia[0].STR_PUERTO_COMPANIA;
-            cia.STR_BD_COMPANIA = lstCia[0].STR_BD_COMPANIA;
-            cia.INT_IDCOMPANIA_P = lstCia[0].INT_IDCOMPANIA_P;
+            Empresa cia = new Empresa();
+            cia.usuario_etl = lstCia[0].usuario_etl;
+            cia.contrasenia_etl = lstCia[0].contrasenia_etl;
+            cia.host = lstCia[0].host;
+            cia.puerto_compania = lstCia[0].puerto_compania;
+            cia.bd_name = lstCia[0].bd_name;
+            cia.id = lstCia[0].id;
 
             string ODBC_PATH = string.Empty;
             string driver = string.Empty;
@@ -40,7 +40,7 @@ namespace AppGia.Controllers
             {
                 ODBC_PATH = "SOFTWARE\\ODBC\\ODBC.INI\\";
                 driver = "SQL Anywhere 12"; //Nombre del Driver
-                DsnNombre =cia.STR_NOMBRE_COMPANIA+"_"+cia.INT_IDCOMPANIA_P+"_"+cia.STR_HOST_COMPANIA; //nombre con el que se va identificar el DSN
+                DsnNombre =cia.nombre+"_"+cia.id+"_"+cia.host; //nombre con el que se va identificar el DSN
                 Descri = "DNS_Sybase" + DsnNombre;
                 DireccionDriver = "C:\\Program Files\\SQL Anywhere 12\\Bin64\\dbodbc12.dll";
                 var datasourcesKey = Registry.LocalMachine.CreateSubKey(ODBC_PATH + "ODBC Data Sources");
@@ -70,15 +70,15 @@ namespace AppGia.Controllers
                     throw new Exception("No se creó la clave de registro ODBC para DSN");
                 }
 
-                dsnKey.SetValue("Database", cia.STR_BD_COMPANIA);
+                dsnKey.SetValue("Database", cia.bd_name);
                 dsnKey.SetValue("Description", Descri);
                 dsnKey.SetValue("Driver", DireccionDriver);
-                dsnKey.SetValue("User", cia.STR_USUARIO_ETL);
-                dsnKey.SetValue("Host", cia.STR_HOST_COMPANIA+":"+cia.STR_PUERTO_COMPANIA);
-                dsnKey.SetValue("Server", cia.STR_HOST_COMPANIA);
-                dsnKey.SetValue("Database", cia.STR_BD_COMPANIA);
-                dsnKey.SetValue("username", cia.STR_USUARIO_ETL);
-                dsnKey.SetValue("password", cia.STR_CONTRASENIA_ETL);
+                dsnKey.SetValue("User", cia.usuario_etl);
+                dsnKey.SetValue("Host", cia.host+":"+cia.puerto_compania);
+                dsnKey.SetValue("Server", cia.host);
+                dsnKey.SetValue("Database", cia.bd_name);
+                dsnKey.SetValue("username", cia.usuario_etl);
+                dsnKey.SetValue("password", cia.contrasenia_etl);
                 dsnKey.SetValue("Trusted_Connection", trustedConnection ? "Yes" : "No");
 
                 DSN dsn = new DSN();

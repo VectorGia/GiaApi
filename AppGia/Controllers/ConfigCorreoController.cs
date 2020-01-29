@@ -84,7 +84,7 @@ namespace AppGia.Controllers
             List<Usuario> lista = new List<Usuario> ();
             lista = objConfigCorreo.GetDestinatariosCorreo();
             foreach (Usuario usuario in lista) {
-                correos += usuario.STR_EMAIL_USUARIO.ToString() + ",";
+                correos += usuario.email.ToString() + ",";
             }
             return correos;
 

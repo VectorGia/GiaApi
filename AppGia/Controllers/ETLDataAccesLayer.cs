@@ -78,21 +78,21 @@ namespace AppGia.Controllers
         /// </summary>
         /// <param name="compania"></param>
         /// <returns>Lista del tipo Compania</returns>
-        public List<Compania> CadenaConexionETL_lst(int id_compania)
+        public List<Empresa> CadenaConexionETL_lst(int id_compania)
         {
-            List<Compania> lst = new List<Compania>();
+            List<Empresa> lst = new List<Empresa>();
             DataTable dt = new DataTable();
             dt = CadenaConexionETL(id_compania);
 
             foreach (DataRow r in dt.Rows)
             {
-                Compania cia = new Compania();
-                cia.STR_USUARIO_ETL = r["STR_USUARIO_ETL"].ToString();
-                cia.STR_CONTRASENIA_ETL = r["STR_CONTRASENIA_ETL"].ToString();
-                cia.STR_HOST_COMPANIA = r["STR_HOST_COMPANIA"].ToString();
-                cia.STR_PUERTO_COMPANIA = r["STR_PUERTO_COMPANIA"].ToString();
-                cia.STR_BD_COMPANIA = r["STR_BD_COMPANIA"].ToString();
-                cia.INT_IDCOMPANIA_P = Convert.ToInt32(r["INT_IDCOMPANIA_P"]);
+                Empresa cia = new Empresa();
+                cia.usuario_etl = r["usuario_etl"].ToString();
+                cia.contrasenia_etl = r["contrasenia_etl"].ToString();
+                cia.host = r["host"].ToString();
+                cia.puerto_compania = Convert.ToInt32(r["puerto_compania"]);
+                cia.bd_name = r["bd_name"].ToString();
+                cia.id = Convert.ToInt32(r["id"]);
                 lst.Add(cia);
             }
             return lst;

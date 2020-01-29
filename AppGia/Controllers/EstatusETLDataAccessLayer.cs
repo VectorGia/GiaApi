@@ -20,13 +20,13 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-        public IEnumerable<EstatusETL> GetAllEstatusETL()
+        public IEnumerable<Etl_Estatus> GetAllEstatusETL()
         {
-            EstatusETL estatusetl = new EstatusETL();
+            Etl_Estatus estatusetl = new Etl_Estatus();
             string cadena = "SELECT *FROM " + cod + "CAT_ESTUSTETL" + cod;
             try
             {
-                List<EstatusETL> lstEstatusETL = new List<EstatusETL>();
+                List<Etl_Estatus> lstEstatusETL = new List<Etl_Estatus>();
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                     con.Open();
@@ -34,10 +34,10 @@ namespace AppGia.Controllers
 
                     while (rdr.Read())
                     {
-                        estatusetl.INT_IDESTATUSETL_P = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
-                        estatusetl.VAR_DESCRIPCION = Convert.ToString(rdr["VAR_DESCRIPCION"]).Trim();
-                        estatusetl.BOOL_ESTATUS_LOGICO_ESTETL = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_ESTETL"]);
-                        estatusetl.FEC_MODIF_LOGETL = Convert.ToDateTime(rdr["FEC_MODIF_RELUSU"]);
+                        estatusetl.id = Convert.ToInt32(rdr["id"]);
+                        estatusetl.descripcion = Convert.ToString(rdr["descripcion"]).Trim();
+                        estatusetl.activo = Convert.ToBoolean(rdr["activo"]);
+                        estatusetl.fech_modificacion = Convert.ToDateTime(rdr["fech_modificacion"]);
                         lstEstatusETL.Add(estatusetl);
                     }
                     con.Close();
@@ -52,7 +52,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public int update(EstatusETL estatusetl)
+        public int update(Etl_Estatus estatusetl)
         {
             string add = "UPDATE " + cod + "CAT_ESTUSTETL" + cod +
             " SET " + cod + "VAR_DESCRIPCION" + cod + "= " + "@VAR_DESCRIPCION" + ","
@@ -66,9 +66,9 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDESTATUSETL_P", Value = estatusetl.INT_IDESTATUSETL_P });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar, ParameterName = "@VAR_DESCRIPCION", Value = estatusetl.VAR_DESCRIPCION.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_ESTETL", Value = estatusetl.BOOL_ESTATUS_LOGICO_ESTETL });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDESTATUSETL_P", Value = estatusetl.id });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar, ParameterName = "@VAR_DESCRIPCION", Value = estatusetl.descripcion.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_ESTETL", Value = estatusetl.activo });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_LOGETL", Value = DateTime.Now });
 
 
@@ -90,7 +90,7 @@ namespace AppGia.Controllers
 
         }
 
-        public int delete(EstatusETL estatusetl)
+        public int delete(Etl_Estatus estatusetl)
         {
 
             string add = "UPDATE " + cod + "CAT_ESTUSTETL" + cod +
@@ -104,8 +104,8 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDESTATUSETL_P", Value = estatusetl.INT_IDESTATUSETL_P });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_ESTETL", Value = estatusetl.BOOL_ESTATUS_LOGICO_ESTETL });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDESTATUSETL_P", Value = estatusetl.id });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_ESTETL", Value = estatusetl.activo });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_LOGETL", Value = DateTime.Now });
 
 
@@ -127,7 +127,7 @@ namespace AppGia.Controllers
 
         }
 
-        public int insert(EstatusETL estatusetl)
+        public int insert(Etl_Estatus estatusetl)
 
         {
 
@@ -145,8 +145,8 @@ namespace AppGia.Controllers
                     con.Open();
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@VAR_DESCRIPCION", estatusetl.VAR_DESCRIPCION.Trim());
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ESTETL", estatusetl.BOOL_ESTATUS_LOGICO_ESTETL);
+                    cmd.Parameters.AddWithValue("@VAR_DESCRIPCION", estatusetl.descripcion.Trim());
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ESTETL", estatusetl.activo);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_LOGETL", DateTime.Now);
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();

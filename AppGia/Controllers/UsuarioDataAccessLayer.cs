@@ -31,7 +31,7 @@ namespace AppGia.Controllers
         /// <returns></returns>
         public IEnumerable<Usuario> GetAllUsuarios()
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "WHERE " + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "=" + true; ;
+            string cadena = "select * from" + "tab_usuario" + "where "  + "estatus_logico" + "=" + true; 
             try
             {
                 List<Usuario> lstusuario = new List<Usuario>();
@@ -42,12 +42,12 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Usuario usuario = new Usuario();
-                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
-                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString().Trim();
-                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString().Trim();
-                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString().Trim();
-                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
-                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString().Trim();
+                        usuario.id = Convert.ToInt32(rdr["id"]);
+                        usuario.nombre = rdr["nombre"].ToString().Trim();
+                        usuario.user_name = rdr["username"].ToString().Trim();
+                        usuario.puesto = rdr["puesto"].ToString().Trim();
+                        usuario.email= rdr["email"].ToString().Trim();
+                        usuario.password = rdr["password"].ToString().Trim();
 
                         lstusuario.Add(usuario);
                     }
@@ -63,7 +63,7 @@ namespace AppGia.Controllers
         }
         public Usuario GetUsuario(string id)
         {
-            string cadena = "SELECT * FROM" + cod + "TAB_USUARIO" + cod + "WHERE" + cod + "INT_IDUSUARIO_P" + cod + "=" + id;
+            string cadena = "select * from" +  "tab_usuario" +  "where"  + "usuario_id" + "=" + id;
             try
             {
                 Usuario usuario = new Usuario();
@@ -73,13 +73,13 @@ namespace AppGia.Controllers
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
-                        
-                        usuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
-                        usuario.STR_NOMBRE_USUARIO = rdr["STR_NOMBRE_USUARIO"].ToString().Trim();
-                        usuario.STR_USERNAME_USUARIO = rdr["STR_USERNAME_USUARIO"].ToString().Trim();
-                        usuario.STR_PUESTO = rdr["STR_PUESTO"].ToString().Trim();
-                        usuario.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
-                        usuario.STR_PASSWORD_USUARIO = rdr["STR_PASSWORD_USUARIO"].ToString().Trim();
+
+                        usuario.id = Convert.ToInt32(rdr["id"]);
+                        usuario.nombre = rdr["nombre"].ToString().Trim();
+                        usuario.user_name= rdr["user_name"].ToString().Trim();
+                        usuario.puesto = rdr["puesto"].ToString().Trim();
+                        usuario.email = rdr["email"].ToString().Trim();
+                        usuario.password = rdr["password"].ToString().Trim();
 
 
                     }
@@ -106,68 +106,68 @@ namespace AppGia.Controllers
             for (int i = 0; i < numeroUsuarios; i++)
             {
 
-                if (lstUsu[i].INT_IDUSUARIO_P != 0)
+                if (lstUsu[i].id != 0)
                 {
-                    usuario.INT_IDUSUARIO_P = lstUsu[i].INT_IDUSUARIO_P;
+                    usuario.id = lstUsu[i].id;
                 }
 
-                if (lstUsu[i].STR_USERNAME_USUARIO != null)
+                if (lstUsu[i].user_name_interno != null)
                 {
-                    usuario.STR_USERNAME_USUARIO = lstUsu[i].STR_USERNAME_USUARIO;
+                    usuario.user_name_interno = lstUsu[i].user_name_interno;
                 }
                 else
                 {
-                    usuario.STR_USERNAME_USUARIO = "sin username";
+                    usuario.user_name_interno = "sin username";
                 }
 
-                if (lstUsu[i].STR_PASSWORD_USUARIO != null)
+                if (lstUsu[i].password != null)
                 {
-                    usuario.STR_PASSWORD_USUARIO = lstUsu[i].STR_PASSWORD_USUARIO;
+                    usuario.password= lstUsu[i].password;
                 }
                 else
                 {
-                    usuario.STR_PASSWORD_USUARIO = "sin contraseña";
+                    usuario.password = "sin contraseña";
                 }
 
-                if (lstUsu[i].STR_EMAIL_USUARIO != null)
+                if (lstUsu[i].email != null)
                 {
-                    usuario.STR_EMAIL_USUARIO = lstUsu[i].STR_EMAIL_USUARIO;
-                }
-                else
-                {
-                    usuario.STR_EMAIL_USUARIO = "sin Correo";
-                }
-
-
-                usuario.BOOL_ESTATUS_LOGICO_USUARIO = true;
-
-
-                if (lstUsu[i].STR_PUESTO != null)
-                {
-                    usuario.STR_PUESTO = lstUsu[i].STR_PUESTO;
+                    usuario.email = lstUsu[i].email;
                 }
                 else
                 {
-                    usuario.STR_PUESTO = "sin puesto";
+                    usuario.email = "sin Correo";
                 }
 
 
-                if (lstUsu[i].FEC_MODIF_USUARIO != null)
+                usuario.estatus = true;
+
+
+                if (lstUsu[i].puesto != null)
                 {
-                    usuario.FEC_MODIF_USUARIO = lstUsu[i].FEC_MODIF_USUARIO;
+                    usuario.puesto = lstUsu[i].puesto;
                 }
                 else
                 {
-                    usuario.FEC_MODIF_USUARIO = DateTime.Now;
+                    usuario.puesto = "sin puesto";
                 }
 
-                if (lstUsu[i].STR_NOMBRE_USUARIO != null)
+
+                if (lstUsu[i].fech_modificacion != null)
                 {
-                    usuario.STR_NOMBRE_USUARIO = lstUsu[i].STR_NOMBRE_USUARIO;
+                    usuario.fech_modificacion = lstUsu[i].fech_modificacion;
                 }
                 else
                 {
-                    usuario.STR_NOMBRE_USUARIO = "sin nombre usuario";
+                    usuario.fech_modificacion = DateTime.Now;
+                }
+
+                if (lstUsu[i].nombre != null)
+                {
+                    usuario.nombre = lstUsu[i].nombre;
+                }
+                else
+                {
+                    usuario.nombre = "sin nombre usuario";
                 }
 
                 bool existe = validacionUsuario(usuario);
@@ -186,21 +186,23 @@ namespace AppGia.Controllers
         }
         public int addUsuario(Usuario usuario)
         {
-            string add = "INSERT INTO " + cod + "TAB_USUARIO" + cod
-                        + "(" + cod + "STR_USERNAME_USUARIO" + cod + ","
-                        + cod + "STR_PASSWORD_USUARIO" + cod + ","
-                        + cod + "STR_EMAIL_USUARIO" + cod + ","
-                        + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + ","
-                        + cod + "STR_PUESTO" + cod + ","
-                        + cod + "STR_NOMBRE_USUARIO" + cod + ","
-                        + cod + "FEC_MODIF_USUARIO" + cod + ")"
-                        + " VALUES ( @STR_USERNAME_USUARIO" + ","
-                        + "@STR_PASSWORD_USUARIO" + ","
-                        + "@STR_EMAIL_USUARIO" + ","
-                        + "@BOOL_ESTATUS_LOGICO_USUARIO" + ","
-                        + "@STR_PUESTO" + ","
-                        + "@STR_NOMBRE_USUARIO" + ","
-                        + "@FEC_MODIF_USUARIO"
+            string add = " insert into " + "usuario" +
+                       "("  + "user_name" + ","
+                        + "password" + ","
+                        + "email" + ","
+                        + "estatus_logico" +  ","
+                        + "puesto" + ","
+                        + "nombre" +  ","
+                        + "user_name_interno" + ","
+                        + "fech_modificacion" + ")"
+                        + " values ( @user_name" + ","
+                        + "@password" + ","
+                        + "@email" + ","
+                        + "@estatus" + ","
+                        + "@puesto" + ","
+                        + "@nombre" + ","
+                        + "@user_name_interno" + ","
+                        + "@fech_modificacion"
                         + ")";
 
             try
@@ -210,13 +212,14 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PASSWORD_USUARIO", Value = usuario.STR_PASSWORD_USUARIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_USUARIO", Value = usuario.BOOL_ESTATUS_LOGICO_USUARIO });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = DateTime.Now });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
                   
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -237,26 +240,29 @@ namespace AppGia.Controllers
 
         public int updateUsuario(string id, Usuario usuario)
         {
-            string update = "UPDATE " + cod + "TAB_USUARIO" + cod +
-                " SET "
-                +cod+ "STR_USERNAME_USUARIO" +cod+ "= "+"@STR_USERNAME_USUARIO"+","
-                +cod+ "STR_PASSWORD_USUARIO" +cod+ "= "+"@STR_PASSWORD_USUARIO"+","
-                +cod+ "STR_EMAIL_USUARIO"    +cod+ "= "+"@STR_EMAIL_USUARIO"   +","
-                +cod+ "STR_PUESTO"           +cod+ "= "+"@STR_PUESTO"          +","
-                +cod+ "STR_NOMBRE_USUARIO"   +cod+ "= "+"@STR_NOMBRE_USUARIO"  +","
-                +cod+ "FEC_MODIF_USUARIO"    +cod+ "= "+"@FEC_MODIF_USUARIO" 
-                + " WHERE " +cod+ "INT_IDUSUARIO_P" +cod+ " = " + id;
+            string update = "update " +  "usuario"  +
+                " set "
+                + "user_name_interno" + "= "+ "@user_name_interno" + ","
+                + "password" + "= "+"@password"+","
+                + "email"    + "= "+"@email"   +","
+                + "puesto"   + "= "+"@puesto"          +","
+                + "nombre"   +"= "+"@nombre"  +","
+                + "user_name_interno" + "= " + "@user_name_interno" + ","
+                + "fech_modificacion"    + "= "+ "@fech_modificacion"
+                + " where " + "id" + " = " + id;
 
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(update, con);
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_USERNAME_USUARIO", Value = usuario.STR_USERNAME_USUARIO.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PASSWORD_USUARIO", Value = usuario.STR_PASSWORD_USUARIO.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_EMAIL_USUARIO", Value = usuario.STR_EMAIL_USUARIO.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_PUESTO", Value = usuario.STR_PUESTO.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_USUARIO", Value = usuario.STR_NOMBRE_USUARIO.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_USUARIO", Value = DateTime.Now });
 
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();
@@ -273,9 +279,9 @@ namespace AppGia.Controllers
         public int DeleteUser(string id)
         {
             bool status = false;
-            string add = "UPDATE " + cod + "TAB_USUARIO" + cod +
-                " SET " + cod + "BOOL_ESTATUS_LOGICO_USUARIO" + cod + "= " + status +
-                " WHERE " + cod + "INT_IDUSUARIO_P" + cod + " = " + id;
+            string add = "update " + "usuario"  +
+                " set "  + "estatus" + " = " + status +
+                " where " + "id" + cod + " = " + id;
             try
             {
                 con.Open();
@@ -302,7 +308,13 @@ namespace AppGia.Controllers
         public bool validacionUsuario(Usuario usuario)
         {
 
-            string consulta = "SELECT " + 1 + " from " + cod + "TAB_USUARIO" + cod + " WHERE " + cod + "STR_USERNAME_USUARIO" + cod + " LIKE " + "'%" + usuario.STR_USERNAME_USUARIO.Trim() + "%'";
+            
+            string consulta = "select " + 1 
+                + " from " 
+                + "usuario" + " where "  
+                + "user_name" + " = " + "'" 
+                + usuario.user_name_interno.Trim() + "'";
+
             try
             {
                 {
@@ -324,7 +336,7 @@ namespace AppGia.Controllers
         public DataTable Dat_getObtieneUsuarios(Usuario usuario)
         {
 
-            string select = "SELECT " + cod + "STR_USERNAME_USUARIO" + cod + " from" + cod + "TAB_USUARIO" + cod;
+            string select = "select " + cod + "user_name" + cod + " from" + cod + "usuario" ;
 
             try
             {
@@ -355,7 +367,7 @@ namespace AppGia.Controllers
             foreach (DataRow r in dt.Rows)
             {
                 Usuario ent = new Usuario();
-                ent.userName = Convert.ToString(r["STR_USERNAME_USUARIO".Trim()]);
+                ent.user_name = Convert.ToString(r["user_name".Trim()]);
                 lstUsuario.Add(ent);
             }
             return lstUsuario;

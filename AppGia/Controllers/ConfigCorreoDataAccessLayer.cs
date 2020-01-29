@@ -85,7 +85,7 @@ namespace AppGia.Controllers
                     {
 
                         Usuario configUsuarioCorreo = new Usuario();
-                        configUsuarioCorreo.STR_EMAIL_USUARIO = rdr["STR_EMAIL_USUARIO"].ToString().Trim();
+                        configUsuarioCorreo.email = rdr["email"].ToString().Trim();
 
                         
 
