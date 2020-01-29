@@ -87,7 +87,6 @@ namespace AppGia.Controllers
 
             foreach (DataRow r in dt.Rows)
             {
-<<<<<<< HEAD
                 Empresa cia = new Empresa();
                 cia.usuario_etl = r["usuario_etl"].ToString();
                 cia.contrasenia_etl = r["contrasenia_etl"].ToString();
@@ -95,16 +94,7 @@ namespace AppGia.Controllers
                 cia.puerto_compania = Convert.ToInt32(r["puerto_compania"]);
                 cia.bd_name = r["bd_name"].ToString();
                 cia.id = Convert.ToInt32(r["id"]);
-=======
-                Compania cia = new Compania();
-                cia.STR_USUARIO_ETL = r["STR_USUARIO_ETL"].ToString();
-                cia.STR_CONTRASENIA_ETL = r["STR_CONTRASENIA_ETL"].ToString();
-                cia.STR_HOST_COMPANIA = r["STR_HOST_COMPANIA"].ToString();
-                cia.STR_PUERTO_COMPANIA = r["STR_PUERTO_COMPANIA"].ToString();
-                cia.STR_BD_COMPANIA = r["STR_BD_COMPANIA"].ToString();
-                cia.INT_IDCOMPANIA_P = Convert.ToInt32(r["INT_IDCOMPANIA_P"]);
-                cia.STR_NOMBRE_COMPANIA = Convert.ToString(r["STR_NOMBRE_COMPANIA"]);
->>>>>>> 23751227726a2594f691d918ce28f772145f1e7e
+
                 lst.Add(cia);
             }
             return lst;

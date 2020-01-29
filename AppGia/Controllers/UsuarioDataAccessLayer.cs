@@ -308,17 +308,12 @@ namespace AppGia.Controllers
         public bool validacionUsuario(Usuario usuario)
         {
 
-<<<<<<< HEAD
-            
             string consulta = "select " + 1 
                 + " from " 
                 + "usuario" + " where "  
                 + "user_name" + " = " + "'" 
                 + usuario.user_name_interno.Trim() + "'";
 
-=======
-            string consulta = "SELECT " + 1 + " from " + cod + "TAB_USUARIO" + cod + " WHERE " + cod + "STR_USERNAME_USUARIO" + cod + " = " + "'" + usuario.STR_USERNAME_USUARIO.Trim() + "'";
->>>>>>> 23751227726a2594f691d918ce28f772145f1e7e
             try
             {
                 {

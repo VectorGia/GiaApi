@@ -34,21 +34,12 @@ namespace AppGia.Controllers
 
                     while (rdr.Read())
                     {
-<<<<<<< HEAD:AppGia/Controllers/LogETLDataAccessLayer.cs
                         logetl.id_etl_log    = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
                         logetl.etl_fec = Convert.ToDateTime(rdr["FEC_ETL"]);
                         logetl.usuario_id = Convert.ToInt32(rdr["INT_IDUSUARIO"]);
                         logetl.estatus_etl_id = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
                         logetl.balanza_id = Convert.ToInt32(rdr["INT_IDBALANZA"]);
                         logetl.etl_tipo = Convert.ToInt32(rdr["INT_TIPOETL"]);
-=======
-                        logetl.INT_IDLOGETL_P = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
-                        logetl.FEC_ETL = Convert.ToDateTime(rdr["FEC_ETL"]);
-                        logetl.INT_IDUSUARIO = Convert.ToInt32(rdr["INT_IDUSUARIO"]);
-                        logetl.INT_IDESTATUSETL_P = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
-                        //logetl.INT_IDBALANZA = Convert.ToInt32(rdr["INT_IDBALANZA"]);
-                        logetl.INT_TIPOETL = Convert.ToInt32(rdr["INT_TIPOETL"]);
->>>>>>> 23751227726a2594f691d918ce28f772145f1e7e:AppGia/Controllers/ETLLogDataAccessLayer.cs
                         lstLogETL.Add(logetl);
                     }
                     con.Close();

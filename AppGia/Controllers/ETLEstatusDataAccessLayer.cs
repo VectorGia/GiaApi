@@ -22,13 +22,9 @@ namespace AppGia.Controllers
 
         public IEnumerable<Etl_Estatus> GetAllEstatusETL()
         {
-<<<<<<< HEAD:AppGia/Controllers/EstatusETLDataAccessLayer.cs
             Etl_Estatus estatusetl = new Etl_Estatus();
             string cadena = "SELECT *FROM " + cod + "CAT_ESTUSTETL" + cod;
-=======
-            EstatusETL estatusetl = new EstatusETL();
-            string cadena = "SELECT *FROM " + cod + "CAT_ESTATUSTETL" + cod;
->>>>>>> 23751227726a2594f691d918ce28f772145f1e7e:AppGia/Controllers/ETLEstatusDataAccessLayer.cs
+
             try
             {
                 List<Etl_Estatus> lstEstatusETL = new List<Etl_Estatus>();
