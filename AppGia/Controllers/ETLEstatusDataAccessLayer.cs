@@ -7,7 +7,7 @@ using AppGia.Models;
 
 namespace AppGia.Controllers
 {
-    public class EstatusETLDataAccessLayer
+    public class ETLEstatusDataAccessLayer
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
@@ -15,15 +15,20 @@ namespace AppGia.Controllers
 
         char cod = '"';
 
-        public EstatusETLDataAccessLayer()
+        public ETLEstatusDataAccessLayer()
         {
             con = conex.ConnexionDB();
         }
 
         public IEnumerable<Etl_Estatus> GetAllEstatusETL()
         {
+<<<<<<< HEAD:AppGia/Controllers/EstatusETLDataAccessLayer.cs
             Etl_Estatus estatusetl = new Etl_Estatus();
             string cadena = "SELECT *FROM " + cod + "CAT_ESTUSTETL" + cod;
+=======
+            EstatusETL estatusetl = new EstatusETL();
+            string cadena = "SELECT *FROM " + cod + "CAT_ESTATUSTETL" + cod;
+>>>>>>> 23751227726a2594f691d918ce28f772145f1e7e:AppGia/Controllers/ETLEstatusDataAccessLayer.cs
             try
             {
                 List<Etl_Estatus> lstEstatusETL = new List<Etl_Estatus>();
@@ -54,7 +59,7 @@ namespace AppGia.Controllers
 
         public int update(Etl_Estatus estatusetl)
         {
-            string add = "UPDATE " + cod + "CAT_ESTUSTETL" + cod +
+            string add = "UPDATE " + cod + "CAT_ESTATUSTETL" + cod +
             " SET " + cod + "VAR_DESCRIPCION" + cod + "= " + "@VAR_DESCRIPCION" + ","
             + cod + "BOOL_ESTATUS_LOGICO_ESTETL" + cod + "= " + "@BOOL_ESTATUS_LOGICO_ESTETL" + ","
             + cod + "FEC_MODIF_LOGETL" + cod + "= " + "@FEC_MODIF_LOGETL"
@@ -93,7 +98,7 @@ namespace AppGia.Controllers
         public int delete(Etl_Estatus estatusetl)
         {
 
-            string add = "UPDATE " + cod + "CAT_ESTUSTETL" + cod +
+            string add = "UPDATE " + cod + "CAT_ESTATUSTETL" + cod +
             " SET " + cod + "BOOL_ESTATUS_LOGICO_ESTETL" + cod + "= " + "@BOOL_ESTATUS_LOGICO_ESTETL" + ","
             + cod + "FEC_MODIF_LOGETL" + cod + "= " + "@FEC_MODIF_LOGETL"
             + " WHERE " + cod + "INT_IDESTATUSETL_P" + cod + " = " + "@INT_IDESTATUSETL_P";
@@ -131,7 +136,7 @@ namespace AppGia.Controllers
 
         {
 
-            string add = "INSERT INTO" + cod + "CAT_ESTUSTETL" + cod + "("
+            string add = "INSERT INTO" + cod + "CAT_ESTATUSTETL" + cod + "("
                 + cod + "VAR_DESCRIPCION" + cod + ","
                 + cod + "BOOL_ESTATUS_LOGICO_ESTETL" + cod + ","
                 + cod + "FEC_MODIF_LOGETL" + cod + ") " +

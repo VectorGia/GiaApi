@@ -21,6 +21,7 @@ namespace AppGia.Controllers
             ETLDataAccesLayer eTLDataAccesLayer = new ETLDataAccesLayer();
             List<Empresa> lstCia = eTLDataAccesLayer.CadenaConexionETL_lst(id_compania);
 
+<<<<<<< HEAD
             Empresa cia = new Empresa();
             cia.usuario_etl = lstCia[0].usuario_etl;
             cia.contrasenia_etl = lstCia[0].contrasenia_etl;
@@ -28,6 +29,16 @@ namespace AppGia.Controllers
             cia.puerto_compania = lstCia[0].puerto_compania;
             cia.bd_name = lstCia[0].bd_name;
             cia.id = lstCia[0].id;
+=======
+            Compania cia = new Compania();
+            cia.STR_USUARIO_ETL = lstCia[0].STR_USUARIO_ETL;
+            cia.STR_CONTRASENIA_ETL = lstCia[0].STR_CONTRASENIA_ETL;
+            cia.STR_HOST_COMPANIA = lstCia[0].STR_HOST_COMPANIA;
+            cia.STR_PUERTO_COMPANIA = lstCia[0].STR_PUERTO_COMPANIA;
+            cia.STR_BD_COMPANIA = lstCia[0].STR_BD_COMPANIA;
+            cia.INT_IDCOMPANIA_P = lstCia[0].INT_IDCOMPANIA_P;
+            cia.STR_NOMBRE_COMPANIA = lstCia[0].STR_NOMBRE_COMPANIA;
+>>>>>>> 23751227726a2594f691d918ce28f772145f1e7e
 
             string ODBC_PATH = string.Empty;
             string driver = string.Empty;
@@ -40,7 +51,11 @@ namespace AppGia.Controllers
             {
                 ODBC_PATH = "SOFTWARE\\ODBC\\ODBC.INI\\";
                 driver = "SQL Anywhere 12"; //Nombre del Driver
+<<<<<<< HEAD
                 DsnNombre =cia.nombre+"_"+cia.id+"_"+cia.host; //nombre con el que se va identificar el DSN
+=======
+                DsnNombre =cia.INT_IDCOMPANIA_P+"_"+ cia.STR_NOMBRE_COMPANIA.Substring(0,15).Replace(" ","_")+"_"+cia.STR_HOST_COMPANIA; //nombre con el que se va identificar el DSN
+>>>>>>> 23751227726a2594f691d918ce28f772145f1e7e
                 Descri = "DNS_Sybase" + DsnNombre;
                 DireccionDriver = "C:\\Program Files\\SQL Anywhere 12\\Bin64\\dbodbc12.dll";
                 var datasourcesKey = Registry.LocalMachine.CreateSubKey(ODBC_PATH + "ODBC Data Sources");
@@ -94,7 +109,8 @@ namespace AppGia.Controllers
                 DSN dsn = new DSN();
                 dsn.creado = false ;
                 dsn.nombreDSN = DsnNombre;
-                return dsn;
+                throw;
+                //return dsn;
                 //return 0; //Nose creo
             }
         }

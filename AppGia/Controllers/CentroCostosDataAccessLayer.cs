@@ -23,7 +23,11 @@ namespace AppGia.Controllers
         public IEnumerable<CentroCostos> GetAllCentros()
         {
             //Obtiene todos los centros de costos habilitados "TRUE"
+<<<<<<< HEAD
             string consulta = " select * from " + "centro_costo" + " where " + "activo" + "=" + true; 
+=======
+            string consulta = "SELECT * FROM "+cod+"CAT_CENTROCOSTO"+cod+ " WHERE " + cod + "BOOL_ESTATUS_LOGICO_CENTROCOSTO" + cod + "=" + true; ;
+>>>>>>> 23751227726a2594f691d918ce28f772145f1e7e
             try
             {
                 List<CentroCostos> lstcentros = new List<CentroCostos>();
