@@ -134,7 +134,7 @@ namespace AppGia.Controllers
         {
             string cadena = "";
             cadena += " insert into montos_consolidados ( ";
-            cadena += "	 anio, mes, empresa_id, modelo_negocio_id, proyecto_id, rubro_id, ";
+            cadena += "	 id, anio, mes, empresa_id, modelo_negocio_id, proyecto_id, rubro_id, ";
             cadena += "	 enero_abono_financiero, enero_abono_resultado, enero_cargo_financiero, enero_cargo_resultado, ";
             cadena += "	 febrero_abono_financiero, febrero_abono_resultado, febrero_cargo_financiero, febrero_cargo_resultado, ";
             cadena += "	 marzo_abono_financiero, marzo_abono_resultado, marzo_cargo_financiero, marzo_cargo_resultado, ";
@@ -149,7 +149,7 @@ namespace AppGia.Controllers
             cadena += "	 diciembre_abono_financiero, diciembre_abono_resultado, diciembre_cargo_financiero, diciembre_cargo_resultado, ";
             cadena += "	 valor_tipo_cambio_financiero, valor_tipo_cambio_resultado, activo, fecha ";
             cadena += "	 ) values ( ";
-            cadena += "	 @anio, @mes, @empresa_id, @modelo_negocio_id, @proyecto_id, @rubro_id, ";
+            cadena += "	 nextval('seq_montos_consol'), @anio, @mes, @empresa_id, @modelo_negocio_id, @proyecto_id, @rubro_id, ";
             cadena += "	 @enero_abono_financiero, @enero_abono_resultado, @enero_cargo_financiero, @enero_cargo_resultado, ";
             cadena += "	 @febrero_abono_financiero, @febrero_abono_resultado, @febrero_cargo_financiero, @febrero_cargo_resultado, ";
             cadena += "	 @marzo_abono_financiero, @marzo_abono_resultado, @marzo_cargo_financiero, @marzo_cargo_resultado, ";

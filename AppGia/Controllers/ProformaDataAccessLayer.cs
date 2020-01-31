@@ -20,7 +20,7 @@ namespace AppGia.Controllers
         public IEnumerable<Proforma> GetProforma(int idProforma)
         {
             string cadena = "";
-            cadena += " select id, anio, periodo_id, modelo_negocio_id, tipo_captura_id, fecha_captura ";
+            cadena += " select id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
             cadena += " from proforma ";
             cadena += " where id = " + idProforma.ToString();
             cadena += " and activo = 'true' ";
@@ -38,7 +38,14 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     Proforma proforma = new Proforma();
-
+                    proforma.id = Convert.ToInt32(rdr["id"]);
+                    proforma.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                    proforma.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
+                    proforma.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
+                    proforma.centro_costo_id = Convert.ToInt32(rdr["centro_costo_id"]);
+                    proforma.activo = Convert.ToBoolean(rdr["activo"]);
+                    proforma.usuario = Convert.ToInt32(rdr["usuario"]);
+                    proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
                     lstProforma.Add(proforma);
                 }
 
@@ -59,20 +66,22 @@ namespace AppGia.Controllers
         {
             string cadena = "";
             cadena += " insert into proforma ( ";
-            cadena += " 	anio, periodo_id, fecha_captura, modelo_negocio_id, tipo_captura_id, activo ";
+            cadena += " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
             cadena += " ) values ( ";
-            cadena += " 	@anio, @periodo_id, @fecha_captura, @modelo_negocio_id, @tipo_captura_id, @activo ";
+            cadena += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
             cadena += " ) ";
 
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                 cmd.Parameters.AddWithValue("@anio", proforma.anio);
-                cmd.Parameters.AddWithValue("@periodo_id", proforma.periodo_id);
-                cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
                 cmd.Parameters.AddWithValue("@modelo_negocio_id", proforma.modelo_negocio_id);
                 cmd.Parameters.AddWithValue("@tipo_captura_id", proforma.tipo_captura_id);
+                cmd.Parameters.AddWithValue("@tipo_proforma_id", proforma.tipo_proforma_id);
+                cmd.Parameters.AddWithValue("@centro_costo_id", proforma.centro_costo_id);
                 cmd.Parameters.AddWithValue("@activo", proforma.activo);
+                cmd.Parameters.AddWithValue("@usuario", proforma.usuario);
+                cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
                 con.Open();
                 int regInsert = cmd.ExecuteNonQuery();
@@ -89,10 +98,11 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateProforma(int idProforma, bool bandActivo)
+        public int UpdateProforma(int idProforma, bool bandActivo, int idUsuario)
         {
             string cadena = "";
-            cadena += " update proforma set activo = '" + bandActivo.ToString() + "' ";
+            cadena += " update proforma set activo = '" + bandActivo.ToString() + "', ";
+            cadena += " 	usuario = " + idUsuario.ToString() + ", fecha_captura = current_timestamp ";
             cadena += " 	where id = " + idProforma.ToString();
 
             try

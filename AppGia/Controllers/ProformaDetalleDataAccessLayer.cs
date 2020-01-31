@@ -102,7 +102,7 @@ namespace AppGia.Controllers
         {
             string cadena = "";
             cadena += " insert into proforma_detalle ( ";
-            cadena += "	 id_proforma, rubro_id, activo, ejercicio_financiero, ejercicio_resultado, ";
+            cadena += "	 id, id_proforma, rubro_id, activo, ejercicio_financiero, ejercicio_resultado, ";
             cadena += "	 enero_monto_financiero, enero_monto_resultado, febrero_monto_financiero, febrero_monto_resultado, ";
             cadena += "	 marzo_monto_financiero, marzo_monto_resultado, abril_monto_financiero, abril_monto_resultado, ";
             cadena += "	 mayo_monto_financiero, mayo_monto_resultado, junio_monto_financiero, junio_monto_resultado, ";
@@ -112,7 +112,7 @@ namespace AppGia.Controllers
             cadena += "	 total_financiero, total_resultado, acumulado_financiero, acumulado_resultado, ";
             cadena += "	 valor_tipo_cambio_financiero, valor_tipo_cambio_resultado ";
             cadena += " ) values ( ";
-            cadena += "	 @id_proforma, @rubro_id, @activo, @ejercicio_financiero, @ejercicio_resultado, ";
+            cadena += "	 nextval('seq_proforma_detalle'), @id_proforma, @rubro_id, @activo, @ejercicio_financiero, @ejercicio_resultado, ";
             cadena += "	 @enero_monto_financiero, @enero_monto_resultado, @febrero_monto_financiero, @febrero_monto_resultado, ";
             cadena += "	 @marzo_monto_financiero, @marzo_monto_resultado, @abril_monto_financiero, @abril_monto_resultado, ";
             cadena += "	 @mayo_monto_financiero, @mayo_monto_resultado, @junio_monto_financiero, @junio_monto_resultado, ";
