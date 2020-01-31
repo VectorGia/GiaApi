@@ -20,13 +20,13 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-        public IEnumerable<LogEtl> GetAllLogETL()
+        public IEnumerable<Etl_Log> GetAllLogETL()
         {
-            LogEtl logetl = new LogEtl();
+            Etl_Log logetl = new Etl_Log();
             string cadena = "SELECT * FROM " + cod + "TAB_LOGETL" + cod;
             try
             {
-                List<LogEtl> lstLogETL = new List<LogEtl>();
+                List<Etl_Log> lstLogETL = new List<Etl_Log>();
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                     con.Open();
@@ -34,12 +34,12 @@ namespace AppGia.Controllers
 
                     while (rdr.Read())
                     {
-                        logetl.INT_IDLOGETL_P = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
-                        logetl.FEC_ETL = Convert.ToDateTime(rdr["FEC_ETL"]);
-                        logetl.INT_IDUSUARIO = Convert.ToInt32(rdr["INT_IDUSUARIO"]);
-                        logetl.INT_IDESTATUSETL_P = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
-                        //logetl.INT_IDBALANZA = Convert.ToInt32(rdr["INT_IDBALANZA"]);
-                        logetl.INT_TIPOETL = Convert.ToInt32(rdr["INT_TIPOETL"]);
+                        logetl.id_etl_log    = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
+                        logetl.etl_fec = Convert.ToDateTime(rdr["FEC_ETL"]);
+                        logetl.usuario_id = Convert.ToInt32(rdr["INT_IDUSUARIO"]);
+                        logetl.estatus_etl_id = Convert.ToInt32(rdr["INT_IDESTATUSETL_P"]);
+                        logetl.balanza_id = Convert.ToInt32(rdr["INT_IDBALANZA"]);
+                        logetl.etl_tipo = Convert.ToInt32(rdr["INT_TIPOETL"]);
                         lstLogETL.Add(logetl);
                     }
                     con.Close();
@@ -55,12 +55,12 @@ namespace AppGia.Controllers
         }
 
         //Obtiene el id del ultimo registro 
-        public LogEtl GetLogETLData()
+        public Etl_Log GetLogETLData()
         {
             string consulta = "SELECT MAX(" + cod + "INT_IDLOGETL_P" + cod + ") " + cod + "INT_IDLOGETL_P" + cod + " FROM " + cod + "TAB_LOGETL" + cod;
             try
             {
-                LogEtl logetl = new LogEtl();
+                Etl_Log logetl = new Etl_Log();
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
@@ -68,7 +68,7 @@ namespace AppGia.Controllers
 
                     while (rdr.Read())
                     {
-                        logetl.INT_IDLOGETL_P = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
+                        logetl.id_etl_log = Convert.ToInt32(rdr["INT_IDLOGETL_P"]);
                     }
 
                     con.Close();
@@ -152,7 +152,7 @@ namespace AppGia.Controllers
 
         //}
 
-        public int insert(LogEtl logetl)
+        public int insert(Etl_Log logetl)
 
         {
 
@@ -172,8 +172,8 @@ namespace AppGia.Controllers
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@FEC_ETL", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@INT_TIPOETL", logetl.INT_TIPOETL);
-                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO", logetl.INT_IDUSUARIO);
+                    cmd.Parameters.AddWithValue("@INT_TIPOETL", logetl.etl_tipo);
+                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO", logetl.usuario_id);
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;

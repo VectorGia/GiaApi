@@ -33,9 +33,9 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     ETLProg etl = new ETLProg();
-                    etl.ID_ETL_PROG = Convert.ToInt32(rdr["INT_ID_ETL_PROG"]);         
-                    etl.TEXT_FECH_EXTR = rdr["TEXT_FECH_EXTR"].ToString().Trim();
-                    etl.TEXT_HORA_EXTR = rdr["TEXT_HORA_EXTR"].ToString().Trim();
+                    etl.id = Convert.ToInt32(rdr["INT_ID_ETL_PROG"]);         
+                    etl.fecha_extraccion = rdr["TEXT_FECH_EXTR"].ToString().Trim();
+                    etl.hora_extraccion = rdr["TEXT_HORA_EXTR"].ToString().Trim();
 
                     lstETL.Add(etl);
                 }
@@ -62,8 +62,8 @@ namespace AppGia.Controllers
             {
                 con.Open();
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                string fechaDia = Convert.ToDateTime(etl.TEXT_FECH_EXTR).Date.ToShortDateString();
-                string horaDia = Convert.ToDateTime(etl.TEXT_HORA_EXTR).ToLongTimeString();
+                string fechaDia = Convert.ToDateTime(etl.fecha_extraccion).Date.ToShortDateString();
+                string horaDia = Convert.ToDateTime(etl.hora_extraccion).ToLongTimeString();
                 cmd.Parameters.AddWithValue("@TEXT_FECH_EXTR", fechaDia);
                 cmd.Parameters.AddWithValue("@TEXT_HORA_EXTR", horaDia.Trim());
                 int cantFilAfec = cmd.ExecuteNonQuery();
@@ -87,8 +87,8 @@ namespace AppGia.Controllers
 
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = etl.TEXT_FECH_EXTR });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = etl.TEXT_HORA_EXTR });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBRE_GRUPO", Value = etl.fecha_extraccion   });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P", Value = etl.hora_extraccion });
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();

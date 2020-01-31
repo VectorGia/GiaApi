@@ -35,12 +35,12 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Moneda moneda = new Moneda();
-                        moneda.INT_IDMONEDA_P = Convert.ToInt32( rdr["INT_IDMONEDA_P"]);
-                        moneda.STR_DESCRIPCION = rdr["STR_DESCRIPCION"].ToString().Trim();
-                        moneda.STR_CLAVEDESC = rdr["STR_CLAVEDESC"].ToString().Trim();
-                        moneda.STR_PAIS = rdr["STR_PAIS"].ToString().Trim();
-                        moneda.BOOL_ESTATUS_MONEDA = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_MONEDA"]);
-                        moneda.BOOL_ESTATUS_MONEDA = Convert.ToBoolean( rdr["BOOL_ESTATUS_MONEDA"]);
+                        moneda.id = Convert.ToInt32( rdr["INT_IDMONEDA_P"]);
+                        moneda.descripcion = rdr["STR_DESCRIPCION"].ToString().Trim();
+                        moneda.clave = rdr["STR_CLAVEDESC"].ToString().Trim();
+                        moneda.pais = rdr["STR_PAIS"].ToString().Trim();
+                        moneda.activo = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_MONEDA"]);
+                        moneda.estatus = Convert.ToBoolean( rdr["BOOL_ESTATUS_MONEDA"]);
                         lstNoneda.Add(moneda);
                     }
                     con.Close();
@@ -68,12 +68,12 @@ namespace AppGia.Controllers
 
                 while (rdr.Read())
                 {
-                    moneda.INT_IDMONEDA_P = Convert.ToInt32(rdr["INT_IDMONEDA_P"]);
-                    moneda.STR_DESCRIPCION = rdr["STR_DESCRIPCION"].ToString().Trim();
-                    moneda.STR_CLAVEDESC = rdr["STR_CLAVEDESC"].ToString().Trim();
-                    moneda.STR_PAIS = rdr["STR_PAIS"].ToString().Trim();
-                    moneda.BOOL_ESTATUS_MONEDA = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_MONEDA"]);
-                    moneda.BOOL_ESTATUS_MONEDA = Convert.ToBoolean(rdr["BOOL_ESTATUS_MONEDA"]);
+                    moneda.id = Convert.ToInt32(rdr["INT_IDMONEDA_P"]);
+                    moneda.descripcion = rdr["STR_DESCRIPCION"].ToString().Trim();
+                    moneda.clave = rdr["STR_CLAVEDESC"].ToString().Trim();
+                    moneda.pais = rdr["STR_PAIS"].ToString().Trim();
+                    moneda.activo = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_MONEDA"]);
+                    moneda.estatus = Convert.ToBoolean(rdr["BOOL_ESTATUS_MONEDA"]);
                 }
                 con.Close();
                 return moneda;
@@ -104,11 +104,11 @@ namespace AppGia.Controllers
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", moneda.STR_DESCRIPCION.Trim());
-                    cmd.Parameters.AddWithValue("@STR_CLAVEDESC",moneda.STR_CLAVEDESC.Trim());
-                    cmd.Parameters.AddWithValue("@STR_PAIS", moneda.STR_PAIS.Trim());
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MONEDA", moneda.BOOL_ESTATUS_LOGICO_MONEDA);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_MONEDA",moneda.BOOL_ESTATUS_MONEDA);
+                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", moneda.descripcion.Trim());
+                    cmd.Parameters.AddWithValue("@STR_CLAVEDESC",moneda.clave.Trim());
+                    cmd.Parameters.AddWithValue("@STR_PAIS", moneda.pais.Trim());
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MONEDA", moneda.activo);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_MONEDA",moneda.estatus);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -128,10 +128,10 @@ namespace AppGia.Controllers
 
             string update = "UPDATE " + cod + "CAT_MONEDA" + cod + "SET"
 
-          + cod + "STR_DESCRIPCION" + cod + " = '" + moneda.STR_DESCRIPCION + "' ,"
-          + cod + "STR_CLAVEDESC" + cod + " = '" + moneda.STR_CLAVEDESC + "' ,"
-          + cod + "STR_PAIS" + cod + " = '" + moneda.STR_PAIS + "' ,"
-          + cod + "BOOL_ESTATUS_MONEDA" + cod + " = '" + moneda.BOOL_ESTATUS_MONEDA + "' "
+          + cod + "STR_DESCRIPCION" + cod + " = '" + moneda.descripcion + "' ,"
+          + cod + "STR_CLAVEDESC" + cod + " = '" + moneda.clave + "' ,"
+          + cod + "STR_PAIS" + cod + " = '" + moneda.pais + "' ,"
+          + cod + "BOOL_ESTATUS_MONEDA" + cod + " = '" + moneda.activo + "' "
           + " WHERE" + cod + "INT_IDMONEDA_P" + cod + "=" + id;
 
 
@@ -141,10 +141,10 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
 
-                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", moneda.STR_DESCRIPCION.Trim());
-                    cmd.Parameters.AddWithValue("@STR_CLAVEDESC",moneda.STR_CLAVEDESC);
-                    cmd.Parameters.AddWithValue("@STR_PAIS",moneda.STR_PAIS);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_MONEDA", moneda.BOOL_ESTATUS_MONEDA); 
+                    cmd.Parameters.AddWithValue("@STR_DESCRIPCION", moneda.descripcion.Trim());
+                    cmd.Parameters.AddWithValue("@STR_CLAVEDESC",moneda.clave);
+                    cmd.Parameters.AddWithValue("@STR_PAIS",moneda.pais);
+                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_MONEDA", moneda.activo); 
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();

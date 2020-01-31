@@ -10,12 +10,12 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EstatusETLController : ControllerBase
+    public class ETLEstatusController : ControllerBase
     {
-        EstatusETLDataAccessLayer objestatusetl = new EstatusETLDataAccessLayer();
+        ETLEstatusDataAccessLayer objestatusetl = new ETLEstatusDataAccessLayer();
         // GET: api/EstatusETL
         [HttpGet]
-        public IEnumerable<EstatusETL> Get()
+        public IEnumerable<Etl_Estatus> Get()
         {
             return objestatusetl.GetAllEstatusETL();
         }
@@ -29,7 +29,7 @@ namespace AppGia.Controllers
 
         // POST: api/EstatusETL
         [HttpPost]
-        public int Post([FromBody] EstatusETL estatusetl)
+        public int Post([FromBody] Etl_Estatus estatusetl)
         {
             return objestatusetl.insert(estatusetl);
         }

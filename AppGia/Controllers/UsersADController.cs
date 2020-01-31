@@ -37,11 +37,11 @@ namespace AppGia.Controllers
                     {
                         item = new Usuario();
 
-                        item.STR_USERNAME_USUARIO = (String)result.Properties["samaccountname"][0];
+                        item.user_name = (String)result.Properties["samaccountname"][0];
 
                         if (result.Properties.Contains("displayname"))
                         {
-                            item.STR_NOMBRE_USUARIO = (String)result.Properties["displayname"][0];
+                            item.nombre = (String)result.Properties["displayname"][0];
                         }
 
                         rst.Add(item);

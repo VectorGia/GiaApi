@@ -15,21 +15,21 @@ namespace AppGia.Controllers
         LogETLDataAccessLayer objlogetl = new LogETLDataAccessLayer();
         // GET: api/LogETL
         [HttpGet]
-        public IEnumerable<LogEtl> Get()
+        public IEnumerable<Etl_Log> Get()
         {
             return objlogetl.GetAllLogETL();
         }
 
         // GET: api/LogETL/5
         [HttpGet("{id}", Name = "GetLogETL")]
-        public LogEtl GetLogEtl()
+        public Etl_Log GetLogEtl()
         {
             return objlogetl.GetLogETLData();
         }
 
         // POST: api/LogETL
         [HttpPost]
-        public void Post([FromBody] LogEtl logetl)
+        public void Post([FromBody] Etl_Log logetl)
         {
             objlogetl.insert(logetl);
         }
