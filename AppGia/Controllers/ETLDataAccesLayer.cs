@@ -31,13 +31,18 @@ namespace AppGia.Controllers
 
 
 
-        public ETLDataAccesLayer() {
+        public ETLDataAccesLayer()
+        {
             con = conex.ConnexionDB();
+            //con.Open();
             //conSc=conex.ConexionSybase();
             //odbcCon = conex.ConexionSybaseodbc();
 
 
         }
+
+
+
         /// <summary>
         /// Metodo para obtener los valores de la cadena de conexion de la empresa
         /// </summary>
@@ -59,7 +64,7 @@ namespace AppGia.Controllers
                 con.Open();
 
                 comP = new Npgsql.NpgsqlCommand(add, con);
-               
+
                 Npgsql.NpgsqlDataAdapter daP = new Npgsql.NpgsqlDataAdapter(comP);
 
                 DataTable dt = new DataTable();
@@ -73,6 +78,8 @@ namespace AppGia.Controllers
                 throw;
             }
         }
+
+
 
         /// <summary>
         /// Se convierte el DataTable en una Lista Generica
@@ -142,171 +149,6 @@ namespace AppGia.Controllers
             DSN dsn = new DSN();
             dsn = dsnConfig.crearDSN(id_compania);
 
-            if (dsn.creado) { 
-            /// obtener conexion de Odbc creado 
-            odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
-
-
-            try
-            {
-                //string add = "SELECT[INT_IDBALANZA], [VARCHAR_CTA],"
-                //            + "[VARCHAR_SCTA], [VARCHAR_SSCTA],"
-                //            + "[INT_YEAR], [DECI_SALINI],"
-                //            + "[DECI_ENECARGOS], [DECI_ENEABONOS],"
-                //            + "[DECI_FEBCARGOS], [DECI_FEBABONOS],"
-                //            + "[DECI_MARCARGOS], [DECI_MARABONOS],"
-                //            + "[DECI_ABRCARGOS], [DECI_ABRABONOS],"
-                //            + "[DECI_MAYCARGOS], [DECI_MAYABONOS],"
-                //            + "[DECI_JUNCARGOS], [DECI_JUNABONOS],"
-                //            + "[DECI_JULCARGOS], [DECI_JULABONOS],"
-                //            + "[DECI_AGOCARGOS], [DECI_AGOABONOS],"
-                //            + "[DECI_SEPCARGOS], [DECI_SEPABONOS],"
-                //            + "[DECI_OCTCARGOS], [DECI_OCTABONOS],"
-                //            + "[DECI_NOVCARGOS], [DECI_NOVABONOS],"
-                //            + "[DECI_DICCARGOS], [DECI_DICABONOS],"
-                //            + "[INT_CC],"
-                //            + "[VARCHAR_DESCRIPCION],"
-                //            + "[VARCHAR_DESCRIPCION2],"
-                //            + "[DECI_INCLUIR_SUMA]"
-                //            + " FROM [TAB_BALANZA_SQL]";
-
-
-                //comSQLETL = new SqlCommand(add, conSQLETL);
-                //SqlDataAdapter da = new SqlDataAdapter(comSQLETL);
-                //DataTable dt = new DataTable();
-                //da.Fill(dt);
-                //return dt;
-
-                ///regresar para emular sql /
-
-                //// eventual SYBASE GIA EN SITIO 
-                string consulta = " SELECT "
-                            + "year,"
-                            + "cta,"
-                            + "scta,"
-                            + "sscta,"
-                            + "salini,"
-                            + "enecargos,"
-                            + "eneabonos,"
-                            + "febcargos,"
-                            + "febabonos,"
-                            + "marcargos,"
-                            + "marabonos,"
-                            + "abrcargos,"
-                            + "abrabonos,"
-                            + "maycargos,"
-                            + "mayabonos,"
-                            + "juncargos,"
-                            + "junabonos,"
-                            + "julcargos,"
-                            + "julabonos,"
-                            + "agocargos,"
-                            + "agoabonos,"
-                            + "sepcargos,"
-                            + "sepabonos,"
-                            + "octcargos,"
-                            + "octabonos,"
-                            + "novcargos,"
-                            + "novabonos,"
-                            + "diccargos,"
-                            + "dicabonos,"
-                            + "cierreabonos,"
-                            + "cierrecargos,"
-                            + "acta,"
-                            + "cc"
-                            + " FROM sc_salcont_cc";
-
-
-                OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
-                odbcCon.Open();
-                OdbcDataReader rdr = cmd.ExecuteReader();
-                List<ScSaldoConCc> listaSaldo = new List<ScSaldoConCc>();
-                while (rdr.Read())
-                {
-                    ScSaldoConCc saldo = new ScSaldoConCc();
-                    saldo.year = Convert.ToInt32(rdr["year"]);
-                    saldo.cta = Convert.ToInt32(rdr["cta"]);
-                    saldo.scta = Convert.ToInt32(rdr["scta"]);
-                    saldo.sscta = Convert.ToInt32(rdr["sscta"]);
-                    saldo.salini = Convert.ToInt32(rdr["salini"]);
-                    saldo.enecargos = Convert.ToInt32(rdr["enecargos"]);
-                    saldo.eneabonos = Convert.ToInt32(rdr["eneabonos"]);
-                    saldo.febcargos = Convert.ToInt32(rdr["febcargos"]);
-                    saldo.febabonos = Convert.ToInt32(rdr["febabonos"]);
-                    saldo.marcargos = Convert.ToInt32(rdr["marcargos"]);
-                    saldo.marabonos = Convert.ToInt32(rdr["marabonos"]);
-                    saldo.abrcargos = Convert.ToInt32(rdr["abrcargos"]);
-                    saldo.abrabonos = Convert.ToInt32(rdr["abrabonos"]);
-                    saldo.maycargos = Convert.ToInt32(rdr["maycargos"]);
-                    saldo.mayabonos = Convert.ToInt32(rdr["mayabonos"]);
-                    saldo.juncargos = Convert.ToInt32(rdr["juncargos"]);
-                    saldo.junabonos = Convert.ToInt32(rdr["junabonos"]);
-                    saldo.julcargos = Convert.ToInt32(rdr["julcargos"]);
-                    saldo.julabonos = Convert.ToInt32(rdr["julabonos"]);
-                    saldo.agocargos = Convert.ToInt32(rdr["agocargos"]);
-                    saldo.agoabonos = Convert.ToInt32(rdr["agoabonos"]);
-                    saldo.sepcargos = Convert.ToInt32(rdr["sepcargos"]);
-                    saldo.sepabonos = Convert.ToInt32(rdr["sepabonos"]);
-                    saldo.octcargos = Convert.ToInt32(rdr["octcargos"]);
-                    saldo.octabonos = Convert.ToInt32(rdr["octabonos"]);
-                    saldo.novcargos = Convert.ToInt32(rdr["novcargos"]);
-                    saldo.novabonos = Convert.ToInt32(rdr["novabonos"]);
-                    saldo.diccargos = Convert.ToInt32(rdr["diccargos"]);
-                    saldo.dicabonos = Convert.ToInt32(rdr["dicabonos"]);
-                    saldo.cierreabonos = Convert.ToInt32(rdr["cierreabonos"]);
-                    saldo.cierrecargos = Convert.ToInt32(rdr["cierrecargos"]);
-                    saldo.acta = Convert.ToInt32(rdr["acta"]);
-                    saldo.cc = Convert.ToString(rdr["cc"]);
-
-                    listaSaldo.Add(saldo);
-
-                }
-
-                return listaSaldo;
-
-                ////OdbcCommand cmd = new OdbcCommand(consulta , odbcCon);
-                ////odbcCon.Open();
-                // OdbcDataReader rdr = cmd.ExecuteReader();
-                //OdbcDataAdapter da = new OdbcDataAdapter(cmdETL);
-                //DataTable dt = new DataTable();
-                //DataSet saldos = new DataSet();
-                //da.Fill(saldos,"sc_saldos_cc");
-
-                //return dt;
-
-
-                ////
-
-
-
-
-            }
-            catch (Exception ex)
-            {
-                string error = ex.Message;
-                throw;
-            }
-            finally
-            {
-                odbcCon.Close();
-                //// regresar emulacion sql 
-                //conSQLETL.Close();
-            }
-            }
-            else{
-                return null;
-            }
-        }
-
-
-
-        public List<Balanza> obtenerSalContCCD(int id_compania)
-        {
-            
-            /// creacion de odbc 
-            DSN dsn = new DSN();
-            dsn = dsnConfig.crearDSN(id_compania);
-
             if (dsn.creado)
             {
                 /// obtener conexion de Odbc creado 
@@ -315,7 +157,37 @@ namespace AppGia.Controllers
 
                 try
                 {
-                   
+                    //string add = "SELECT[INT_IDBALANZA], [VARCHAR_CTA],"
+                    //            + "[VARCHAR_SCTA], [VARCHAR_SSCTA],"
+                    //            + "[INT_YEAR], [DECI_SALINI],"
+                    //            + "[DECI_ENECARGOS], [DECI_ENEABONOS],"
+                    //            + "[DECI_FEBCARGOS], [DECI_FEBABONOS],"
+                    //            + "[DECI_MARCARGOS], [DECI_MARABONOS],"
+                    //            + "[DECI_ABRCARGOS], [DECI_ABRABONOS],"
+                    //            + "[DECI_MAYCARGOS], [DECI_MAYABONOS],"
+                    //            + "[DECI_JUNCARGOS], [DECI_JUNABONOS],"
+                    //            + "[DECI_JULCARGOS], [DECI_JULABONOS],"
+                    //            + "[DECI_AGOCARGOS], [DECI_AGOABONOS],"
+                    //            + "[DECI_SEPCARGOS], [DECI_SEPABONOS],"
+                    //            + "[DECI_OCTCARGOS], [DECI_OCTABONOS],"
+                    //            + "[DECI_NOVCARGOS], [DECI_NOVABONOS],"
+                    //            + "[DECI_DICCARGOS], [DECI_DICABONOS],"
+                    //            + "[INT_CC],"
+                    //            + "[VARCHAR_DESCRIPCION],"
+                    //            + "[VARCHAR_DESCRIPCION2],"
+                    //            + "[DECI_INCLUIR_SUMA]"
+                    //            + " FROM [TAB_BALANZA_SQL]";
+
+
+                    //comSQLETL = new SqlCommand(add, conSQLETL);
+                    //SqlDataAdapter da = new SqlDataAdapter(comSQLETL);
+                    //DataTable dt = new DataTable();
+                    //da.Fill(dt);
+                    //return dt;
+
+                    ///regresar para emular sql /
+
+                    //// eventual SYBASE GIA EN SITIO 
                     string consulta = " SELECT "
                                 + "year,"
                                 + "cta,"
@@ -356,62 +228,51 @@ namespace AppGia.Controllers
                     OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                     odbcCon.Open();
                     OdbcDataReader rdr = cmd.ExecuteReader();
-                    List<Balanza> listaBalanza = new List<Balanza>();
+                    List<ScSaldoConCc> listaSaldo = new List<ScSaldoConCc>();
                     while (rdr.Read())
                     {
-                        Balanza balanza = new Balanza();
-                        balanza.INT_YEAR = Convert.ToInt32(rdr["year"]);
-                        balanza.TEXT_CTA = Convert.ToString(rdr["cta"].ToString());
-                        balanza.TEXT_SCTA = Convert.ToString(rdr["scta"].ToString());
-                        balanza.TEXT_SSCTA = Convert.ToString(rdr["sscta"].ToString());
-                        balanza.DECI_SALINI = Convert.ToDouble(rdr["salini"]);
-                        balanza.DECI_ENECARGOS = Convert.ToDouble(rdr["enecargos"]);
-                        balanza.DECI_ENEABONOS = Convert.ToDouble(rdr["eneabonos"]);
-                        balanza.DECI_FEBCARGOS = Convert.ToDouble(rdr["febcargos"]);
-                        balanza.DECI_FEBABONOS = Convert.ToDouble(rdr["febabonos"]);
-                        balanza.DECI_MARCARGOS = Convert.ToDouble(rdr["marcargos"]);
-                        balanza.DECI_MARABONOS = Convert.ToDouble(rdr["marabonos"]);
-                        balanza.DECI_ABRCARGOS = Convert.ToDouble(rdr["abrcargos"]);
-                        balanza.DECI_ABRABONOS = Convert.ToDouble(rdr["abrabonos"]);
-                        balanza.DECI_MAYCARGOS = Convert.ToDouble(rdr["maycargos"]);
-                        balanza.DECI_MAYABONOS = Convert.ToDouble(rdr["mayabonos"]);
-                        balanza.DECI_JUNCARGOS = Convert.ToDouble(rdr["juncargos"]);
-                        balanza.DECI_JUNABONOS = Convert.ToDouble(rdr["junabonos"]);
-                        balanza.DECI_JULCARGOS = Convert.ToDouble(rdr["julcargos"]);
-                        balanza.DECI_JULABONOS = Convert.ToInt32(rdr["julabonos"]);
-                        balanza.DECI_AGOCARGOS = Convert.ToInt32(rdr["agocargos"]);
-                        balanza.DECI_AGOABONOS = Convert.ToInt32(rdr["agoabonos"]);
-                        balanza.DECI_SEPCARGOS = Convert.ToInt32(rdr["sepcargos"]);
-                        balanza.DECI_SEPABONOS = Convert.ToInt32(rdr["sepabonos"]);
-                        balanza.DECI_OCTCARGOS = Convert.ToInt32(rdr["octcargos"]);
-                        balanza.DECI_OCTABONOS = Convert.ToInt32(rdr["octabonos"]);
-                        balanza.DECI_NOVCARGOS = Convert.ToInt32(rdr["novcargos"]);
-                        balanza.DECI_NOVABONOS = Convert.ToInt32(rdr["novabonos"]);
-                        balanza.DECI_DICCARGOS = Convert.ToInt32(rdr["diccargos"]);
-                        balanza.DECI_DICABONOS = Convert.ToInt32(rdr["dicabonos"]);
-                        balanza.DECI_CIERRE_ABONOS = Convert.ToInt32(rdr["cierreabonos"]);
-                        balanza.DECI_CIERRE_CARGOS = Convert.ToInt32(rdr["cierrecargos"]);
-                        balanza.INT_ACTA = Convert.ToInt32(rdr["acta"]);
-                        balanza.TEXT_CC = Convert.ToString(rdr["cc"]);
+                        ScSaldoConCc saldo = new ScSaldoConCc();
+                        saldo.year = Convert.ToInt32(rdr["year"]);
+                        saldo.cta = Convert.ToInt32(rdr["cta"]);
+                        saldo.scta = Convert.ToInt32(rdr["scta"]);
+                        saldo.sscta = Convert.ToInt32(rdr["sscta"]);
+                        saldo.salini = Convert.ToInt32(rdr["salini"]);
+                        saldo.enecargos = Convert.ToInt32(rdr["enecargos"]);
+                        saldo.eneabonos = Convert.ToInt32(rdr["eneabonos"]);
+                        saldo.febcargos = Convert.ToInt32(rdr["febcargos"]);
+                        saldo.febabonos = Convert.ToInt32(rdr["febabonos"]);
+                        saldo.marcargos = Convert.ToInt32(rdr["marcargos"]);
+                        saldo.marabonos = Convert.ToInt32(rdr["marabonos"]);
+                        saldo.abrcargos = Convert.ToInt32(rdr["abrcargos"]);
+                        saldo.abrabonos = Convert.ToInt32(rdr["abrabonos"]);
+                        saldo.maycargos = Convert.ToInt32(rdr["maycargos"]);
+                        saldo.mayabonos = Convert.ToInt32(rdr["mayabonos"]);
+                        saldo.juncargos = Convert.ToInt32(rdr["juncargos"]);
+                        saldo.junabonos = Convert.ToInt32(rdr["junabonos"]);
+                        saldo.julcargos = Convert.ToInt32(rdr["julcargos"]);
+                        saldo.julabonos = Convert.ToInt32(rdr["julabonos"]);
+                        saldo.agocargos = Convert.ToInt32(rdr["agocargos"]);
+                        saldo.agoabonos = Convert.ToInt32(rdr["agoabonos"]);
+                        saldo.sepcargos = Convert.ToInt32(rdr["sepcargos"]);
+                        saldo.sepabonos = Convert.ToInt32(rdr["sepabonos"]);
+                        saldo.octcargos = Convert.ToInt32(rdr["octcargos"]);
+                        saldo.octabonos = Convert.ToInt32(rdr["octabonos"]);
+                        saldo.novcargos = Convert.ToInt32(rdr["novcargos"]);
+                        saldo.novabonos = Convert.ToInt32(rdr["novabonos"]);
+                        saldo.diccargos = Convert.ToInt32(rdr["diccargos"]);
+                        saldo.dicabonos = Convert.ToInt32(rdr["dicabonos"]);
+                        saldo.cierreabonos = Convert.ToInt32(rdr["cierreabonos"]);
+                        saldo.cierrecargos = Convert.ToInt32(rdr["cierrecargos"]);
+                        saldo.acta = Convert.ToInt32(rdr["acta"]);
+                        saldo.cc = Convert.ToString(rdr["cc"]);
 
-                        listaBalanza.Add(balanza);
+                        listaSaldo.Add(saldo);
 
                     }
 
-                    return listaBalanza;
-
-                    ////OdbcCommand cmd = new OdbcCommand(consulta , odbcCon);
-                    ////odbcCon.Open();
-                    // OdbcDataReader rdr = cmd.ExecuteReader();
-                    //OdbcDataAdapter da = new OdbcDataAdapter(cmdETL);
-                    //DataTable dt = new DataTable();
-                    //DataSet saldos = new DataSet();
-                    //da.Fill(saldos,"sc_saldos_cc");
-
-                    //return dt;
+                    return listaSaldo;
 
 
-                    ////
 
 
 
@@ -435,9 +296,215 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<Semanal> obtenerReporteSemanalPolizasSybaseD(int id_compania)
+
+
+        public List<Balanza> obtenerSalContCCD(int id_compania)
         {
 
+            try
+            {
+                /// creacion de odbc 
+                DSN dsn = new DSN();
+                dsn = dsnConfig.crearDSN(id_compania); //regresar
+                if (dsn.creado) //regresar// if(true)
+                {
+                    /// obtener conexion de Odbc creado
+                    /// 
+                    //dsn.nombreDSN = "2_GRUPO_ INGENIERIA"; /// quitar 
+                    //dsn.nombreDSN =  "4_CONSTRUCTORA_Y_EDIFICADORA";///quitar
+                    odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
+
+                    try
+                    {
+
+                        string consulta = " SELECT "
+                                    + "year,"
+                                    + "cta,"
+                                    + "scta,"
+                                    + "sscta,"
+                                    + "salini,"
+                                    + "enecargos,"
+                                    + "eneabonos,"
+                                    + "febcargos,"
+                                    + "febabonos,"
+                                    + "marcargos,"
+                                    + "marabonos,"
+                                    + "abrcargos,"
+                                    + "abrabonos,"
+                                    + "maycargos,"
+                                    + "mayabonos,"
+                                    + "juncargos,"
+                                    + "junabonos,"
+                                    + "julcargos,"
+                                    + "julabonos,"
+                                    + "agocargos,"
+                                    + "agoabonos,"
+                                    + "sepcargos,"
+                                    + "sepabonos,"
+                                    + "octcargos,"
+                                    + "octabonos,"
+                                    + "novcargos,"
+                                    + "novabonos,"
+                                    + "diccargos,"
+                                    + "dicabonos,"
+                                    + "cierreabonos,"
+                                    + "cierrecargos,"
+                                    + "acta,"
+                                    + "cc"
+                                    + " FROM sc_salcont_cc";
+
+
+                        OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
+                        odbcCon.Open();
+                        OdbcDataReader rdr = cmd.ExecuteReader();
+                        List<Balanza> listaBalanza = new List<Balanza>();
+                        while (rdr.Read())
+                        {
+                            Balanza balanza = new Balanza();
+                            balanza.year = Convert.ToInt32(rdr["year"]);
+                            balanza.cta = Convert.ToString(rdr["cta"].ToString());
+                            balanza.scta = Convert.ToString(rdr["scta"].ToString());
+                            balanza.sscta = Convert.ToString(rdr["sscta"].ToString());
+                            balanza.salini = Convert.ToDouble(rdr["salini"]);
+                            balanza.enecargos = Convert.ToDouble(rdr["enecargos"]);
+                            balanza.eneabonos = Convert.ToDouble(rdr["eneabonos"]);
+                            balanza.febcargos = Convert.ToDouble(rdr["febcargos"]);
+                            balanza.febabonos = Convert.ToDouble(rdr["febabonos"]);
+                            balanza.marcargos = Convert.ToDouble(rdr["marcargos"]);
+                            balanza.marabonos = Convert.ToDouble(rdr["marabonos"]);
+                            balanza.abrcargos = Convert.ToDouble(rdr["abrcargos"]);
+                            balanza.abrabonos = Convert.ToDouble(rdr["abrabonos"]);
+                            balanza.maycargos = Convert.ToDouble(rdr["maycargos"]);
+                            balanza.mayabonos = Convert.ToDouble(rdr["mayabonos"]);
+                            balanza.juncargos = Convert.ToDouble(rdr["juncargos"]);
+                            balanza.junabonos = Convert.ToDouble(rdr["junabonos"]);
+                            balanza.julcargos = Convert.ToDouble(rdr["julcargos"]);
+                            balanza.julabonos = Convert.ToDouble(rdr["julabonos"]);
+                            balanza.agocargos = Convert.ToDouble(rdr["agocargos"]);
+                            balanza.agoabonos = Convert.ToDouble(rdr["agoabonos"]);
+                            balanza.sepcargos = Convert.ToDouble(rdr["sepcargos"]);
+                            balanza.sepabonos = Convert.ToDouble(rdr["sepabonos"]);
+                            balanza.octcargos = Convert.ToDouble(rdr["octcargos"]);
+                            balanza.octabonos = Convert.ToDouble(rdr["octabonos"]);
+                            balanza.novcargos = Convert.ToDouble(rdr["novcargos"]);
+                            balanza.novabonos = Convert.ToDouble(rdr["novabonos"]);
+                            balanza.diccargos = Convert.ToDouble(rdr["diccargos"]);
+                            balanza.dicabonos = Convert.ToDouble(rdr["dicabonos"]);
+                            balanza.cierre_abonos = Convert.ToDouble(rdr["cierreabonos"]);
+                            balanza.cierre_cargos = Convert.ToDouble(rdr["cierrecargos"]);
+                            balanza.acta = Convert.ToInt32(rdr["acta"]);
+                            balanza.cc = Convert.ToString(rdr["cc"]);
+
+                            listaBalanza.Add(balanza);
+
+                        }
+
+                        return listaBalanza;
+
+                        ////OdbcCommand cmd = new OdbcCommand(consulta , odbcCon);
+                        ////odbcCon.Open();
+                        // OdbcDataReader rdr = cmd.ExecuteReader();
+                        //OdbcDataAdapter da = new OdbcDataAdapter(cmdETL);
+                        //DataTable dt = new DataTable();
+                        //DataSet saldos = new DataSet();
+                        //da.Fill(saldos,"sc_saldos_cc");
+
+                        //return dt;
+
+
+                        ////
+
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        string error = ex.Message;
+                        throw;
+                    }
+                    finally
+                    {
+                        odbcCon.Close();
+                        //// regresar emulacion sql 
+                        //conSQLETL.Close();
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+
+            }
+        }
+
+        public List<String> obtenerAniosPolizasSybase(int idCompania, string anioInicio, string anioFin)
+        {
+            odbcCon = conex.ConexionSybaseodbc("4_CONSTRUCTORA_Y_EDIFICADORA");
+            try
+            {
+                string anioI = "";
+                string anioF = "";
+
+                if (anioInicio != null && anioFin != null)
+                {
+                    if (anioInicio != "" && anioFin != "")
+                    {
+                        anioI = " and a.year >= " + anioInicio;
+                        anioFin = " and a.year <= " + anioFin;
+                    }
+                }
+
+                string consulta = " SELECT "
+                    + "  a.year year,"
+                    + "  FROM sc_movpol a "
+                    + "  INNER join sc_polizas b "
+                    + "  on a.year = b.year"
+                    + anioI
+                    + anioF
+                    + "  and a.mes = b.mes"
+                    + "  and a.tp = b.tp"
+                    + "  and a.poliza = b.poliza WHERE a.year >0 And Status = 'A'";
+
+                OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
+                odbcCon.Open();
+                OdbcDataReader rdr = cmd.ExecuteReader();
+
+                List<String> listaAnios = new List<String>();
+                while (rdr.Read())
+                {
+                    string year = "";
+                    year = Convert.ToString(rdr["year"]);
+
+                    listaAnios.Add(year);
+
+                }
+                return listaAnios;
+
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                throw;
+            }
+            finally
+            {
+                odbcCon.Close();
+            }
+
+        }
+
+        public List<Semanal> obtenerReporteSemanalPolizasSybaseD(int idCompania, String anio)
+        {
+
+            //empresa 2  odbcCon = conex.ConexionSybaseodbc("2_GRUPO_ INGENIERIA");
+            ///empresa 4
+            odbcCon = conex.ConexionSybaseodbc("4_CONSTRUCTORA_Y_EDIFICADORA");
             try
             {
 
@@ -469,6 +536,7 @@ namespace AppGia.Controllers
                     + "  FROM sc_movpol a "
                     + " INNER join sc_polizas b "
                     + " on a.year = b.year"
+                    + " and a.year = " + anio
                     + " and a.mes = b.mes"
                     + " and a.tp = b.tp"
                     + " and a.poliza = b.poliza WHERE a.year >0 And Status = 'A'";
@@ -481,30 +549,30 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     Semanal semanal = new Semanal();
-                    semanal.NUM_YEAR = Convert.ToInt32(rdr["year"]);
-                    semanal.NUM_MES = Convert.ToInt32(rdr["mes"]);
-                    semanal.NUM_POLIZA = Convert.ToInt32(rdr["poliza"]);
-                    semanal.TEXT_TP = Convert.ToString(rdr["tp"]);
-                    semanal.NUM_LINEA = Convert.ToInt32(rdr["linea"]);
-                    semanal.NUM_CTA = Convert.ToInt32(rdr["cta"]);
-                    semanal.NUM_SCTA = Convert.ToInt32(rdr["scta"]);
-                    semanal.NUM_SSCTA = Convert.ToInt32(rdr["sscta"]);
-                    semanal.TEXT_CONCEPTO = Convert.ToString(rdr["concepto"]);
-                    semanal.TEXT_MONTO = Convert.ToString(rdr["monto"].ToString());/// integer original
-                    semanal.TEXT_FOLIO_IMP = Convert.ToString(rdr["folio_imp"].ToString());///
-                    semanal.NUM_ITM = Convert.ToInt32(rdr["itm"]);
-                    semanal.NUM_TM = Convert.ToInt32(rdr["tm"]);
-                    semanal.TEXT_NUMPRO = Convert.ToString(rdr["NumProveedor"].ToString());///
-                    semanal.TEXT_CC = Convert.ToString(rdr["CentroCostos"]);
-                    semanal.TEXT_REFERENCIA = Convert.ToString(rdr["referencia"]);
-                    semanal.TEXT_ORDEN_COMPRA = Convert.ToString(rdr["orden_compra"].ToString());//                  
+                    semanal.year = Convert.ToInt32(rdr["year"]);
+                    semanal.mes = Convert.ToInt32(rdr["mes"]);
+                    semanal.poliza = Convert.ToInt32(rdr["poliza"]);
+                    semanal.tp = Convert.ToString(rdr["tp"]);
+                    semanal.linea = Convert.ToInt32(rdr["linea"]);
+                    semanal.cta = Convert.ToInt32(rdr["cta"]);
+                    semanal.scta = Convert.ToInt32(rdr["scta"]);
+                    semanal.sscta = Convert.ToInt32(rdr["sscta"]);
+                    semanal.concepto = Convert.ToString(rdr["concepto"]);
+                    semanal.monto = Convert.ToDouble(rdr["monto"]);/// integer original
+                    semanal.folio_imp = Convert.ToString(rdr["folio_imp"].ToString());///
+                    semanal.itm = Convert.ToInt32(rdr["itm"]);
+                    semanal.tm = Convert.ToInt32(rdr["tm"]);
+                    semanal.numpro = Convert.ToString(rdr["NumProveedor"].ToString());///
+                    semanal.cc = Convert.ToString(rdr["CentroCostos"]);
+                    semanal.referencia = Convert.ToString(rdr["referencia"]);
+                    semanal.orden_compra = Convert.ToString(rdr["orden_compra"].ToString());//                  
                     DateTime fechaPol = Convert.ToDateTime(rdr["fechapol"].ToString());//date
-                    semanal.TEXT_FECHAPOL = fechaPol.ToString("dd/MM/yyyy");
-                    semanal.INT_IDEMPRESA = Convert.ToInt32(rdr["idEmpresa"]);
-                    semanal.INT_IDVERSION = Convert.ToInt32(rdr["idVersion"]);
-                    semanal.TEXT_CFD_RUTA_PDF = Convert.ToString(rdr["cfd_ruta_pdf"]);
-                    semanal.TEXT_CFD_RUTA_XML = Convert.ToString(rdr["cfd_ruta_xml"]);
-                    semanal.TEXT_UUID = Convert.ToString(rdr["uuid"]);
+                    semanal.fechapol = fechaPol.ToString("dd/MM/yyyy");
+                    semanal.id_empresa = idCompania;//Convert.ToInt32(rdr["idEmpresa"]);
+                    semanal.id_version = Convert.ToInt32(rdr["idVersion"]);
+                    semanal.cfd_ruta_pdf = Convert.ToString(rdr["cfd_ruta_pdf"]);
+                    semanal.cfd_ruta_xml = Convert.ToString(rdr["cfd_ruta_xml"]);
+                    semanal.uuid = Convert.ToString(rdr["uuid"]);
 
 
                     listaSemanal.Add(semanal);
@@ -567,7 +635,7 @@ namespace AppGia.Controllers
                 OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                 odbcCon.Open();
                 OdbcDataReader rdr = cmd.ExecuteReader();
-                
+
                 List<ETLSemanal> listaEtlSem = new List<ETLSemanal>();
                 while (rdr.Read())
                 {
@@ -595,14 +663,14 @@ namespace AppGia.Controllers
                     etlSem.cfd_ruta_pdf = Convert.ToString(rdr["cfd_ruta_pdf"]);
                     etlSem.cfd_ruta_xml = Convert.ToString(rdr["cfd_ruta_xml"]);
                     etlSem.uuid = Convert.ToString(rdr["uuid"]);
-                  
+
 
                     listaEtlSem.Add(etlSem);
 
                 }
 
-                
-                 return listaEtlSem;
+
+                return listaEtlSem;
 
                 ////OdbcCommand cmd = new OdbcCommand(consulta , odbcCon);
                 ////odbcCon.Open();
@@ -638,7 +706,7 @@ namespace AppGia.Controllers
         {
             List<Semanal> lstSemanal = new List<Semanal>();
 
-            
+
             List<ETLSemanal> lstEtlSem = new List<ETLSemanal>();
             lstEtlSem = obtenerReporteSemanalPolizasSybase(id_compania);
 
@@ -646,29 +714,29 @@ namespace AppGia.Controllers
             {
                 Semanal semanal = new Semanal();
 
-                semanal.NUM_YEAR = etlSem.year;
-                semanal.NUM_MES = etlSem.mes;
-                semanal.NUM_POLIZA = etlSem.poliza;
-                semanal.TEXT_TP = etlSem.tp;
-                semanal.NUM_LINEA = etlSem.linea;
-                semanal.NUM_CTA = etlSem.cta;
-                semanal.NUM_SCTA = etlSem.scta;
-                semanal.NUM_SSCTA = etlSem.sscta;
-                semanal.TEXT_CONCEPTO = etlSem.concepto;
-                semanal.TEXT_MONTO = etlSem.monto.ToString();
-                semanal.TEXT_FOLIO_IMP = etlSem.folio_imp;
-                semanal.NUM_ITM = etlSem.itm;
-                semanal.NUM_TM = etlSem.tm;
-                semanal.TEXT_NUMPRO = etlSem.NumProveedor;
-                semanal.TEXT_CC = etlSem.CentroCostos;
-                semanal.TEXT_REFERENCIA = etlSem.referencia;
-                semanal.TEXT_ORDEN_COMPRA = etlSem.orden_compra;
-                semanal.TEXT_FECHAPOL = etlSem.fechapol.ToString("dd/MM/yyyy");
-                semanal.INT_IDEMPRESA = etlSem.idEmpresa;
-                semanal.INT_IDVERSION = etlSem.idVersion;
-                semanal.TEXT_CFD_RUTA_PDF = etlSem.cfd_ruta_pdf;
-                semanal.TEXT_CFD_RUTA_XML = etlSem.cfd_ruta_xml;
-                semanal.TEXT_UUID = etlSem.uuid;
+                semanal.year = etlSem.year;
+                semanal.mes = etlSem.mes;
+                semanal.poliza = etlSem.poliza;
+                semanal.tp = etlSem.tp;
+                semanal.linea = etlSem.linea;
+                semanal.cta = etlSem.cta;
+                semanal.scta = etlSem.scta;
+                semanal.sscta = etlSem.sscta;
+                semanal.concepto = etlSem.concepto;
+                semanal.monto = etlSem.monto;
+                semanal.folio_imp = etlSem.folio_imp;
+                semanal.itm = etlSem.itm;
+                semanal.tm = etlSem.tm;
+                semanal.numpro = etlSem.NumProveedor;
+                semanal.cc = etlSem.CentroCostos;
+                semanal.referencia = etlSem.referencia;
+                semanal.orden_compra = etlSem.orden_compra;
+                semanal.fechapol = etlSem.fechapol.ToString("dd/MM/yyyy");
+                semanal.id_empresa = etlSem.idEmpresa;
+                semanal.id_version = etlSem.idVersion;
+                semanal.cfd_ruta_pdf = etlSem.cfd_ruta_pdf;
+                semanal.cfd_ruta_xml = etlSem.cfd_ruta_xml;
+                semanal.uuid = etlSem.uuid;
 
                 lstSemanal.Add(semanal);
 
@@ -678,113 +746,152 @@ namespace AppGia.Controllers
             return lstSemanal;
         }
 
-        public int insertarReporteSemanalPg(int id_compania) {
+        public int insertarReporteSemanalPg(int idCompania, string anioInicio, string anioFin)
+        {
+            int cantFilaAfect = 0;
+            DateTime fechaInicioProceso = DateTime.Now;
             List<Semanal> lstSemanal = new List<Semanal>();
-            lstSemanal = obtenerReporteSemanalPolizasSybaseD(id_compania);
-            //lstSemanal = convertirReporteSemabalSybaseToPg(id_compania);
-            con.Open();
-            string insercion = "INSERT INTO "
-                        + cod + "TAB_SEMANAL" + cod + "("
-                        + cod + "NUM_YEAR" + cod + ", "
-                        + cod + "NUM_MES" + cod + ", "
-                        + cod + "NUM_POLIZA" + cod + ", "
-                        + cod + "TEXT_TP" + cod + ", "
-                        + cod + "NUM_LINEA" + cod + ", "
-                        + cod + "NUM_CTA" + cod + ", "
-                        + cod + "NUM_SCTA" + cod + ", "
-                        + cod + "NUM_SSCTA" + cod + ", "
-                        + cod + "TEXT_CONCEPTO" + cod + ", "
-                        + cod + "TEXT_MONTO" + cod + ", "
-                        + cod + "TEXT_FOLIO_IMP" + cod + ", "
-                        + cod + "NUM_ITM" + cod + ", "
-                        + cod + "NUM_TM" + cod + ", "
-                        + cod + "TEXT_NUMPRO" + cod + ", "
-                        + cod + "TEXT_CC" + cod + ", "
-                        + cod + "TEXT_REFERENCIA" + cod + ", "
-                        + cod + "TEXT_ORDEN_COMPRA" + cod + ", "
-                        + cod + "TEXT_FECHAPOL" + cod + ", "
-                        + cod + "INT_IDEMPRESA" + cod + ", "
-                        + cod + "INT_IDVERSION" + cod + ", "
-                        + cod + "TEXT_CFD_RUTA_PDF" + cod + ", "
-                        + cod + "TEXT_CFD_RUTA_XML" + cod + ", "
-                        + cod + "TEXT_UUID" +cod+")"
-
-                        + "VALUES "
-                        + " (@NUM_YEAR,"
-                        + " @NUM_MES,"
-                        + " @NUM_POLIZA,"
-                        + " @TEXT_TP,"
-                        + " @NUM_LINEA,"
-                        + " @NUM_CTA,"
-                        + " @NUM_SCTA,"
-                        + " @NUM_SSCTA,"
-	                    + " @TEXT_CONCEPTO,"
-                        + " @TEXT_MONTO,"
-                        + " @TEXT_FOLIO_IMP,"
-                        + " @NUM_ITM,"
-                        + " @NUM_TM,"
-                        + " @TEXT_NUMPRO,"
-                        + " @TEXT_CC,"
-                        + " @TEXT_REFERENCIA,"
-                        + " @TEXT_ORDEN_COMPRA,"
-                        + " @TEXT_FECHAPOL,"
-                        + " @INT_IDEMPRESA,"
-                        + " @INT_IDVERSION,"
-                        + " @TEXT_CFD_RUTA_PDF,"
-                        + " @TEXT_CFD_RUTA_XML,"
-                        + " @TEXT_UUID)"; 
             try
             {
+                List<String> listAnios = obtenerAniosPolizasSybase(idCompania, anioInicio, anioFin);
+                foreach (String anio in listAnios)
                 {
-                    int cantFilaAfect = 0;
-                    foreach (Semanal semmanal in lstSemanal)
-                    {
-                        NpgsqlCommand cmd = new NpgsqlCommand(insercion, con);
-                        //cmd.Parameters.AddWithValue("@INT_IDBALANZA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_IDBALANZA);
-                        cmd.Parameters.AddWithValue("@NUM_YEAR", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_YEAR);
-                        cmd.Parameters.AddWithValue("@NUM_MES", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_MES);
-                        cmd.Parameters.AddWithValue("@NUM_POLIZA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_POLIZA);
-                        cmd.Parameters.AddWithValue("@TEXT_TP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_TP);
-                        cmd.Parameters.AddWithValue("@NUM_LINEA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_LINEA);
-                        cmd.Parameters.AddWithValue("@NUM_CTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_CTA);
-                        cmd.Parameters.AddWithValue("@NUM_SCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_SCTA);
-                        cmd.Parameters.AddWithValue("@NUM_SSCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_SSCTA);
-                        cmd.Parameters.AddWithValue("@TEXT_CONCEPTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CONCEPTO);
-                        cmd.Parameters.AddWithValue("@TEXT_MONTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_MONTO);
-                        cmd.Parameters.AddWithValue("@TEXT_FOLIO_IMP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_FOLIO_IMP);
-                        cmd.Parameters.AddWithValue("@NUM_ITM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_ITM);
-                        cmd.Parameters.AddWithValue("@NUM_TM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_TM);
-                        cmd.Parameters.AddWithValue("@TEXT_NUMPRO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_NUMPRO);
-                        cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CC);
-                        cmd.Parameters.AddWithValue("@TEXT_REFERENCIA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_REFERENCIA);
-                        cmd.Parameters.AddWithValue("@TEXT_ORDEN_COMPRA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_ORDEN_COMPRA);
-                        cmd.Parameters.AddWithValue("@TEXT_FECHAPOL", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_FECHAPOL);
-                        cmd.Parameters.AddWithValue("@INT_IDEMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.INT_IDEMPRESA);
-                        cmd.Parameters.AddWithValue("@INT_IDVERSION", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.INT_IDVERSION);
-                        cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_PDF", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CFD_RUTA_PDF);
-                        cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_XML", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CFD_RUTA_XML);
-                        cmd.Parameters.AddWithValue("@TEXT_UUID", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_UUID);
-                        //conP.Open();
-                        // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
-                        cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
-                    }
+                    fechaInicioProceso = DateTime.Now;
 
-                    con.Close();
-                    configCorreo.EnviarCorreo("La extracción Semanal se genero correctamente", "ETL Reporte Semanal");
-                    return cantFilaAfect;
+                    lstSemanal = obtenerReporteSemanalPolizasSybaseD(idCompania, anio);
+                    //lstSemanal = convertirReporteSemabalSybaseToPg(id_compania);
+                    con.Open();
+                    string insercion = "INSERT INTO "
+                                + cod + "TAB_SEMANAL" + cod + "("
+                                + cod + "NUM_YEAR" + cod + ", "
+                                + cod + "NUM_MES" + cod + ", "
+                                + cod + "NUM_POLIZA" + cod + ", "
+                                + cod + "TEXT_TP" + cod + ", "
+                                + cod + "NUM_LINEA" + cod + ", "
+                                + cod + "NUM_CTA" + cod + ", "
+                                + cod + "NUM_SCTA" + cod + ", "
+                                + cod + "NUM_SSCTA" + cod + ", "
+                                + cod + "TEXT_CONCEPTO" + cod + ", "
+                                + cod + "TEXT_MONTO" + cod + ", "
+                                + cod + "TEXT_FOLIO_IMP" + cod + ", "
+                                + cod + "NUM_ITM" + cod + ", "
+                                + cod + "NUM_TM" + cod + ", "
+                                + cod + "TEXT_NUMPRO" + cod + ", "
+                                + cod + "TEXT_CC" + cod + ", "
+                                + cod + "TEXT_REFERENCIA" + cod + ", "
+                                + cod + "TEXT_ORDEN_COMPRA" + cod + ", "
+                                + cod + "TEXT_FECHAPOL" + cod + ", "
+                                + cod + "INT_IDEMPRESA" + cod + ", "
+                                + cod + "INT_IDVERSION" + cod + ", "
+                                + cod + "TEXT_CFD_RUTA_PDF" + cod + ", "
+                                + cod + "TEXT_CFD_RUTA_XML" + cod + ", "
+                                + cod + "TEXT_UUID" + cod + ")"
+
+                                + "VALUES "
+                                + " (@NUM_YEAR,"
+                                + " @NUM_MES,"
+                                + " @NUM_POLIZA,"
+                                + " @TEXT_TP,"
+                                + " @NUM_LINEA,"
+                                + " @NUM_CTA,"
+                                + " @NUM_SCTA,"
+                                + " @NUM_SSCTA,"
+                                + " @TEXT_CONCEPTO,"
+                                + " @TEXT_MONTO,"
+                                + " @TEXT_FOLIO_IMP,"
+                                + " @NUM_ITM,"
+                                + " @NUM_TM,"
+                                + " @TEXT_NUMPRO,"
+                                + " @TEXT_CC,"
+                                + " @TEXT_REFERENCIA,"
+                                + " @TEXT_ORDEN_COMPRA,"
+                                + " @TEXT_FECHAPOL,"
+                                + " @INT_IDEMPRESA,"
+                                + " @INT_IDVERSION,"
+                                + " @TEXT_CFD_RUTA_PDF,"
+                                + " @TEXT_CFD_RUTA_XML,"
+                                + " @TEXT_UUID)";
+                    ////////try
+                    ////////{
+                    {
+
+                        foreach (Semanal semmanal in lstSemanal)
+                        {
+                            NpgsqlCommand cmd = new NpgsqlCommand(insercion, con);
+
+                            cmd.Parameters.AddWithValue("@NUM_YEAR", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.year);
+                            cmd.Parameters.AddWithValue("@NUM_MES", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.mes);
+                            cmd.Parameters.AddWithValue("@NUM_POLIZA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.poliza);
+                            cmd.Parameters.AddWithValue("@TEXT_TP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.tp);
+                            cmd.Parameters.AddWithValue("@NUM_LINEA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.linea);
+                            cmd.Parameters.AddWithValue("@NUM_CTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.cta);
+                            cmd.Parameters.AddWithValue("@NUM_SCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.scta);
+                            cmd.Parameters.AddWithValue("@NUM_SSCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.sscta);
+                            cmd.Parameters.AddWithValue("@TEXT_CONCEPTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.concepto);
+                            cmd.Parameters.AddWithValue("@TEXT_MONTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.monto);
+                            cmd.Parameters.AddWithValue("@TEXT_FOLIO_IMP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.folio_imp);
+                            cmd.Parameters.AddWithValue("@NUM_ITM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.itm);
+                            cmd.Parameters.AddWithValue("@NUM_TM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.tm);
+                            cmd.Parameters.AddWithValue("@TEXT_NUMPRO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.numpro);
+                            cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cc);
+                            cmd.Parameters.AddWithValue("@TEXT_REFERENCIA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.referencia);
+                            cmd.Parameters.AddWithValue("@TEXT_ORDEN_COMPRA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.orden_compra);
+                            cmd.Parameters.AddWithValue("@TEXT_FECHAPOL", NpgsqlTypes.NpgsqlDbType.Text, semmanal.fechapol);
+                            cmd.Parameters.AddWithValue("@INT_IDEMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_empresa);
+                            cmd.Parameters.AddWithValue("@INT_IDVERSION", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_version);
+                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_PDF", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_pdf);
+                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_XML", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_xml);
+                            cmd.Parameters.AddWithValue("@TEXT_UUID", NpgsqlTypes.NpgsqlDbType.Text, semmanal.uuid);
+                            //conP.Open();
+                            // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
+                            cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
+                        }
+
+                        con.Close();
+                        ////////DateTime fechaFinalProceso = DateTime.Now;
+                        ////////configCorreo.EnviarCorreo("La extracción Semanal se genero correctamente para el año  "
+                        ////////                            + anio + "Fecha Inicio : " + fechaInicioProceso + " Fecha Final: " + fechaFinalProceso
+                        ////////                            + "Tiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins", "ETL Reporte Semanal");
+                        //return cantFilaAfect;
+                    }
+                    ////////}
+                    ////////catch (Exception ex)
+                    ////////{
+                    ////////    con.Close();
+                    ////////    DateTime fechaFinalProceso = DateTime.Now;
+                    ////////    configCorreo.EnviarCorreo("Ha ocurrido un error en la extracción Semanal se genero incorrectamente para el "
+                    ////////                                + anio + "Fecha Inicio : " + fechaInicioProceso + " Fecha Final: " + fechaFinalProceso
+                    ////////                                + "Tiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
+                    ////////                                + "\n Ocurrio el siguiente Error \n" + ex.Message, "ETL Reporte Semanal");
+                    ////////    string error = ex.Message;
+                    ////////    throw;
+                    ////////}
+
+
+
                 }
+
+                DateTime fechaFinalProceso = DateTime.Now;
+                configCorreo.EnviarCorreo("La extracción Semanal se genero correctamente"
+                                            + "\nFecha Inicio : " + fechaInicioProceso
+                                            + "\nFecha Final: " + fechaFinalProceso
+                                            + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins",
+                                            "ETL Reporte Semanal");
+
             }
             catch (Exception ex)
             {
                 con.Close();
-                configCorreo.EnviarCorreo("La extracción Semanal se genero incorrectamente", "ETL Reporte Semanal");
+                DateTime fechaFinalProceso = DateTime.Now;
+                configCorreo.EnviarCorreo("Ha ocurrido un error en la extracción Semanal"
+                                            + "\nFecha Inicio:" + fechaInicioProceso
+                                            + "\nFecha Final:" + fechaFinalProceso
+                                            + "\nTiempo de ejecucion: " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
+                                            + "\nOcurrio el siguiente Error: \n" + ex.Message, "ETL Reporte Semanal");
                 string error = ex.Message;
                 throw;
             }
-
-
-
-
+            return cantFilaAfect;
         }
 
         public List<Balanza> convertirTabBalanza(int id_compania)
@@ -836,58 +943,57 @@ namespace AppGia.Controllers
             List<ScSaldoConCc> lstSaldoCC = new List<ScSaldoConCc>();
             lstSaldoCC = obtenerSalContCC(id_compania);
 
-            foreach (ScSaldoConCc saldoCC in lstSaldoCC) {
+            foreach (ScSaldoConCc saldoCC in lstSaldoCC)
+            {
                 Balanza balanza = new Balanza();
-                balanza.INT_YEAR = saldoCC.year;
-                balanza.TEXT_CTA = saldoCC.cta.ToString();
-                balanza.TEXT_SCTA = saldoCC.scta.ToString();
-                balanza.TEXT_SSCTA = saldoCC.sscta.ToString();
-                balanza.DECI_SALINI = saldoCC.salini;
-                balanza.DECI_ENECARGOS = saldoCC.enecargos;
-                balanza.DECI_ENEABONOS = saldoCC.eneabonos;
-                balanza.DECI_FEBABONOS = saldoCC.febabonos;
-                balanza.DECI_FEBCARGOS = saldoCC.febcargos;
-                balanza.DECI_MARABONOS = saldoCC.marabonos;
-                balanza.DECI_MARCARGOS = saldoCC.marcargos;
-                balanza.DECI_ABRABONOS = saldoCC.abrabonos;
-                balanza.DECI_ABRCARGOS = saldoCC.abrcargos;
-                balanza.DECI_MAYABONOS = saldoCC.mayabonos;
-                balanza.DECI_MAYCARGOS = saldoCC.maycargos;
-                balanza.DECI_JUNABONOS = saldoCC.junabonos;
-                balanza.DECI_JUNCARGOS = saldoCC.juncargos;
-                balanza.DECI_JULABONOS = saldoCC.julabonos;
-                balanza.DECI_JULCARGOS = saldoCC.julcargos;
-                balanza.DECI_AGOABONOS = saldoCC.agoabonos;
-                balanza.DECI_AGOCARGOS = saldoCC.agocargos;
-                balanza.DECI_SEPABONOS = saldoCC.sepabonos;
-                balanza.DECI_SEPCARGOS = saldoCC.sepcargos;
-                balanza.DECI_OCTABONOS = saldoCC.octabonos;
-                balanza.DECI_OCTCARGOS = saldoCC.octcargos;
-                balanza.DECI_NOVABONOS = saldoCC.novabonos;
-                balanza.DECI_NOVCARGOS = saldoCC.novcargos;
-                balanza.DECI_DICABONOS = saldoCC.dicabonos;
-                balanza.DECI_DICCARGOS = saldoCC.diccargos;
-                balanza.TEXT_DESCRIPCION = "";
-                balanza.TEXT_DESCRIPCION2 = "";
-                balanza.DECI_CIERRE_ABONOS = saldoCC.cierreabonos;
-                balanza.DECI_CIERRE_CARGOS = saldoCC.cierrecargos;
-                balanza.INT_ACTA = saldoCC.acta;
-                balanza.TEXT_CC = saldoCC.cc;
+                balanza.year = saldoCC.year;
+                balanza.cta = saldoCC.cta.ToString();
+                balanza.scta = saldoCC.scta.ToString();
+                balanza.sscta = saldoCC.sscta.ToString();
+                balanza.salini = saldoCC.salini;
+                balanza.enecargos = saldoCC.enecargos;
+                balanza.eneabonos = saldoCC.eneabonos;
+                balanza.febabonos = saldoCC.febabonos;
+                balanza.febcargos = saldoCC.febcargos;
+                balanza.marabonos = saldoCC.marabonos;
+                balanza.marcargos = saldoCC.marcargos;
+                balanza.abrabonos = saldoCC.abrabonos;
+                balanza.abrcargos = saldoCC.abrcargos;
+                balanza.mayabonos = saldoCC.mayabonos;
+                balanza.maycargos = saldoCC.maycargos;
+                balanza.junabonos = saldoCC.junabonos;
+                balanza.juncargos = saldoCC.juncargos;
+                balanza.julabonos = saldoCC.julabonos;
+                balanza.julcargos = saldoCC.julcargos;
+                balanza.agoabonos = saldoCC.agoabonos;
+                balanza.agocargos = saldoCC.agocargos;
+                balanza.sepabonos = saldoCC.sepabonos;
+                balanza.sepcargos = saldoCC.sepcargos;
+                balanza.octabonos = saldoCC.octabonos;
+                balanza.octcargos = saldoCC.octcargos;
+                balanza.novabonos = saldoCC.novabonos;
+                balanza.novcargos = saldoCC.novcargos;
+                balanza.dicabonos = saldoCC.dicabonos;
+                balanza.diccargos = saldoCC.diccargos;
+                balanza.cierre_abonos = saldoCC.cierreabonos;
+                balanza.cierre_cargos = saldoCC.cierrecargos;
+                balanza.acta = saldoCC.acta;
+                balanza.cc = saldoCC.cc;
 
 
                 lstBalanza.Add(balanza);
 
-            
+
             }
 
-          
+
             return lstBalanza;
         }
 
         //public int buscarSaldoCC()
         //{
 
-           
+
         //    string busqueda = "SELECT COUNT(*) FROM  SC_SALCONT_CC";
         //    try
         //    {
@@ -914,14 +1020,15 @@ namespace AppGia.Controllers
                 OdbcCommand cmd = new OdbcCommand(busqueda, odbcCon);
                 odbcCon.Open();
                 OdbcDataReader rdr = cmd.ExecuteReader();
-                while (rdr.Read()) {
+                while (rdr.Read())
+                {
 
-                   numReg= rdr["CONTADOR"].ToString().Trim();
+                    numReg = rdr["CONTADOR"].ToString().Trim();
                 }
                 // int cantFilas = cmd.ExecuteNonQuery();       
-                int cantFilas = rdr.FieldCount; 
+                int cantFilas = rdr.FieldCount;
                 odbcCon.Close();
-                
+
                 return cantFilas;
             }
             catch (Exception ex)
@@ -936,159 +1043,169 @@ namespace AppGia.Controllers
 
         public int insertarTabBalanza(int id_compania)
         {
+            con.Open();
+            DateTime fechaInicioProceso = DateTime.Now;
             var transaction = con.BeginTransaction();
             List<Balanza> lstBala = new List<Balanza>();
-            lstBala = obtenerSalContCCD(id_compania);
-            //lstBala = convertirTabBalanza(id_compania);
 
-                string addBalanza = "INSERT INTO"
-                + cod + "TAB_BALANZA" + cod + "("
-                //+ cod + "INT_IDBALANZA" + cod + ","
-                + cod + "TEXT_CTA" + cod + ","
-                + cod + "TEXT_SCTA" + cod + ","
-                + cod + "TEXT_SSCTA" + cod + ","
-                + cod + "INT_YEAR" + cod + ","
-                + cod + "DECI_SALINI" + cod + ","
-                + cod + "DECI_ENECARGOS" + cod + ","
-                + cod + "DECI_ENEABONOS" + cod + ","
-                + cod + "DECI_FEBCARGOS" + cod + ","
-                + cod + "DECI_FEBABONOS" + cod + ","
-                + cod + "DECI_MARCARGOS" + cod + ","
-                + cod + "DECI_MARABONOS" + cod + ","
-                + cod + "DECI_ABRCARGOS" + cod + ","
-                + cod + "DECI_ABRABONOS" + cod + ","
-                + cod + "DECI_MAYCARGOS" + cod + ","
-                + cod + "DECI_MAYABONOS" + cod + ","
-                + cod + "DECI_JUNCARGOS" + cod + ","
-                + cod + "DECI_JUNABONOS" + cod + ","
-                + cod + "DECI_JULCARGOS" + cod + ","
-                + cod + "DECI_JULABONOS" + cod + ","
-                + cod + "DECI_AGOCARGOS" + cod + ","
-                + cod + "DECI_AGOABONOS" + cod + ","
-                + cod + "DECI_SEPCARGOS" + cod + ","
-                + cod + "DECI_SEPABONOS" + cod + ","
-                + cod + "DECI_OCTCARGOS" + cod + ","
-                + cod + "DECI_OCTABONOS" + cod + ","
-                + cod + "DECI_NOVCARGOS" + cod + ","
-                + cod + "DECI_NOVABONOS" + cod + ","
-                + cod + "DECI_DICCARGOS" + cod + ","
-                + cod + "DECI_DICABONOS" + cod + ","
-                + cod + "INT_CC" + cod + ","
-                + cod + "TEXT_DESCRIPCION" + cod + ","
-                + cod + "TEXT_DESCRIPCION2" + cod + ","
-                + cod + "INT_INCLUIR_SUMA" + cod + ","
-                + cod + "INT_TIPO_EXTRACCION" + cod + ","
-                + cod+  "TEXT_FECH_EXTR" + cod + ","
-                + cod + "TEXT_HORA" + cod + ","
-                + cod + "INT_ID_EMPRESA" + cod + ","
-                + cod + "DECI_CIERRE_CARGOS" + cod + ","
-                + cod + "DECI_CIERRE_ABONOS" + cod + ","
-                + cod + "INT_ACTA" + cod + ","
-                + cod + "TEXT_CC" + cod + ")"
-
-
-                    + "VALUES "
-                        //+ "(@INT_IDBALANZA,"
-                        + "(@TEXT_CTA,"
-                        + "@TEXT_SCTA,"
-                        + "@TEXT_SSCTA,"
-                        + "@INT_YEAR,"
-                        + "@DECI_SALINI,"
-                        + "@DECI_ENECARGOS,"
-                        + "@DECI_ENEABONOS,"
-                        + "@DECI_FEBCARGOS,"
-                        + "@DECI_FEBABONOS,"
-                        + "@DECI_MARCARGOS,"
-                        + "@DECI_MARABONOS,"
-                        + "@DECI_ABRCARGOS,"
-                        + "@DECI_ABRABONOS,"
-                        + "@DECI_MAYCARGOS,"
-                        + "@DECI_MAYABONOS,"
-                        + "@DECI_JUNCARGOS,"
-                        + "@DECI_JUNABONOS,"
-                        + "@DECI_JULCARGOS,"
-                        + "@DECI_JULABONOS,"
-                        + "@DECI_AGOCARGOS,"
-                        + "@DECI_AGOABONOS,"
-                        + "@DECI_SEPCARGOS,"
-                        + "@DECI_SEPABONOS,"
-                        + "@DECI_OCTCARGOS,"
-                        + "@DECI_OCTABONOS,"
-                        + "@DECI_NOVCARGOS,"
-                        + "@DECI_NOVABONOS,"
-                        + "@DECI_DICCARGOS,"
-                        + "@DECI_DICABONOS,"
-                        //+ "@INT_CC,"
-                        //+ "@TEXT_DESCRIPCION,"
-                        //+ "@TEXT_DESCRIPCION2,"
-                        + "@INT_INCLUIR_SUMA,"
-                        + "@INT_TIPO_EXTRACCION,"
-                        + "@TEXT_FECH_EXTR,"
-                        + "@TEXT_HORA,"
-                        + "@INT_ID_EMPRESA,"
-                        + "@DECI_CIERRE_CARGOS,"
-                        + "@DECI_CIERRE_ABONOS,"
-                        + "@INT_ACTA,"
-                        + "@TEXT_CC)";
 
             try
             {
+                lstBala = obtenerSalContCCD(id_compania);
+                //lstBala = convertirTabBalanza(id_compania);
+
+                string addBalanza = "insert into"
+                 + cod + "balanza" + cod + "("
+                 //+ cod + "idbalanza" + cod + ","
+                 + cod + "cta" + cod + ","
+                 + cod + "scta" + cod + ","
+                 + cod + "sscta" + cod + ","
+                 + cod + "year" + cod + ","
+                 + cod + "salini" + cod + ","
+                 + cod + "enecargos" + cod + ","
+                 + cod + "eneabonos" + cod + ","
+                 + cod + "febcargos" + cod + ","
+                 + cod + "febabonos" + cod + ","
+                 + cod + "marcargos" + cod + ","
+                 + cod + "marabonos" + cod + ","
+                 + cod + "abrcargos" + cod + ","
+                 + cod + "abrabonos" + cod + ","
+                 + cod + "maycargos" + cod + ","
+                 + cod + "mayabonos" + cod + ","
+                 + cod + "juncargos" + cod + ","
+                 + cod + "junabonos" + cod + ","
+                 + cod + "julcargos" + cod + ","
+                 + cod + "julabonos" + cod + ","
+                 + cod + "agocargos" + cod + ","
+                 + cod + "agoabonos" + cod + ","
+                 + cod + "sepcargos" + cod + ","
+                 + cod + "sepabonos" + cod + ","
+                 + cod + "octcargos" + cod + ","
+                 + cod + "octabonos" + cod + ","
+                 + cod + "novcargos" + cod + ","
+                 + cod + "novabonos" + cod + ","
+                 + cod + "diccargos" + cod + ","
+                 + cod + "dicabonos" + cod + ","
+                 //+ cod + "cc" + cod + ","
+                 //+ cod + "descripcion" + cod + ","
+                 //+ cod + "descripcion2" + cod + ","
+                 + cod + "incluir_suma" + cod + ","
+                 + cod + "tipo_extraccion" + cod + ","
+                 + cod + "fech_extr" + cod + ","
+                 + cod + "hora" + cod + ","
+                 + cod + "id_empresa" + cod + ","
+                 + cod + "cierre_cargos" + cod + ","
+                 + cod + "cierre_abonos" + cod + ","
+                 + cod + "acta" + cod + ","
+                 + cod + "cc" + cod + ")"
+
+
+                     + "values "
+                         //+ "(@IDBALANZA,"
+                         + "(@CTA,"
+                         + "@SCTA,"
+                         + "@SSCTA,"
+                         + "@YEAR,"
+                         + "@SALINI,"
+                         + "@ENECARGOS,"
+                         + "@ENEABONOS,"
+                         + "@FEBCARGOS,"
+                         + "@FEBABONOS,"
+                         + "@MARCARGOS,"
+                         + "@MARABONOS,"
+                         + "@ABRCARGOS,"
+                         + "@ABRABONOS,"
+                         + "@MAYCARGOS,"
+                         + "@MAYABONOS,"
+                         + "@JUNCARGOS,"
+                         + "@JUNABONOS,"
+                         + "@JULCARGOS,"
+                         + "@JULABONOS,"
+                         + "@AGOCARGOS,"
+                         + "@AGOABONOS,"
+                         + "@SEPCARGOS,"
+                         + "@SEPABONOS,"
+                         + "@OCTCARGOS,"
+                         + "@OCTABONOS,"
+                         + "@NOVCARGOS,"
+                         + "@NOVABONOS,"
+                         + "@DICCARGOS,"
+                         + "@DICABONOS,"
+                         //+ "@CC,"
+                         //+ "@DESCRIPCION,"
+                         //+ "@DESCRIPCION2,"
+                         + "@INCLUIR_SUMA,"
+                         + "@TIPO_EXTRACCION,"
+                         + "@FECH_EXTR,"
+                         + "@HORA,"
+                         + "@ID_EMPRESA,"
+                         + "@CIERRE_CARGOS,"
+                         + "@CIERRE_ABONOS,"
+                         + "@ACTA,"
+                         + "@CC)";
+
                 {
-                    int cantFilaAfect =0;
-                    foreach (Balanza balanza in lstBala) {
+
+                    int cantFilaAfect = 0;
+                    foreach (Balanza balanza in lstBala)
+                    {
                         NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
                         //cmd.Parameters.AddWithValue("@INT_IDBALANZA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_IDBALANZA);
-                        cmd.Parameters.AddWithValue("@TEXT_CTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_CTA);
-                        cmd.Parameters.AddWithValue("@TEXT_SCTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_SCTA);
-                        cmd.Parameters.AddWithValue("@TEXT_SSCTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_SSCTA);
-                        cmd.Parameters.AddWithValue("@INT_YEAR", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_YEAR);
-                        cmd.Parameters.AddWithValue("@DECI_SALINI", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_SALINI);
-                        cmd.Parameters.AddWithValue("@DECI_ENECARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_ENECARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_ENEABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_ENEABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_FEBCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_FEBCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_FEBABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_FEBABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_MARCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_MARCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_MARABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_MARABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_ABRCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_ABRCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_ABRABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_ABRABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_MAYCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_MAYCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_MAYABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_MAYABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_JUNCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_JUNCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_JUNABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_JUNABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_JULCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_JULCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_JULABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_JULABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_AGOCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_AGOCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_AGOABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_AGOABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_SEPCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_SEPCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_SEPABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_SEPABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_OCTCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_OCTCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_OCTABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_OCTABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_NOVCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_NOVCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_NOVABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_NOVABONOS);
-                        cmd.Parameters.AddWithValue("@DECI_DICCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_DICCARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_DICABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_DICABONOS);
-                        //cmd.Parameters.AddWithValue("@INT_CC", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_CC);
-                        //cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION);
-                        //cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_DESCRIPCION2);
-                        cmd.Parameters.AddWithValue("@INT_INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_INCLUIR_SUMA);
-                        cmd.Parameters.AddWithValue("@INT_TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, 1);
-                        cmd.Parameters.AddWithValue("@TEXT_FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
-                        cmd.Parameters.AddWithValue("@TEXT_HORA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
-                        cmd.Parameters.AddWithValue("@INT_ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, id_compania);
-                        cmd.Parameters.AddWithValue("@DECI_CIERRE_CARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_CIERRE_CARGOS);
-                        cmd.Parameters.AddWithValue("@DECI_CIERRE_ABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.DECI_CIERRE_ABONOS);
-                        cmd.Parameters.AddWithValue("@INT_ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_ACTA);
-                        cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, balanza.TEXT_CC);
+                        cmd.Parameters.AddWithValue("@CTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.cta);
+                        cmd.Parameters.AddWithValue("@SCTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.scta);
+                        cmd.Parameters.AddWithValue("@SSCTA", NpgsqlTypes.NpgsqlDbType.Text, balanza.sscta);
+                        cmd.Parameters.AddWithValue("@YEAR", NpgsqlTypes.NpgsqlDbType.Integer, balanza.year);
+                        cmd.Parameters.AddWithValue("@SALINI", NpgsqlTypes.NpgsqlDbType.Double, balanza.salini);
+                        cmd.Parameters.AddWithValue("@ENECARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.enecargos);
+                        cmd.Parameters.AddWithValue("@ENEABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.eneabonos);
+                        cmd.Parameters.AddWithValue("@FEBCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.febcargos);
+                        cmd.Parameters.AddWithValue("@FEBABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.febabonos);
+                        cmd.Parameters.AddWithValue("@MARCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.marcargos);
+                        cmd.Parameters.AddWithValue("@MARABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.marabonos);
+                        cmd.Parameters.AddWithValue("@ABRCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.abrcargos);
+                        cmd.Parameters.AddWithValue("@ABRABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.abrabonos);
+                        cmd.Parameters.AddWithValue("@MAYCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.maycargos);
+                        cmd.Parameters.AddWithValue("@MAYABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.mayabonos);
+                        cmd.Parameters.AddWithValue("@JUNCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.juncargos);
+                        cmd.Parameters.AddWithValue("@JUNABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.junabonos);
+                        cmd.Parameters.AddWithValue("@JULCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.julcargos);
+                        cmd.Parameters.AddWithValue("@JULABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.julabonos);
+                        cmd.Parameters.AddWithValue("@AGOCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.agocargos);
+                        cmd.Parameters.AddWithValue("@AGOABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.agoabonos);
+                        cmd.Parameters.AddWithValue("@SEPCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.sepcargos);
+                        cmd.Parameters.AddWithValue("@SEPABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.sepabonos);
+                        cmd.Parameters.AddWithValue("@OCTCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.octcargos);
+                        cmd.Parameters.AddWithValue("@OCTABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.octabonos);
+                        cmd.Parameters.AddWithValue("@NOVCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.novcargos);
+                        cmd.Parameters.AddWithValue("@NOVABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.novabonos);
+                        cmd.Parameters.AddWithValue("@DICCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.diccargos);
+                        cmd.Parameters.AddWithValue("@DICABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.dicabonos);
+                        //cmd.Parameters.AddWithValue("@CC", NpgsqlTypes.NpgsqlDbType.Integer, balanza.CC);
+                        //cmd.Parameters.AddWithValue("@DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION);
+                        //cmd.Parameters.AddWithValue("@DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION2);
+                        cmd.Parameters.AddWithValue("@INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.incluir_suma);
+                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, 1);
+                        cmd.Parameters.AddWithValue("@FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
+                        cmd.Parameters.AddWithValue("@HORA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
+                        cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, id_compania);
+                        cmd.Parameters.AddWithValue("@CIERRE_CARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_cargos);
+                        cmd.Parameters.AddWithValue("@CIERRE_ABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_abonos);
+                        cmd.Parameters.AddWithValue("@ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.acta);
+                        cmd.Parameters.AddWithValue("@CC", NpgsqlTypes.NpgsqlDbType.Text, balanza.cc);
 
 
 
-                        //conP.Open();
+                        //con.Open();
                         // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
-                        cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery()); 
+                        cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
                     }
                     transaction.Commit();
                     con.Close();
-                    configCorreo.EnviarCorreo("La extracción para se genero correctamente", "ETL");
+                    DateTime fechaFinalProceso = DateTime.Now;
+                    configCorreo.EnviarCorreo("La extracción de Balanza se genero correctamente"
+                                               + "\nFecha Inicio : " + fechaInicioProceso + " \n Fecha Final: " + fechaFinalProceso
+                                               + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
+                                               , "ETL Balanza");
                     return cantFilaAfect;
                 }
             }
@@ -1096,7 +1213,12 @@ namespace AppGia.Controllers
             {
                 transaction.Rollback();
                 con.Close();
-                configCorreo.EnviarCorreo("La extracción para se genero incorrectamente", "ETL");
+                DateTime fechaFinalProceso = DateTime.Now;
+                configCorreo.EnviarCorreo("Ha ocurrido un error en la extracción de Balanza"
+                                           + "\nFecha Inicio : " + fechaInicioProceso + "\nFecha Final: " + fechaFinalProceso
+                                           + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
+                                           + "\nError : " + ex.Message
+                                           , "ETL Balanza");
                 string error = ex.Message;
                 throw;
             }
