@@ -22,13 +22,13 @@ namespace AppGia.Controllers
 
         public IEnumerable<Empresa> GetAllEmpresas()
         {
-            string cadena = "select * from" + cod + "empresa" + cod + "where "+cod+ "activo" +cod+ "=" + true;
+            string cadena = "select * from " + "empresa " + "where " + "activo " + "=" + true;
             try
             {
                 List<Empresa> lstempresa = new List<Empresa>();
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
-
+                     
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
@@ -40,13 +40,13 @@ namespace AppGia.Controllers
                         empresa.desc_id = rdr["desc_id"].ToString().Trim();
                         empresa.nombre = rdr["nombre"].ToString().Trim();
                         empresa.abrev = rdr["abrev"].ToString().Trim();
-                        empresa.activo_etl = Convert.ToBoolean(rdr["activo_etl"]);
+                        empresa.etl = Convert.ToBoolean(rdr["etl"]);
                         empresa.host = rdr["host"].ToString().Trim();
                         empresa.puerto_compania = Convert.ToInt32(rdr["puerto_compania"]);
                         empresa.usuario_etl = rdr["usuario_etl"].ToString().Trim();
                         empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
                         empresa.bd_name = rdr["bd_name"].ToString().Trim();
-                        empresa.moneda_id = rdr["moneda_id"].ToString().Trim();
+                        empresa.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
                         empresa.fec_modif = Convert.ToDateTime (rdr["fec_modif"]);
                         empresa.activo = Convert.ToBoolean(rdr["activo"]);
                         lstempresa.Add(empresa);
@@ -68,7 +68,7 @@ namespace AppGia.Controllers
             {
                 Empresa empresa = new Empresa();
                 {
-                    string consulta = "select * from" + "empresa" + "where" + "id" + "=" + id;
+                    string consulta = "select * from " + "empresa " + "where " + "id" + "=" + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -79,13 +79,13 @@ namespace AppGia.Controllers
                         empresa.desc_id = rdr["desc_id"].ToString().Trim();
                         empresa.nombre = rdr["nombre"].ToString().Trim();
                         empresa.abrev = rdr["abrev"].ToString().Trim();
-                        empresa.activo_etl = Convert.ToBoolean(rdr["activo_etl"]);
+                        empresa.etl = Convert.ToBoolean(rdr["etl"]);
                         empresa.host = rdr["host"].ToString().Trim();
                         empresa.puerto_compania = Convert.ToInt32(rdr["puerto_compania"]);
                         empresa.usuario_etl = rdr["usuario_etl"].ToString().Trim();
                         empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
                         empresa.bd_name = rdr["bd_name"].ToString().Trim();
-                        empresa.moneda_id = rdr["moneda"].ToString().Trim();
+                        empresa.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
                         empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         empresa.activo = Convert.ToBoolean(rdr["activo"]);
 
@@ -105,7 +105,7 @@ namespace AppGia.Controllers
         {
             string add = "insert into "  +
                 "empresa"  +
-                "("+"nombre"+
+                "(id,"+"nombre"+
                 ","+"abrev"+
                 ","+ "etl" +
                 ","+"host"+
@@ -118,7 +118,8 @@ namespace AppGia.Controllers
                 ","+ "fec_modif" +
                 ","+"activo"+
                 ") values " +
-                "(@nombre," +
+                "(nextval('seq_empresa')," +
+                "@nombre," +
                 "@abrev," +
                 "@etl," +
                 "@host," +
@@ -136,12 +137,13 @@ namespace AppGia.Controllers
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@desc_id", empresa.desc_id.Trim());
+          
                     cmd.Parameters.AddWithValue("@nombre", empresa.nombre);
                     cmd.Parameters.AddWithValue("@abrev", empresa.abrev );
-                    cmd.Parameters.AddWithValue("@activo_etl", empresa.activo_etl);
+                    cmd.Parameters.AddWithValue("@etl", empresa.etl);
                     cmd.Parameters.AddWithValue("@host", empresa.host );
                     cmd.Parameters.AddWithValue("@moneda_id", empresa.moneda_id );
+                    cmd.Parameters.AddWithValue("@desc_id", empresa.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl );
                     cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
                     cmd.Parameters.AddWithValue("@puerto_compania", empresa.puerto_compania);

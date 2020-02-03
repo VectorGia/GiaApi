@@ -32,11 +32,11 @@ namespace AppGia.Controllers
                         Proyecto proyecto = new Proyecto();
 
                         proyecto.id = Convert.ToInt32(rdr["id"]);    
-                        proyecto.id_proyecto = rdr["id_proyecto"].ToString().Trim();
+                        proyecto.desc_id = rdr["desc_id"].ToString().Trim();
                         proyecto.nombre = rdr["nombre"].ToString().Trim();
                         proyecto.activo = Convert.ToBoolean(rdr["activo"]);
                         proyecto.responsable = rdr["responsable"].ToString().Trim();
-                        proyecto.estatus = Convert.ToBoolean(rdr["estatus"]);
+                        proyecto.estatus = rdr["estatus"].ToString().Trim();
                         proyecto.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
 
                         lstProyecto.Add(proyecto);
@@ -69,11 +69,11 @@ namespace AppGia.Controllers
                     {
 
                         proyecto.id = Convert.ToInt32(rdr["id"]);
-                        proyecto.id_proyecto = rdr["id_proyecto"].ToString().Trim();
+                        proyecto.desc_id = rdr["desc_id"].ToString().Trim();
                         proyecto.nombre = rdr["nombre"].ToString().Trim();
                         proyecto.activo = Convert.ToBoolean(rdr["activo"]);
                         proyecto.responsable = rdr["responsable"].ToString().Trim();
-                        proyecto.estatus = Convert.ToBoolean(rdr["estatus"]);
+                        proyecto.estatus = rdr["estatus"].ToString().Trim();
                         proyecto.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
                     }
                 }
@@ -87,20 +87,27 @@ namespace AppGia.Controllers
         }
         public int addProyecto(Proyecto proyecto)
         {
-            string add = "insert into" 
-                + "proyecto" + "("
-                + "id_proyecto" + ","
+            string add = "insert into " 
+                + "proyecto " + "("
+                + "id" + "," 
+                + "desc_id" + ","
                 + "nombre" + ","
                 + "estatus" + ","
                 + "responsable" + ","
                 + "fecha_modificacion" + ","
                 + "activo" + ") values " +
-                "(@id_proyecto,@nombre,@estatus,@responsable,@fecha_modificacion,@activo)";
+                "(nextval('seq_proyecto'),@desc_id,@nombre,@estatus,@responsable,@fecha_modificacion,@activo)";
             try
             {
                 {
+
+                    proyecto.desc_id = "uno";
+                   // proyecto.modelo_negocio_id = 1;
+                    // proyecto.EMPRESA.id =
+                    int idcom = proyecto.idC;
+
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@id_proyecto", proyecto.id_proyecto.Trim());
+                    cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
                     cmd.Parameters.AddWithValue("@estatus", proyecto.estatus);
                     cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
@@ -108,7 +115,11 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@activo", proyecto.activo);
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "SELECT currval('seq_proyecto') AS lastProyecto;";
+                    long idproyect = (long)cmd.ExecuteScalar();
                     con.Close();
+                    addEmpresa_Proyecto(idproyect, idcom);
                     return cantFilAfec;
                 }
             }
@@ -128,7 +139,7 @@ namespace AppGia.Controllers
          
           + "nombre" + " = '" + proyecto.nombre + "' ,"
           + "responsable" + " = '" + proyecto.responsable + "' ,"
-          + "id_proyecto" + " = '" + proyecto.id_proyecto + "' ,"
+          + "desc_id" + " = '" + proyecto.desc_id + "' ,"
           + "fecha_modificacion" + " = " + "@fecha_modificacion" + " ,"
           + "estatus" + " = '" + proyecto.estatus + "'"
           + " WHERE" + "id" + "=" + id;
@@ -143,7 +154,7 @@ namespace AppGia.Controllers
              
                     cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
                     cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
-                    cmd.Parameters.AddWithValue("@id_proyecto", proyecto.id_proyecto.Trim());
+                    cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@estatus", proyecto.activo);
                    
@@ -184,6 +195,44 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+        }
+
+        public int addEmpresa_Proyecto(long id, int id2)
+        {
+
+            string add = "insert into "
+                + "empresa_proyecto " + "("
+                + "id" + ","
+                + "activo" + ","
+                + "empresa_id" + ","
+                + "proyecto_id"
+                + ") values " +
+                "(@nextval('seq_empresa_proy'),@activo,@empresa_id,@proyecto_id)";
+
+            try
+            {
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+
+                    Empresa_Proyecto empresa_proyecto = new Empresa_Proyecto();
+                    Proyecto proyecto = new Proyecto();
+                    //empresa_proyecto.empresa_id = 1;
+                    cmd.Parameters.AddWithValue("@activo", empresa_proyecto.activo);
+                    cmd.Parameters.AddWithValue("@empresa_id", id2);
+                    cmd.Parameters.AddWithValue("@proyecto_id", id);
+
+                    con.Open();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
+                }
+            }
+            catch
+            {
+                con.Close();
+                throw;
+            }
+
         }
 
     }
