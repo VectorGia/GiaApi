@@ -4,18 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using AppGia.Models;
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class MontosConsolidadosController : ControllerBase
     {
+        MontosConsolidadosDataAccessLayer objmontos = new MontosConsolidadosDataAccessLayer();
         // GET: api/MontosConsolidados
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<MontosConsolidados> Get(int montConsAnio, int montConsMes, int montConsEmpresa, int montConsModeloNeg, int montConsProyecto, int montConsRubro)
         {
-            return new string[] { "value1", "value2" };
+            return objmontos.GetMontosConsolidados(montConsAnio, montConsMes, montConsEmpresa, montConsModeloNeg, montConsProyecto, montConsRubro);
         }
 
         // GET: api/MontosConsolidados/5
