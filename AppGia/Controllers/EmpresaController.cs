@@ -13,7 +13,7 @@ namespace AppGia.Controllers
     public class EmpresaController : ControllerBase
     {
         EmpresaDataAccessLayer objCompania = new EmpresaDataAccessLayer();
-        BalanzaDataAccessLayer objBalanza = new BalanzaDataAccessLayer();
+       
         // GET: api/Empresa
         [HttpGet]
         public IEnumerable<Empresa> Get()
