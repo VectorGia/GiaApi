@@ -18,7 +18,7 @@ namespace AppGia.Controllers
         [HttpGet]
         public IEnumerable<Empresa> Get()
         {
-            Balanza bal = new Balanza();
+
             return objCompania.GetAllEmpresas();
         }
 
