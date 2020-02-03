@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AppGia.Models;
 namespace AppGia.Controllers
 {
-    public class BalanzaDataAccessLayer
+    public class BalanzaDataAccessLayer   
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
