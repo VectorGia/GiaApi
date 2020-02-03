@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/Centro",
+      "launchUrl": "api/proforma",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
