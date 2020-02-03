@@ -14,28 +14,28 @@ namespace AppGia.Controllers
         ModeloNegocioDataAccessLayer objModelo = new ModeloNegocioDataAccessLayer();
         // GET: api/ModeloNegocio
         [HttpGet]
-        public IEnumerable<ModeloNegocio> Get()
+        public IEnumerable<Modelo_Negocio> Get()
         {
             return objModelo.GetAllModeloNegocios();
         }
 
         // GET: api/ModeloNegocio/5
         [HttpGet("{id}", Name = "GetModelo")]
-        public ModeloNegocio GetModelo(string id)
+        public Modelo_Negocio GetModelo(string id)
         {
             return objModelo.GetModelo(id);
         }
 
         // POST: api/ModeloNegocio
         [HttpPost]
-        public int Create([FromBody] ModeloNegocio negocio)
+        public int Create([FromBody] Modelo_Negocio negocio)
         {
             return objModelo.addModelo(negocio);
         }
 
         // PUT: api/ModeloNegocio/5
         [HttpPut("{id}")]
-        public int Put(string id, [FromBody] ModeloNegocio negocio)
+        public int Put(string id, [FromBody] Modelo_Negocio negocio)
         {
             return objModelo.UpdateModelo(id, negocio);
         }

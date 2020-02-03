@@ -30,6 +30,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody]Proyecto proyecto)
         {
+
             return objProyecto.addProyecto(proyecto);
         }
 
