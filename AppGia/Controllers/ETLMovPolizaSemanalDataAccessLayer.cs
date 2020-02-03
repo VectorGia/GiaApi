@@ -93,30 +93,30 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         Semanal semanal = new Semanal();
-                        semanal.NUM_YEAR = Convert.ToInt32(rdr["year"]);
-                        semanal.NUM_MES = Convert.ToInt32(rdr["mes"]);
-                        semanal.NUM_POLIZA = Convert.ToInt32(rdr["poliza"]);
-                        semanal.TEXT_TP = Convert.ToString(rdr["tp"]);
-                        semanal.NUM_LINEA = Convert.ToInt32(rdr["linea"]);
-                        semanal.NUM_CTA = Convert.ToInt32(rdr["cta"]);
-                        semanal.NUM_SCTA = Convert.ToInt32(rdr["scta"]);
-                        semanal.NUM_SSCTA = Convert.ToInt32(rdr["sscta"]);
-                        semanal.TEXT_CONCEPTO = Convert.ToString(rdr["concepto"]);
-                        semanal.TEXT_MONTO = Convert.ToString(rdr["monto"].ToString());/// integer original
-                        semanal.TEXT_FOLIO_IMP = Convert.ToString(rdr["folio_imp"].ToString());///
-                        semanal.NUM_ITM = Convert.ToInt32(rdr["itm"]);
-                        semanal.NUM_TM = Convert.ToInt32(rdr["tm"]);
-                        semanal.TEXT_NUMPRO = Convert.ToString(rdr["NumProveedor"].ToString());///
-                        semanal.TEXT_CC = Convert.ToString(rdr["CentroCostos"]);
-                        semanal.TEXT_REFERENCIA = Convert.ToString(rdr["referencia"]);
-                        semanal.TEXT_ORDEN_COMPRA = Convert.ToString(rdr["orden_compra"].ToString());//                  
+                        semanal.year = Convert.ToInt32(rdr["year"]);
+                        semanal.mes = Convert.ToInt32(rdr["mes"]);
+                        semanal.poliza = Convert.ToInt32(rdr["poliza"]);
+                        semanal.tp = Convert.ToString(rdr["tp"]);
+                        semanal.linea = Convert.ToInt32(rdr["linea"]);
+                        semanal.cta = Convert.ToInt32(rdr["cta"]);
+                        semanal.scta = Convert.ToInt32(rdr["scta"]);
+                        semanal.sscta = Convert.ToInt32(rdr["sscta"]);
+                        semanal.concepto = Convert.ToString(rdr["concepto"]);
+                        semanal.monto = Convert.ToDouble(rdr["monto"]);/// integer original
+                        semanal.folio_imp = Convert.ToString(rdr["folio_imp"].ToString());///
+                        semanal.itm = Convert.ToInt32(rdr["itm"]);
+                        semanal.tm = Convert.ToInt32(rdr["tm"]);
+                        semanal.numpro = Convert.ToString(rdr["NumProveedor"].ToString());///
+                        semanal.cc = Convert.ToString(rdr["CentroCostos"]);
+                        semanal.referencia = Convert.ToString(rdr["referencia"]);
+                        semanal.orden_compra = Convert.ToString(rdr["orden_compra"].ToString());//                  
                         DateTime fechaPol = Convert.ToDateTime(rdr["fechapol"].ToString());//date
-                        semanal.TEXT_FECHAPOL = fechaPol.ToString("dd/MM/yyyy");
-                        semanal.INT_IDEMPRESA = idCompania;//Convert.ToInt32(rdr["idEmpresa"]);
-                        semanal.INT_IDVERSION = Convert.ToInt32(rdr["idVersion"]);
-                        semanal.TEXT_CFD_RUTA_PDF = Convert.ToString(rdr["cfd_ruta_pdf"]);
-                        semanal.TEXT_CFD_RUTA_XML = Convert.ToString(rdr["cfd_ruta_xml"]);
-                        semanal.TEXT_UUID = Convert.ToString(rdr["uuid"]);
+                        semanal.fechapol = fechaPol.ToString("dd/MM/yyyy");
+                        semanal.id_empresa = idCompania;//Convert.ToInt32(rdr["idEmpresa"]);
+                        semanal.id_version = Convert.ToInt32(rdr["idVersion"]);
+                        semanal.cfd_ruta_pdf = Convert.ToString(rdr["cfd_ruta_pdf"]);
+                        semanal.cfd_ruta_xml = Convert.ToString(rdr["cfd_ruta_xml"]);
+                        semanal.uuid = Convert.ToString(rdr["uuid"]);
 
 
                         listaSemanal.Add(semanal);
@@ -214,29 +214,29 @@ namespace AppGia.Controllers
                         {
                             NpgsqlCommand cmd = new NpgsqlCommand(insercion, con);
 
-                            cmd.Parameters.AddWithValue("@NUM_YEAR", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_YEAR);
-                            cmd.Parameters.AddWithValue("@NUM_MES", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_MES);
-                            cmd.Parameters.AddWithValue("@NUM_POLIZA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_POLIZA);
-                            cmd.Parameters.AddWithValue("@TEXT_TP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_TP);
-                            cmd.Parameters.AddWithValue("@NUM_LINEA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_LINEA);
-                            cmd.Parameters.AddWithValue("@NUM_CTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_CTA);
-                            cmd.Parameters.AddWithValue("@NUM_SCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_SCTA);
-                            cmd.Parameters.AddWithValue("@NUM_SSCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_SSCTA);
-                            cmd.Parameters.AddWithValue("@TEXT_CONCEPTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CONCEPTO);
-                            cmd.Parameters.AddWithValue("@TEXT_MONTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_MONTO);
-                            cmd.Parameters.AddWithValue("@TEXT_FOLIO_IMP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_FOLIO_IMP);
-                            cmd.Parameters.AddWithValue("@NUM_ITM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_ITM);
-                            cmd.Parameters.AddWithValue("@NUM_TM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.NUM_TM);
-                            cmd.Parameters.AddWithValue("@TEXT_NUMPRO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_NUMPRO);
-                            cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CC);
-                            cmd.Parameters.AddWithValue("@TEXT_REFERENCIA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_REFERENCIA);
-                            cmd.Parameters.AddWithValue("@TEXT_ORDEN_COMPRA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_ORDEN_COMPRA);
-                            cmd.Parameters.AddWithValue("@TEXT_FECHAPOL", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_FECHAPOL);
-                            cmd.Parameters.AddWithValue("@INT_IDEMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.INT_IDEMPRESA);
-                            cmd.Parameters.AddWithValue("@INT_IDVERSION", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.INT_IDVERSION);
-                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_PDF", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CFD_RUTA_PDF);
-                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_XML", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_CFD_RUTA_XML);
-                            cmd.Parameters.AddWithValue("@TEXT_UUID", NpgsqlTypes.NpgsqlDbType.Text, semmanal.TEXT_UUID);
+                            cmd.Parameters.AddWithValue("@NUM_YEAR", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.year);
+                            cmd.Parameters.AddWithValue("@NUM_MES", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.mes);
+                            cmd.Parameters.AddWithValue("@NUM_POLIZA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.poliza);
+                            cmd.Parameters.AddWithValue("@TEXT_TP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.tp);
+                            cmd.Parameters.AddWithValue("@NUM_LINEA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.linea);
+                            cmd.Parameters.AddWithValue("@NUM_CTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.cta);
+                            cmd.Parameters.AddWithValue("@NUM_SCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.scta);
+                            cmd.Parameters.AddWithValue("@NUM_SSCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.sscta);
+                            cmd.Parameters.AddWithValue("@TEXT_CONCEPTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.concepto);
+                            cmd.Parameters.AddWithValue("@TEXT_MONTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.monto);
+                            cmd.Parameters.AddWithValue("@TEXT_FOLIO_IMP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.folio_imp);
+                            cmd.Parameters.AddWithValue("@NUM_ITM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.itm);
+                            cmd.Parameters.AddWithValue("@NUM_TM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.tm);
+                            cmd.Parameters.AddWithValue("@TEXT_NUMPRO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.numpro);
+                            cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cc);
+                            cmd.Parameters.AddWithValue("@TEXT_REFERENCIA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.referencia);
+                            cmd.Parameters.AddWithValue("@TEXT_ORDEN_COMPRA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.orden_compra);
+                            cmd.Parameters.AddWithValue("@TEXT_FECHAPOL", NpgsqlTypes.NpgsqlDbType.Text, semmanal.fechapol);
+                            cmd.Parameters.AddWithValue("@INT_IDEMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_empresa);
+                            cmd.Parameters.AddWithValue("@INT_IDVERSION", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_version);
+                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_PDF", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_pdf);
+                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_XML", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_xml);
+                            cmd.Parameters.AddWithValue("@TEXT_UUID", NpgsqlTypes.NpgsqlDbType.Text, semmanal.uuid);
                             //conP.Open();
                             // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                             cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
@@ -291,7 +291,7 @@ namespace AppGia.Controllers
 
         public List<String> obtenerAniosPolizasSybase(int idCompania, string anioInicio, string anioFin)
         {
-           // odbcCon = conex.ConexionSybaseodbc("4_CONSTRUCTORA_Y_EDIFICADORA");
+            // odbcCon = conex.ConexionSybaseodbc("4_CONSTRUCTORA_Y_EDIFICADORA");
             DSN dsn = new DSN();
             dsn = dsnConfig.crearDSN(idCompania);
             if (dsn.creado)
@@ -348,7 +348,8 @@ namespace AppGia.Controllers
                     odbcCon.Close();
                 }
             }
-            else { 
+            else
+            {
                 return null;
             }
         }
