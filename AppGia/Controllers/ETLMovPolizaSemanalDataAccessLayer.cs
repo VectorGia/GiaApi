@@ -157,55 +157,54 @@ namespace AppGia.Controllers
                     //lstSemanal = convertirReporteSemabalSybaseToPg(id_compania);
                     con.Open();
                     string insercion = "INSERT INTO "
-                                + cod + "TAB_SEMANAL" + cod + "("
-                                + cod + "NUM_YEAR" + cod + ", "
-                                + cod + "NUM_MES" + cod + ", "
-                                + cod + "NUM_POLIZA" + cod + ", "
-                                + cod + "TEXT_TP" + cod + ", "
-                                + cod + "NUM_LINEA" + cod + ", "
-                                + cod + "NUM_CTA" + cod + ", "
-                                + cod + "NUM_SCTA" + cod + ", "
-                                + cod + "NUM_SSCTA" + cod + ", "
-                                + cod + "TEXT_CONCEPTO" + cod + ", "
-                                + cod + "TEXT_MONTO" + cod + ", "
-                                + cod + "TEXT_FOLIO_IMP" + cod + ", "
-                                + cod + "NUM_ITM" + cod + ", "
-                                + cod + "NUM_TM" + cod + ", "
-                                + cod + "TEXT_NUMPRO" + cod + ", "
-                                + cod + "TEXT_CC" + cod + ", "
-                                + cod + "TEXT_REFERENCIA" + cod + ", "
-                                + cod + "TEXT_ORDEN_COMPRA" + cod + ", "
-                                + cod + "TEXT_FECHAPOL" + cod + ", "
-                                + cod + "INT_IDEMPRESA" + cod + ", "
-                                + cod + "INT_IDVERSION" + cod + ", "
-                                + cod + "TEXT_CFD_RUTA_PDF" + cod + ", "
-                                + cod + "TEXT_CFD_RUTA_XML" + cod + ", "
-                                + cod + "TEXT_UUID" + cod + ")"
-
+                               + "semanal ("
+                               + "year, "
+                               + "mes , "
+                               + "poliza , "
+                               + "tp , "
+                               + "linea , "
+                               + "cta , "
+                               + "scta , "
+                               + "sscta , " 
+                               + "concepto , "
+                               + "monto , "
+                               + "folio_imp , "
+                               + "itm , "
+                               + "tm , "
+                               + "numpro , "
+                               + "cc , "
+                               + "referencia , "
+                               + "orden_compra , "
+                               + "fechapol , "
+                               + "id_empresa , "
+                               + "id_version , "
+                               + "cfd_ruta_pdf , "
+                               + "cfd_ruta_xml , "
+                               + "uuid) "
                                 + "VALUES "
-                                + " (@NUM_YEAR,"
-                                + " @NUM_MES,"
-                                + " @NUM_POLIZA,"
-                                + " @TEXT_TP,"
-                                + " @NUM_LINEA,"
-                                + " @NUM_CTA,"
-                                + " @NUM_SCTA,"
-                                + " @NUM_SSCTA,"
-                                + " @TEXT_CONCEPTO,"
-                                + " @TEXT_MONTO,"
-                                + " @TEXT_FOLIO_IMP,"
-                                + " @NUM_ITM,"
-                                + " @NUM_TM,"
-                                + " @TEXT_NUMPRO,"
-                                + " @TEXT_CC,"
-                                + " @TEXT_REFERENCIA,"
-                                + " @TEXT_ORDEN_COMPRA,"
-                                + " @TEXT_FECHAPOL,"
-                                + " @INT_IDEMPRESA,"
-                                + " @INT_IDVERSION,"
-                                + " @TEXT_CFD_RUTA_PDF,"
-                                + " @TEXT_CFD_RUTA_XML,"
-                                + " @TEXT_UUID)";
+                                + " (@year,"
+                                + " @mes,"
+                                + " @poliza,"
+                                + " @tp,"
+                                + " @linea,"
+                                + " @cta,"
+                                + " @scta,"
+                                + " @sscta,"
+                                + " @concepto,"
+                                + " @monto,"
+                                + " @folio_imp,"
+                                + " @itm,"
+                                + " @tm,"
+                                + " @numpro,"
+                                + " @cc,"
+                                + " @referencia,"
+                                + " @orden_compra,"
+                                + " @fechapol,"
+                                + " @id_empresa,"
+                                + " @id_version,"
+                                + " @cfd_ruta_pdf,"
+                                + " @cfd_ruta_xml,"
+                                + " @uuid)";
                     ////////try
                     ////////{
                     {
@@ -214,29 +213,29 @@ namespace AppGia.Controllers
                         {
                             NpgsqlCommand cmd = new NpgsqlCommand(insercion, con);
 
-                            cmd.Parameters.AddWithValue("@NUM_YEAR", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.year);
-                            cmd.Parameters.AddWithValue("@NUM_MES", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.mes);
-                            cmd.Parameters.AddWithValue("@NUM_POLIZA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.poliza);
-                            cmd.Parameters.AddWithValue("@TEXT_TP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.tp);
-                            cmd.Parameters.AddWithValue("@NUM_LINEA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.linea);
-                            cmd.Parameters.AddWithValue("@NUM_CTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.cta);
-                            cmd.Parameters.AddWithValue("@NUM_SCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.scta);
-                            cmd.Parameters.AddWithValue("@NUM_SSCTA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.sscta);
-                            cmd.Parameters.AddWithValue("@TEXT_CONCEPTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.concepto);
-                            cmd.Parameters.AddWithValue("@TEXT_MONTO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.monto);
-                            cmd.Parameters.AddWithValue("@TEXT_FOLIO_IMP", NpgsqlTypes.NpgsqlDbType.Text, semmanal.folio_imp);
-                            cmd.Parameters.AddWithValue("@NUM_ITM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.itm);
-                            cmd.Parameters.AddWithValue("@NUM_TM", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.tm);
-                            cmd.Parameters.AddWithValue("@TEXT_NUMPRO", NpgsqlTypes.NpgsqlDbType.Text, semmanal.numpro);
-                            cmd.Parameters.AddWithValue("@TEXT_CC", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cc);
-                            cmd.Parameters.AddWithValue("@TEXT_REFERENCIA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.referencia);
-                            cmd.Parameters.AddWithValue("@TEXT_ORDEN_COMPRA", NpgsqlTypes.NpgsqlDbType.Text, semmanal.orden_compra);
-                            cmd.Parameters.AddWithValue("@TEXT_FECHAPOL", NpgsqlTypes.NpgsqlDbType.Text, semmanal.fechapol);
-                            cmd.Parameters.AddWithValue("@INT_IDEMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_empresa);
-                            cmd.Parameters.AddWithValue("@INT_IDVERSION", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_version);
-                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_PDF", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_pdf);
-                            cmd.Parameters.AddWithValue("@TEXT_CFD_RUTA_XML", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_xml);
-                            cmd.Parameters.AddWithValue("@TEXT_UUID", NpgsqlTypes.NpgsqlDbType.Text, semmanal.uuid);
+                            cmd.Parameters.AddWithValue("@year", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.year);
+                            cmd.Parameters.AddWithValue("@mes", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.mes);
+                            cmd.Parameters.AddWithValue("@poliza", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.poliza);
+                            cmd.Parameters.AddWithValue("@tp", NpgsqlTypes.NpgsqlDbType.Text, semmanal.tp);
+                            cmd.Parameters.AddWithValue("@linea", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.linea);
+                            cmd.Parameters.AddWithValue("@cta", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.cta);
+                            cmd.Parameters.AddWithValue("@scta", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.scta);
+                            cmd.Parameters.AddWithValue("@sscta", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.sscta);
+                            cmd.Parameters.AddWithValue("@concepto", NpgsqlTypes.NpgsqlDbType.Text, semmanal.concepto);
+                            cmd.Parameters.AddWithValue("@monto", NpgsqlTypes.NpgsqlDbType.Text, semmanal.monto);
+                            cmd.Parameters.AddWithValue("@folio_imp", NpgsqlTypes.NpgsqlDbType.Text, semmanal.folio_imp);
+                            cmd.Parameters.AddWithValue("@itm", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.itm);
+                            cmd.Parameters.AddWithValue("@tm", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.tm);
+                            cmd.Parameters.AddWithValue("@numpro", NpgsqlTypes.NpgsqlDbType.Text, semmanal.numpro);
+                            cmd.Parameters.AddWithValue("@cc", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cc);
+                            cmd.Parameters.AddWithValue("@referencia", NpgsqlTypes.NpgsqlDbType.Text, semmanal.referencia);
+                            cmd.Parameters.AddWithValue("@orden_compra", NpgsqlTypes.NpgsqlDbType.Text, semmanal.orden_compra);
+                            cmd.Parameters.AddWithValue("@fechapol", NpgsqlTypes.NpgsqlDbType.Text, semmanal.fechapol);
+                            cmd.Parameters.AddWithValue("@id_empresa", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_empresa);
+                            cmd.Parameters.AddWithValue("@id_version", NpgsqlTypes.NpgsqlDbType.Integer, semmanal.id_version);
+                            cmd.Parameters.AddWithValue("@cfd_ruta_pdf", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_pdf);
+                            cmd.Parameters.AddWithValue("@cfd_ruta_xml", NpgsqlTypes.NpgsqlDbType.Text, semmanal.cfd_ruta_xml);
+                            cmd.Parameters.AddWithValue("@uuid", NpgsqlTypes.NpgsqlDbType.Text, semmanal.uuid);
                             //conP.Open();
                             // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                             cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
