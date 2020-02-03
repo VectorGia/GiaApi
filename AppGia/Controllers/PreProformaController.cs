@@ -11,6 +11,7 @@ namespace AppGia.Controllers
     [ApiController]
     public class PreProformaController : ControllerBase
     {
+        PreProformaDataAccessLayer prepro = new PreProformaDataAccessLayer();
         // GET: api/PreProforma
         [HttpGet]
         public IEnumerable<string> Get()
@@ -19,10 +20,10 @@ namespace AppGia.Controllers
         }
 
         // GET: api/PreProforma/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetGetPreProforma")]
+        public int GetPreProforma(int id)
         {
-            return "value";
+            return prepro.MontosConsolidados();
         }
 
         // POST: api/PreProforma
