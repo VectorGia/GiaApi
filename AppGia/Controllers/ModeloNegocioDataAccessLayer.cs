@@ -18,12 +18,12 @@ namespace AppGia.Controllers
 
         char cod = '"';
 
-        public IEnumerable<ModeloNegocio> GetAllModeloNegocios()
+        public IEnumerable<Modelo_Negocio> GetAllModeloNegocios()
         {
-            string consulta = "SELECT * FROM" +cod+ "TAB_MODELO_NEGOCIO" +cod+ "WHERE " + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "=" + true; 
+            string consulta = "select * from modelo_negocio";
             try
             {
-                List<ModeloNegocio> lstmodelo = new List<ModeloNegocio>();
+                List<Modelo_Negocio> lstmodelo = new List<Modelo_Negocio>();
               
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
@@ -32,11 +32,13 @@ namespace AppGia.Controllers
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
-                        ModeloNegocio modeloNegocio = new ModeloNegocio();
-                        modeloNegocio.INT_IDMODELONEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELONEGOCIO_P"]);
-                        modeloNegocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString().Trim();
-            
-                        modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_MODE_NEGO"]);
+                        Modelo_Negocio modeloNegocio = new Modelo_Negocio();
+                        modeloNegocio.id = Convert.ToInt32(rdr["id"]);
+                        modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
+                        //modeloNegocio.nombrer = rdr["nombrer"].ToString().Trim();
+                        //modeloNegocio.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
+                       // modeloNegocio.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
+                        modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                         lstmodelo.Add(modeloNegocio);
                     }
                    con.Close();
@@ -49,21 +51,21 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-        public ModeloNegocio GetModelo(string id)
+        public Modelo_Negocio GetModelo(string id)
         {
             try
             {
-                ModeloNegocio negocio = new ModeloNegocio();
+                Modelo_Negocio negocio = new Modelo_Negocio();
                 {
-                    string consulta = "SELECT * FROM" + cod + "TAB_MODELO_NEGOCIO" + cod + "WHERE" + cod + "INT_IDMODELONEGOCIO_P" + cod + "=" + id;
+                    string consulta = "select * from " + "modelo_negocio " + "where " + "id " + "=" + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-                        negocio.INT_IDMODELONEGOCIO_P = Convert.ToInt32(rdr["INT_IDMODELONEGOCIO_P"]);
-                        negocio.STR_NOMBREMODELONEGOCIO = rdr["STR_NOMBREMODELONEGOCIO"].ToString().Trim();
+                        negocio.id = Convert.ToInt32(rdr["id"]);
+                        negocio.nombre = rdr["nombre"].ToString().Trim();
                   
                         
                     }
@@ -78,24 +80,23 @@ namespace AppGia.Controllers
             }
         }
 
-        public int addModelo(ModeloNegocio modeloNegocio)
+        public int addModelo(Modelo_Negocio modeloNegocio)
         {
-            string addModelo = "INSERT INTO"+cod+"TAB_MODELO_NEGOCIO"
-                +cod+"("
-                +cod+ "STR_NOMBREMODELONEGOCIO"+cod+","
-                +cod+ "BOOL_ESTATUS_LOGICO_MODE_NEGO" +cod+"," 
-                +cod+ "FEC_MODIF_MODELONEGOCIO" +cod+ ") " +
-                "VALUES " +
-                "(@STR_NOMBREMODELONEGOCIO," +
-                "@BOOL_ESTATUS_LOGICO_MODE_NEGO, @FEC_MODIF_MODELONEGOCIO)";
+            string addModelo = "insert into " + "modelo_negocio"
+                + "("
+                + "nombre"+","
+                +"activo" + ") " +
+                "values " +
+                "(@nombre," + 
+                "@activo)";
 
             try
             {
     
                     NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
-                    cmd.Parameters.AddWithValue("@STR_NOMBREMODELONEGOCIO", modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim());
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_MODE_NEGO", modeloNegocio.BOOL_ESTATUS_LOGICO_MODE_NEGO);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
+                    cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
+                    //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
@@ -115,20 +116,20 @@ namespace AppGia.Controllers
         /// </summary>
         /// <param name="modeloNegocio"></param>
         /// <returns></returns>
-        public int UpdateModelo(string id, ModeloNegocio modeloNegocio)
+        public int UpdateModelo(string id, Modelo_Negocio modeloNegocio)
         {
-            string add = "UPDATE " + cod + "TAB_MODELO_NEGOCIO" + cod +
-                " SET " 
-                + cod + "STR_NOMBREMODELONEGOCIO" + cod + "= " + "@STR_NOMBREMODELONEGOCIO" + ","
+            string add = "update " + cod + "modelo_negocio" + cod +
+                " set " 
+                + "nombre" + "= " + "@nombre" + ","
                 + cod + "FEC_MODIF_MODELONEGOCIO" + cod + "= " + "@FEC_MODIF_MODELONEGOCIO" 
-                + " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + id;
+                + " where " + "id" +  " = " + id;
             try
             {
                // using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.STR_NOMBREMODELONEGOCIO.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.INT_IDMODELONEGOCIO_P });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.nombre.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.id });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_MODELONEGOCIO", Value = DateTime.Now});
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
@@ -149,9 +150,9 @@ namespace AppGia.Controllers
         public int DeleteModelo(string  id)
         {
             bool status = false;
-            string add = "UPDATE " + cod + "TAB_MODELO_NEGOCIO" + cod +
-                " SET " + cod + "BOOL_ESTATUS_LOGICO_MODE_NEGO" + cod + "= " + status +
-                " WHERE " + cod + "INT_IDMODELONEGOCIO_P" + cod + " = " + id;
+            string add = "update " + "modelo_negocio" + 
+                " set " + "activo" + "= " + status +
+                " where " + "id" + " = " + id;
             try
             {
                     con.Open();

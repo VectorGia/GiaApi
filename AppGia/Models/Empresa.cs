@@ -11,10 +11,10 @@ namespace AppGia.Models
         public int id { get; set; }
         public int id_modelo_neg { get; set; }
         public int id_centro_costo { get; set; }
-        public string moneda_id { get; set; }
+        public int moneda_id { get; set; }
         public bool activo { get; set; }
         public bool estatus { get; set; }
-        public bool activo_etl { get; set; }
+        public bool etl { get; set; }
         public string nombre { get; set; }
         public string desc_id { get; set; }
         public string abrev { get; set; }
