@@ -31,7 +31,7 @@ namespace AppGia.Controllers
                     {
                         Proyecto proyecto = new Proyecto();
 
-                        proyecto.id = Convert.ToInt32(rdr["id"]);    
+                        proyecto.id = Convert.ToInt64(rdr["id"]);    
                         proyecto.desc_id = rdr["desc_id"].ToString().Trim();
                         proyecto.nombre = rdr["nombre"].ToString().Trim();
                         proyecto.activo = Convert.ToBoolean(rdr["activo"]);
@@ -68,7 +68,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
 
-                        proyecto.id = Convert.ToInt32(rdr["id"]);
+                        proyecto.id = Convert.ToInt64(rdr["id"]);
                         proyecto.desc_id = rdr["desc_id"].ToString().Trim();
                         proyecto.nombre = rdr["nombre"].ToString().Trim();
                         proyecto.activo = Convert.ToBoolean(rdr["activo"]);
@@ -88,23 +88,23 @@ namespace AppGia.Controllers
         public int addProyecto(Proyecto proyecto)
         {
             string add = "insert into " 
-                + "proyecto " + "("
-                + "id" + "," 
-                + "desc_id" + ","
-                + "nombre" + ","
-                + "estatus" + ","
-                + "responsable" + ","
-                + "fecha_modificacion" + ","
-                + "activo" + ") values " +
+                + " proyecto  ("
+                + " id ," 
+                + " desc_id ,"
+                + " nombre ,"
+                + " estatus ,"
+                + " responsable ,"
+                + " fecha_modificacion ,"
+                + " activo ) values " +
                 "(nextval('seq_proyecto'),@desc_id,@nombre,@estatus,@responsable,@fecha_modificacion,@activo)";
             try
             {
                 {
 
-                    proyecto.desc_id = "uno";
+                   // proyecto.desc_id = "uno";
                    // proyecto.modelo_negocio_id = 1;
-                    // proyecto.EMPRESA.id =
-                    int idcom = proyecto.idC;
+                   // proyecto.EMPRESA.id =
+                   // int idcom = proyecto.idC;
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
@@ -119,7 +119,7 @@ namespace AppGia.Controllers
                     cmd.CommandText = "SELECT currval('seq_proyecto') AS lastProyecto;";
                     long idproyect = (long)cmd.ExecuteScalar();
                     con.Close();
-                    addEmpresa_Proyecto(idproyect, idcom);
+                   // addEmpresa_Proyecto(idproyect, idcom);
                     return cantFilAfec;
                 }
             }

@@ -16,9 +16,10 @@ namespace AppGia.Controllers
         OdbcConnection odbcCon;
         OdbcCommand cmdETL = new OdbcCommand();
         char cod = '"';
-        DSNConfig dsnConfig = new DSNConfig();
+        //DSNConfig dsnConfig = new DSNConfig();
 
-        public ETLCuentasDataAccessLayer (){
+        public ETLCuentasDataAccessLayer()
+        {
 
             con = conex.ConnexionDB();
         }
@@ -26,7 +27,7 @@ namespace AppGia.Controllers
         public List<Cuentas> obtenerCuentasSybase(int id_compania)
         {
             DSN dsn = new DSN();
-            dsn = dsnConfig.crearDSN(id_compania);
+            //dsn = dsnConfig.crearDSN(id_compania);
 
             if (dsn.creado)
             {
@@ -34,17 +35,12 @@ namespace AppGia.Controllers
                 odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
             }
 
-                try
+            try
             {
 
-                string consulta = " SELECT "
-                    + " c.cta cta,"
-                    + " c.scta scta,"
-                    + " c.sscta sscta,"
-                    + " c.descripcion descripcion "
+                string consulta = " SELECT id, activo, cta, descripcion, id_companiaf, sub_cta, sub_sub_cta"
+                    + "  FROM cuenta c ";
 
-                    + "  FROM cat_cuenta c ";
-               
 
                 OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                 odbcCon.Open();
@@ -54,16 +50,15 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     Cuentas etlCuentas = new Cuentas();
-                    etlCuentas.CHAR_CTA = Convert.ToString(rdr["cta"]);
-                    etlCuentas.CHAR_SUB_CTA = Convert.ToString(rdr["scta"]);
-                    etlCuentas.CHAR_SUB_SUB_CTA = Convert.ToString(rdr["sscta"]);
-                    etlCuentas.TEXT_DESCRIPCION = Convert.ToString(rdr["descripcion"]);
-                    etlCuentas.INT_ID_COMPANIA_F = id_compania;
-      
+                    etlCuentas.cta = Convert.ToString(rdr["cta"]);
+                    etlCuentas.sub_cta = Convert.ToString(rdr["scta"]);
+                    etlCuentas.sub_sub_cta = Convert.ToString(rdr["sscta"]);
+                    etlCuentas.descripcion = Convert.ToString(rdr["descripcion"]);
+                    etlCuentas.id_companiaf = id_compania;
+
                     listaCuentas.Add(etlCuentas);
                 }
                 return listaCuentas;
-
             }
             catch (Exception ex)
             {
@@ -80,7 +75,7 @@ namespace AppGia.Controllers
         public int insertarCuentasPg(int id_compania)
         {
             List<Cuentas> listaCuentas = new List<Cuentas>();
-            listaCuentas = obtenerCuentasSybase(id_compania); 
+            listaCuentas = obtenerCuentasSybase(id_compania);
 
             //// por borrar 
             ////Cuentas pruebaCuenta = new Cuentas();
@@ -95,20 +90,23 @@ namespace AppGia.Controllers
 
             con.Open();
 
-            string insercion = "INSERT INTO "
-                        + cod + "CAT_CUENTAS" + cod + "("
-                        + cod + "CHAR_CTA" + cod + ", "
-                        + cod + "CHAR_SUB_CTA" + cod + ", "
-                        + cod + "CHAR_SUB_SUB_CTA" + cod + ", "
-                        + cod + "TEXT_DESCRIPCION" + cod + ", "
-                        + cod + "INT_ID_COMPANIA_F" + cod + ")"
+            string insercion = "INSERT INTO cuenta ("
+                        + " id,"
+                        + " activo,"
+                        + " cta,"
+                        + " descripcion,"
+                        + " id_companiaf,"
+                        + " sub_cta,"
+                        + " sub_sub_cta)"
 
                         + "VALUES "
-                        + " (@CHAR_CTA,"
-                        + " @CHAR_SUB_CTA,"
-                        + " @CHAR_SUB_SUB_CTA,"
-                        + " @TEXT_DESCRIPCION,"
-                        + " @INT_ID_COMPANIA_F)";
+                        + " (@nextval(seq_cuenta),"
+                        + " @activo,"
+                        + " @cta,"
+                        + " @descripcion,"
+                        + " @id_companiaf,"
+                        + " @sub_cta,"
+                        + " @sub_sub_cta)";
             try
             {
                 {
@@ -117,18 +115,18 @@ namespace AppGia.Controllers
                     {
                         NpgsqlCommand cmd = new NpgsqlCommand(insercion, con);
                         //cmd.Parameters.AddWithValue("@INT_IDBALANZA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.INT_IDBALANZA);
-                        cmd.Parameters.AddWithValue("@CHAR_CTA", NpgsqlTypes.NpgsqlDbType.Text, cuenta.CHAR_CTA);
-                        cmd.Parameters.AddWithValue("@CHAR_SUB_CTA", NpgsqlTypes.NpgsqlDbType.Text, cuenta.CHAR_SUB_CTA);
-                        cmd.Parameters.AddWithValue("@CHAR_SUB_SUB_CTA", NpgsqlTypes.NpgsqlDbType.Text, cuenta.CHAR_SUB_SUB_CTA);
-                        cmd.Parameters.AddWithValue("@TEXT_DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, cuenta.TEXT_DESCRIPCION);
-                        cmd.Parameters.AddWithValue("@INT_ID_COMPANIA_F", NpgsqlTypes.NpgsqlDbType.Integer, cuenta.INT_ID_COMPANIA_F);
+                        cmd.Parameters.AddWithValue("@activo", NpgsqlTypes.NpgsqlDbType.Text, cuenta.activo);
+                        cmd.Parameters.AddWithValue("@cta", NpgsqlTypes.NpgsqlDbType.Text, cuenta.cta);
+                        cmd.Parameters.AddWithValue("@descripcion", NpgsqlTypes.NpgsqlDbType.Text, cuenta.descripcion);
+                        cmd.Parameters.AddWithValue("@id_companiaf", NpgsqlTypes.NpgsqlDbType.Text, cuenta.id_companiaf);
+                        cmd.Parameters.AddWithValue("@sub_cta", NpgsqlTypes.NpgsqlDbType.Integer, cuenta.sub_cta);
+                        cmd.Parameters.AddWithValue("@sub_sub_cta", NpgsqlTypes.NpgsqlDbType.Integer, cuenta.sub_sub_cta);
                         //conP.Open();
                         // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                         cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
                     }
-
                     con.Close();
-                   // configCorreo.EnviarCorreo("La extracción Semanal se genero correctamente", "ETL Reporte Semanal");
+                    // configCorreo.EnviarCorreo("La extracción Semanal se genero correctamente", "ETL Reporte Semanal");
                     return cantFilaAfect;
                 }
             }
@@ -139,10 +137,6 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
-
-
-
-
         }
     }
 }

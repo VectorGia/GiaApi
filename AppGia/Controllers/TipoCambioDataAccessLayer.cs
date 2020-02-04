@@ -22,10 +22,11 @@ namespace AppGia.Controllers
 
         public IEnumerable<TipoCambio> GetAllTipoCambio()
         {
-            string cadena = "SELECT * FROM" + cod + "CAT_TIPOCAMBIO" + cod + "";
+            string cadena = "SELECT id, activo, estatus, fec_modif, fecha, valor, moneda_id FROM tipo_cambio";
             try
             {
                 List<TipoCambio> lstTipoCambio = new List<TipoCambio>();
+
 
 
                 {
@@ -36,19 +37,18 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         TipoCambio tipoCambio = new TipoCambio();
-                        tipoCambio.INT_ID_TIPOCAMBIO_P = Convert.ToInt32(rdr["INT_ID_TIPOCAMBIO_P"]);
-                        tipoCambio.DBL_TIPOCAMBIO_OFICIAL = Convert.ToDouble( rdr["DBL_TIPOCAMBIO_OFICIAL"]);
-                        tipoCambio.INT_IDMONEDA_P = Convert.ToInt32(rdr["INT_IDMONEDA_P"]);
-                        tipoCambio.FEC_MODIF_TIPOCAMBIO = Convert.ToDateTime(rdr["FEC_MODIF_TIPOCAMBIO"]);
-                        tipoCambio.DAT__TIPOCAMBIO = Convert.ToDateTime(rdr["DAT__TIPOCAMBIO"]);
-                        tipoCambio.BOOL_ESTATUS_TIPOCAMBIO = Convert.ToBoolean(rdr["BOOL_ESTATUS_TIPOCAMBIO"]);
-
+                        tipoCambio.id = Convert.ToInt64(rdr["id"]);
+                        tipoCambio.activo = Convert.ToBoolean(rdr["activo"]);
+                        tipoCambio.estatus = rdr["estatus"].ToString();
+                        tipoCambio.fec_modif = rdr["fec_modif"].ToString();
+                        tipoCambio.fecha = rdr["fecha"].ToString();
+                        tipoCambio.valor = Convert.ToInt32(rdr["valor"]);
+                        tipoCambio.moneda_id = Convert.ToInt64(rdr["moneda_id"]);
 
                         lstTipoCambio.Add(tipoCambio);
                     }
                     con.Close();
                 }
-
                 return
                         lstTipoCambio;
             }
@@ -60,32 +60,35 @@ namespace AppGia.Controllers
         }
 
 
-        public int insert(TipoCambio  tipoCambio)
+        public int insert(TipoCambio tipoCambio)
         {
-            string add = "INSERT INTO " + cod + "CAT_TIPOCAMBIO" + cod
-                        + "("
-                        + cod + "DBL_TIPOCAMBIO_OFICIAL" + cod + ","
-                        + cod + "INT_IDMONEDA_P" + cod + ","
-                        + cod + "FEC_MODIF_TIPOCAMBIO" + cod + ","
-                        + cod + "DAT__TIPOCAMBIO" + cod + ","
-                        + cod + "BOOL_ESTATUS_TIPOCAMBIO" + cod + ")"
-                        + " VALUES ( @DBL_TIPOCAMBIO_OFICIAL" + ","
-                        + "@INT_IDMONEDA_P" + ","
-                        + "@FEC_MODIF_TIPOCAMBIO" + ","
-                        + "@DAT__TIPOCAMBIO" + ","
-                        + "@BOOL_ESTATUS_TIPOCAMBIO" 
-                        + ")";
+            string add = "INSERT INTO tipo_cambio ("
+                        + "id,"
+                        + "activo,"
+                        + "estatus,"
+                        + "fec_modif,"
+                        + "fecha,"
+                        + "valor,"
+                        + "moneda_id )"
+                        + " VALUES ( nextval('seq_tipo_cambio'),"
+                        + "@activo,"
+                        + "@estatus,"
+                        + "@fec_modif,"
+                        + "@fecha,"
+                        + "@valor,"
+                        + "@moneda_id)";
             try
             {
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                 
-                    cmd.Parameters.AddWithValue("@DBL_TIPOCAMBIO_OFICIAL", tipoCambio.DBL_TIPOCAMBIO_OFICIAL);
-                    cmd.Parameters.AddWithValue("@INT_IDMONEDA_P", tipoCambio.INT_IDMONEDA_P);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAMBIO", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@DAT__TIPOCAMBIO", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_TIPOCAMBIO", tipoCambio.BOOL_ESTATUS_TIPOCAMBIO);
+
+                    cmd.Parameters.AddWithValue("@activo", tipoCambio.activo);
+                    cmd.Parameters.AddWithValue("@estatus", tipoCambio.estatus);
+                    cmd.Parameters.AddWithValue("@fec_modif", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@fecha", tipoCambio.fecha);
+                    cmd.Parameters.AddWithValue("@valor", tipoCambio.valor);
+                    cmd.Parameters.AddWithValue("@moneda_id", tipoCambio.moneda_id);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -103,27 +106,23 @@ namespace AppGia.Controllers
         public int update(TipoCambio tipoCambio)
         {
 
-            string update = "UPDATE " + cod + "CAT_TIPOCAMBIO" + cod + "SET"
-
-          + cod + "DBL_TIPOCAMBIO_OFICIAL" + cod + " = '" + tipoCambio.DBL_TIPOCAMBIO_OFICIAL + "' ,"
-          + cod + "INT_IDMONEDA_P" + cod + " = '" + tipoCambio.INT_IDMONEDA_P + "' ,"
-          + cod + "FEC_MODIF_TIPOCAMBIO" + cod + " = '" + tipoCambio.FEC_MODIF_TIPOCAMBIO + "' ,"
-          + cod + "DAT__TIPOCAMBIO" + cod + " = '" + tipoCambio.DAT__TIPOCAMBIO + "' ,"
-          + cod + "BOOL_ESTATUS_TIPOCAMBIO" + cod + " = '" + tipoCambio.BOOL_ESTATUS_TIPOCAMBIO + "' "
-          + " WHERE" + cod + "INT_ID_TIPOCAMBIO_P" + cod + "=" + tipoCambio.INT_ID_TIPOCAMBIO_P;
-
-
+            string update = "UPDATE tipo_cambio SET "
+          + "activo = @activo ,"
+          + "estatus = @estatus ,"
+          + "fec_modif = @fec_modif"
+          + "fecha = @fecha"
+          + "valor = @valor"
+          + " WHERE id = @id";
             try
             {
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                    cmd.Parameters.AddWithValue("@INT_ID_TIPOCAMBIO_P", tipoCambio.INT_ID_TIPOCAMBIO_P);
-                    cmd.Parameters.AddWithValue("@DBL_TIPOCAMBIO_OFICIAL", tipoCambio.DBL_TIPOCAMBIO_OFICIAL);
-                    cmd.Parameters.AddWithValue("@INT_IDMONEDA_P", tipoCambio.INT_IDMONEDA_P);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAMBIO", tipoCambio.FEC_MODIF_TIPOCAMBIO);
-                    cmd.Parameters.AddWithValue("@DAT__TIPOCAMBIO", tipoCambio.DAT__TIPOCAMBIO);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_TIPOCAMBIO", tipoCambio.BOOL_ESTATUS_TIPOCAMBIO);
+                    cmd.Parameters.AddWithValue("@activo", tipoCambio.activo);
+                    cmd.Parameters.AddWithValue("@estatus", tipoCambio.estatus);
+                    cmd.Parameters.AddWithValue("@fec_modif", tipoCambio.fec_modif);
+                    cmd.Parameters.AddWithValue("@fecha", tipoCambio.fecha);
+                    cmd.Parameters.AddWithValue("@valor", tipoCambio.valor);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -141,13 +140,13 @@ namespace AppGia.Controllers
 
         public int Delete(TipoCambio tipoCambio)
         {
-            string delete = "UPDATE " + cod + "CAT_TIPOCAMBIO" + cod + "SET" + cod + "BOOL_ESTATUS_TIPOCAMBIO" + cod + "='" + tipoCambio.BOOL_ESTATUS_TIPOCAMBIO + "' WHERE" + cod + "INT_ID_TIPOCAMBIO_P" + cod + "='" + tipoCambio.INT_ID_TIPOCAMBIO_P + "'";
+            string delete = "UPDATE tipo_cambio SET estatus = @estatus WHERE id =@id ";
             try
             {
-
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", tipoCambio.BOOL_ESTATUS_TIPOCAMBIO);
+                    cmd.Parameters.AddWithValue("@estatus", tipoCambio.estatus);
+                    cmd.Parameters.AddWithValue("@id", tipoCambio.id);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
