@@ -20,7 +20,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<Modelo_Negocio> GetAllModeloNegocios()
         {
-            string consulta = "select * from modelo_negocio";
+            string consulta = "select * from modelo_negocio order by id desc";
             try
             {
                 List<Modelo_Negocio> lstmodelo = new List<Modelo_Negocio>();
@@ -84,16 +84,18 @@ namespace AppGia.Controllers
         {
             string addModelo = "insert into " + "modelo_negocio"
                 + "("
+                + "id" + ","
                 + "nombre"+","
                 +"activo" + ") " +
                 "values " +
-                "(@nombre," + 
+                "(nextval('seq_modelo_neg'),@nombre," + 
                 "@activo)";
 
             try
             {
     
                     NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
+                cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
                     cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
                     cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
                     //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
@@ -120,17 +122,16 @@ namespace AppGia.Controllers
         {
             string add = "update " + cod + "modelo_negocio" + cod +
                 " set " 
-                + "nombre" + "= " + "@nombre" + ","
-                + cod + "FEC_MODIF_MODELONEGOCIO" + cod + "= " + "@FEC_MODIF_MODELONEGOCIO" 
+                + "nombre" + "= " + "@nombre" 
                 + " where " + "id" +  " = " + id;
             try
             {
                // using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
                 //{
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@STR_NOMBREMODELONEGOCIO", Value = modeloNegocio.nombre.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDMODELONEGOCIO_P", Value = modeloNegocio.id });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_MODELONEGOCIO", Value = DateTime.Now});
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = modeloNegocio.id });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_MODELONEGOCIO", Value = DateTime.Now});
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
                     con.Close();
