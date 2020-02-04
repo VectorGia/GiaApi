@@ -12,12 +12,21 @@ namespace AppGia.Controllers
     [ApiController]
     public class ProformaDetalleController : ControllerBase
     {
-        ProformaDetalleDataAccessLayer proforma_detalle = new ProformaDetalleDataAccessLayer();
+        ProformaDetalleDataAccessLayer ObjProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/ProformaDetalle
         [HttpGet]
         public IEnumerable<ProformaDetalle> Get(int idProformaDetalle)
         {
-            return proforma_detalle.GetProformaDetalle(idProformaDetalle);
+            int idCentroCosto = 1;
+            int idEmpresa = 4;
+            int mes = 1;
+            int idModeloNegocio = 20;
+            int idProyecto = 51;
+            int idRubro = 7;
+            int anio = 2020;
+            int idTipoCaptura = 1;
+            //return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
+            return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
         }
 
         // GET: api/ProformaDetalle/5

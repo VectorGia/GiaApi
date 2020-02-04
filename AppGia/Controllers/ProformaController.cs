@@ -12,11 +12,11 @@ namespace AppGia.Controllers
     [ApiController]
     public class ProformaController : ControllerBase
     {
-        ProformaDataAccessLayer proforma = new ProformaDataAccessLayer();
-        ProformaDetalleDataAccessLayer proforma_detalle = new ProformaDetalleDataAccessLayer();
+        ProformaDataAccessLayer objProforma = new ProformaDataAccessLayer();
+        ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/Proforma
         [HttpGet]
-        public IEnumerable<Proforma> Get(int idProforma)
+        public IEnumerable<ProformaDetalle> Get(int idProforma)
         {
             int idCentroCosto = 1;
             int idEmpresa = 4;
@@ -26,8 +26,8 @@ namespace AppGia.Controllers
             int idRubro = 7;
             int anio = 2020;
             int idTipoCaptura = 1;
-            ObtieneProfCalc(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
-            return proforma.GetProforma(idProforma);
+            return ObtieneProfCalc(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            //return proforma.GetProforma(idProforma);
         }
 
         // GET: api/Proforma/5
@@ -55,10 +55,10 @@ namespace AppGia.Controllers
         {
         }
 
-        public void ObtieneProfCalc(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int idTipoCaptura)
+        public IEnumerable<ProformaDetalle> ObtieneProfCalc(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int idTipoCaptura)
         {
-            ProformaDetalle listaProf = new ProformaDetalle();
-            proforma_detalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            //ProformaDetalle listaProf = new ProformaDetalle();
+            return objProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
         }
     }
 }
