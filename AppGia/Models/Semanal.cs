@@ -8,29 +8,29 @@ namespace AppGia.Models
     public class Semanal
 
     {
-        public int  INT_ID_SEMANAL { get; set; }
-        public int NUM_YEAR { get; set; }
-        public int NUM_MES { get; set; }
-        public int NUM_POLIZA { get; set; }
-        public string TEXT_TP { get;set; }
-        public int NUM_LINEA { get; set; }
-        public int NUM_CTA { get; set; }
-        public int NUM_SCTA { get; set; }
-        public int NUM_SSCTA { get; set; }
-        public string TEXT_CONCEPTO { get; set; }
-        public string TEXT_MONTO { get; set; }
-        public string TEXT_FOLIO_IMP { get; set; }
-        public int NUM_ITM { get; set; }
-        public int NUM_TM { get; set; }
-        public string TEXT_NUMPRO { get; set; }
-        public string TEXT_CC { get; set; }
-        public string TEXT_REFERENCIA { get; set; }
-        public string TEXT_ORDEN_COMPRA { get; set; }
-        public string TEXT_FECHAPOL { get; set; }
-        public int INT_IDEMPRESA { get; set; }
-        public int INT_IDVERSION { get; set; }
-        public string TEXT_CFD_RUTA_PDF { get; set; }
-        public string TEXT_CFD_RUTA_XML { get; set; }
-        public string TEXT_UUID { get; set; }
+        public long id { get; set; }
+        public int year { get; set; }
+        public int mes { get; set; }
+        public int poliza { get; set; }
+        public string tp { get; set; }
+        public int linea { get; set; }
+        public int cta { get; set; }
+        public int scta { get; set; }
+        public int sscta { get; set; }
+        public string concepto { get; set; }
+        public double monto { get; set; }
+        public string folio_imp { get; set; }
+        public int itm { get; set; }
+        public int tm { get; set; }
+        public string numpro { get; set; }
+        public string cc { get; set; }
+        public string referencia { get; set; }
+        public string orden_compra { get; set; }
+        public string fechapol { get; set; }
+        public int id_empresa { get; set; }
+        public int id_version { get; set; }
+        public string cfd_ruta_pdf { get; set; }
+        public string cfd_ruta_xml { get; set; }
+        public string uuid { get; set; }
     }
 }

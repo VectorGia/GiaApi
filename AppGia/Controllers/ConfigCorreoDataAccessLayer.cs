@@ -25,8 +25,12 @@ namespace AppGia.Controllers
         {
 
 
-            string cadena = "SELECT " + cod + "TEXT_FROM" + cod + "," + cod + "TEXT_PASSWORD" + cod + ","
-                              + cod + "INT_PORT" + cod + "," + cod + "INT_ID_CORREO" + cod + "," + cod + "TEXT_HOST" + cod + " FROM " + cod + "TAB_CONFIG_CORREO" + cod;
+            string cadena = "SELECT  remitente ,"
+                            + " password,"
+                            + " puerto ,"
+                            + " id,"
+                            + " host "
+                            + " FROM CONFIG_CORREO ";
 
             try
             {
@@ -42,11 +46,11 @@ namespace AppGia.Controllers
                     {
 
                         ConfigCorreo configCorreo = new ConfigCorreo();
-                        configCorreo.INT_ID_CORREO = Convert.ToInt32(rdr["INT_ID_CORREO"]);
-                        configCorreo.TEXT_FROM = rdr["TEXT_FROM"].ToString().Trim();
-                        configCorreo.TEXT_PASSWORD = rdr["TEXT_PASSWORD"].ToString().Trim();
-                        configCorreo.INT_PORT = Convert.ToInt32(rdr["INT_PORT"]);
-                        configCorreo.TEXT_HOST = rdr["TEXT_HOST"].ToString().Trim();
+                        configCorreo.id = Convert.ToInt32(rdr["id"]);
+                        configCorreo.remitente = rdr["remitente"].ToString().Trim();
+                        configCorreo.password = rdr["password"].ToString().Trim();
+                        configCorreo.puerto = Convert.ToInt32(rdr["puerto"]);
+                        configCorreo.host = rdr["host"].ToString().Trim();
 
 
                         listaConfigCorreo.Add(configCorreo);
@@ -58,18 +62,19 @@ namespace AppGia.Controllers
             catch (Exception ex)
             {
                 con.Close();
-                
-                throw ex; 
+
+                throw ex;
             }
         }
-        public List<Usuario> GetDestinatariosCorreo() {
+        public List<Usuario> GetDestinatariosCorreo()
+        {
 
 
-            string cadena = "SELECT "
-                            + cod + "STR_EMAIL_USUARIO" + cod
+            string cadena = "  SELECT "
+                            + " email"
                             + " FROM "
-                            + cod + "TAB_USUARIO" + cod
-                            + " WHERE " + cod + "STR_EMAIL_USUARIO" + cod + "!='sin Correo'";
+                            + " USUARIO"
+                            + " WHERE " + cod + "email" + cod + "!='sin Correo'";
 
             try
             {
@@ -87,7 +92,7 @@ namespace AppGia.Controllers
                         Usuario configUsuarioCorreo = new Usuario();
                         configUsuarioCorreo.email = rdr["email"].ToString().Trim();
 
-                        
+
 
 
                         listaUsuarioCorreo.Add(configUsuarioCorreo);
