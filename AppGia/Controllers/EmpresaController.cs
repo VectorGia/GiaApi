@@ -33,7 +33,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody]Empresa compania)
         {
-            return objCompania.AddCompania(compania);
+            return objCompania.Add(compania);
         }
 
         // PUT: api/Empresa/5
