@@ -63,25 +63,25 @@ namespace AppGia.Util
             }
         }
 
-        public void desencripta(byte[] encriptado)
+        public void desencripta(byte[] encriptado,Int64 idEmpresa)
         {
             //Descifrar los bytes a una cadena.
             using (Rijndael myRijndael = Rijndael.Create())
             {
-                con = new NpgsqlConnection("User ID=postgres;Password=omnisys;Host=192.168.1.78;Port=5433;Database=GIA30;Pooling=true;");
-                string select_contra = "select contra_bytes from empresa where id = 1";
+                con.Open();
+                string select_contra = "select contra_bytes from empresa where id = "+idEmpresa;
                 comP = new NpgsqlCommand(select_contra, con);
                 con.Open();
                 byte[] contrasenia = comP.ExecuteScalar() as byte[];
                 con.Close();
 
-                string select_llave = "select llave from empresa where id = 1";
+                string select_llave = "select llave from empresa where id = "+idEmpresa;
                 comP = new NpgsqlCommand(select_llave, con);
                 con.Open();
                 byte[] llave = comP.ExecuteScalar() as byte[];
                 con.Close();
 
-                string select_apuntador = "select apuntador from empresa where id = 1";
+                string select_apuntador = "select apuntador from empresa where id = 1"+idEmpresa;
                 comP = new NpgsqlCommand(select_apuntador, con);
                 con.Open();
                 byte[] apuntador = comP.ExecuteScalar() as byte[];
