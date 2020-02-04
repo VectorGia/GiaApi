@@ -9,7 +9,7 @@ namespace AppGia.Controllers
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        char cod = '"';
+        
 
         public ProyectoDataAccessLayer() 
         {
@@ -17,7 +17,9 @@ namespace AppGia.Controllers
         }
         public IEnumerable<Proyecto> GetAllProyectos()
         {
-            string cadena = "select * from proyecto " + " where " +  "activo " + " = " + true;
+            string cadena = " select * from proyecto " 
+                          + "  where  activo  = " + true;
+
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
@@ -60,7 +62,8 @@ namespace AppGia.Controllers
                 Proyecto proyecto = new Proyecto();
 
                 {
-                    string consulta = "select * from proyecto" + " where " + " id " + "=" + id;
+                    string consulta =  "  select * from proyecto" 
+                                     + " where  id  = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -134,16 +137,14 @@ namespace AppGia.Controllers
 
         public int update(string id, Proyecto proyecto)
         {
-            string update = "update proyecto" + "set"
-
-         
-          + "nombre" + " = '" + proyecto.nombre + "' ,"
-          + "responsable" + " = '" + proyecto.responsable + "' ,"
-          + "desc_id" + " = '" + proyecto.desc_id + "' ,"
-          + "fecha_modificacion" + " = " + "@fecha_modificacion" + " ,"
-          + "estatus" + " = '" + proyecto.estatus + "'"
-          + " WHERE" + "id" + "=" + id;
-
+            string update = "update proyecto" 
+                  + " set "
+                  + " nombre  = @nombre ,"
+                  + " responsable  = @responsable,"
+                  + " desc_id  = @desc_id ,"
+                  + " fecha_modificacion  = @fecha_modificacion ,"
+                  + " estatus  = @estatus"
+                  + " WHERE id = " + id;
 
             try
             {
@@ -176,7 +177,8 @@ namespace AppGia.Controllers
         public int Delete(string id)
         {
             bool status = false;
-            string delete = "udate proyecto" + "set" + "activo" + "='" + status + "' where" + "id" + "='" + id + "'";
+            string delete = " update proyecto set activo = '" + status + "' " 
+                          + " where id ='" + id + "'";
             try
             {
 
@@ -201,13 +203,13 @@ namespace AppGia.Controllers
         {
 
             string add = "insert into "
-                + "empresa_proyecto " + "("
-                + "id" + ","
-                + "activo" + ","
-                + "empresa_id" + ","
-                + "proyecto_id"
-                + ") values " +
-                "(@nextval('seq_empresa_proy'),@activo,@empresa_id,@proyecto_id)";
+                + " empresa_proyecto ("
+                + " id ,"
+                + " activo ,"
+                + " empresa_id ,"
+                + " proyecto_id "
+                + " ) values " +
+                "( @nextval('seq_empresa_proy'),@activo,@empresa_id,@proyecto_id)";
 
             try
             {
