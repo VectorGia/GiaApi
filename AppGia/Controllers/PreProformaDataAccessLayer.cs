@@ -313,7 +313,7 @@ namespace AppGia.Controllers
                               " WHERE t.moneda_id = m.id" +
                               " AND e.moneda_id = m.id" +
                               " AND t.fecha = now()" +
-                              " AND e.id = 1; " + empresa_id;
+                              " AND e.id = " + empresa_id;
             Double tipo = 1;
 
             try
