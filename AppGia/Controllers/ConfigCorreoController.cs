@@ -45,10 +45,11 @@ namespace AppGia.Controllers
         {
         }
 
-        public void EnviarCorreo(string cuerpoMensaje,string tituloMensaje){
+        public void EnviarCorreo(string cuerpoMensaje, string tituloMensaje)
+        {
 
             string listaDestinatarios = ListaCorreosDestinatarios().TrimEnd(',');
-            List<ConfigCorreo> listaConfiguracionCorreo = new List<ConfigCorreo>() ;
+            List<ConfigCorreo> listaConfiguracionCorreo = new List<ConfigCorreo>();
             listaConfiguracionCorreo = objConfigCorreo.GetAllConfigCorreo();
 
             System.Net.Mail.MailMessage mmsg = new System.Net.Mail.MailMessage();
@@ -58,13 +59,13 @@ namespace AppGia.Controllers
             mmsg.Body = cuerpoMensaje;//"Prueba de correo GIA";
             mmsg.BodyEncoding = System.Text.Encoding.UTF8;
             mmsg.IsBodyHtml = false;
-            mmsg.From = new System.Net.Mail.MailAddress(listaConfiguracionCorreo[0].TEXT_FROM);
+            mmsg.From = new System.Net.Mail.MailAddress(listaConfiguracionCorreo[0].remitente);
 
             System.Net.Mail.SmtpClient cliente = new System.Net.Mail.SmtpClient();
-            cliente.Credentials = new System.Net.NetworkCredential(listaConfiguracionCorreo[0].TEXT_FROM, listaConfiguracionCorreo[0].TEXT_PASSWORD);
-            cliente.Port = listaConfiguracionCorreo[0].INT_PORT;
+            cliente.Credentials = new System.Net.NetworkCredential(listaConfiguracionCorreo[0].remitente, listaConfiguracionCorreo[0].password);
+            cliente.Port = listaConfiguracionCorreo[0].puerto;
             cliente.EnableSsl = true;
-            cliente.Host = listaConfiguracionCorreo[0].TEXT_HOST;
+            cliente.Host = listaConfiguracionCorreo[0].host;
 
             string output = null;
             try
@@ -78,12 +79,14 @@ namespace AppGia.Controllers
 
         }
 
-        public string ListaCorreosDestinatarios() {
+        public string ListaCorreosDestinatarios()
+        {
 
             string correos = string.Empty;
-            List<Usuario> lista = new List<Usuario> ();
+            List<Usuario> lista = new List<Usuario>();
             lista = objConfigCorreo.GetDestinatariosCorreo();
-            foreach (Usuario usuario in lista) {
+            foreach (Usuario usuario in lista)
+            {
                 correos += usuario.email.ToString() + ",";
             }
             return correos;
