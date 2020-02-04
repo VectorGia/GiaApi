@@ -37,7 +37,6 @@ namespace AppGia.Controllers
                     Rubros rubro = new Rubros();
                     rubro.id = Convert.ToInt32(rdr["id"]);
                     rubro.nombre = rdr["nombre"].ToString().Trim();
-                    rubro.nombreM = rdr["nombrem"].ToString().Trim();
                     rubro.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
                     rubro.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
                     rubro.activo = Convert.ToBoolean(rdr["activo"]);
