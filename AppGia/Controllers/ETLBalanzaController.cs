@@ -18,7 +18,7 @@ namespace AppGia.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            iniciarETLBalanza(1);
+            iniciarETLBalanza(4);
             return new string[] { "value1", "value2" };
         }
 
