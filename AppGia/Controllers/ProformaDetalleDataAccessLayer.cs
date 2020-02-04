@@ -48,7 +48,7 @@ namespace AppGia.Controllers
 
                 con.Open();
 
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                 while (rdr.Read())
@@ -133,7 +133,8 @@ namespace AppGia.Controllers
 
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 cmd.Parameters.AddWithValue("@id_proforma", proforma_detalle.id_proforma);
                 cmd.Parameters.AddWithValue("@rubro_id", proforma_detalle.rubro_id);
                 cmd.Parameters.AddWithValue("@activo", proforma_detalle.activo);
@@ -170,7 +171,6 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@valor_tipo_cambio_financiero", proforma_detalle.valor_tipo_cambio_financiero);
                 cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado", proforma_detalle.valor_tipo_cambio_resultado);
 
-                con.Open();
                 int regInsert = cmd.ExecuteNonQuery();
 
                 return regInsert;
@@ -188,16 +188,19 @@ namespace AppGia.Controllers
 
         public int UpdateProformaDetalle(int idProformaDetalle, bool bandActivo)
         {
-            string consulta = " update proforma_detalle set activo = '" + bandActivo.ToString() + "' ";
+            string consulta = "";
+            consulta += " update proforma_detalle set activo = '" + bandActivo.ToString() + "' ";
             consulta += " where id = " + idProformaDetalle.ToString();
 
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta, conex.ConnexionDB());
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
 
-                con.Open();
-                int regActual = cmd.ExecuteNonQuery();
-                return regActual;
+                    int regActual = cmd.ExecuteNonQuery();
+                    return regActual;
+                }
             }
             catch
             {
@@ -379,7 +382,7 @@ namespace AppGia.Controllers
 
                 List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                     //con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
@@ -439,45 +442,45 @@ namespace AppGia.Controllers
         // Calculo del ejercicio anterior
         public IEnumerable<ProformaDetalle> GetEjercicioAnterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int activo, int idTipoCaptura)
         {
-            string cadena = "";
-            cadena += " select coalesce(";
-            cadena += "	 sum(mon.enero_abono_financiero) + sum(mon.enero_cargo_financiero) + ";
-            cadena += "	 sum(mon.febrero_abono_financiero) + sum(mon.febrero_cargo_financiero) + ";
-            cadena += "	 sum(mon.marzo_abono_financiero) + sum(mon.marzo_cargo_financiero) + ";
-            cadena += "	 sum(mon.abril_abono_financiero) + sum(mon.abril_cargo_financiero) + ";
-            cadena += "	 sum(mon.mayo_abono_financiero) + sum(mon.mayo_cargo_financiero) + ";
-            cadena += "	 sum(mon.junio_abono_financiero) + sum(mon.junio_cargo_financiero) + ";
-            cadena += "	 sum(mon.julio_abono_financiero) + sum(mon.julio_cargo_financiero) + ";
-            cadena += "	 sum(mon.agosto_abono_financiero) + sum(mon.agosto_cargo_financiero) + ";
-            cadena += "	 sum(mon.septiembre_abono_financiero) + sum(mon.septiembre_cargo_financiero) + ";
-            cadena += "	 sum(mon.octubre_abono_financiero) + sum(mon.octubre_cargo_financiero) + ";
-            cadena += "	 sum(mon.noviembre_abono_financiero) + sum(mon.noviembre_cargo_financiero) + ";
-            cadena += "	 sum(mon.diciembre_abono_financiero) + sum(mon.diciembre_cargo_financiero) ";
-            cadena += "	 , 0) as ejercicio_financiero, coalesce (";
-            cadena += "	 sum(mon.enero_abono_resultado) + sum(mon.enero_cargo_resultado) + ";
-            cadena += "	 sum(mon.febrero_abono_resultado) + sum(mon.febrero_cargo_resultado) + ";
-            cadena += "	 sum(mon.marzo_abono_resultado) + sum(mon.marzo_cargo_resultado) + ";
-            cadena += "	 sum(mon.abril_abono_resultado) + sum(mon.abril_cargo_resultado) + ";
-            cadena += "	 sum(mon.mayo_abono_resultado) + sum(mon.mayo_cargo_resultado) + ";
-            cadena += "	 sum(mon.junio_abono_resultado) + sum(mon.junio_cargo_resultado) + ";
-            cadena += "	 sum(mon.julio_abono_resultado) + sum(mon.julio_cargo_resultado) + ";
-            cadena += "	 sum(mon.agosto_abono_resultado) + sum(mon.agosto_cargo_resultado) + ";
-            cadena += "	 sum(mon.septiembre_abono_resultado) + sum(mon.septiembre_cargo_resultado) + ";
-            cadena += "	 sum(mon.octubre_abono_resultado) + sum(mon.octubre_cargo_resultado) + ";
-            cadena += "	 sum(mon.noviembre_abono_resultado) + sum(mon.noviembre_cargo_resultado) + ";
-            cadena += "	 sum(mon.diciembre_abono_resultado) + sum(mon.diciembre_cargo_resultado) ";
-            cadena += "	 , 0) as ejercicio_resultado ";
-            cadena += "	 from montos_consolidados mon ";
-            cadena += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
-            cadena += "	 where 1 = 1 ";
-            cadena += "	 and anio < " + anio.ToString(); // Corregir para que tome del inicio del proyecto al año actual
-            cadena += "	 and mes = " + mes.ToString();                              // Mes (revisar)
-            cadena += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
-            cadena += "	 and modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
-            cadena += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            cadena += "	 and rub.id = " + idRubro.ToString();                       // Rubro
-            cadena += "	 and mon.activo = 'true' "; // Este puede salir sobrando
-            cadena += "	 order by rub.id ";
+            string consulta = "";
+            consulta += " select coalesce(";
+            consulta += "	 sum(mon.enero_abono_financiero) + sum(mon.enero_cargo_financiero) + ";
+            consulta += "	 sum(mon.febrero_abono_financiero) + sum(mon.febrero_cargo_financiero) + ";
+            consulta += "	 sum(mon.marzo_abono_financiero) + sum(mon.marzo_cargo_financiero) + ";
+            consulta += "	 sum(mon.abril_abono_financiero) + sum(mon.abril_cargo_financiero) + ";
+            consulta += "	 sum(mon.mayo_abono_financiero) + sum(mon.mayo_cargo_financiero) + ";
+            consulta += "	 sum(mon.junio_abono_financiero) + sum(mon.junio_cargo_financiero) + ";
+            consulta += "	 sum(mon.julio_abono_financiero) + sum(mon.julio_cargo_financiero) + ";
+            consulta += "	 sum(mon.agosto_abono_financiero) + sum(mon.agosto_cargo_financiero) + ";
+            consulta += "	 sum(mon.septiembre_abono_financiero) + sum(mon.septiembre_cargo_financiero) + ";
+            consulta += "	 sum(mon.octubre_abono_financiero) + sum(mon.octubre_cargo_financiero) + ";
+            consulta += "	 sum(mon.noviembre_abono_financiero) + sum(mon.noviembre_cargo_financiero) + ";
+            consulta += "	 sum(mon.diciembre_abono_financiero) + sum(mon.diciembre_cargo_financiero) ";
+            consulta += "	 , 0) as ejercicio_financiero, coalesce (";
+            consulta += "	 sum(mon.enero_abono_resultado) + sum(mon.enero_cargo_resultado) + ";
+            consulta += "	 sum(mon.febrero_abono_resultado) + sum(mon.febrero_cargo_resultado) + ";
+            consulta += "	 sum(mon.marzo_abono_resultado) + sum(mon.marzo_cargo_resultado) + ";
+            consulta += "	 sum(mon.abril_abono_resultado) + sum(mon.abril_cargo_resultado) + ";
+            consulta += "	 sum(mon.mayo_abono_resultado) + sum(mon.mayo_cargo_resultado) + ";
+            consulta += "	 sum(mon.junio_abono_resultado) + sum(mon.junio_cargo_resultado) + ";
+            consulta += "	 sum(mon.julio_abono_resultado) + sum(mon.julio_cargo_resultado) + ";
+            consulta += "	 sum(mon.agosto_abono_resultado) + sum(mon.agosto_cargo_resultado) + ";
+            consulta += "	 sum(mon.septiembre_abono_resultado) + sum(mon.septiembre_cargo_resultado) + ";
+            consulta += "	 sum(mon.octubre_abono_resultado) + sum(mon.octubre_cargo_resultado) + ";
+            consulta += "	 sum(mon.noviembre_abono_resultado) + sum(mon.noviembre_cargo_resultado) + ";
+            consulta += "	 sum(mon.diciembre_abono_resultado) + sum(mon.diciembre_cargo_resultado) ";
+            consulta += "	 , 0) as ejercicio_resultado ";
+            consulta += "	 from montos_consolidados mon ";
+            consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
+            consulta += "	 where 1 = 1 ";
+            consulta += "	 and anio < " + anio.ToString(); // Corregir para que tome del inicio del proyecto al año actual
+            consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
+            consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
+            consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
+            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 order by rub.id ";
 
             try
             {
@@ -485,7 +488,7 @@ namespace AppGia.Controllers
 
                 con.Open();
 
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                 while (rdr.Read())

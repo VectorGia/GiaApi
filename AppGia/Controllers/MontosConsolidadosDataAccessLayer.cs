@@ -9,7 +9,6 @@ namespace AppGia.Controllers
 {
     public class MontosConsolidadosDataAccessLayer
     {
-
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
 
@@ -20,51 +19,51 @@ namespace AppGia.Controllers
 
         public IEnumerable<MontosConsolidados> GetMontosConsolidados(int montConsAnio, int montConsMes, int montConsEmpresa, int montConsModeloNeg, int montConsProyecto, int montConsRubro)
         {
-            string cadena = "";
-            cadena += " select ";
-            cadena += "	 id, anio, mes, empresa_id, modelo_negocio_id, proyecto_id, rubro_id, ";
-            cadena += "	 coalesce(enero_abono_financiero, 0) as enero_abono_financiero, coalesce(enero_abono_resultado, 0) as enero_abono_resultado, ";
-            cadena += "	 coalesce(enero_cargo_financiero, 0) as enero_cargo_financiero, coalesce(enero_cargo_resultado, 0) as enero_cargo_resultado, ";
-            cadena += "	 coalesce(febrero_abono_financiero, 0) as febrero_abono_financiero, coalesce(febrero_abono_resultado, 0) as febrero_abono_resultado, ";
-            cadena += "	 coalesce(febrero_cargo_financiero, 0) as febrero_cargo_financiero, coalesce(febrero_cargo_resultado, 0) as febrero_cargo_resultado, ";
-            cadena += "	 coalesce(marzo_abono_financiero, 0) as marzo_abono_financiero, coalesce(marzo_abono_resultado, 0) as marzo_abono_resultado, ";
-            cadena += "	 coalesce(marzo_cargo_financiero, 0) as marzo_cargo_financiero, coalesce(marzo_cargo_resultado, 0) as marzo_cargo_resultado, ";
-            cadena += "	 coalesce(abril_abono_financiero, 0) as abril_abono_financiero, coalesce(abril_abono_resultado, 0) as abril_abono_resultado, ";
-            cadena += "	 coalesce(abril_cargo_financiero, 0) as abril_cargo_financiero, coalesce(abril_cargo_resultado, 0) as abril_cargo_resultado, ";
-            cadena += "	 coalesce(mayo_abono_financiero, 0) as mayo_abono_financiero, coalesce(mayo_abono_resultado, 0) as mayo_abono_resultado, ";
-            cadena += "	 coalesce(mayo_cargo_financiero, 0) as mayo_cargo_financiero, coalesce(mayo_cargo_resultado, 0) as mayo_cargo_resultado, ";
-            cadena += "	 coalesce(junio_abono_financiero, 0) as junio_abono_financiero, coalesce(junio_abono_resultado, 0) as junio_abono_resultado, ";
-            cadena += "	 coalesce(junio_cargo_financiero, 0) as junio_cargo_financiero, coalesce(junio_cargo_resultado, 0) as junio_cargo_resultado, ";
-            cadena += "	 coalesce(julio_abono_financiero, 0) as julio_abono_financiero, coalesce(julio_abono_resultado, 0) as julio_abono_resultado, ";
-            cadena += "	 coalesce(julio_cargo_financiero, 0) as julio_cargo_financiero, coalesce(julio_cargo_resultado, 0) as julio_cargo_resultado, ";
-            cadena += "	 coalesce(agosto_abono_financiero, 0) as agosto_abono_financiero, coalesce(agosto_abono_resultado, 0) as agosto_abono_resultado, ";
-            cadena += "	 coalesce(agosto_cargo_financiero, 0) as agosto_cargo_financiero, coalesce(agosto_cargo_resultado, 0) as agosto_cargo_resultado, ";
-            cadena += "	 coalesce(septiembre_abono_financiero, 0) as septiembre_abono_financiero, coalesce(septiembre_abono_resultado, 0) as septiembre_abono_resultado, ";
-            cadena += "	 coalesce(septiembre_cargo_financiero, 0) as septiembre_cargo_financiero, coalesce(septiembre_cargo_resultado, 0) as septiembre_cargo_resultado, ";
-            cadena += "	 coalesce(octubre_abono_financiero, 0) as octubre_abono_financiero, coalesce(octubre_abono_resultado, 0) as octubre_abono_resultado, ";
-            cadena += "	 coalesce(octubre_cargo_financiero, 0) as octubre_cargo_financiero, coalesce(octubre_cargo_resultado, 0) as octubre_cargo_resultado, ";
-            cadena += "	 coalesce(noviembre_abono_financiero, 0) as noviembre_abono_financiero, coalesce(noviembre_abono_resultado, 0) as noviembre_abono_resultado, ";
-            cadena += "	 coalesce(noviembre_cargo_financiero, 0) as noviembre_cargo_financiero, coalesce(noviembre_cargo_resultado, 0) as noviembre_cargo_resultado, ";
-            cadena += "	 coalesce(diciembre_abono_financiero, 0) as diciembre_abono_financiero, coalesce(diciembre_abono_resultado, 0) as diciembre_abono_resultado, ";
-            cadena += "	 coalesce(diciembre_cargo_financiero, 0) as diciembre_cargo_financiero, coalesce(diciembre_cargo_resultado, 0) as diciembre_cargo_resultado, ";
-            cadena += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, ";
-            cadena += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado, ";
-            cadena += "	 activo, fecha ";
-            cadena += " from montos_consolidados ";
-            cadena += " where activo = 'true' ";
-            cadena += " and anio = " + montConsAnio.ToString();
-            cadena += " and mes = " + montConsMes.ToString();
-            cadena += " and empresa_id = " + montConsEmpresa.ToString();
-            cadena += " and modelo_negocio_id = " + montConsModeloNeg.ToString();
-            cadena += " and proyecto_id = " + montConsProyecto.ToString();
-            cadena += " and rubro_id = " + montConsRubro.ToString();
+            string consulta = "";
+            consulta += " select ";
+            consulta += "	 id, anio, mes, empresa_id, modelo_negocio_id, proyecto_id, rubro_id, ";
+            consulta += "	 coalesce(enero_abono_financiero, 0) as enero_abono_financiero, coalesce(enero_abono_resultado, 0) as enero_abono_resultado, ";
+            consulta += "	 coalesce(enero_cargo_financiero, 0) as enero_cargo_financiero, coalesce(enero_cargo_resultado, 0) as enero_cargo_resultado, ";
+            consulta += "	 coalesce(febrero_abono_financiero, 0) as febrero_abono_financiero, coalesce(febrero_abono_resultado, 0) as febrero_abono_resultado, ";
+            consulta += "	 coalesce(febrero_cargo_financiero, 0) as febrero_cargo_financiero, coalesce(febrero_cargo_resultado, 0) as febrero_cargo_resultado, ";
+            consulta += "	 coalesce(marzo_abono_financiero, 0) as marzo_abono_financiero, coalesce(marzo_abono_resultado, 0) as marzo_abono_resultado, ";
+            consulta += "	 coalesce(marzo_cargo_financiero, 0) as marzo_cargo_financiero, coalesce(marzo_cargo_resultado, 0) as marzo_cargo_resultado, ";
+            consulta += "	 coalesce(abril_abono_financiero, 0) as abril_abono_financiero, coalesce(abril_abono_resultado, 0) as abril_abono_resultado, ";
+            consulta += "	 coalesce(abril_cargo_financiero, 0) as abril_cargo_financiero, coalesce(abril_cargo_resultado, 0) as abril_cargo_resultado, ";
+            consulta += "	 coalesce(mayo_abono_financiero, 0) as mayo_abono_financiero, coalesce(mayo_abono_resultado, 0) as mayo_abono_resultado, ";
+            consulta += "	 coalesce(mayo_cargo_financiero, 0) as mayo_cargo_financiero, coalesce(mayo_cargo_resultado, 0) as mayo_cargo_resultado, ";
+            consulta += "	 coalesce(junio_abono_financiero, 0) as junio_abono_financiero, coalesce(junio_abono_resultado, 0) as junio_abono_resultado, ";
+            consulta += "	 coalesce(junio_cargo_financiero, 0) as junio_cargo_financiero, coalesce(junio_cargo_resultado, 0) as junio_cargo_resultado, ";
+            consulta += "	 coalesce(julio_abono_financiero, 0) as julio_abono_financiero, coalesce(julio_abono_resultado, 0) as julio_abono_resultado, ";
+            consulta += "	 coalesce(julio_cargo_financiero, 0) as julio_cargo_financiero, coalesce(julio_cargo_resultado, 0) as julio_cargo_resultado, ";
+            consulta += "	 coalesce(agosto_abono_financiero, 0) as agosto_abono_financiero, coalesce(agosto_abono_resultado, 0) as agosto_abono_resultado, ";
+            consulta += "	 coalesce(agosto_cargo_financiero, 0) as agosto_cargo_financiero, coalesce(agosto_cargo_resultado, 0) as agosto_cargo_resultado, ";
+            consulta += "	 coalesce(septiembre_abono_financiero, 0) as septiembre_abono_financiero, coalesce(septiembre_abono_resultado, 0) as septiembre_abono_resultado, ";
+            consulta += "	 coalesce(septiembre_cargo_financiero, 0) as septiembre_cargo_financiero, coalesce(septiembre_cargo_resultado, 0) as septiembre_cargo_resultado, ";
+            consulta += "	 coalesce(octubre_abono_financiero, 0) as octubre_abono_financiero, coalesce(octubre_abono_resultado, 0) as octubre_abono_resultado, ";
+            consulta += "	 coalesce(octubre_cargo_financiero, 0) as octubre_cargo_financiero, coalesce(octubre_cargo_resultado, 0) as octubre_cargo_resultado, ";
+            consulta += "	 coalesce(noviembre_abono_financiero, 0) as noviembre_abono_financiero, coalesce(noviembre_abono_resultado, 0) as noviembre_abono_resultado, ";
+            consulta += "	 coalesce(noviembre_cargo_financiero, 0) as noviembre_cargo_financiero, coalesce(noviembre_cargo_resultado, 0) as noviembre_cargo_resultado, ";
+            consulta += "	 coalesce(diciembre_abono_financiero, 0) as diciembre_abono_financiero, coalesce(diciembre_abono_resultado, 0) as diciembre_abono_resultado, ";
+            consulta += "	 coalesce(diciembre_cargo_financiero, 0) as diciembre_cargo_financiero, coalesce(diciembre_cargo_resultado, 0) as diciembre_cargo_resultado, ";
+            consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, ";
+            consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado, ";
+            consulta += "	 activo, fecha ";
+            consulta += " from montos_consolidados ";
+            consulta += " where activo = 'true' ";
+            consulta += " and anio = " + montConsAnio.ToString();
+            consulta += " and mes = " + montConsMes.ToString();
+            consulta += " and empresa_id = " + montConsEmpresa.ToString();
+            consulta += " and modelo_negocio_id = " + montConsModeloNeg.ToString();
+            consulta += " and proyecto_id = " + montConsProyecto.ToString();
+            consulta += " and rubro_id = " + montConsRubro.ToString();
 
             try
             {
                 List<MontosConsolidados> lstMontosConsolidados = new List<MontosConsolidados>();
 
                 con.Open();
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                 while (rdr.Read())
@@ -146,42 +145,43 @@ namespace AppGia.Controllers
 
         public int AddMontosConsolidados(MontosConsolidados montos_consolidados)
         {
-            string cadena = "";
-            cadena += " insert into montos_consolidados ( ";
-            cadena += "	 id, anio, mes, empresa_id, modelo_negocio_id, proyecto_id, rubro_id, ";
-            cadena += "	 enero_abono_financiero, enero_abono_resultado, enero_cargo_financiero, enero_cargo_resultado, ";
-            cadena += "	 febrero_abono_financiero, febrero_abono_resultado, febrero_cargo_financiero, febrero_cargo_resultado, ";
-            cadena += "	 marzo_abono_financiero, marzo_abono_resultado, marzo_cargo_financiero, marzo_cargo_resultado, ";
-            cadena += "	 abril_abono_financiero, abril_abono_resultado, abril_cargo_financiero, abril_cargo_resultado, ";
-            cadena += "	 mayo_abono_financiero, mayo_abono_resultado, mayo_cargo_financiero, mayo_cargo_resultado, ";
-            cadena += "	 junio_abono_financiero, junio_abono_resultado, junio_cargo_financiero, junio_cargo_resultado, ";
-            cadena += "	 julio_abono_financiero, julio_abono_resultado, julio_cargo_financiero, julio_cargo_resultado, ";
-            cadena += "	 agosto_abono_financiero, agosto_abono_resultado, agosto_cargo_financiero, agosto_cargo_resultado, ";
-            cadena += "	 septiembre_abono_financiero, septiembre_abono_resultado, septiembre_cargo_financiero, septiembre_cargo_resultado, ";
-            cadena += "	 octubre_abono_financiero, octubre_abono_resultado, octubre_cargo_financiero, octubre_cargo_resultado, ";
-            cadena += "	 noviembre_abono_financiero, noviembre_abono_resultado, noviembre_cargo_financiero, noviembre_cargo_resultado, ";
-            cadena += "	 diciembre_abono_financiero, diciembre_abono_resultado, diciembre_cargo_financiero, diciembre_cargo_resultado, ";
-            cadena += "	 valor_tipo_cambio_financiero, valor_tipo_cambio_resultado, activo, fecha ";
-            cadena += "	 ) values ( ";
-            cadena += "	 nextval('seq_montos_consol'), @anio, @mes, @empresa_id, @modelo_negocio_id, @proyecto_id, @rubro_id, ";
-            cadena += "	 @enero_abono_financiero, @enero_abono_resultado, @enero_cargo_financiero, @enero_cargo_resultado, ";
-            cadena += "	 @febrero_abono_financiero, @febrero_abono_resultado, @febrero_cargo_financiero, @febrero_cargo_resultado, ";
-            cadena += "	 @marzo_abono_financiero, @marzo_abono_resultado, @marzo_cargo_financiero, @marzo_cargo_resultado, ";
-            cadena += "	 @abril_abono_financiero, @abril_abono_resultado, @abril_cargo_financiero, @abril_cargo_resultado, ";
-            cadena += "	 @mayo_abono_financiero, @mayo_abono_resultado, @mayo_cargo_financiero, @mayo_cargo_resultado, ";
-            cadena += "	 @junio_abono_financiero, @junio_abono_resultado, @junio_cargo_financiero, @junio_cargo_resultado, ";
-            cadena += "	 @julio_abono_financiero, @julio_abono_resultado, @julio_cargo_financiero, @julio_cargo_resultado, ";
-            cadena += "	 @agosto_abono_financiero, @agosto_abono_resultado, @agosto_cargo_financiero, @agosto_cargo_resultado, ";
-            cadena += "	 @septiembre_abono_financiero, @septiembre_abono_resultado, @septiembre_cargo_financiero, @septiembre_cargo_resultado, ";
-            cadena += "	 @octubre_abono_financiero, @octubre_abono_resultado, @octubre_cargo_financiero, @octubre_cargo_resultado, ";
-            cadena += "	 @noviembre_abono_financiero, @noviembre_abono_resultado, @noviembre_cargo_financiero, @noviembre_cargo_resultado, ";
-            cadena += "	 @diciembre_abono_financiero, @diciembre_abono_resultado, @diciembre_cargo_financiero, @diciembre_cargo_resultado, ";
-            cadena += "	 @valor_tipo_cambio_financiero, @valor_tipo_cambio_resultado, @activo, @fecha ";
-            cadena += "	 ) ";
+            string consulta = "";
+            consulta += " insert into montos_consolidados ( ";
+            consulta += "	 id, anio, mes, empresa_id, modelo_negocio_id, proyecto_id, rubro_id, ";
+            consulta += "	 enero_abono_financiero, enero_abono_resultado, enero_cargo_financiero, enero_cargo_resultado, ";
+            consulta += "	 febrero_abono_financiero, febrero_abono_resultado, febrero_cargo_financiero, febrero_cargo_resultado, ";
+            consulta += "	 marzo_abono_financiero, marzo_abono_resultado, marzo_cargo_financiero, marzo_cargo_resultado, ";
+            consulta += "	 abril_abono_financiero, abril_abono_resultado, abril_cargo_financiero, abril_cargo_resultado, ";
+            consulta += "	 mayo_abono_financiero, mayo_abono_resultado, mayo_cargo_financiero, mayo_cargo_resultado, ";
+            consulta += "	 junio_abono_financiero, junio_abono_resultado, junio_cargo_financiero, junio_cargo_resultado, ";
+            consulta += "	 julio_abono_financiero, julio_abono_resultado, julio_cargo_financiero, julio_cargo_resultado, ";
+            consulta += "	 agosto_abono_financiero, agosto_abono_resultado, agosto_cargo_financiero, agosto_cargo_resultado, ";
+            consulta += "	 septiembre_abono_financiero, septiembre_abono_resultado, septiembre_cargo_financiero, septiembre_cargo_resultado, ";
+            consulta += "	 octubre_abono_financiero, octubre_abono_resultado, octubre_cargo_financiero, octubre_cargo_resultado, ";
+            consulta += "	 noviembre_abono_financiero, noviembre_abono_resultado, noviembre_cargo_financiero, noviembre_cargo_resultado, ";
+            consulta += "	 diciembre_abono_financiero, diciembre_abono_resultado, diciembre_cargo_financiero, diciembre_cargo_resultado, ";
+            consulta += "	 valor_tipo_cambio_financiero, valor_tipo_cambio_resultado, activo, fecha ";
+            consulta += "	 ) values ( ";
+            consulta += "	 nextval('seq_montos_consol'), @anio, @mes, @empresa_id, @modelo_negocio_id, @proyecto_id, @rubro_id, ";
+            consulta += "	 @enero_abono_financiero, @enero_abono_resultado, @enero_cargo_financiero, @enero_cargo_resultado, ";
+            consulta += "	 @febrero_abono_financiero, @febrero_abono_resultado, @febrero_cargo_financiero, @febrero_cargo_resultado, ";
+            consulta += "	 @marzo_abono_financiero, @marzo_abono_resultado, @marzo_cargo_financiero, @marzo_cargo_resultado, ";
+            consulta += "	 @abril_abono_financiero, @abril_abono_resultado, @abril_cargo_financiero, @abril_cargo_resultado, ";
+            consulta += "	 @mayo_abono_financiero, @mayo_abono_resultado, @mayo_cargo_financiero, @mayo_cargo_resultado, ";
+            consulta += "	 @junio_abono_financiero, @junio_abono_resultado, @junio_cargo_financiero, @junio_cargo_resultado, ";
+            consulta += "	 @julio_abono_financiero, @julio_abono_resultado, @julio_cargo_financiero, @julio_cargo_resultado, ";
+            consulta += "	 @agosto_abono_financiero, @agosto_abono_resultado, @agosto_cargo_financiero, @agosto_cargo_resultado, ";
+            consulta += "	 @septiembre_abono_financiero, @septiembre_abono_resultado, @septiembre_cargo_financiero, @septiembre_cargo_resultado, ";
+            consulta += "	 @octubre_abono_financiero, @octubre_abono_resultado, @octubre_cargo_financiero, @octubre_cargo_resultado, ";
+            consulta += "	 @noviembre_abono_financiero, @noviembre_abono_resultado, @noviembre_cargo_financiero, @noviembre_cargo_resultado, ";
+            consulta += "	 @diciembre_abono_financiero, @diciembre_abono_resultado, @diciembre_cargo_financiero, @diciembre_cargo_resultado, ";
+            consulta += "	 @valor_tipo_cambio_financiero, @valor_tipo_cambio_resultado, @activo, @fecha ";
+            consulta += "	 ) ";
 
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 cmd.Parameters.AddWithValue("@anio", montos_consolidados.anio);
                 cmd.Parameters.AddWithValue("@mes", montos_consolidados.mes);
                 cmd.Parameters.AddWithValue("@empresa_id", montos_consolidados.empresa_id);
@@ -240,7 +240,6 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado", montos_consolidados.valor_tipo_cambio_resultado);
                 cmd.Parameters.AddWithValue("@activo", montos_consolidados.activo);
                 cmd.Parameters.AddWithValue("@fecha", montos_consolidados.fecha);
-                con.Open();
                 int regInsert = cmd.ExecuteNonQuery();
 
                 return regInsert;
@@ -257,17 +256,19 @@ namespace AppGia.Controllers
 
         public int UpdateMontosConsolidados(int idMontosConsolidados, bool bandActivo)
         {
-            string cadena = "";
-            cadena += " update montos_consolidados set activo = '" + bandActivo.ToString() +"' ";
-            cadena += " where id = " + idMontosConsolidados.ToString();
+            string consulta = "";
+            consulta += " update montos_consolidados set activo = '" + bandActivo.ToString() +"' ";
+            consulta += " where id = " + idMontosConsolidados.ToString();
 
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, conex.ConnexionDB());
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
 
-                con.Open();
-                int regActual = cmd.ExecuteNonQuery();
-                return regActual;
+                    int regActual = cmd.ExecuteNonQuery();
+                    return regActual;
+                }
             }
             catch
             {

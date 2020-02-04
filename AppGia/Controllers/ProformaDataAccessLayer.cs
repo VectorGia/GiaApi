@@ -19,20 +19,18 @@ namespace AppGia.Controllers
 
         public IEnumerable<Proforma> GetProforma(int idProforma)
         {
-            string cadena = "";
-            cadena += " select id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
-            cadena += " from proforma ";
-            cadena += " where id = " + idProforma.ToString();
-            cadena += " and activo = 'true' ";
+            string consulta = "";
+            consulta += " select id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
+            consulta += " from proforma ";
+            consulta += " where id = " + idProforma.ToString();
+            consulta += " and activo = 'true' ";
 
             try
             {
                 List<Proforma> lstProforma = new List<Proforma>();
-
                 con.Open();
 
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
-
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                 while (rdr.Read())
@@ -64,16 +62,17 @@ namespace AppGia.Controllers
 
         public int AddProforma(Proforma proforma)
         {
-            string cadena = "";
-            cadena += " insert into proforma ( ";
-            cadena += " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
-            cadena += " ) values ( ";
-            cadena += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
-            cadena += " ) ";
+            string consulta = "";
+            consulta += " insert into proforma ( ";
+            consulta += " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
+            consulta += " ) values ( ";
+            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
+            consulta += " ) ";
 
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 cmd.Parameters.AddWithValue("@anio", proforma.anio);
                 cmd.Parameters.AddWithValue("@modelo_negocio_id", proforma.modelo_negocio_id);
                 cmd.Parameters.AddWithValue("@tipo_captura_id", proforma.tipo_captura_id);
@@ -83,7 +82,6 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@usuario", proforma.usuario);
                 cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
-                con.Open();
                 int regInsert = cmd.ExecuteNonQuery();
 
                 return regInsert;
@@ -100,18 +98,20 @@ namespace AppGia.Controllers
 
         public int UpdateProforma(int idProforma, bool bandActivo, int idUsuario)
         {
-            string cadena = "";
-            cadena += " update proforma set activo = '" + bandActivo.ToString() + "', ";
-            cadena += " 	usuario = " + idUsuario.ToString() + ", fecha_captura = current_timestamp ";
-            cadena += " 	where id = " + idProforma.ToString();
+            string consulta = "";
+            consulta += " update proforma set activo = '" + bandActivo.ToString() + "', ";
+            consulta += " 	usuario = " + idUsuario.ToString() + ", fecha_captura = current_timestamp ";
+            consulta += " 	where id = " + idProforma.ToString();
 
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand(cadena, conex.ConnexionDB());
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
 
-                con.Open();
-                int regActual = cmd.ExecuteNonQuery();
-                return regActual;
+                    int regActual = cmd.ExecuteNonQuery();
+                    return regActual;
+                }
             }
             catch
             {

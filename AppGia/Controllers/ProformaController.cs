@@ -16,7 +16,7 @@ namespace AppGia.Controllers
         ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/Proforma
         [HttpGet]
-        public IEnumerable<ProformaDetalle> Get(int idProforma)
+        public IEnumerable<Proforma> Get(int idProforma)
         {
             int idCentroCosto = 1;
             int idEmpresa = 4;
@@ -26,8 +26,23 @@ namespace AppGia.Controllers
             int idRubro = 7;
             int anio = 2020;
             int idTipoCaptura = 1;
-            return ObtieneProfCalc(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
-            //return proforma.GetProforma(idProforma);
+            idProforma = 6;
+            bool activo = true;
+            // Ya funciona el select de la proforma con el enumerable Proforma
+            // Ya funciona el select de la proforma calculada con el enumarable ProformaDetalle
+            //return ObtieneProfCalc(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            // Ya funciona el update de la proforma (solo el campo activo)
+            //objProforma.UpdateProforma(5, activo, 1);
+            //Proforma insertProforma = new Proforma();
+            //insertProforma.modelo_negocio_id = 21;
+            //insertProforma.tipo_captura_id = 1;
+            //insertProforma.tipo_proforma_id = 2;
+            //insertProforma.centro_costo_id = 5;
+            //insertProforma.activo = true;
+            //insertProforma.usuario = 1;
+            //insertProforma.fecha_captura = DateTime.Now;
+            //objProforma.AddProforma(insertProforma);
+            return objProforma.GetProforma(idProforma);
         }
 
         // GET: api/Proforma/5
@@ -43,10 +58,16 @@ namespace AppGia.Controllers
         {
         }
 
+        public int Create([FromBody]Proforma proforma)
+        {
+            return objProforma.AddProforma(proforma);
+        }
+
         // PUT: api/Proforma/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public int Put(int id, [FromBody] Proforma proforma)
         {
+            return objProforma.AddProforma(proforma);
         }
 
         // DELETE: api/ApiWithActions/5
