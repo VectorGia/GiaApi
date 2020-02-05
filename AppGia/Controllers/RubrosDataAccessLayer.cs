@@ -52,6 +52,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public List<Rubros> GetRubroById(int id)
@@ -97,6 +101,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -149,32 +157,40 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
-        public int UpdateRubro(int id, Rubros rubro)
+        public int UpdateRubro(Rubros rubro)
         {
             string add = "UPDATE rubro " +
-                "SET nombre = @nombre, " +
+                "SET activo = @activo, " +
+                "nombre = @nombre, " +
                 "aritmetica = @aritmetica, " +
                 "clave = @clave, " +
+                "naturaleza = @naturaleza, " +
                 "rango_cuentas_excluidas = @rango_cuentas_excluidas," +
                 "rangos_cuentas_incluidas = @rangos_cuentas_incluidas, " +
+                "tipo_id = @tipo_id, " +
                 "id_modelo_neg = @id_modelo_neg " +
-                "WHERE id = " + id;
+                "WHERE id = @id";
 
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = rubro.activo });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = rubro.activo });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = rubro.nombre.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica", Value = rubro.aritmetica.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@naturaleza", Value = rubro.naturaleza });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas.Trim() });
-                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_id", Value = rubro.tipo_id });
-                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id_modelo_neg", Value = rubro.id_modelo_neg });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_id", Value = rubro.tipo_id });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id_modelo_neg", Value = rubro.id_modelo_neg });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
 
                 con.Open();
@@ -188,16 +204,21 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
-        public int DeleteRubro(int id)
+        public int DeleteRubro(Rubros rubro)
         {
-            string add = "UPDATE rubro SET activo = false where id = " + id;
+            string add = "UPDATE rubro SET activo = false, WHERE id = @id";
+
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = id });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
@@ -209,6 +230,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
 
         }

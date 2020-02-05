@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class CuentasDataAccessLayer
+    public class CuentasDataAccessLayer 
     {
 
         NpgsqlConnection con;
@@ -58,6 +58,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         //Obtiene las cuentas de cada compañia 
@@ -93,7 +97,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
-
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public int AddCuenta(Cuentas cuentas)
@@ -108,7 +115,7 @@ namespace AppGia.Controllers
                 + " sub_sub_cta"
                 + " )" 
                 +" VALUES (" 
-                +" @nextval(seq_cuenta)," 
+                +" @nextval('seq_cuenta')," 
                 +" @activo," 
                 +" @cta," 
                 +" @descripcion," 
@@ -137,6 +144,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 

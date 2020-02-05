@@ -52,6 +52,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         //Obtiene el id del ultimo registro 
@@ -80,6 +84,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -111,6 +119,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
 
         }
@@ -184,6 +196,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

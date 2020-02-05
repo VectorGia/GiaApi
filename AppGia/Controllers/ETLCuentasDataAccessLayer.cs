@@ -41,7 +41,6 @@ namespace AppGia.Controllers
                 string consulta = " SELECT id, activo, cta, descripcion, id_companiaf, sub_cta, sub_sub_cta"
                     + "  FROM cuenta c ";
 
-
                 OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                 odbcCon.Open();
                 OdbcDataReader rdr = cmd.ExecuteReader();
@@ -136,6 +135,10 @@ namespace AppGia.Controllers
                 //configCorreo.EnviarCorreo("La extracción Semanal se genero incorrectamente", "ETL Reporte Semanal");
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

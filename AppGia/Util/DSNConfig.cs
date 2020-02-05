@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AppGia.Util;
 
 namespace AppGia.Controllers
 {
@@ -21,7 +22,7 @@ namespace AppGia.Controllers
             //ETLDataAccesLayer eTLDataAccesLayer = new ETLDataAccesLayer();
             ETLBalanzaDataAccessLayer etlBalanza = new ETLBalanzaDataAccessLayer();
             List<Empresa> lstCia = etlBalanza.EmpresaConexionETL_List(idEmpresa);
-
+            
             if (lstCia.Count <= 0)
             {
 
@@ -31,12 +32,20 @@ namespace AppGia.Controllers
             Empresa empresa = new Empresa();
             empresa.usuario_etl = lstCia[0].usuario_etl;
             empresa.contrasenia_etl = lstCia[0].contrasenia_etl;
+            empresa.contra_bytes = lstCia[0].contra_bytes;
+            empresa.apuntador = lstCia[0].apuntador;
+            empresa.llave = lstCia[0].llave;
             empresa.host = lstCia[0].host;
             empresa.puerto_compania = lstCia[0].puerto_compania;
             empresa.bd_name = lstCia[0].bd_name;
             empresa.id = lstCia[0].id;
             empresa.nombre = lstCia[0].nombre;
 
+            string ctr = string.Empty;
+
+            ctr = Utilerias.DecryptStringFromBytes(empresa.contra_bytes,empresa.llave,empresa.apuntador);
+            empresa.contrasenia_etl = ctr; 
+            
             string ODBC_PATH = string.Empty;
             string driver = string.Empty;
             string DsnNombre = string.Empty;
@@ -44,6 +53,7 @@ namespace AppGia.Controllers
             string DireccionDriver = string.Empty;
             bool trustedConnection = false;
 
+            
             try
             {
                 ODBC_PATH = "SOFTWARE\\ODBC\\ODBC.INI\\";
@@ -106,6 +116,7 @@ namespace AppGia.Controllers
                 //return dsn;
                 //return 0; //Nose creo
             }
+            
         }
     }
 }

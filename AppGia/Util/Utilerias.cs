@@ -9,13 +9,13 @@ using Npgsql;
 
 namespace AppGia.Util
 {
-    public class utilerias
+    public class Utilerias
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         NpgsqlCommand comP = new NpgsqlCommand();
 
-        public utilerias()
+        public Utilerias()
         {
             //Constructor
             con = conex.ConnexionDB();
@@ -81,7 +81,7 @@ namespace AppGia.Util
                 byte[] llave = comP.ExecuteScalar() as byte[];
                 con.Close();
 
-                string select_apuntador = "select apuntador from empresa where id = 1"+idEmpresa;
+                string select_apuntador = "select apuntador from empresa where id = "+idEmpresa;
                 comP = new NpgsqlCommand(select_apuntador, con);
                 con.Open();
                 byte[] apuntador = comP.ExecuteScalar() as byte[];
@@ -97,7 +97,7 @@ namespace AppGia.Util
         /// <param name="Key"></param>
         /// <param name="IV"></param>
         /// <returns></returns>
-        static byte[] EncryptStringToBytes(string plainText, byte[] Key, byte[] IV)
+       public static byte[] EncryptStringToBytes(string plainText, byte[] Key, byte[] IV)
         {
             //verifican los argumentos
             if (plainText == null || plainText.Length <= 0)
@@ -137,7 +137,7 @@ namespace AppGia.Util
             return encrypted;
         }
 
-        static string DecryptStringFromBytes(byte[] cipherText, byte[] Key, byte[] IV)
+       public  static string DecryptStringFromBytes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Valida argumentos.
             if (cipherText == null || cipherText.Length <= 0)

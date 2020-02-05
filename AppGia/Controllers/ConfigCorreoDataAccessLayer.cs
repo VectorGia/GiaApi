@@ -65,10 +65,13 @@ namespace AppGia.Controllers
 
                 throw ex;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public List<Usuario> GetDestinatariosCorreo()
         {
-
 
             string cadena = "  SELECT "
                             + " email"
@@ -105,6 +108,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }
