@@ -220,7 +220,7 @@ namespace AppGia.Controllers
         //      9 =  9+3 - Nueve reales, 3 proformados
         // Los reales se calculan desde los montos consolidados
         // Los proformados se capturan en pantalla
-        public IEnumerable<ProformaDetalle> GetProformaCalculada(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
@@ -350,7 +350,7 @@ namespace AppGia.Controllers
             consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
+            //consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
             // Aparentemente falta el Centro de Costos (en Shadow se debera crear uno)
             consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
             consulta += "	 order by rub.id ";
@@ -419,7 +419,7 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public IEnumerable<ProformaDetalle> GetEjercicioAnterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
+        public List<ProformaDetalle> GetEjercicioAnterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce(";
@@ -495,7 +495,7 @@ namespace AppGia.Controllers
         }
 
         //Calculo de años posteriores
-        public IEnumerable<ProformaDetalle> GetEjercicioPosterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
+        public List<ProformaDetalle> GetEjercicioPosterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce(";
