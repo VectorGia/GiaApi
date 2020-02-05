@@ -18,6 +18,41 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
+        public IEnumerable<Empresa> GetAllEmpresaByProyectoId(Int64 idProyecto)
+        {
+            string cadena = " select e.id,e.nombre from empresa_proyecto ep join empresa e on ep.empresa_id = e.id" +
+                        " where proyecto_id = " + idProyecto + " --and ep.activo = true and e.activo = true";
+            try
+            {
+                List<Empresa> ltsEmpresa = new List<Empresa>();
+
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        Empresa empresa = new Empresa();
+
+                        empresa.id = Convert.ToInt32(rdr["id"]);
+                        empresa.nombre = rdr["nombre"].ToString();
+                        ltsEmpresa.Add(empresa);
+                    }
+                
+                }
+                return ltsEmpresa;
+            }
+            finally
+            {
+                if(con.State == System.Data.ConnectionState.Open)
+                {
+                con.Close();
+                }
+
+            }
+        }
+
         public IEnumerable<Empresa_Proyecto> GetAllEmpresa_Proyecto()
         {
             string cadena = " select id,activo,empresa_id,proyecto_id from empresa_proyecto " 

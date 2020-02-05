@@ -61,7 +61,7 @@ namespace AppGia.Controllers
         //Obtiene los centro de costos por identificador unico 
         public CentroCostos GetCentroData(string id)
         {
-            string consulta = "select * from" + "centro_costo" + "where" + "id" + "=" + id;
+            string consulta = "select * from" + " centro_costo" + " where" + " id" + " = " + id;
             try
             {
                 CentroCostos centroCostos = new CentroCostos();
@@ -135,9 +135,7 @@ namespace AppGia.Controllers
                 " estatus =   @estatus ," +
                 " gerente =  @gerente ," +
                 " empresa_id =  @empresa_id ," +
-                " proyecto_id =  @proyecto_id ," +
                 " fecha_modificacion =  @fecha_modificacion ," +
-                " activo =  @activo " +
                 " where " + "id" + " = " + id;
 
 
@@ -153,9 +151,9 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@categoria", Value = centroCostos.categoria });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@estatus", Value = centroCostos.estatus });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@gerente", Value = centroCostos.gerente });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@proyecto_id", Value = centroCostos.proyecto_id });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@proyecto_id", Value = centroCostos.proyecto_id });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@empresa_id", Value = centroCostos.empresa_id });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = centroCostos.activo });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = centroCostos.activo });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fecha_modificacion", Value = DateTime.Now });
 
                     con.Open();
