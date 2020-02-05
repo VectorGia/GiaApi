@@ -447,8 +447,8 @@ namespace AppGia.Controllers
                 //lstBala = convertirTabBalanza(id_compania);
 
                 string addBalanza = "insert into"
-                 + "balanza("
-                 //+"idbalanza,"
+                 + " balanza("
+                 +" id,"
                  + "cta,"
                  + "scta,"
                  + "sscta,"
@@ -491,8 +491,8 @@ namespace AppGia.Controllers
                  + "acta,"
                  + "cc" + ")"
                      + "values "
-                         //+ "(@IDBALANZA,"
-                         + "(@CTA,"
+                         +"(nextval('seq_balanza'),"
+                         + "@CTA,"
                          + "@SCTA,"
                          + "@SSCTA,"
                          + "@YEAR,"
@@ -794,6 +794,27 @@ namespace AppGia.Controllers
             finally {
                 odbcCon.Close();
             }
+        }
+
+        public int copy_balanza(string nombre_archivo, string ruta_archivo)
+        {
+            int resultado;
+            string script_copy = string.Empty;
+            script_copy = " copy balanza from  '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(script_copy, con);
+                resultado = Convert.ToInt32(cmd.ExecuteNonQuery());
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                throw;
+            }
+
+            return resultado;
         }
 
         public int UpdateCuentaUnificada()
