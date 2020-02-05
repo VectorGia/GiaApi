@@ -77,6 +77,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
 

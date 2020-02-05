@@ -46,6 +46,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public Modelo_Negocio GetModelo(string id)
         {
@@ -74,6 +78,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public int addModeloNegocio(Modelo_Negocio modeloNegocio)
@@ -108,6 +116,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Update(string id, Modelo_Negocio modeloNegocio)
         {
@@ -136,6 +148,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Delete(string id)
         {
@@ -158,6 +174,10 @@ namespace AppGia.Controllers
                 con.Close();
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

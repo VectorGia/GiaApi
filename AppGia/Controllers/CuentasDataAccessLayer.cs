@@ -58,6 +58,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         //Obtiene las cuentas de cada compañia 
@@ -93,7 +97,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
-
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public int AddCuenta(Cuentas cuentas)
@@ -137,6 +144,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 

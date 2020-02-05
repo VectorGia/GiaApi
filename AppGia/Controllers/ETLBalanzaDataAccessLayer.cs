@@ -19,7 +19,6 @@ namespace AppGia.Controllers
         Conexion.Conexion conex = new Conexion.Conexion();
         NpgsqlCommand comP = new NpgsqlCommand();
 
-
         OdbcConnection odbcCon;
         OdbcCommand cmdETL = new OdbcCommand();
 
@@ -27,8 +26,6 @@ namespace AppGia.Controllers
 
         SqlConnection conSQLETL = new SqlConnection();
         SqlCommand comSQLETL = new SqlCommand();
-
-
 
         public ETLBalanzaDataAccessLayer()
         {
@@ -39,7 +36,6 @@ namespace AppGia.Controllers
 
 
         }
-
 
         public DataTable EmpresaConexionETL(int idEmpresa)
         {
@@ -73,7 +69,8 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
-            finally {
+            finally 
+            {
                 con.Close();
             }
         }
@@ -347,8 +344,6 @@ namespace AppGia.Controllers
                          + "@CC)";
 
                 {
-
-
                     foreach (Balanza balanza in lstBala)
                     {
                         NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
@@ -396,8 +391,6 @@ namespace AppGia.Controllers
                         cmd.Parameters.AddWithValue("@CIERRE_ABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_abonos);
                         cmd.Parameters.AddWithValue("@ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.acta);
                         cmd.Parameters.AddWithValue("@CC", NpgsqlTypes.NpgsqlDbType.Text, balanza.cc);
-
-
 
                         //con.Open();
                         // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
@@ -535,7 +528,6 @@ namespace AppGia.Controllers
                          + "@CC)";
 
                 {
-
                     int cantFilaAfect = 0;
                     foreach (Balanza balanza in lstBala)
                     {
@@ -612,7 +604,8 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
-            finally {
+            finally 
+            {
                 con.Close();
             }
         }

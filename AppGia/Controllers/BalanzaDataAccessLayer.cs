@@ -106,6 +106,11 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally 
+            {
+                con.Close();
+            }
+
         }
         public int AddBalanza(Balanza balanza)
         {
@@ -258,6 +263,10 @@ namespace AppGia.Controllers
                 con.Close();
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

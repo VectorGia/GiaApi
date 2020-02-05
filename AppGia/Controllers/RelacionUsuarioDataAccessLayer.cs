@@ -55,6 +55,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int update(Relacion_Usuario relacionusuario)
@@ -100,6 +104,10 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -136,6 +144,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
 
         }
@@ -180,6 +192,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

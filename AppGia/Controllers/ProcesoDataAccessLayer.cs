@@ -55,6 +55,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         //Obtiene las cuentas de cada compañia 
         public Proceso GetProcesoData(long id)
@@ -91,6 +95,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public int AddProceso(Proceso proceso)
@@ -137,6 +145,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }
