@@ -392,6 +392,7 @@ namespace AppGia.Controllers
                         cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
                     }
                     transaction.Commit();
+                    
                     //////con.Close();
                     //////DateTime fechaFinalProceso = DateTime.Now;
                     //////configCorreo.EnviarCorreo("La extracción de Balanza se genero correctamente"
@@ -474,8 +475,6 @@ namespace AppGia.Controllers
                  + "cierre_abonos,"
                  + "acta,"
                  + "cc" + ")"
-
-
                      + "values "
                          //+ "(@IDBALANZA,"
                          + "(@CTA,"
@@ -776,6 +775,29 @@ namespace AppGia.Controllers
             }
         }
 
+        public int UpdateCuentaUnificada()
+        {
+            string update = "   update balanza "
+                            + " set "
+                            + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') ";
+
+            try
+            {
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
+                }
+            }
+            catch (Exception ex )
+            {
+                con.Close();
+                throw;
+            }
+        }
 
 
     }
