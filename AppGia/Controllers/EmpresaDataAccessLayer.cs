@@ -250,7 +250,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@apuntador", Value = myRijndael.IV });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint, ParameterName = "@id", Value = empresa.id });
 
-                    int cantF = cmd.ExecuteNonQuery();
+                    int cantF = cmd.ExecuteNonQuery();  
                     con.Close();
                     return cantF;
                 }

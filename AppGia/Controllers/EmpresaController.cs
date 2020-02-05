@@ -70,7 +70,7 @@ namespace AppGia.Controllers
         [HttpPut("{id}")]
         public int Put(string id, [FromBody] Empresa empresa)
         {
-            int cantPut = objCompania.Update(id, empresa);
+            int cantPut = objCompania.Update(id, empresa); 
             if (empresa.contrasenia_etl.Length > 0)
             {
                 empresa.id = Convert.ToInt64(id);
