@@ -49,7 +49,10 @@ namespace AppGia.Controllers
                     + " contrasenia_etl ,"
                     + " host ,"
                     + " puerto_compania ,"
-                    + " bd_name" 
+                    + " bd_name ,"
+                    + " contra_bytes ,"
+                    + " llave ,"
+                    + " apuntador "
                     + " FROM empresa" 
                     + " WHERE  id  = " + idEmpresa;
             try
@@ -70,6 +73,9 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally {
+                con.Close();
+            }
         }
 
         public List<Empresa> EmpresaConexionETL_List(int idEmpresa)
@@ -88,6 +94,9 @@ namespace AppGia.Controllers
                 cia.bd_name = r["bd_name"].ToString();
                 cia.id = Convert.ToInt32(r["id"]);
                 cia.nombre = Convert.ToString(r["nombre"]);
+                cia.contra_bytes = r["contra_bytes"] as byte[];
+                cia.llave = r["llave"] as byte[];
+                cia.apuntador = r["apuntador"] as byte[];
                 lst.Add(cia);
             }
             return lst;
@@ -236,6 +245,9 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally {
+                odbcCon.Close();
+            }
         }
 
 
@@ -336,7 +348,7 @@ namespace AppGia.Controllers
 
                 {
 
-                    
+
                     foreach (Balanza balanza in lstBala)
                     {
                         NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
@@ -392,7 +404,7 @@ namespace AppGia.Controllers
                         cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
                     }
                     transaction.Commit();
-                    
+
                     //////con.Close();
                     //////DateTime fechaFinalProceso = DateTime.Now;
                     //////configCorreo.EnviarCorreo("La extracción de Balanza se genero correctamente"
@@ -414,6 +426,9 @@ namespace AppGia.Controllers
                 //                           , "ETL Balanza");
                 string error = ex.Message;
                 throw;
+            }
+            finally {
+                con.Close();
             }
 
             //return cantFilaAfect;
@@ -597,6 +612,9 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally {
+                con.Close();
+            }
         }
 
 
@@ -705,43 +723,43 @@ namespace AppGia.Controllers
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                         odbcCon.Open();
                         OdbcDataReader rdr = cmd.ExecuteReader();
-                        
+
                         while (rdr.Read())
                         {
-                            
-                                registros = Convert.ToInt32(rdr["year"]) + ","
-                                + Convert.ToString(rdr["cta"].ToString()) + ","
-                                + Convert.ToString(rdr["scta"].ToString()) + ","
-                                + Convert.ToString(rdr["sscta"].ToString()) + ","
-                                + Convert.ToDouble(rdr["salini"]) + ","
-                                + Convert.ToDouble(rdr["enecargos"]) + ","
-                                + Convert.ToDouble(rdr["eneabonos"]) + ","
-                                + Convert.ToDouble(rdr["febcargos"]) + ","
-                                + Convert.ToDouble(rdr["febabonos"]) + ","
-                                + Convert.ToDouble(rdr["marcargos"]) + ","
-                                + Convert.ToDouble(rdr["marabonos"]) + ","
-                                + Convert.ToDouble(rdr["abrcargos"]) + ","
-                                + Convert.ToDouble(rdr["abrabonos"]) + ","
-                                + Convert.ToDouble(rdr["maycargos"]) + ","
-                                + Convert.ToDouble(rdr["mayabonos"]) + ","
-                                + Convert.ToDouble(rdr["juncargos"]) + ","
-                                + Convert.ToDouble(rdr["junabonos"]) + ","
-                                + Convert.ToDouble(rdr["julcargos"]) + ","
-                                + Convert.ToDouble(rdr["julabonos"]) + ","
-                                + Convert.ToDouble(rdr["agocargos"]) + ","
-                                + Convert.ToDouble(rdr["agoabonos"]) + ","
-                                + Convert.ToDouble(rdr["sepcargos"]) + ","
-                                + Convert.ToDouble(rdr["sepabonos"]) + ","
-                                + Convert.ToDouble(rdr["octcargos"]) + ","
-                                + Convert.ToDouble(rdr["octabonos"]) + ","
-                                + Convert.ToDouble(rdr["novcargos"]) + ","
-                                + Convert.ToDouble(rdr["novabonos"]) + ","
-                                + Convert.ToDouble(rdr["diccargos"]) + ","
-                                + Convert.ToDouble(rdr["dicabonos"]) + ","
-                                + Convert.ToDouble(rdr["cierreabonos"]) + ","
-                                + Convert.ToDouble(rdr["cierrecargos"]) + ","
-                                + Convert.ToInt32(rdr["acta"]) + ","
-                                + Convert.ToString(rdr["cc"]);
+
+                            registros = Convert.ToInt32(rdr["year"]) + ","
+                            + Convert.ToString(rdr["cta"].ToString()) + ","
+                            + Convert.ToString(rdr["scta"].ToString()) + ","
+                            + Convert.ToString(rdr["sscta"].ToString()) + ","
+                            + Convert.ToDouble(rdr["salini"]) + ","
+                            + Convert.ToDouble(rdr["enecargos"]) + ","
+                            + Convert.ToDouble(rdr["eneabonos"]) + ","
+                            + Convert.ToDouble(rdr["febcargos"]) + ","
+                            + Convert.ToDouble(rdr["febabonos"]) + ","
+                            + Convert.ToDouble(rdr["marcargos"]) + ","
+                            + Convert.ToDouble(rdr["marabonos"]) + ","
+                            + Convert.ToDouble(rdr["abrcargos"]) + ","
+                            + Convert.ToDouble(rdr["abrabonos"]) + ","
+                            + Convert.ToDouble(rdr["maycargos"]) + ","
+                            + Convert.ToDouble(rdr["mayabonos"]) + ","
+                            + Convert.ToDouble(rdr["juncargos"]) + ","
+                            + Convert.ToDouble(rdr["junabonos"]) + ","
+                            + Convert.ToDouble(rdr["julcargos"]) + ","
+                            + Convert.ToDouble(rdr["julabonos"]) + ","
+                            + Convert.ToDouble(rdr["agocargos"]) + ","
+                            + Convert.ToDouble(rdr["agoabonos"]) + ","
+                            + Convert.ToDouble(rdr["sepcargos"]) + ","
+                            + Convert.ToDouble(rdr["sepabonos"]) + ","
+                            + Convert.ToDouble(rdr["octcargos"]) + ","
+                            + Convert.ToDouble(rdr["octabonos"]) + ","
+                            + Convert.ToDouble(rdr["novcargos"]) + ","
+                            + Convert.ToDouble(rdr["novabonos"]) + ","
+                            + Convert.ToDouble(rdr["diccargos"]) + ","
+                            + Convert.ToDouble(rdr["dicabonos"]) + ","
+                            + Convert.ToDouble(rdr["cierreabonos"]) + ","
+                            + Convert.ToDouble(rdr["cierrecargos"]) + ","
+                            + Convert.ToInt32(rdr["acta"]) + ","
+                            + Convert.ToString(rdr["cc"]);
 
                             layout.WriteLine(registros, Environment.NewLine);
 
@@ -773,6 +791,9 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally {
+                odbcCon.Close();
+            }
         }
 
         public int UpdateCuentaUnificada()
@@ -792,10 +813,13 @@ namespace AppGia.Controllers
                     return cantFilAfec;
                 }
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 con.Close();
                 throw;
+            }
+            finally {
+                con.Close();
             }
         }
 

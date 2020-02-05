@@ -28,11 +28,12 @@ namespace AppGia.Controllers
         }
 
         // POST: api/Proyecto
+        // POST: api/Proyecto
         [HttpPost]
-        public long Create([FromBody]Proyecto proyecto)
+        public void Create([FromBody]Proyecto proyecto)
         {
-            RegistroProyecto(proyecto);
-            return objProyecto.addProyecto(proyecto);
+            long id = objProyecto.addProyecto(proyecto);
+            objProyecto.addEmpresa_Proyecto(id, proyecto);
         }
 
         // PUT: api/Proyecto/5
@@ -47,12 +48,6 @@ namespace AppGia.Controllers
         public int Delete(string id)
         {
             return objProyecto.Delete(id);
-        }
-
-        public void RegistroProyecto(Proyecto proyecto)
-        {
-            long id = objProyecto.addProyecto(proyecto);
-            objProyecto.addEmpresa_Proyecto(id, proyecto);
-        }
+        }      
     }
 }

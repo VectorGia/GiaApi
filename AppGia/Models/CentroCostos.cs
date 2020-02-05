@@ -20,5 +20,11 @@ namespace AppGia.Models
         public string categoria { get; set; }
         public DateTime fecha_modificacion { get; set; }
 
+        /// <summary>
+        /// Entidades nuevas para el innerjoin
+        /// </summary>
+        public string nombre_empresa { get; set; }
+        public string nombre_proyecto { get; set; }
+
     }
 }
