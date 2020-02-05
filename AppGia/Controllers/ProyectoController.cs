@@ -48,12 +48,6 @@ namespace AppGia.Controllers
         public int Delete(string id)
         {
             return objProyecto.Delete(id);
-        }
-
-        public void RegistroProyecto(Proyecto proyecto)
-        {
-            long id = objProyecto.addProyecto(proyecto);
-            objProyecto.addEmpresa_Proyecto(id, proyecto);
-        }
+        }      
     }
 }

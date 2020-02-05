@@ -21,7 +21,16 @@ namespace AppGia.Controllers
         public IEnumerable<CentroCostos> GetAllCentros()
         {
             //Obtiene todos los centros de costos habilitados "TRUE"
-            string consulta = " select *from " + " centro_costo " + " where " + "activo" + " = " + true;
+            //string consulta = " select * from " + " centro_costo " + " where " + "activo" + " = " + true;
+            string consulta = "SELECT cc.id, cc.activo, cc.nombre, " +
+               "cc.categoria, cc.desc_id, cc.estatus, " +
+               "cc.fecha_modificacion, cc.gerente,cc.tipo, cc.empresa_id, " +
+               "emp.nombre as nombre_empresa,cc.proyecto_id, " +
+               "pry.nombre as nombre_proyecto " +
+               "FROM centro_costo cc " +
+               "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
+               "INNER JOIN proyecto pry on pry.id = cc.proyecto_id" + 
+               " WHERE " + "activo" + " = " + true; ;
             try
             {
                 List<CentroCostos> lstcentros = new List<CentroCostos>();
@@ -46,6 +55,8 @@ namespace AppGia.Controllers
                         centroCostos.categoria = rdr["categoria"].ToString().Trim();
                         centroCostos.gerente = rdr["gerente"].ToString().Trim();
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
+                        centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
+                        centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
                         lstcentros.Add(centroCostos);
                     }
                     con.Close();
@@ -61,7 +72,15 @@ namespace AppGia.Controllers
         //Obtiene los centro de costos por identificador unico 
         public CentroCostos GetCentroData(string id)
         {
-            string consulta = "select * from" + "centro_costo" + "where" + "id" + "=" + id;
+            //string consulta = "select * from" + "centro_costo" + "where" + "id" + "=" + id;
+            string consulta = "SELECT cc.id, cc.activo, cc.nombre, " +
+                "cc.categoria, cc.desc_id, cc.estatus, " +
+                "cc.fecha_modificacion, cc.gerente,cc.tipo, cc.empresa_id, " +
+                "emp.nombre as nombre_empresa,cc.proyecto_id, " +
+                "pry.nombre as nombre_proyecto " +
+                "FROM centro_costo cc " +
+                "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
+                "INNER JOIN proyecto pry on pry.id = cc.proyecto_id";
             try
             {
                 CentroCostos centroCostos = new CentroCostos();
@@ -82,6 +101,8 @@ namespace AppGia.Controllers
                         centroCostos.categoria = rdr["categoria"].ToString().Trim();
                         centroCostos.gerente = rdr["gerente"].ToString().Trim();
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
+                        centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
+                        centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
                     }
                     con.Close();
                 }
