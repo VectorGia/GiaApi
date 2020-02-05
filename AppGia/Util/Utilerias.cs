@@ -9,13 +9,13 @@ using Npgsql;
 
 namespace AppGia.Util
 {
-    public class utilerias
+    public class Utilerias
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         NpgsqlCommand comP = new NpgsqlCommand();
 
-        public utilerias()
+        public Utilerias()
         {
             //Constructor
             con = conex.ConnexionDB();
@@ -137,7 +137,7 @@ namespace AppGia.Util
             return encrypted;
         }
 
-        static string DecryptStringFromBytes(byte[] cipherText, byte[] Key, byte[] IV)
+       public  static string DecryptStringFromBytes(byte[] cipherText, byte[] Key, byte[] IV)
         {
             // Valida argumentos.
             if (cipherText == null || cipherText.Length <= 0)
