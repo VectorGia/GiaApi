@@ -10,39 +10,35 @@ namespace AppGia.Controllers
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-
         public ModeloNegocioDataAccessLayer()
         {
             con = conex.ConnexionDB();
         }
-
-        char cod = '"';
-
         public IEnumerable<Modelo_Negocio> GetAllModeloNegocios()
         {
-            string consulta = "select * from modelo_negocio order by id desc";
+
+            string consulta = "select * from modelo_negocio where activo = " + true + " order by id desc";
+
             try
             {
                 List<Modelo_Negocio> lstmodelo = new List<Modelo_Negocio>();
-              
-                    con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
-                    
 
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
-                    {
-                        Modelo_Negocio modeloNegocio = new Modelo_Negocio();
-                        modeloNegocio.id = Convert.ToInt32(rdr["id"]);
-                        modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
-                        //modeloNegocio.nombrer = rdr["nombrer"].ToString().Trim();
-                        //modeloNegocio.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
-                       // modeloNegocio.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
-                        modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
-                        lstmodelo.Add(modeloNegocio);
-                    }
-                   con.Close();
-                   
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    Modelo_Negocio modeloNegocio = new Modelo_Negocio();
+                    modeloNegocio.id = Convert.ToInt64(rdr["id"]);
+                    modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
+                    modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
+                    //modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                    lstmodelo.Add(modeloNegocio);
+                }
+                con.Close();
+
                 return lstmodelo;
             }
             catch
@@ -55,23 +51,24 @@ namespace AppGia.Controllers
         {
             try
             {
-                Modelo_Negocio negocio = new Modelo_Negocio();
+                Modelo_Negocio modeloNegocio = new Modelo_Negocio();
                 {
-                    string consulta = "select * from " + "modelo_negocio " + "where " + "id " + "=" + id;
+                    string consulta = "select id,activo,nombre,tipo_captura_id from modelo_negocio  where id = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-                        negocio.id = Convert.ToInt32(rdr["id"]);
-                        negocio.nombre = rdr["nombre"].ToString().Trim();
-                  
-                        
+                        modeloNegocio.id = Convert.ToInt64(rdr["id"]);
+                        modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
+                        modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
+                        modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+
                     }
                     con.Close();
                 }
-                return negocio;
+                return modeloNegocio;
             }
             catch
             {
@@ -79,9 +76,9 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-
-        public int addModelo(Modelo_Negocio modeloNegocio)
+        public int addModeloNegocio(Modelo_Negocio modeloNegocio)
         {
+
             string addModelo = "insert into " + "modelo_negocio"
                 + "("
                 + "id" + ","
@@ -100,10 +97,10 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
                     //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
-                    con.Open();
-                    int cantFilas = cmd.ExecuteNonQuery();
-                    con.Close();
-                    return cantFilas;
+                con.Open();
+                int cantFilas = cmd.ExecuteNonQuery();
+                con.Close();
+                return cantFilas;
 
             }
             catch
@@ -112,33 +109,26 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-
-        /// <summary>
-        /// Update para todos los campos de la tabla Modelo de Negocio
-        /// </summary>
-        /// <param name="modeloNegocio"></param>
-        /// <returns></returns>
-        public int UpdateModelo(string id, Modelo_Negocio modeloNegocio)
+        public int Update(string id, Modelo_Negocio modeloNegocio)
         {
-            string add = "update " + cod + "modelo_negocio" + cod +
-                " set " 
-                + "nombre" + "= " + "@nombre" 
-                + " where " + "id" +  " = " + id;
+
+            string add = "update modelo_negocio set "
+                 + "nombre = @nombre ,"
+                 + "activo = @activo ,"
+                 + "tipo_captura_id = @tipo_captura_id "
+                 + " where id  = " + id;
             try
             {
-               // using (NpgsqlConnection con = new NpgsqlConnection(connectionString))
-                //{
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
-                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = modeloNegocio.id });
-                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_MODELONEGOCIO", Value = DateTime.Now});
-                    con.Open();
-                    int cantFilas = cmd.ExecuteNonQuery();
-                    con.Close();
-                    return cantFilas;
 
-                //}
-                //return 1;
+                NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = modeloNegocio.activo });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = modeloNegocio.tipo_captura_id });
+                con.Open();
+                int cantFilas = cmd.ExecuteNonQuery();
+                con.Close();
+                return cantFilas;
             }
             catch (Exception ex)
             {
@@ -147,21 +137,21 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-
-        public int DeleteModelo(string  id)
+        public int Delete(string id)
         {
+            Modelo_Negocio modeloNegocio = new Modelo_Negocio();
             bool status = false;
-            string add = "update " + "modelo_negocio" + 
-                " set " + "activo" + "= " + status +
-                " where " + "id" + " = " + id;
+            string delete = "update modelo_negocio set "
+                 + "activo = @activo "
+                 + " where id  = " + id;
             try
             {
-                    con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                 
-                    int cantFilas = cmd.ExecuteNonQuery();
-                    con.Close();
-                    return cantFilas;
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = status });
+                int cantFilas = cmd.ExecuteNonQuery();
+                con.Close();
+                return cantFilas;
             }
             catch (Exception ex)
             {

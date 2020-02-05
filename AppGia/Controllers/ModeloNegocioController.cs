@@ -30,21 +30,21 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody] Modelo_Negocio negocio)
         {
-            return objModelo.addModelo(negocio);
+            return objModelo.addModeloNegocio(negocio);
         }
 
         // PUT: api/ModeloNegocio/5
         [HttpPut("{id}")]
         public int Put(string id, [FromBody] Modelo_Negocio negocio)
         {
-            return objModelo.UpdateModelo(id, negocio);
+            return objModelo.Update(id, negocio);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public int Delete(string id)
         {
-            return objModelo.DeleteModelo(id);
+            return objModelo.Delete(id);
         }
     }
 }

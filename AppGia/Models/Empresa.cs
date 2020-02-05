@@ -8,7 +8,7 @@ namespace AppGia.Models
     public class Empresa
     {
 
-        public int id { get; set; }
+        public Int64 id { get; set; }
         public int id_modelo_neg { get; set; }
         public int id_centro_costo { get; set; }
         public int moneda_id { get; set; }

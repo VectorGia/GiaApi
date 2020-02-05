@@ -20,7 +20,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<TipoCaptura> GetAllTipoCaptura()
         {
-            string cadena = "SELECT * FROM" + cod + "CAT_TIPO_CAPTURA" + cod + "WHERE " + cod + "BOOL_TIPOCAPTURA_ACTIVO" + cod + "=" + true;
+            string cadena = "SELECT id, activo, clave, descripcion, fec_modif, idusuario FROM public.tipo_captura WHERE activo = true;";
             try
             {
                 List<TipoCaptura> lsttipocaptura = new List<TipoCaptura>();
@@ -34,11 +34,12 @@ namespace AppGia.Controllers
                     {
 
                         TipoCaptura tipocaptura = new TipoCaptura();
-                        tipocaptura.INT_IDTIPOCAPTURA_P = Convert.ToInt32(rdr["INT_IDTIPOCAPTURA_P"]);
-                        tipocaptura.STR_DESCRIP_TIPOCAPTURA = rdr["STR_DESCRIP_TIPOCAPTURA"].ToString().Trim();
-                        tipocaptura.INT_IDUSUARIO_F = Convert.ToInt32(rdr["INT_IDUSUARIO_F"]);
-                        tipocaptura.FEC_MODIF_TIPOCAPTURA = Convert.ToDateTime(rdr["FEC_MODIF_TIPOCAPTURA"]);
-                        tipocaptura.BOOL_TIPOCAPTURA_ACTIVO = Convert.ToBoolean(rdr["BOOL_TIPOCAPTURA_ACTIVO"]);
+                        tipocaptura.id = Convert.ToInt64(rdr["id"]);
+                        tipocaptura.activo = Convert.ToBoolean(rdr["activo"]);
+                        tipocaptura.clave = rdr["clave"].ToString().Trim();
+                        tipocaptura.descripcion = rdr["descripcion"].ToString(); ;
+                        tipocaptura.fec_modif = rdr["fec_modif"].ToString();
+                        tipocaptura.idusuario = Convert.ToInt64(rdr["iduduario"]);
                         lsttipocaptura.Add(tipocaptura);
                     }
                     con.Close();
@@ -58,19 +59,19 @@ namespace AppGia.Controllers
             {
                 TipoCaptura tipocaptura = new TipoCaptura();
                 {
-                    string consulta = "SELECT * FROM" + cod + "CAT_TIPO_CAPTURA" + cod + "WHERE" + cod + "INT_IDTIPOCAPTURA_P" + cod + "=" + id;
+                    string consulta = "SELECT id, activo, clave, descripcion, fec_modif, idusuario FROM tipo_captura where id =" + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-                        tipocaptura.INT_IDTIPOCAPTURA_P = Convert.ToInt32(rdr["INT_IDTIPOCAPTURA_P"]);
-                        tipocaptura.STR_DESCRIP_TIPOCAPTURA = rdr["STR_DESCRIP_TIPOCAPTURA"].ToString().Trim();
-                        tipocaptura.INT_IDUSUARIO_F = Convert.ToInt32(rdr["INT_IDUSUARIO_F"]);
-                        tipocaptura.FEC_MODIF_TIPOCAPTURA = Convert.ToDateTime(rdr["FEC_MODIF_TIPOCAPTURA"]);
-                        tipocaptura.BOOL_TIPOCAPTURA_ACTIVO = Convert.ToBoolean(rdr["BOOL_TIPOCAPTURA_ACTIVO"]);
-
+                        tipocaptura.id = Convert.ToInt64(id);
+                        tipocaptura.activo = Convert.ToBoolean(rdr["activo"]);
+                        tipocaptura.clave = rdr["clave"].ToString().Trim();
+                        tipocaptura.descripcion = rdr["descripcion"].ToString(); ;
+                        tipocaptura.fec_modif = rdr["fec_modif"].ToString();
+                        tipocaptura.idusuario = Convert.ToInt64(rdr["iduduario"]);
                     }
                     con.Close();
                 }
@@ -85,34 +86,33 @@ namespace AppGia.Controllers
 
         public int AddTipoCaptura(TipoCaptura tipocaptura)
         {
-            string add = "INSERT INTO" + cod +
-                "CAT_TIPO_CAPTURA" + cod +
-                "(" + cod + "STR_DESCRIP_TIPOCAPTURA" + cod +
-                "," + cod + "INT_IDUSUARIO_F" + cod +
-                "," + cod + "FEC_MODIF_TIPOCAPTURA" + cod +
-                "," + cod + "BOOL_TIPOCAPTURA_ACTIVO" + cod +
-                ") VALUES " +
-                "(@STR_DESCRIP_TIPOCAPTURA," +
-                "@INT_IDUSUARIO_F," +
-                "@FEC_MODIF_TIPOCAPTURA," +
-                "@BOOL_TIPOCAPTURA_ACTIVO)";
+            string add = "INSERT INTO public.tipo_captura(id, activo, clave, descripcion, fec_modif, idusuario)"
+                + "VALUES "
+                + "("
+                + "@id,"
+                + "@activo,"
+                + "@clave,"
+                + "@descripcion,"
+                + "@fec_modif,"
+                + "@idusuario"
+                + ")";
             try
             {
-
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@STR_DESCRIP_TIPOCAPTURA", tipocaptura.STR_DESCRIP_TIPOCAPTURA.Trim());
-                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", tipocaptura.INT_IDUSUARIO_F);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAPTURA", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@BOOL_TIPOCAPTURA_ACTIVO", tipocaptura.BOOL_TIPOCAPTURA_ACTIVO);
+                    cmd.Parameters.AddWithValue("@id", tipocaptura.id);
+                    cmd.Parameters.AddWithValue("@activo", tipocaptura.activo);
+                    cmd.Parameters.AddWithValue("@clave", tipocaptura.clave);
+                    cmd.Parameters.AddWithValue("@descripcion", tipocaptura.descripcion);
+                    cmd.Parameters.AddWithValue("@fec_modif", tipocaptura.fec_modif);
+                    cmd.Parameters.AddWithValue("@fec_modif", tipocaptura.fec_modif);
+                    cmd.Parameters.AddWithValue("@idusuario", tipocaptura.idusuario);
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
                 }
-
-
             }
             catch
             {
@@ -122,25 +122,25 @@ namespace AppGia.Controllers
         }
 
         public int Update(string id, TipoCaptura tipocaptura)
-
         {
-
-            string update = "UPDATE " + cod + "CAT_TIPO_CAPTURA"
-                + cod + "SET" + cod + "STR_DESCRIP_TIPOCAPTURA" + cod + "=" + "@STR_DESCRIP_TIPOCAPTURA" + ","
-                + cod + "INT_IDUSUARIO_F" + cod + "= " + "@INT_IDUSUARIO_F" + ","
-                + cod + "FEC_MODIF_TIPOCAPTURA" + cod + "= " + "@FEC_MODIF_TIPOCAPTURA" + ","
-                + cod + "BOOL_TIPOCAPTURA_ACTIVO" + cod + "= " + "@BOOL_TIPOCAPTURA_ACTIVO" + ","
-                + " WHERE " + cod + "INT_IDTIPOCAPTURA_P" + cod + "=" + id;
+            string update = "UPDATE tipo_captura SET " +
+                " activo=@activo," +
+                " clave=@clave, " +
+                " descripcion=@descripcion, " +
+                " fec_modif=@fec_modif, " +
+                " idusuario=@idusuario " +
+                " WHERE id=@id;";
 
             try
             {
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update.Trim(), con);
-                    cmd.Parameters.AddWithValue("STR_DESCRIP_TIPOCAPTURA", tipocaptura.STR_DESCRIP_TIPOCAPTURA);
-                    cmd.Parameters.AddWithValue("@INT_IDUSUARIO_F", tipocaptura.INT_IDUSUARIO_F);
-                    cmd.Parameters.AddWithValue("@FEC_MODIF_TIPOCAPTURA", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@BOOL_TIPOCAPTURA_ACTIVO", tipocaptura.BOOL_TIPOCAPTURA_ACTIVO);
+                    cmd.Parameters.AddWithValue("activo", tipocaptura.activo);
+                    cmd.Parameters.AddWithValue("@descripcion", tipocaptura.descripcion);
+                    cmd.Parameters.AddWithValue("@fec_modif", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@idusuario", tipocaptura.idusuario);
+                    cmd.Parameters.AddWithValue("@id", id);
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
@@ -157,10 +157,7 @@ namespace AppGia.Controllers
         public int Delete(string id)
         {
             string status = "false";
-            string delete = "UPDATE " + cod + "CAT_TIPO_CAPTURA" + cod + "SET"
-                + cod + "BOOL_TIPOCAPTURA_ACTIVO" + cod + "='" + status + "' " +
-                "WHERE" + cod + "INT_IDTIPOCAPTURA_P" + cod + "='" + id + "'";
-
+            string delete = "UPDATE tipo_captura SET activo = " + status + " WHERE id = @id";
             try
             {
                 {
@@ -172,15 +169,12 @@ namespace AppGia.Controllers
                     con.Close();
                     return cantFilAfec;
                 }
-
             }
             catch
             {
                 con.Close();
                 throw;
             }
-
-
         }
     }
 }

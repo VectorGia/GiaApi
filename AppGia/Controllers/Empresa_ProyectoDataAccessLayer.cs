@@ -20,7 +20,8 @@ namespace AppGia.Controllers
 
         public IEnumerable<Empresa_Proyecto> GetAllEmpresa_Proyecto()
         {
-            string cadena = "select * from empresa_proyecto " + " where " + "activo " + " = " + true;
+            string cadena = " select id,activo,empresa_id,proyecto_id from empresa_proyecto " 
+                             + " where activo  = " + true;
             try
             {
                 List<Empresa_Proyecto> ltsEmpresaProyecto = new List<Empresa_Proyecto>();
@@ -58,7 +59,8 @@ namespace AppGia.Controllers
                 Empresa_Proyecto empresa_proyecto = new Empresa_Proyecto();
 
                 {
-                    string consulta = "select * from empresa_proyecto" + " where " + " id " + "=" + id;
+                    string consulta = "select id,activo,empresa_id,proyecto_id from empresa_proyecto" 
+                                        + " where  id  = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -90,7 +92,11 @@ namespace AppGia.Controllers
                 + "empresa_id" + ","
                 + "proyecto_id" + ")"
                 + " values "
-                + "(@nextval(seq_empresa_proyecto),@activo,@estatus,@empresa_id,@proyecto_id)";
+                + "(@nextval(seq_empresa_proyecto)," +
+                "@activo," +
+                "@estatus," +
+                "@empresa_id," +
+                "@proyecto_id)";
             try
             {
                 {
@@ -115,13 +121,12 @@ namespace AppGia.Controllers
 
         public int update(string id, Empresa_Proyecto empresa_proyecto)
         {
-            string update = "update empresa_proyecto" + "set"
-            + "activo" + " = '" + empresa_proyecto.activo + "' ,"
-            + "empresa_id" + " = '" + empresa_proyecto.empresa_id + "' ,"
-            + "proyecto_id" + " = '" + empresa_proyecto.proyecto_id + "'"
-            + " WHERE" + "id" + "=" + id;
-
-
+            string update = "update empresa_proyecto"
+            + "set"
+            + " activo  =  @activo,"
+            + " empresa_id  = @empresa_id ,"
+            + " proyecto_id  = @proyecto_id "
+            + " WHERE id = " + id;
             try
             {
                 {
@@ -147,10 +152,12 @@ namespace AppGia.Controllers
         public int Delete(string id)
         {
             bool status = false;
-            string delete = "update empresa_proyecto" + "set" + "activo" + " = '" + status + "' where" + "id" + " = '" + id + "'";
+            string delete = "update empresa " 
+                            + " set "
+                            + " activo  ='" + status +"'" 
+                            + " where  id ='"+ id +"'";
             try
             {
-
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
 
