@@ -107,9 +107,10 @@ namespace AppGia.Controllers
                    // proyecto.desc_id = "uno";
                    // proyecto.modelo_negocio_id = 1;
                    // proyecto.EMPRESA.id =
-                   // int idcom = proyecto.idC;
+                   //int idcom = proyecto.idC;
 
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                    cmd.Parameters.AddWithValue("@id", proyecto.id);
                     cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
                     cmd.Parameters.AddWithValue("@estatus", proyecto.estatus);
@@ -122,7 +123,7 @@ namespace AppGia.Controllers
                     cmd.CommandText = "SELECT currval('seq_proyecto') AS lastProyecto;";
                     long idproyect = (long)cmd.ExecuteScalar();
                     con.Close();
-                   // addEmpresa_Proyecto(idproyect, idcom);
+                    //addEmpresa_Proyecto(idproyect, idcom);
                     return cantFilAfec;
                 }
             }

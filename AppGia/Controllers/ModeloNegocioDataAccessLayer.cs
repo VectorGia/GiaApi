@@ -63,7 +63,7 @@ namespace AppGia.Controllers
                         modeloNegocio.id = Convert.ToInt64(rdr["id"]);
                         modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                         modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
-                        modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                       // modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
 
                     }
                     con.Close();

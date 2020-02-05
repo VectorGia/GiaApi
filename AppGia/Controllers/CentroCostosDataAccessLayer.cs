@@ -104,7 +104,7 @@ namespace AppGia.Controllers
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-
+                    cmd.Parameters.AddWithValue("id", centroCostos.id);
                     cmd.Parameters.AddWithValue("@tipo", centroCostos.tipo.Trim());
                     cmd.Parameters.AddWithValue("@desc_id", centroCostos.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@nombre", centroCostos.nombre.Trim());

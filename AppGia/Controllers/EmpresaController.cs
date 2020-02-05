@@ -24,7 +24,7 @@ namespace AppGia.Controllers
 
         // GET: api/Empresa/5
         [HttpGet("{id}", Name = "Get")]
-        public Empresa Details(string id)
+        public Empresa Details(int id)
         {
             return objCompania.GetEmpresaData(id);
         }

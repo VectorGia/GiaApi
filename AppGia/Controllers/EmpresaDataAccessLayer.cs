@@ -56,13 +56,13 @@ namespace AppGia.Controllers
                 throw;
             }
         }
-        public Empresa GetEmpresaData(string id)
+        public Empresa GetEmpresaData(int id)
         {
             try
             {
                 Empresa empresa = new Empresa();
                 {
-                    string consulta = "select id,activo,nombre,abrev,bd_name,contrasenia_etl,desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
+                    string consulta = "select * " +
                         "from empresa  where  id  = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
