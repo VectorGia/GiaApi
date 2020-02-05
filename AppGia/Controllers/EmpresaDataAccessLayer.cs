@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using AppGia.Models;
+using AppGia.Util;
 using Npgsql;
 
 namespace AppGia.Controllers
@@ -62,8 +64,8 @@ namespace AppGia.Controllers
             {
                 Empresa empresa = new Empresa();
                 {
-                    string consulta = "select id,activo,nombre,abrev,bd_name,contrasenia_etl,desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
-                        "from empresa  where  id  = " + id;
+                    string consulta = " select id , activo , nombre , abrev , bd_name , contrasenia_etl,desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
+                        " from empresa  where  id  = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -88,13 +90,13 @@ namespace AppGia.Controllers
                 }
                 return empresa;
             }
-            catch
+            catch (Exception ex)
             {
                 con.Close();
                 throw;
             }
         }
-        public int Add(Empresa empresa)
+        public long Add(Empresa empresa)
         {
 
             string add = "insert into " +
@@ -107,7 +109,7 @@ namespace AppGia.Controllers
                 "," + "moneda_id" +
                 "," + "desc_id" +
                 "," + "usuario_etl" +
-                "," + "contrasenia_etl" +
+                //"," + "contrasenia_etl" +
                 "," + "puerto_compania" +
                 "," + "bd_name" +
                 "," + "fec_modif" +
@@ -121,7 +123,7 @@ namespace AppGia.Controllers
                 "@moneda_id ," +
                 "@desc_id," +
                 "@usuario_etl," +
-                "@contrasenia_etl," +
+                //"@contrasenia_etl," +
                 "@puerto_compania," +
                 "@bd_name," +
                 "@fec_modif," +
@@ -130,6 +132,8 @@ namespace AppGia.Controllers
             {
                 {
                     con.Open();
+                    var transaction = con.BeginTransaction();
+                    
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
                     cmd.Parameters.AddWithValue("@desc_id", empresa.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@nombre", empresa.nombre);
@@ -138,14 +142,17 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@host", empresa.host);
                     cmd.Parameters.AddWithValue("@moneda_id", empresa.moneda_id);
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl);
-                    cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
+                  //  cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
                     cmd.Parameters.AddWithValue("@puerto_compania", empresa.puerto_compania);
                     cmd.Parameters.AddWithValue("@bd_name", empresa.bd_name);
                     cmd.Parameters.AddWithValue("@fec_modif", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", empresa.activo);
                     int cantFilAfec = cmd.ExecuteNonQuery();
+                    cmd.CommandText = "SELECT currval('seq_empresa') AS lastEmpresa;";
+                    long     idEmpresa = (long)cmd.ExecuteScalar();
+                    transaction.Commit();
                     con.Close();
-                    return cantFilAfec;
+                    return idEmpresa;
                 }
             }
             catch
@@ -164,7 +171,7 @@ namespace AppGia.Controllers
                  + "host = @host ,"
                  + "moneda_id = @moneda_id ,"
                  + "usuario_etl = @usuario_etl ,"
-                 + "contrasenia_etl = @contrasenia_etl ,"
+                 //+ "contrasenia_etl = @contrasenia_etl ,"
                  + "puerto_compania = @puerto_compania ,"
                  + "activo = @activo ,"
                  + "fec_modif = @fec_modif ,"
@@ -183,7 +190,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@etl", empresa.etl);
                     cmd.Parameters.AddWithValue("@host", empresa.host);
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl);
-                    cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
+                   // cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
                     cmd.Parameters.AddWithValue("@puerto_compania", empresa.puerto_compania);
                     cmd.Parameters.AddWithValue("@bd_name", empresa.bd_name);
                     cmd.Parameters.AddWithValue("@activo", empresa.activo);
@@ -220,6 +227,36 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+        }
+
+        public int UpdateContrasenia(Empresa empresa)
+        {
+            using (Rijndael myRijndael = Rijndael.Create())
+            {
+                try
+                {
+                    byte[] encrypted = utilerias.EncryptStringToBytes(empresa.contrasenia_etl, myRijndael.Key, myRijndael.IV);
+                    con.Open();
+
+                    string update = "update empresa set  contra_bytes = @contra_bytes, llave = @llave, apuntador=@apuntador where id = @id";
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@contra_bytes", Value = encrypted });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@llave", Value = myRijndael.Key });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@apuntador", Value = myRijndael.IV });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint, ParameterName = "@id", Value = empresa.id });
+
+                    int cantF = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantF;
+                }
+                catch(Exception ex)
+                {
+                    con.Close();
+                    throw;
+                }
+            }
+               
+    
         }
     }
 }
