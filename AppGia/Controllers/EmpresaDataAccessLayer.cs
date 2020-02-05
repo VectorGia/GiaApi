@@ -237,7 +237,7 @@ namespace AppGia.Controllers
             {
                 try
                 {
-                    byte[] encrypted = utilerias.EncryptStringToBytes(empresa.contrasenia_etl, myRijndael.Key, myRijndael.IV);
+                    byte[] encrypted = Utilerias.EncryptStringToBytes(empresa.contrasenia_etl, myRijndael.Key, myRijndael.IV);
                     con.Open();
 
                     string update = "update empresa set  contra_bytes = @contra_bytes, llave = @llave, apuntador=@apuntador where id = @id";
