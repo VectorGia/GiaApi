@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class CuentasDataAccessLayer
+    public class CuentasDataAccessLayer 
     {
 
         NpgsqlConnection con;
