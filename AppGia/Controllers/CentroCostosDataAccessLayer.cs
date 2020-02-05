@@ -82,9 +82,7 @@ namespace AppGia.Controllers
                         centroCostos.categoria = rdr["categoria"].ToString().Trim();
                         centroCostos.gerente = rdr["gerente"].ToString().Trim();
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
-
                     }
-
                     con.Close();
                 }
                 return centroCostos;

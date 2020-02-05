@@ -12,6 +12,7 @@ namespace AppGia.Controllers
     public class ProyectoController : ControllerBase
     {
         ProyectoDataAccessLayer objProyecto = new ProyectoDataAccessLayer();
+        Proyecto proyecto = new Proyecto();
         // GET: api/Proyecto
         [HttpGet]
         public IEnumerable<Proyecto> Get()
@@ -28,9 +29,9 @@ namespace AppGia.Controllers
 
         // POST: api/Proyecto
         [HttpPost]
-        public int Create([FromBody]Proyecto proyecto)
+        public long Create([FromBody]Proyecto proyecto)
         {
-
+            RegistroProyecto(proyecto);
             return objProyecto.addProyecto(proyecto);
         }
 
@@ -46,6 +47,12 @@ namespace AppGia.Controllers
         public int Delete(string id)
         {
             return objProyecto.Delete(id);
+        }
+
+        public void RegistroProyecto(Proyecto proyecto)
+        {
+            long id = objProyecto.addProyecto(proyecto);
+            objProyecto.addEmpresa_Proyecto(id, proyecto);
         }
     }
 }
