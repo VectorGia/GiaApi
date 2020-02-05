@@ -97,9 +97,10 @@ namespace AppGia.Controllers
                 + " nombre ,"
                 + " estatus ,"
                 + " responsable ,"
-                + " fecha_modificacion ,"
+                + " fecha_modificacion ," 
+                + " modelo_negocio_id ,"
                 + " activo ) values " +
-                "(nextval('seq_proyecto'),@desc_id,@nombre,@estatus,@responsable,@fecha_modificacion,@activo)";
+                "(nextval('seq_proyecto'),@desc_id,@nombre,@estatus,@responsable,@fecha_modificacion,@modelo_negocio_id,@activo)";
             try
             {
                 {
@@ -116,6 +117,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@estatus", proyecto.estatus);
                     cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@modelo_negocio_id", proyecto.modelo_negocio_id);
                     cmd.Parameters.AddWithValue("@activo", proyecto.activo);
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();

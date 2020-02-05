@@ -17,7 +17,6 @@ namespace AppGia.Models
         public string responsable { get; set; }
         public int modelo_negocio_id { get; set; }
 
-        public Array idC { get; set; }
         private Empresa empresa;
 
         public Empresa EMPRESA
