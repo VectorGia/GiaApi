@@ -30,16 +30,13 @@ namespace AppGia.Controllers
                "FROM centro_costo cc " +
                "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                "INNER JOIN proyecto pry on pry.id = cc.proyecto_id" + 
-               " WHERE " + "activo" + " = " + true; ;
+               " WHERE " + "activo" + " = " + true; 
             try
             {
                 List<CentroCostos> lstcentros = new List<CentroCostos>();
                 {
-
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
-
-
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
