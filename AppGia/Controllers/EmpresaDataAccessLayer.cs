@@ -64,13 +64,10 @@ namespace AppGia.Controllers
             {
                 Empresa empresa = new Empresa();
                 {
-<<<<<<< HEAD
+
                     string consulta = " select id , activo , nombre , abrev , bd_name , contrasenia_etl,desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
                         " from empresa  where  id  = " + id;
-=======
-                    string consulta = "select * " +
-                        "from empresa  where  id  = " + id;
->>>>>>> 765a45c49ec1bc505e56353d04996ff9848cf9bd
+
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
