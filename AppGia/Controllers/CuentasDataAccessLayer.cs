@@ -108,7 +108,7 @@ namespace AppGia.Controllers
                 + " sub_sub_cta"
                 + " )" 
                 +" VALUES (" 
-                +" @nextval(seq_cuenta)," 
+                +" @nextval('seq_cuenta')," 
                 +" @activo," 
                 +" @cta," 
                 +" @descripcion," 
