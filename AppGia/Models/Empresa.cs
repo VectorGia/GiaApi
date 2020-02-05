@@ -17,7 +17,7 @@ namespace AppGia.Models
         public bool etl { get; set; }
         public string nombre { get; set; }
         public string desc_id { get; set; }
-        public string abrev { get; set; }
+        public string abrev { get; set; } 
         public string bd_name { get; set; }
         public string contrasenia_etl { get; set; }
         public DateTime fec_modif { get; set; }
