@@ -24,6 +24,9 @@ namespace AppGia.Models
         public string host { get; set; }
         public int puerto_compania { get; set; }
         public string usuario_etl { get; set; }
+        public byte[] contra_bytes { get; set; }
+        public byte[] llave { get; set; }
+        public byte[] apuntador { get; set; }
 
     
     }
