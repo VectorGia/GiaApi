@@ -8,7 +8,7 @@ namespace AppGia.Models
         public long id { get; set; }
         public string desc_id { get; set; }
         public bool activo { get; set; }
-        public string estatus { get; set; }
+        public string estatus { get; set; } 
         public string nombre { get; set; }
         public DateTime fecha_creacion { get; set; }
         public DateTime fecha_inicio { get; set; }

@@ -11,7 +11,7 @@ namespace AppGia.Models
 
         public bool activo { get; set; }
 
-        public long empresa_id { get; set; }
+        public long empresa_id { get; set; } 
 
         public long proyecto_id { get; set; }
     }
