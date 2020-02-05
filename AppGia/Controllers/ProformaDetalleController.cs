@@ -24,9 +24,13 @@ namespace AppGia.Controllers
             int idProyecto = 51;
             int idRubro = 7;
             int anio = 2020;
-            int idTipoCaptura = 1;
+            int idTipoCaptura = 1; // 0, 1, 3, 6, 9 (0, 1, 3, 6, 9)
+            bool activo = true;
+            idProformaDetalle = 5;
             //return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
-            return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            //return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            return ObjProformaDetalle.GetEjercicioAnterior(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, activo, idTipoCaptura);
+            //return ObjProformaDetalle.GetEjercicioPosterior(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, activo, idTipoCaptura);
         }
 
         // GET: api/ProformaDetalle/5
