@@ -19,7 +19,7 @@ namespace AppGia.Controllers
 
         // GET: api/Centro/5
         [HttpGet("{id}", Name = "GetCentro")]
-        public CentroCostos GetCentro(string id)
+        public List<CentroCostos> GetCentro(int id)
         {
             return objcentro.GetCentroData(id);
         }

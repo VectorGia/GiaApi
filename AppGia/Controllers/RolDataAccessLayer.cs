@@ -47,6 +47,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int addRol(Rol rol)
@@ -77,6 +81,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -113,6 +121,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int Delete(Rol rol)
@@ -137,6 +149,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

@@ -38,7 +38,7 @@ namespace AppGia.Models
         public double acumulado_resultado { get; set; }
         public double valor_tipo_cambio_financiero { get; set; }
         public double valor_tipo_cambio_resultado { get; set; }
-        public int rubro_id { get; set; }
+        public Int64 rubro_id { get; set; }
         public bool activo { get; set; }
         public double ejercicio_financiero { get; set; }
         public double ejercicio_resultado { get; set; }

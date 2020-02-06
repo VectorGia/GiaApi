@@ -50,6 +50,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int UpdateGrupo(RelacionRol relacionRol)
@@ -82,6 +86,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int Update_ESTATUS_LOGICO(RelacionRol relacionRol)
@@ -111,6 +119,10 @@ namespace AppGia.Controllers
                 con.Close();
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 

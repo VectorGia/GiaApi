@@ -4,11 +4,11 @@ namespace AppGia.Models
 {
     public class Proyecto
     {
-        public string idsempresas { get; set; }//(1,22,33,34)
-        public Int64 id { get; set; }
+        public string idsempresas { get; set; }
+        public long id { get; set; }
         public string desc_id { get; set; }
         public bool activo { get; set; }
-        public string estatus { get; set; }
+        public string estatus { get; set; } 
         public string nombre { get; set; }
         public DateTime fecha_creacion { get; set; }
         public DateTime fecha_inicio { get; set; }

@@ -12,13 +12,12 @@ using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class ETLBalanzaDataAccessLayer
+    public class ETLBalanzaDataAccessLayer 
     {
         ConfigCorreoController configCorreo = new ConfigCorreoController();
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         NpgsqlCommand comP = new NpgsqlCommand();
-
 
         OdbcConnection odbcCon;
         OdbcCommand cmdETL = new OdbcCommand();
@@ -27,8 +26,6 @@ namespace AppGia.Controllers
 
         SqlConnection conSQLETL = new SqlConnection();
         SqlCommand comSQLETL = new SqlCommand();
-
-
 
         public ETLBalanzaDataAccessLayer()
         {
@@ -40,7 +37,6 @@ namespace AppGia.Controllers
 
         }
 
-
         public DataTable EmpresaConexionETL(int idEmpresa)
         {
             string add = "SELECT  id ,"
@@ -49,7 +45,10 @@ namespace AppGia.Controllers
                     + " contrasenia_etl ,"
                     + " host ,"
                     + " puerto_compania ,"
-                    + " bd_name" 
+                    + " bd_name ,"
+                    + " contra_bytes ,"
+                    + " llave ,"
+                    + " apuntador "
                     + " FROM empresa" 
                     + " WHERE  id  = " + idEmpresa;
             try
@@ -70,6 +69,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally 
+            {
+                con.Close();
+            }
         }
 
         public List<Empresa> EmpresaConexionETL_List(int idEmpresa)
@@ -88,6 +91,9 @@ namespace AppGia.Controllers
                 cia.bd_name = r["bd_name"].ToString();
                 cia.id = Convert.ToInt32(r["id"]);
                 cia.nombre = Convert.ToString(r["nombre"]);
+                cia.contra_bytes = r["contra_bytes"] as byte[];
+                cia.llave = r["llave"] as byte[];
+                cia.apuntador = r["apuntador"] as byte[];
                 lst.Add(cia);
             }
             return lst;
@@ -236,6 +242,9 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally {
+                odbcCon.Close();
+            }
         }
 
 
@@ -335,8 +344,6 @@ namespace AppGia.Controllers
                          + "@CC)";
 
                 {
-
-                    
                     foreach (Balanza balanza in lstBala)
                     {
                         NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
@@ -385,13 +392,12 @@ namespace AppGia.Controllers
                         cmd.Parameters.AddWithValue("@ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.acta);
                         cmd.Parameters.AddWithValue("@CC", NpgsqlTypes.NpgsqlDbType.Text, balanza.cc);
 
-
-
                         //con.Open();
                         // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
                         cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
                     }
                     transaction.Commit();
+
                     //////con.Close();
                     //////DateTime fechaFinalProceso = DateTime.Now;
                     //////configCorreo.EnviarCorreo("La extracción de Balanza se genero correctamente"
@@ -414,6 +420,9 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally {
+                con.Close();
+            }
 
             //return cantFilaAfect;
         }
@@ -431,8 +440,8 @@ namespace AppGia.Controllers
                 //lstBala = convertirTabBalanza(id_compania);
 
                 string addBalanza = "insert into"
-                 + "balanza("
-                 //+"idbalanza,"
+                 + " balanza("
+                 +" id,"
                  + "cta,"
                  + "scta,"
                  + "sscta,"
@@ -474,11 +483,9 @@ namespace AppGia.Controllers
                  + "cierre_abonos,"
                  + "acta,"
                  + "cc" + ")"
-
-
                      + "values "
-                         //+ "(@IDBALANZA,"
-                         + "(@CTA,"
+                         +"(nextval('seq_balanza'),"
+                         + "@CTA,"
                          + "@SCTA,"
                          + "@SSCTA,"
                          + "@YEAR,"
@@ -521,7 +528,6 @@ namespace AppGia.Controllers
                          + "@CC)";
 
                 {
-
                     int cantFilaAfect = 0;
                     foreach (Balanza balanza in lstBala)
                     {
@@ -598,6 +604,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally 
+            {
+                con.Close();
+            }
         }
 
 
@@ -606,10 +616,10 @@ namespace AppGia.Controllers
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             string cabecera = string.Empty;
-            nombreArchivo = "cvsBalanza" + idEmpresa + DateTime.Now;
+            nombreArchivo = "BalanzaExport" + idEmpresa + DateTime.Now +".csv";
             StreamWriter layout;
             //layout = File.AppendText(@"C:\Users\Omnisys\Desktop\txtWinConnector\" + "cvsBalanza"+idEmpresa+DateTime.Now + ".csv");
-            layout = File.AppendText(ruta + "cvsBalanza" + idEmpresa + DateTime.Now + ".csv");
+            layout = File.AppendText(ruta + nombreArchivo);
             cabecera = "cta,"
                  + "scta,"
                  + "sscta,"
@@ -706,43 +716,43 @@ namespace AppGia.Controllers
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                         odbcCon.Open();
                         OdbcDataReader rdr = cmd.ExecuteReader();
-                        
+
                         while (rdr.Read())
                         {
-                            
-                                registros = Convert.ToInt32(rdr["year"]) + ","
-                                + Convert.ToString(rdr["cta"].ToString()) + ","
-                                + Convert.ToString(rdr["scta"].ToString()) + ","
-                                + Convert.ToString(rdr["sscta"].ToString()) + ","
-                                + Convert.ToDouble(rdr["salini"]) + ","
-                                + Convert.ToDouble(rdr["enecargos"]) + ","
-                                + Convert.ToDouble(rdr["eneabonos"]) + ","
-                                + Convert.ToDouble(rdr["febcargos"]) + ","
-                                + Convert.ToDouble(rdr["febabonos"]) + ","
-                                + Convert.ToDouble(rdr["marcargos"]) + ","
-                                + Convert.ToDouble(rdr["marabonos"]) + ","
-                                + Convert.ToDouble(rdr["abrcargos"]) + ","
-                                + Convert.ToDouble(rdr["abrabonos"]) + ","
-                                + Convert.ToDouble(rdr["maycargos"]) + ","
-                                + Convert.ToDouble(rdr["mayabonos"]) + ","
-                                + Convert.ToDouble(rdr["juncargos"]) + ","
-                                + Convert.ToDouble(rdr["junabonos"]) + ","
-                                + Convert.ToDouble(rdr["julcargos"]) + ","
-                                + Convert.ToDouble(rdr["julabonos"]) + ","
-                                + Convert.ToDouble(rdr["agocargos"]) + ","
-                                + Convert.ToDouble(rdr["agoabonos"]) + ","
-                                + Convert.ToDouble(rdr["sepcargos"]) + ","
-                                + Convert.ToDouble(rdr["sepabonos"]) + ","
-                                + Convert.ToDouble(rdr["octcargos"]) + ","
-                                + Convert.ToDouble(rdr["octabonos"]) + ","
-                                + Convert.ToDouble(rdr["novcargos"]) + ","
-                                + Convert.ToDouble(rdr["novabonos"]) + ","
-                                + Convert.ToDouble(rdr["diccargos"]) + ","
-                                + Convert.ToDouble(rdr["dicabonos"]) + ","
-                                + Convert.ToDouble(rdr["cierreabonos"]) + ","
-                                + Convert.ToDouble(rdr["cierrecargos"]) + ","
-                                + Convert.ToInt32(rdr["acta"]) + ","
-                                + Convert.ToString(rdr["cc"]);
+
+                            registros = Convert.ToInt32(rdr["year"]) + ","
+                            + Convert.ToString(rdr["cta"].ToString()) + ","
+                            + Convert.ToString(rdr["scta"].ToString()) + ","
+                            + Convert.ToString(rdr["sscta"].ToString()) + ","
+                            + Convert.ToDouble(rdr["salini"]) + ","
+                            + Convert.ToDouble(rdr["enecargos"]) + ","
+                            + Convert.ToDouble(rdr["eneabonos"]) + ","
+                            + Convert.ToDouble(rdr["febcargos"]) + ","
+                            + Convert.ToDouble(rdr["febabonos"]) + ","
+                            + Convert.ToDouble(rdr["marcargos"]) + ","
+                            + Convert.ToDouble(rdr["marabonos"]) + ","
+                            + Convert.ToDouble(rdr["abrcargos"]) + ","
+                            + Convert.ToDouble(rdr["abrabonos"]) + ","
+                            + Convert.ToDouble(rdr["maycargos"]) + ","
+                            + Convert.ToDouble(rdr["mayabonos"]) + ","
+                            + Convert.ToDouble(rdr["juncargos"]) + ","
+                            + Convert.ToDouble(rdr["junabonos"]) + ","
+                            + Convert.ToDouble(rdr["julcargos"]) + ","
+                            + Convert.ToDouble(rdr["julabonos"]) + ","
+                            + Convert.ToDouble(rdr["agocargos"]) + ","
+                            + Convert.ToDouble(rdr["agoabonos"]) + ","
+                            + Convert.ToDouble(rdr["sepcargos"]) + ","
+                            + Convert.ToDouble(rdr["sepabonos"]) + ","
+                            + Convert.ToDouble(rdr["octcargos"]) + ","
+                            + Convert.ToDouble(rdr["octabonos"]) + ","
+                            + Convert.ToDouble(rdr["novcargos"]) + ","
+                            + Convert.ToDouble(rdr["novabonos"]) + ","
+                            + Convert.ToDouble(rdr["diccargos"]) + ","
+                            + Convert.ToDouble(rdr["dicabonos"]) + ","
+                            + Convert.ToDouble(rdr["cierreabonos"]) + ","
+                            + Convert.ToDouble(rdr["cierrecargos"]) + ","
+                            + Convert.ToInt32(rdr["acta"]) + ","
+                            + Convert.ToString(rdr["cc"]);
 
                             layout.WriteLine(registros, Environment.NewLine);
 
@@ -774,8 +784,60 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally {
+                odbcCon.Close();
+            }
         }
 
+        public int copy_balanza(string nombre_archivo, string ruta_archivo)
+        {
+            int resultado;
+            string script_copy = string.Empty;
+            script_copy = " copy balanza from  '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(script_copy, con);
+                resultado = Convert.ToInt32(cmd.ExecuteNonQuery());
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                throw;
+            }
+
+            return resultado;
+        }
+
+        public int UpdateCuentaUnificada(Int64 idEmpresa)
+        {
+            string update = "   update balanza "
+                            + " set "
+                            + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
+                            + " where id = " + idEmpresa
+                            +"  and cuenta_unificada is null";
+
+            try
+            {
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(update, con);
+
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
+                }
+            }
+            catch (Exception ex)
+            {
+                con.Close();
+                throw;
+            }
+            finally {
+                con.Close();
+            }
+        }
 
 
     }

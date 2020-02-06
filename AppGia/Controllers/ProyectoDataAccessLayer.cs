@@ -9,17 +9,16 @@ namespace AppGia.Controllers
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        
 
-        public ProyectoDataAccessLayer() 
+
+        public ProyectoDataAccessLayer()
         {
             con = conex.ConnexionDB();
         }
         public IEnumerable<Proyecto> GetAllProyectos()
         {
-            string cadena = " select * from proyecto " 
+            string cadena = " select * from proyecto "
                           + "  where  activo  = " + true;
-
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
@@ -33,7 +32,7 @@ namespace AppGia.Controllers
                     {
                         Proyecto proyecto = new Proyecto();
 
-                        proyecto.id = Convert.ToInt64(rdr["id"]);    
+                        proyecto.id = Convert.ToInt64(rdr["id"]);
                         proyecto.desc_id = rdr["desc_id"].ToString().Trim();
                         proyecto.nombre = rdr["nombre"].ToString().Trim();
                         proyecto.activo = Convert.ToBoolean(rdr["activo"]);
@@ -53,6 +52,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public Proyecto GetProyectoData(string id)
@@ -60,9 +63,8 @@ namespace AppGia.Controllers
             try
             {
                 Proyecto proyecto = new Proyecto();
-
                 {
-                    string consulta =  "  select * from proyecto" 
+                    string consulta = "  select * from proyecto"
                                      + " where  id  = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
@@ -87,57 +89,68 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
-        public int addProyecto(Proyecto proyecto)
+
+        public long addProyecto(Proyecto proyecto)
         {
-            string add = "insert into " 
-                + " proyecto  ("
-                + " id ," 
-                + " desc_id ,"
-                + " nombre ,"
-                + " estatus ,"
-                + " responsable ,"
-                + " fecha_modificacion ,"
-                + " activo ) values " +
-                "(nextval('seq_proyecto'),@desc_id,@nombre,@estatus,@responsable,@fecha_modificacion,@activo)";
+            string add = "insert into "
+                + " proyecto " + "("
+                + "id" + ","
+                + "desc_id" + ","
+                + "estatus" + ","
+                + "nombre" + ","
+                + "responsable" + ","
+                + "modelo_negocio_id" + ","
+                + "fecha_inicio" + ","
+                + "fecha_fin" + ","
+                + "fecha_creacion" + ","
+                + "fecha_modificacion" + ","
+                + "activo" + ") values " +
+                "(nextval('seq_proyecto'),@desc_id,@estatus,@nombre,@responsable,@modelo_negocio_id,@fecha_inicio,@fecha_fin,@fecha_fin,@fecha_modificacion,@activo)RETURNING id ";
             try
             {
                 {
-
-                   // proyecto.desc_id = "uno";
-                   // proyecto.modelo_negocio_id = 1;
-                   // proyecto.EMPRESA.id =
-                   // int idcom = proyecto.idC;
-
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+
                     cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
-                    cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
-                    cmd.Parameters.AddWithValue("@estatus", proyecto.estatus);
-                    cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
-                    cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", proyecto.activo);
+                    cmd.Parameters.AddWithValue("@estatus", proyecto.estatus.Trim());
+                    cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
+                    cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
+                    cmd.Parameters.AddWithValue("@modelo_negocio_id", proyecto.modelo_negocio_id);
+                    cmd.Parameters.AddWithValue("@fecha_inicio", proyecto.fecha_inicio);
+                    cmd.Parameters.AddWithValue("@fecha_fin", proyecto.fecha_fin);
+                    cmd.Parameters.AddWithValue("@fecha_creacion", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = "SELECT currval('seq_proyecto') AS lastProyecto;";
-                    long idproyect = (long)cmd.ExecuteScalar();
+                    // obtiene la ultima secuencia usada para la insercion del id
+                    cmd.CommandText = "SELECT currval('seq_proyecto') AS lastProyecto";
+                    long idproyecto = (long)cmd.ExecuteScalar();
                     con.Close();
-                   // addEmpresa_Proyecto(idproyect, idcom);
-                    return cantFilAfec;
+                    return idproyecto;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
-        //cambios
 
         public int update(string id, Proyecto proyecto)
         {
-            string update = "update proyecto" 
+            string update = "update proyecto"
                   + " set "
                   + " nombre  = @nombre ,"
                   + " responsable  = @responsable,"
@@ -145,22 +158,16 @@ namespace AppGia.Controllers
                   + " fecha_modificacion  = @fecha_modificacion ,"
                   + " estatus  = @estatus"
                   + " WHERE id = " + id;
-
             try
             {
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
-
-             
                     cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
                     cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
                     cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@estatus", proyecto.activo);
-                   
-
-            
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -171,21 +178,21 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
-
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int Delete(string id)
         {
             bool status = false;
-            string delete = " update proyecto set activo = '" + status + "' " 
+            string delete = " update proyecto set activo = '" + status + "' "
                           + " where id ='" + id + "'";
             try
             {
-
                 {
-                
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
@@ -196,45 +203,50 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
-        public int addEmpresa_Proyecto(long id, int id2)
+        public void addEmpresa_Proyecto(long id, Proyecto proyectos)
         {
-
-            string add = "insert into "
-                + " empresa_proyecto ("
-                + " id ,"
-                + " activo ,"
-                + " empresa_id ,"
-                + " proyecto_id "
-                + " ) values " +
-                "( @nextval('seq_empresa_proy'),@activo,@empresa_id,@proyecto_id)";
-
+            string idEmpresas = proyectos.idsempresas;
+            string[] arrIdEmpresas = idEmpresas.Split(',');
             try
             {
+                foreach (var ids in arrIdEmpresas)
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-
-                    Empresa_Proyecto empresa_proyecto = new Empresa_Proyecto();
-                    Proyecto proyecto = new Proyecto();
-                    //empresa_proyecto.empresa_id = 1;
-                    cmd.Parameters.AddWithValue("@activo", empresa_proyecto.activo);
-                    cmd.Parameters.AddWithValue("@empresa_id", id2);
-                    cmd.Parameters.AddWithValue("@proyecto_id", id);
-
-                    con.Open();
-                    int cantFilAfec = cmd.ExecuteNonQuery();
-                    con.Close();
-                    return cantFilAfec;
+                    string add = "insert into "
+                   + " empresa_proyecto ("
+                   + " id ,"
+                   + " activo ,"
+                   + " empresa_id ,"
+                   + " proyecto_id "
+                   + " ) values " +
+                   "( @nextval('seq_empresa_proy'),@activo,@empresa_id,@proyecto_id)";
+                    {
+                        NpgsqlCommand cmd = new NpgsqlCommand(add, con);
+                        Empresa_Proyecto empresa_proyecto = new Empresa_Proyecto();
+                        cmd.Parameters.AddWithValue("@activo", empresa_proyecto.activo);
+                        cmd.Parameters.AddWithValue("@empresa_id", Convert.ToInt64(ids));//empresa asociada
+                        cmd.Parameters.AddWithValue("@proyecto_id", id);
+                        con.Open();
+                        long cantFilAfec = cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                con.Close();
+                string error = ex.Message;
                 throw;
             }
-
+            finally
+            {
+                con.Close();
+            }
         }
 
     }

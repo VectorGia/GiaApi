@@ -16,7 +16,9 @@ namespace AppGia.Controllers
         }
         public IEnumerable<Modelo_Negocio> GetAllModeloNegocios()
         {
-            string consulta = "select id,activo,nombre,tipo_captura_id from modelo_negocio where  activo = " + true;
+
+            string consulta = "select * from modelo_negocio where activo = " + true + " order by id desc";
+
             try
             {
                 List<Modelo_Negocio> lstmodelo = new List<Modelo_Negocio>();
@@ -32,7 +34,7 @@ namespace AppGia.Controllers
                     modeloNegocio.id = Convert.ToInt64(rdr["id"]);
                     modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                     modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
-                    modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                    //modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
                     lstmodelo.Add(modeloNegocio);
                 }
                 con.Close();
@@ -43,6 +45,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public Modelo_Negocio GetModelo(string id)
@@ -73,25 +79,32 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int addModeloNegocio(Modelo_Negocio modeloNegocio)
         {
-            string add = "insert into modelo_negocio "
-                + "(" + "id" + ","
-                + "activo" + ","
-                + "tipo_captura_id" + ","
-                + "nombre" + ") "
-                + "values "
-                + "(nextval('seq_modelo_neg'),"
-                + "@activo,@tipo_captura_id,@nombre)";
+
+            string addModelo = "insert into " + "modelo_negocio"
+                + "("
+                + "id" + ","
+                + "nombre"+","
+                +"activo" + ") " +
+                "values " +
+                "(nextval('seq_modelo_neg'),@nombre," + 
+                "@activo)";
 
             try
             {
+    
+                    NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
+                cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
+                    cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
+                    cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
+                    //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
-                NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
-                cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre);
-                cmd.Parameters.AddWithValue("@tipo_captura_id", modeloNegocio.tipo_captura_id);
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();
@@ -103,9 +116,14 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Update(string id, Modelo_Negocio modeloNegocio)
         {
+
             string add = "update modelo_negocio set "
                  + "nombre = @nombre ,"
                  + "activo = @activo ,"
@@ -130,6 +148,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Delete(string id)
         {
@@ -152,6 +174,10 @@ namespace AppGia.Controllers
                 con.Close();
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

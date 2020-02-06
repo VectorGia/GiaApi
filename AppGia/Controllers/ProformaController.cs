@@ -16,18 +16,20 @@ namespace AppGia.Controllers
         ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/Proforma
         [HttpGet]
-        public IEnumerable<Proforma> Get(int idProforma)
+        public List<ProformaDetalle> Get(int idProforma)
         {
-            int idCentroCosto = 1;
-            int idEmpresa = 4;
-            int mes = 1;
-            int idModeloNegocio = 20;
-            int idProyecto = 51;
-            int idRubro = 7;
+            ProformaDataAccessLayer objProforma = new ProformaDataAccessLayer();
+            int idCentroCosto = 12;
             int anio = 2020;
-            int idTipoCaptura = 1;
-            idProforma = 6;
-            bool activo = true;
+            int idTipoProforma = 1;
+            //int idEmpresa = 4;
+            //int mes = 1;
+            //int idModeloNegocio = 20;
+            //int idProyecto = 51;
+            //int idRubro = 7;
+            //idProforma = 6;
+            //bool activo = true;
+
             // Ya funciona el select de la proforma con el enumerable Proforma
             // Ya funciona el select de la proforma calculada con el enumarable ProformaDetalle
             //return ObtieneProfCalc(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
@@ -42,7 +44,7 @@ namespace AppGia.Controllers
             //insertProforma.usuario = 1;
             //insertProforma.fecha_captura = DateTime.Now;
             //objProforma.AddProforma(insertProforma);
-            return objProforma.GetProforma(idProforma);
+            return objProforma.GeneraProforma(idCentroCosto, anio, idTipoProforma);
         }
 
         // GET: api/Proforma/5
@@ -76,10 +78,10 @@ namespace AppGia.Controllers
         {
         }
 
-        public IEnumerable<ProformaDetalle> ObtieneProfCalc(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int idTipoCaptura)
+        public IEnumerable<ProformaDetalle> ObtieneProfCalc(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             //ProformaDetalle listaProf = new ProformaDetalle();
-            return objProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            return objProformaDetalle.GetProformaCalculada(mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
         }
     }
 }

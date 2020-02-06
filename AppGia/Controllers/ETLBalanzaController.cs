@@ -80,6 +80,8 @@ namespace AppGia.Controllers
                                            + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
                                            , "ETL Balanza Manual");
 
+                etlBalanza.UpdateCuentaUnificada();// concatencacion de cuentas 
+
 
             }
             catch (Exception ex)
@@ -92,6 +94,7 @@ namespace AppGia.Controllers
                                            + "\nError : " + ex.Message
                                            , "ETL Balanza Manual ");
                 string error = ex.Message;
+                //etlBalanza.UpdateCuentaUnificada();// concatencacion de cuentas 
                 throw;
             }
 

@@ -57,6 +57,10 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public RelacionCompania GetRelacionCompaniaData(int id)
@@ -98,6 +102,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -142,6 +150,10 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -175,6 +187,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
 
         }
@@ -215,6 +231,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
         }
 

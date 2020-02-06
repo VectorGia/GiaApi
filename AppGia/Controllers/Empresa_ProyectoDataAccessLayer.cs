@@ -9,13 +9,47 @@ namespace AppGia.Controllers
 {
     public class Empresa_ProyectoDataAccessLayer
     {
-
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
 
         public Empresa_ProyectoDataAccessLayer()
         {
             con = conex.ConnexionDB();
+        }
+
+        public IEnumerable<Empresa> GetAllEmpresaByProyectoId(Int64 idProyecto)
+        {
+            string cadena = " select e.id,e.nombre from empresa_proyecto ep join empresa e on ep.empresa_id = e.id" +
+                        " where proyecto_id = " + idProyecto + " --and ep.activo = true and e.activo = true";
+            try
+            {
+                List<Empresa> ltsEmpresa = new List<Empresa>();
+
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        Empresa empresa = new Empresa();
+
+                        empresa.id = Convert.ToInt32(rdr["id"]);
+                        empresa.nombre = rdr["nombre"].ToString();
+                        ltsEmpresa.Add(empresa);
+                    }
+                
+                }
+                return ltsEmpresa;
+            }
+            finally
+            {
+                if(con.State == System.Data.ConnectionState.Open)
+                {
+                con.Close();
+                }
+
+            }
         }
 
         public IEnumerable<Empresa_Proyecto> GetAllEmpresa_Proyecto()
@@ -50,6 +84,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public Empresa_Proyecto GetEmpresa_ProyectoData(string id)
@@ -80,6 +118,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -117,6 +159,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int update(string id, Empresa_Proyecto empresa_proyecto)
@@ -146,6 +192,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -171,6 +221,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

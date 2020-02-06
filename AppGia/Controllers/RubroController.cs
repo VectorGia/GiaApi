@@ -20,12 +20,17 @@ namespace AppGia.Controllers
         }
 
         // GET: api/Rubros/5
-        [HttpGet("{id}", Name = "GetRubros")]
-        public Rubros Get(string id)
+        [HttpGet("id/{id}", Name = "GetRubros")]
+        public List<Rubros> Get(int id)
         {
-            return objrubro.GetRubro(id);
+            return objrubro.GetRubroById(id);
         }
 
+        [HttpGet("{id}", Name = "GetRubrosByModeloId")]
+        public List<Rubros> GetRubrosByModeloId(int id)
+        {
+            return objrubro.GetRubroByModeloId(id);
+        }
         // POST: api/Rubros
         [HttpPost]
         public int Post([FromBody] Rubros rubro)

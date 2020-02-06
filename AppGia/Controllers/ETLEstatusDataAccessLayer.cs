@@ -51,6 +51,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int update(Etl_Estatus estatusetl)
@@ -87,6 +91,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
 
+            }
+            finally
+            {
+                con.Close();
             }
 
         }
@@ -125,6 +133,10 @@ namespace AppGia.Controllers
                 throw;
 
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -159,6 +171,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }
