@@ -23,7 +23,7 @@ namespace AppGia.Controllers
             ETLBalanzaDataAccessLayer etlBalanza = new ETLBalanzaDataAccessLayer();
             List<Empresa> lstCia = etlBalanza.EmpresaConexionETL_List(idEmpresa);
             
-            if (lstCia.Count <= 0)
+            if (lstCia.Count <= 0) 
             {  
 
                 throw new Exception("La Empresa con identificador " + idEmpresa + " no esta registrado para su extracción ");
