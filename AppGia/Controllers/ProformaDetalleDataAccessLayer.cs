@@ -220,7 +220,7 @@ namespace AppGia.Controllers
         //      9 =  9+3 - Nueve reales, 3 proformados
         // Los reales se calculan desde los montos consolidados
         // Los proformados se capturan en pantalla
-        public List<ProformaDetalle> GetProformaCalculada(int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
@@ -351,7 +351,7 @@ namespace AppGia.Controllers
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
             //consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
-            // Aparentemente falta el Centro de Costos (en Shadow se debera crear uno)
+            consulta += "	 and centro_costo_id = " + idCenCos.ToString();             // Centro de Costos
             consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
             consulta += "	 order by rub.id ";
 
@@ -416,7 +416,7 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public List<ProformaDetalle> GetEjercicioAnterior(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetEjercicioAnterior(Int64 idCenCos, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce(";
@@ -456,6 +456,7 @@ namespace AppGia.Controllers
             consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
             //consulta += "	 and mon.rubro_id = " + idRubro.ToString();                       // Rubro
+            consulta += "	 and mon.centro_costo_id = " + idCenCos.ToString();               // Centro de costos
             consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
             consulta += "	 group by mon.rubro_id, rub.nombre ";
 
