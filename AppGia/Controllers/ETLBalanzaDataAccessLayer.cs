@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class ETLBalanzaDataAccessLayer
+    public class ETLBalanzaDataAccessLayer 
     {
         ConfigCorreoController configCorreo = new ConfigCorreoController();
         NpgsqlConnection con;
