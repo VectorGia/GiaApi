@@ -94,8 +94,9 @@ namespace AppGia.Controllers
                 + "tipo_captura_id"+","
                 + "activo" + ") " +
                 "values " +
-                "(nextval('seq_modelo_neg'),@nombre," + 
-                "@activo)";
+                "(nextval('seq_modelo_neg'),@nombre," 
+                +"@tipo_captura_id,"
+                +"@activo)";
 
             try
             {    
