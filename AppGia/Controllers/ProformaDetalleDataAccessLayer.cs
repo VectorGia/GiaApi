@@ -226,7 +226,7 @@ namespace AppGia.Controllers
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
             consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, ";
-            if(mesInicio == 0)
+            if(idTipoCaptura == 0)
             {
                 // Para el 0+12 Enero, Febrero y Marzo se capturan
                 consulta += "	 0 as enero_monto_financiero, ";
@@ -246,7 +246,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(marzo_total_financiero, 0) as marzo_monto_financiero, ";
                 consulta += "	 coalesce(marzo_total_resultado, 0) as marzo_monto_resultado, ";
             }
-            if (mesInicio == 0 || mesInicio == 3)
+            if (idTipoCaptura == 0 || idTipoCaptura == 3)
             {
                 // Para el 0+12 y el 3+9 Abril, Mayo y Junio se capturan
                 consulta += "	 0 as abril_monto_financiero, ";
@@ -266,7 +266,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(junio_total_financiero, 0) as junio_monto_financiero, ";
                 consulta += "	 coalesce(junio_total_resultado, 0) as junio_monto_resultado, ";
             }
-            if (mesInicio == 0 || mesInicio == 3 || mesInicio == 6)
+            if (idTipoCaptura == 0 || idTipoCaptura == 3 || idTipoCaptura == 6)
             {
                 // Para el 0+12, el 3+9 y el 6+6 Julio, Agosto y Septiembre se capturan
                 consulta += "	 0 as julio_monto_financiero, ";
@@ -286,7 +286,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(septiembre_total_financiero, 0) as septiembre_monto_financiero, ";
                 consulta += "	 coalesce(septiembre_total_resultado, 0) as septiembre_monto_resultado, ";
             }
-            if (mesInicio == 0 || mesInicio == 3 || mesInicio == 6 || mesInicio == 9)
+            if (idTipoCaptura == 0 || idTipoCaptura == 3 || idTipoCaptura == 6 || idTipoCaptura == 9)
             {
                 // Para 0+12, 3+9, 6+6 y 9+3 el resto de los meses se capturan
                 consulta += "	 0 as octubre_monto_financiero, ";

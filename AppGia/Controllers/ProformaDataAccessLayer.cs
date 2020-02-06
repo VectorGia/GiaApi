@@ -169,6 +169,16 @@ namespace AppGia.Controllers
                 return null;
             }
 
+            // ¡¡¡ ALERTA - Datos de prueba !!!
+            idCC = 5;
+            mesInicio = 2;
+            idEmpresa = 4;
+            idModeloNeg = 20;
+            idProyecto = 51;
+            anio = 2020;
+            idTipoProforma = 1;
+            // ¡¡¡ ALERTA - Datos de prueba !!!
+
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
 
@@ -303,7 +313,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select id_modelo_neg, tipo_id, clave, aritmetica, naturaleza ";
             consulta += " 	from rubro ";
-            consulta += " 	where id_rubro = " + rubro_id.ToString();
+            consulta += " 	where id = " + rubro_id.ToString();
             consulta += " 	and activo = 'true' ";
 
             try

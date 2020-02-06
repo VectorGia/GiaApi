@@ -24,7 +24,7 @@ namespace AppGia.Controllers
             int idProyecto = 51;
             int idRubro = 7;
             int anio = 2020;
-            int idTipoCaptura = 1;
+            int idTipoCaptura = 6;
             //return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
             return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
         }
