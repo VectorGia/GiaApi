@@ -8,8 +8,8 @@ namespace AppGia.Models
     public class ProformaDetalle
     {
         // Campos de tabla "proforma_detalle"
-        public int id { get; set; }
-        public int id_proforma { get; set; }
+        public Int64 id { get; set; }
+        public Int64 id_proforma { get; set; }
         public double enero_monto_financiero { get; set; }
         public double enero_monto_resultado { get; set; }
         public double febrero_monto_financiero { get; set; }
@@ -47,9 +47,11 @@ namespace AppGia.Models
 
         // Campos de tabla "proforma"
         public int anio { get; set; }
-        public int modelo_negocio_id { get; set; }
-        public int tipo_captura_id { get; set; }
-        public int periodo_id { get; set; }
+        public Int64 modelo_negocio_id { get; set; }
+        public Int64 tipo_captura_id { get; set; }
+        public Int64 tipo_proforma_id { get; set; }
+        public Int64 centro_costo_id { get; set; }
+        public Int64 periodo_id { get; set; }
         public DateTime fecha_captura { get; set; }
 
         // Campos de tabla "rubro"

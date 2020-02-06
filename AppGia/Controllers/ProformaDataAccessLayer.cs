@@ -84,7 +84,14 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
                 int regInsert = cmd.ExecuteNonQuery();
-
+                
+                 cmd = new NpgsqlCommand("select currval('seq_proforma') as idproforma", con);
+                 NpgsqlDataReader reader = cmd.ExecuteReader();
+                 if (reader.Read())
+                 {
+                     proforma.id=Convert.ToInt64(reader["idproforma"]);
+                 }
+                
                 return regInsert;
             }
             catch
@@ -163,7 +170,7 @@ namespace AppGia.Controllers
             }
 
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
-            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
+            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
 
             // Enlista la proforma
             List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, idModeloNeg);
@@ -186,6 +193,9 @@ namespace AppGia.Controllers
             aritmeticas.Add("octubre", rubroTotal.aritmetica);
             aritmeticas.Add("noviembre", rubroTotal.aritmetica);
             aritmeticas.Add("diciembre", rubroTotal.aritmetica);
+            aritmeticas.Add("ejercicio", rubroTotal.aritmetica);
+            aritmeticas.Add("acumulado", rubroTotal.aritmetica);
+            aritmeticas.Add("total", rubroTotal.aritmetica);
 
             detalles.ForEach(detalle =>
             {
@@ -204,6 +214,9 @@ namespace AppGia.Controllers
                     aritmeticas["octubre"] = aritmeticas["octubre"].Replace(rubrosCta.clave, detalle.octubre_monto_resultado.ToString());
                     aritmeticas["noviembre"] = aritmeticas["noviembre"].Replace(rubrosCta.clave, detalle.noviembre_monto_resultado.ToString());
                     aritmeticas["diciembre"] = aritmeticas["diciembre"].Replace(rubrosCta.clave, detalle.diciembre_monto_resultado.ToString());
+                    aritmeticas["ejercicio"] = aritmeticas["ejercicio"].Replace(rubrosCta.clave, detalle.ejercicio_resultado.ToString());
+                    aritmeticas["acumulado"] = aritmeticas["acumulado"].Replace(rubrosCta.clave, detalle.acumulado_resultado.ToString());
+                    aritmeticas["total"] = aritmeticas["total"].Replace(rubrosCta.clave, detalle.total_resultado.ToString());
                 }
 
             });
@@ -223,6 +236,9 @@ namespace AppGia.Controllers
             proformaDetalleTotal.octubre_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["octubre"], ""));
             proformaDetalleTotal.noviembre_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["noviembre"], ""));
             proformaDetalleTotal.diciembre_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["diciembre"], ""));
+            proformaDetalleTotal.ejercicio_resultado = Convert.ToDouble(dt.Compute(aritmeticas["ejercicio"], ""));
+            proformaDetalleTotal.acumulado_resultado = Convert.ToDouble(dt.Compute(aritmeticas["acumulado"], ""));
+            proformaDetalleTotal.total_resultado = Convert.ToDouble(dt.Compute(aritmeticas["total"], ""));
             return proformaDetalleTotal;
         }
 
@@ -450,15 +466,15 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, int idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
           
             // Obtiene lista de montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
+            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetEjercicioAnterior(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
+            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetEjercicioAnterior(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
@@ -483,8 +499,25 @@ namespace AppGia.Controllers
         }
         
         // Metodo para almacenar una proforma
-        public int GuardaProforma()
+        public int GuardaProforma(List<ProformaDetalle> detalles)
         {
+            Proforma proforma=new Proforma();
+            proforma.activo = true;
+            proforma.anio=detalles[0].anio;
+            //proforma.usuario=;
+            proforma.modelo_negocio_id=detalles[0].modelo_negocio_id;
+            proforma.tipo_proforma_id = detalles[0].tipo_proforma_id;
+            proforma.tipo_captura_id=detalles[0].tipo_captura_id;
+            proforma.centro_costo_id = detalles[0].centro_costo_id;
+            proforma.fecha_captura=new DateTime();
+            AddProforma(proforma);
+            detalles.ForEach(detalle =>
+            {
+                detalle.id_proforma = proforma.id;
+                detalle.activo = true;
+                new ProformaDetalleDataAccessLayer().AddProformaDetalle(detalle);    
+            });
+            
             // Toma los datos de pantalla
             // Inserta en la tabla proforma
             // Inserta en la tabla proforma_detalle
