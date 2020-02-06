@@ -49,6 +49,8 @@ namespace AppGia.Models
         public int anio { get; set; }
         public int modelo_negocio_id { get; set; }
         public int tipo_captura_id { get; set; }
+        public int tipo_proforma_id { get; set; }
+        public int centro_costo_id { get; set; }
         public int periodo_id { get; set; }
         public DateTime fecha_captura { get; set; }
 
