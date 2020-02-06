@@ -128,21 +128,39 @@ namespace AppGia.Controllers
         // Parametros de entrada: centro de costos, anio y tipo de proforma
         public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma)
         {
+            string Mensaje=string.Empty;
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos datCenCos = new CentroCostos();
             datCenCos = ObtenerDatosCC(idCC);
             int idEmpresa = datCenCos.empresa_id;
             int idProyecto = datCenCos.proyecto_id;
+            if(idEmpresa == 0 && idProyecto == 0)
+            {
+                Mensaje = "No hay informacion del centro de costos";
+                return null;
+            }
 
+            idEmpresa = 51; // JMQE Prueba. ¡¡¡¡ QUITAR !!!!
             // De la empresa se obtiene el modelo de negocio
             Proyecto datProyec = new Proyecto();
             datProyec = ObtenerDatosProy(idEmpresa);
             int idModeloNeg = datProyec.modelo_negocio_id;
+            if (idModeloNeg == 0)
+            {
+                Mensaje = "No hay informacion del modelo de negocios";
+                return null;
+            }
 
             // Del tipo de proforma obtiene mes de inicio
             Tipo_Proforma datTipoProf = new Tipo_Proforma();
+            idTipoProforma = 6; // JMQE Prueba. ¡¡¡¡ QUITAR !!!!
             datTipoProf = ObtenerDatosTipoProf(idTipoProforma);
             int mesInicio = datTipoProf.mes_inicio;
+            if (mesInicio < 0)
+            {
+                Mensaje = "Error en el mes de inicio de la proforma";
+                return null;
+            }
 
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
@@ -243,6 +261,7 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     Rubros rubsObtenidos = new Rubros();
+
                     rubsObtenidos.id = Convert.ToInt32(rdr["id"]);
                     rubsObtenidos.nombre = Convert.ToString(rdr["nombre"]);
                     rubsObtenidos.clave = Convert.ToString(rdr["clave"]);
@@ -319,8 +338,15 @@ namespace AppGia.Controllers
 
                 while (rdr.Read())
                 {
-                    datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
-                    datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
+                    if(rdr["empresa_id"] == null)
+                        datosCenCos.empresa_id = 0;
+                    else
+                        datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
+
+                    if (rdr["empresa_id"] == null)
+                        datosCenCos.proyecto_id = 0;
+                    else
+                        datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
                 }
 
                 return datosCenCos;
@@ -353,8 +379,16 @@ namespace AppGia.Controllers
 
                 while (rdr.Read())
                 {
-                    datosProy.id = Convert.ToInt32(rdr["id"]);
-                    datosProy.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                    if (rdr["id"] == null)
+                        datosProy.id = 0;
+                    else
+                        datosProy.id = Convert.ToInt32(rdr["id"]);
+
+                    if (rdr["modelo_negocio_id"] == null)
+                        datosProy.modelo_negocio_id = 0;
+                    else
+                        datosProy.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+
                 }
 
                 return datosProy;
@@ -387,9 +421,21 @@ namespace AppGia.Controllers
 
                 while (rdr.Read())
                 {
-                    datosTipoProf.id = Convert.ToInt64(rdr["id"]);
-                    datosTipoProf.clave = Convert.ToString(rdr["clave"]);
-                    datosTipoProf.mes_inicio = Convert.ToInt32(rdr["mes_inicio"]);
+                    if (rdr["id"] == null)
+                        datosTipoProf.id = 0;
+                    else
+                        datosTipoProf.id = Convert.ToInt64(rdr["id"]);
+
+                    if (rdr["clave"] == null)
+                        datosTipoProf.clave = "";
+                    else
+                        datosTipoProf.clave = Convert.ToString(rdr["clave"]);
+
+                    if (rdr["mes_inicio"] == null)
+                        datosTipoProf.mes_inicio = -1;
+                    else
+                        datosTipoProf.mes_inicio = Convert.ToInt32(rdr["mes_inicio"]);
+
                 }
 
                 return datosTipoProf;
