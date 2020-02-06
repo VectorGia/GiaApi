@@ -105,7 +105,7 @@ namespace AppGia.Controllers
             try
             {
                 /// creacion de odbc 
-                DSN dsn = new DSN();
+                DSN dsn = new DSN(); 
                 dsn = dsnConfig.crearDSN(idEmpresa); //regresar
                 if (dsn.creado) //regresar// if(true)
                 {

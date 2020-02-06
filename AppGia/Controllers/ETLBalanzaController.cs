@@ -101,7 +101,7 @@ namespace AppGia.Controllers
         
                 procesoDa.AddProceso(proceso);
 
-                etlBalanzaDa.UpdateCuentaUnificada(idEmpresa);// concatencacion de cuentas 
+                etlBalanzaDa.UpdateCuentaUnificada(idEmpresa);// concatencacion de cuentas  
 
 
             }
