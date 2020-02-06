@@ -89,7 +89,7 @@ namespace AppGia.Controllers
                  NpgsqlDataReader reader = cmd.ExecuteReader();
                  if (reader.Read())
                  {
-                     proforma.id=Convert.ToInt32(reader["idproforma"]);
+                     proforma.id=Convert.ToInt64(reader["idproforma"]);
                  }
                 
                 return regInsert;
