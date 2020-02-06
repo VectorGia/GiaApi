@@ -104,6 +104,7 @@ namespace AppGia.Controllers
                 etlBalanzaDa.UpdateCuentaUnificada(idEmpresa);// concatencacion de cuentas  
 
 
+
             }
             catch (Exception ex)
             {
