@@ -80,7 +80,7 @@ namespace AppGia.Controllers
                                            + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
                                            , "ETL Balanza Manual");
 
-                etlBalanza.UpdateCuentaUnificada();// concatencacion de cuentas 
+                etlBalanza.UpdateCuentaUnificada(idCompania);// concatencacion de cuentas 
 
 
             }
