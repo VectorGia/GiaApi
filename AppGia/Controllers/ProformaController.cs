@@ -78,10 +78,10 @@ namespace AppGia.Controllers
         {
         }
 
-        public IEnumerable<ProformaDetalle> ObtieneProfCalc(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
+        public IEnumerable<ProformaDetalle> ObtieneProfCalc(Int64 idCenCos, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             //ProformaDetalle listaProf = new ProformaDetalle();
-            return objProformaDetalle.GetProformaCalculada(mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
+            return objProformaDetalle.GetProformaCalculada(idCenCos, mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
         }
     }
 }

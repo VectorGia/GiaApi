@@ -506,9 +506,9 @@ namespace AppGia.Controllers
             proforma.anio=detalles[0].anio;
             //proforma.usuario=;
             proforma.modelo_negocio_id=detalles[0].modelo_negocio_id;
-            //proforma.tipo_proforma_id;
+            proforma.tipo_proforma_id = detalles[0].tipo_proforma_id;
             proforma.tipo_captura_id=detalles[0].tipo_captura_id;
-            //proforma.centro_costo_id=detalles[0].;
+            proforma.centro_costo_id = detalles[0].centro_costo_id;
             proforma.fecha_captura=new DateTime();
             AddProforma(proforma);
             detalles.ForEach(detalle =>
