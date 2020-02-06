@@ -84,7 +84,14 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
                 int regInsert = cmd.ExecuteNonQuery();
-
+                
+                 cmd = new NpgsqlCommand("select currval('seq_proforma') as idproforma", con);
+                 NpgsqlDataReader reader = cmd.ExecuteReader();
+                 if (reader.Read())
+                 {
+                     proforma.id=Convert.ToInt32(reader["idproforma"]);
+                 }
+                
                 return regInsert;
             }
             catch
@@ -168,6 +175,9 @@ namespace AppGia.Controllers
             aritmeticas.Add("octubre", rubroTotal.aritmetica);
             aritmeticas.Add("noviembre", rubroTotal.aritmetica);
             aritmeticas.Add("diciembre", rubroTotal.aritmetica);
+            aritmeticas.Add("ejercicio", rubroTotal.aritmetica);
+            aritmeticas.Add("acumulado", rubroTotal.aritmetica);
+            aritmeticas.Add("total", rubroTotal.aritmetica);
 
             detalles.ForEach(detalle =>
             {
@@ -186,6 +196,9 @@ namespace AppGia.Controllers
                     aritmeticas["octubre"] = aritmeticas["octubre"].Replace(rubrosCta.clave, detalle.octubre_monto_resultado.ToString());
                     aritmeticas["noviembre"] = aritmeticas["noviembre"].Replace(rubrosCta.clave, detalle.noviembre_monto_resultado.ToString());
                     aritmeticas["diciembre"] = aritmeticas["diciembre"].Replace(rubrosCta.clave, detalle.diciembre_monto_resultado.ToString());
+                    aritmeticas["ejercicio"] = aritmeticas["ejercicio"].Replace(rubrosCta.clave, detalle.ejercicio_resultado.ToString());
+                    aritmeticas["acumulado"] = aritmeticas["acumulado"].Replace(rubrosCta.clave, detalle.acumulado_resultado.ToString());
+                    aritmeticas["total"] = aritmeticas["total"].Replace(rubrosCta.clave, detalle.total_resultado.ToString());
                 }
 
             });
@@ -205,6 +218,9 @@ namespace AppGia.Controllers
             proformaDetalleTotal.octubre_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["octubre"], ""));
             proformaDetalleTotal.noviembre_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["noviembre"], ""));
             proformaDetalleTotal.diciembre_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["diciembre"], ""));
+            proformaDetalleTotal.ejercicio_resultado = Convert.ToDouble(dt.Compute(aritmeticas["ejercicio"], ""));
+            proformaDetalleTotal.acumulado_resultado = Convert.ToDouble(dt.Compute(aritmeticas["acumulado"], ""));
+            proformaDetalleTotal.total_resultado = Convert.ToDouble(dt.Compute(aritmeticas["total"], ""));
             return proformaDetalleTotal;
         }
 
@@ -437,8 +453,25 @@ namespace AppGia.Controllers
         }
         
         // Metodo para almacenar una proforma
-        public int GuardaProforma()
+        public int GuardaProforma(List<ProformaDetalle> detalles)
         {
+            Proforma proforma=new Proforma();
+            proforma.activo = true;
+            proforma.anio=detalles[0].anio;
+            //proforma.usuario=;
+            proforma.modelo_negocio_id=detalles[0].modelo_negocio_id;
+            //proforma.tipo_proforma_id;
+            proforma.tipo_captura_id=detalles[0].tipo_captura_id;
+            //proforma.centro_costo_id=detalles[0].;
+            proforma.fecha_captura=new DateTime();
+            AddProforma(proforma);
+            detalles.ForEach(detalle =>
+            {
+                detalle.id_proforma = proforma.id;
+                detalle.activo = true;
+                new ProformaDetalleDataAccessLayer().AddProformaDetalle(detalle);    
+            });
+            
             // Toma los datos de pantalla
             // Inserta en la tabla proforma
             // Inserta en la tabla proforma_detalle
