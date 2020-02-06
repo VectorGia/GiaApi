@@ -57,6 +57,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public Empresa GetEmpresaData(int id)
         {
@@ -96,6 +100,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public long Add(Empresa empresa)
@@ -162,6 +170,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Update(string id, Empresa empresa)
         {
@@ -209,6 +221,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Delete(string id)
         {
@@ -228,6 +244,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -256,9 +276,11 @@ namespace AppGia.Controllers
                     con.Close();
                     throw;
                 }
-            }
-               
-    
+                finally
+                {
+                    con.Close();
+                }
+            }                  
         }
     }
 }

@@ -60,6 +60,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public Usuario GetUsuario(string id)
         {
@@ -91,6 +95,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public int InsertaUsuarios()
@@ -236,6 +244,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int updateUsuario(string id, Usuario usuario)
@@ -329,6 +341,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw ex;
+            }
+            finally
+            {
+                con.Close();
             }
 
         }

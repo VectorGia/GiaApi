@@ -12,13 +12,12 @@ using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class ETLBalanzaDataAccessLayer
+    public class ETLBalanzaDataAccessLayer 
     {
         ConfigCorreoController configCorreo = new ConfigCorreoController();
         NpgsqlConnection con;
-        Conexion.Conexion conex = new Conexion.Conexion();
+        Conexion.Conexion conex = new Conexion.Conexion(); 
         NpgsqlCommand comP = new NpgsqlCommand();
-
 
         OdbcConnection odbcCon;
         OdbcCommand cmdETL = new OdbcCommand();
@@ -27,8 +26,6 @@ namespace AppGia.Controllers
 
         SqlConnection conSQLETL = new SqlConnection();
         SqlCommand comSQLETL = new SqlCommand();
-
-
 
         public ETLBalanzaDataAccessLayer()
         {
@@ -40,8 +37,7 @@ namespace AppGia.Controllers
 
         }
 
-
-        public DataTable EmpresaConexionETL(int idEmpresa)
+        public DataTable EmpresaConexionETL(Int64 idEmpresa)
         {
             string add = "SELECT  id ,"
                     + "  usuario_etl ,"
@@ -73,12 +69,13 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
-            finally {
+            finally 
+            {
                 con.Close();
             }
         }
 
-        public List<Empresa> EmpresaConexionETL_List(int idEmpresa)
+        public List<Empresa> EmpresaConexionETL_List(Int64 idEmpresa)
         {
             List<Empresa> lst = new List<Empresa>();
             DataTable dt = new DataTable();
@@ -102,13 +99,13 @@ namespace AppGia.Controllers
             return lst;
         }
 
-        public List<Balanza> obtenerSalContCCD(int idEmpresa)
+        public List<Balanza> obtenerSalContCCD(Int64 idEmpresa)
         {
 
             try
             {
                 /// creacion de odbc 
-                DSN dsn = new DSN();
+                DSN dsn = new DSN(); 
                 dsn = dsnConfig.crearDSN(idEmpresa); //regresar
                 if (dsn.creado) //regresar// if(true)
                 {
@@ -251,7 +248,7 @@ namespace AppGia.Controllers
         }
 
 
-        public int generarBalanza(List<Balanza> lstBala,int idCompania) {
+        public int generarBalanza(List<Balanza> lstBala,Int64 idEmpresa) {
             con.Open();
             var transaction = con.BeginTransaction();
             int cantFilaAfect = 0;
@@ -347,8 +344,6 @@ namespace AppGia.Controllers
                          + "@CC)";
 
                 {
-
-
                     foreach (Balanza balanza in lstBala)
                     {
                         NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
@@ -391,13 +386,11 @@ namespace AppGia.Controllers
                         cmd.Parameters.AddWithValue("@FECHA_CARGA", NpgsqlTypes.NpgsqlDbType.Date, DateTime.Now);
                         //cmd.Parameters.AddWithValue("@HORA_CARGA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
                         cmd.Parameters.AddWithValue("@HORA_CARGA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
-                        cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, idCompania);
+                        cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Bigint, idEmpresa);
                         cmd.Parameters.AddWithValue("@CIERRE_CARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_cargos);
                         cmd.Parameters.AddWithValue("@CIERRE_ABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_abonos);
                         cmd.Parameters.AddWithValue("@ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.acta);
                         cmd.Parameters.AddWithValue("@CC", NpgsqlTypes.NpgsqlDbType.Text, balanza.cc);
-
-
 
                         //con.Open();
                         // int cantFilaAfect = Convert.ToInt32(cmd.ExecuteNonQuery());
@@ -434,7 +427,7 @@ namespace AppGia.Controllers
             //return cantFilaAfect;
         }
 
-        public int insertarBalanza(int id_compania)
+        public int insertarBalanza(Int64 idEmpresa)
         {
             con.Open();
             DateTime fechaInicioProceso = DateTime.Now;
@@ -443,12 +436,12 @@ namespace AppGia.Controllers
 
             try
             {
-                lstBala = obtenerSalContCCD(id_compania);
+                lstBala = obtenerSalContCCD(idEmpresa);
                 //lstBala = convertirTabBalanza(id_compania);
 
                 string addBalanza = "insert into"
-                 + "balanza("
-                 //+"idbalanza,"
+                 + " balanza("
+                 //+" id,"
                  + "cta,"
                  + "scta,"
                  + "sscta,"
@@ -490,9 +483,9 @@ namespace AppGia.Controllers
                  + "cierre_abonos,"
                  + "acta,"
                  + "cc" + ")"
-                     + "values "
-                         //+ "(@IDBALANZA,"
-                         + "(@CTA,"
+                     + "values ("
+                        // + "nextval('seq_balanza'),"
+                         + "@CTA,"
                          + "@SCTA,"
                          + "@SSCTA,"
                          + "@YEAR,"
@@ -535,7 +528,6 @@ namespace AppGia.Controllers
                          + "@CC)";
 
                 {
-
                     int cantFilaAfect = 0;
                     foreach (Balanza balanza in lstBala)
                     {
@@ -577,7 +569,7 @@ namespace AppGia.Controllers
                         cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, 1);
                         cmd.Parameters.AddWithValue("@FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
                         cmd.Parameters.AddWithValue("@HORA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
-                        cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Integer, id_compania);
+                        cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Bigint, idEmpresa);
                         cmd.Parameters.AddWithValue("@CIERRE_CARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_cargos);
                         cmd.Parameters.AddWithValue("@CIERRE_ABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.cierre_abonos);
                         cmd.Parameters.AddWithValue("@ACTA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.acta);
@@ -592,7 +584,7 @@ namespace AppGia.Controllers
                     transaction.Commit();
                     con.Close();
                     DateTime fechaFinalProceso = DateTime.Now;
-                    configCorreo.EnviarCorreo("La extracción de Balanza se genero correctamente"
+                    configCorreo.EnviarCorreo(" La extracción de Balanza se genero correctamente"
                                                + "\nFecha Inicio : " + fechaInicioProceso + " \n Fecha Final: " + fechaFinalProceso
                                                + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
                                                , "ETL Balanza");
@@ -604,31 +596,33 @@ namespace AppGia.Controllers
                 transaction.Rollback();
                 con.Close();
                 DateTime fechaFinalProceso = DateTime.Now;
-                configCorreo.EnviarCorreo("Ha ocurrido un error en la extracción de Balanza"
-                                           + "\nFecha Inicio : " + fechaInicioProceso + "\nFecha Final: " + fechaFinalProceso
-                                           + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
+                configCorreo.EnviarCorreo(" Ha ocurrido un error en la extracción de Balanza"
+                                           + "\n Fecha Inicio : " + fechaInicioProceso + "\nFecha Final: " + fechaFinalProceso
+                                           + "\n Tiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
                                            + "\nError : " + ex.Message
                                            , "ETL Balanza");
                 string error = ex.Message;
                 throw;
             }
-            finally {
+            finally 
+            {
                 con.Close();
             }
         }
 
 
-        public string generarSalContCC_CSV(int idEmpresa,string ruta)
+        public string generarSalContCC_CSV(Int64 idEmpresa,string ruta)
         {
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             string cabecera = string.Empty;
-            nombreArchivo = "cvsBalanza" + idEmpresa + DateTime.Now;
+            nombreArchivo = "BalanzaExport" + idEmpresa + DateTime.Now.ToString("ddMMyyyy") + DateTime.Now.ToString("HHmmSS") +".csv";
             StreamWriter layout;
             //layout = File.AppendText(@"C:\Users\Omnisys\Desktop\txtWinConnector\" + "cvsBalanza"+idEmpresa+DateTime.Now + ".csv");
-            layout = File.AppendText(ruta + "cvsBalanza" + idEmpresa + DateTime.Now + ".csv");
+            layout = File.AppendText(ruta + nombreArchivo);
+            
             cabecera = "cta,"
-                 + "scta,"
+                + "scta,"
                  + "sscta,"
                  + "year,"
                  + "salini,"
@@ -656,15 +650,14 @@ namespace AppGia.Controllers
                  + "novabonos,"
                  + "diccargos,"
                  + "dicabonos,"
-                 + "incluir_suma,"
                  + "tipo_extraccion,"
-                 + "fech_extr,"
-                 + "hora,"
                  + "id_empresa,"
                  + "cierre_cargos,"
                  + "cierre_abonos,"
                  + "acta,"
-                 + "cc";
+                 + "cc,"
+                 + "hora_carga,"
+                 + "fecha_carga";
             layout.WriteLine(cabecera);
 
             try
@@ -719,7 +712,6 @@ namespace AppGia.Controllers
                                     + "cc"
                                     + " FROM sc_salcont_cc";
 
-
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                         odbcCon.Open();
                         OdbcDataReader rdr = cmd.ExecuteReader();
@@ -727,10 +719,11 @@ namespace AppGia.Controllers
                         while (rdr.Read())
                         {
 
-                            registros = Convert.ToInt32(rdr["year"]) + ","
-                            + Convert.ToString(rdr["cta"].ToString()) + ","
+                            registros = 
+                             Convert.ToString(rdr["cta"].ToString()) + ","
                             + Convert.ToString(rdr["scta"].ToString()) + ","
                             + Convert.ToString(rdr["sscta"].ToString()) + ","
+                            + Convert.ToInt32(rdr["year"]) + ","
                             + Convert.ToDouble(rdr["salini"]) + ","
                             + Convert.ToDouble(rdr["enecargos"]) + ","
                             + Convert.ToDouble(rdr["eneabonos"]) + ","
@@ -756,26 +749,34 @@ namespace AppGia.Controllers
                             + Convert.ToDouble(rdr["novabonos"]) + ","
                             + Convert.ToDouble(rdr["diccargos"]) + ","
                             + Convert.ToDouble(rdr["dicabonos"]) + ","
-                            + Convert.ToDouble(rdr["cierreabonos"]) + ","
+                            + "1" + ","
+                            + idEmpresa + ","
                             + Convert.ToDouble(rdr["cierrecargos"]) + ","
+                            + Convert.ToDouble(rdr["cierreabonos"]) + ","
                             + Convert.ToInt32(rdr["acta"]) + ","
-                            + Convert.ToString(rdr["cc"]);
+                            + Convert.ToString(rdr["cc"]) + ","
+                            + "'" + DateTime.Now.ToString("HH:mm:ss") + "'"
+                            +"'" + DateTime.Now.ToString("dd/MM/yyy") + "',";
 
                             layout.WriteLine(registros, Environment.NewLine);
 
                         }
 
                         layout.Close();
+                        odbcCon.Close();
                         return nombreArchivo;
 
                     }
                     catch (Exception ex)
                     {
                         string error = ex.Message;
+                        //layout.Close();
+                        odbcCon.Close();
                         throw;
                     }
                     finally
                     {
+                        //layout.Close();
                         odbcCon.Close();
 
                     }
@@ -792,15 +793,44 @@ namespace AppGia.Controllers
 
             }
             finally {
+                layout.Close();
                 odbcCon.Close();
             }
         }
 
-        public int UpdateCuentaUnificada()
+        public int copy_balanza(string nombre_archivo, string ruta_archivo)
+        {
+            int resultado;
+            string script_copy = string.Empty;
+            //script_copy = " copy balanza from  '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+            script_copy = " copy tmp_balanza from  '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(script_copy, con);
+                resultado = Convert.ToInt32(cmd.ExecuteNonQuery());
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message;
+                con.Close();
+                throw;
+            }
+            finally {
+                con.Close();
+            }
+
+            return resultado;
+        }
+
+        public int UpdateCuentaUnificada(Int64 idEmpresa)
         {
             string update = "   update balanza "
                             + " set "
-                            + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') ";
+                            + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
+                            + " where id = " + idEmpresa
+                            +"  and cuenta_unificada is null";
 
             try
             {

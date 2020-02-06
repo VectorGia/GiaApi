@@ -49,6 +49,10 @@ namespace AppGia.Controllers
              con.Close();
                 throw ex;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
     }

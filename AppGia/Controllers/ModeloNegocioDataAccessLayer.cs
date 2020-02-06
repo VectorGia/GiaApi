@@ -46,6 +46,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public Modelo_Negocio GetModelo(string id)
         {
@@ -75,6 +79,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int addModeloNegocio(Modelo_Negocio modeloNegocio)
         {
@@ -85,8 +93,9 @@ namespace AppGia.Controllers
                 + "nombre"+","
                 +"activo" + ") " +
                 "values " +
-                "(nextval('seq_modelo_neg'),@nombre," + 
-                "@activo)";
+                "(nextval('seq_modelo_neg'),@nombre," 
+                +"@tipo_captura_id,"
+                +"@activo)";
 
             try
             {
@@ -107,6 +116,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
         public int Update(string id, Modelo_Negocio modeloNegocio)
@@ -136,6 +149,10 @@ namespace AppGia.Controllers
                 string error = ex.Message;
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         public int Delete(string id)
         {
@@ -158,6 +175,10 @@ namespace AppGia.Controllers
                 con.Close();
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

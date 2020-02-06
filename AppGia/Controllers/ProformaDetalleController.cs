@@ -17,7 +17,7 @@ namespace AppGia.Controllers
         [HttpGet]
         public IEnumerable<ProformaDetalle> Get(int idProformaDetalle)
         {
-            int idCentroCosto = 1;
+            Int64 idCentroCosto = 1;
             int idEmpresa = 4;
             int mes = 1;
             int idModeloNegocio = 20;
@@ -26,7 +26,7 @@ namespace AppGia.Controllers
             int anio = 2020;
             int idTipoCaptura = 1;
             //return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
-            return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
         }
 
         // GET: api/ProformaDetalle/5
