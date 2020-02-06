@@ -91,19 +91,19 @@ namespace AppGia.Controllers
                 + "("
                 + "id" + ","
                 + "nombre"+","
-                + "tipo_captura_id"+","
-                + "activo" + ") " +
+                +"activo" + ") " +
                 "values " +
                 "(nextval('seq_modelo_neg'),@nombre," + 
                 "@activo)";
 
             try
-            {    
+            {
+    
                     NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
-                    cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
+                cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
                     cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
                     cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
-                    cmd.Parameters.AddWithValue("@tipo_captura_id", modeloNegocio.tipo_captura_id);
+                    //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();

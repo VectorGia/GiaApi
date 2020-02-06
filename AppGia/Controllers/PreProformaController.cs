@@ -23,7 +23,7 @@ namespace AppGia.Controllers
         [HttpGet("{id}", Name = "GetGetPreProforma")]
         public int GetPreProforma(int id)
         {
-            return prepro.MontosConsolidadosContable();
+            return prepro.MontosConsolidados();
         }
 
         // POST: api/PreProforma
