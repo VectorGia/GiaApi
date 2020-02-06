@@ -623,10 +623,10 @@ namespace AppGia.Controllers
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             string cabecera = string.Empty;
-            nombreArchivo = "cvsBalanza" + idEmpresa + DateTime.Now;
+            nombreArchivo = "BalanzaExport" + idEmpresa + DateTime.Now +".csv";
             StreamWriter layout;
             //layout = File.AppendText(@"C:\Users\Omnisys\Desktop\txtWinConnector\" + "cvsBalanza"+idEmpresa+DateTime.Now + ".csv");
-            layout = File.AppendText(ruta + "cvsBalanza" + idEmpresa + DateTime.Now + ".csv");
+            layout = File.AppendText(ruta + nombreArchivo);
             cabecera = "cta,"
                  + "scta,"
                  + "sscta,"
@@ -817,11 +817,13 @@ namespace AppGia.Controllers
             return resultado;
         }
 
-        public int UpdateCuentaUnificada()
+        public int UpdateCuentaUnificada(Int64 idEmpresa)
         {
             string update = "   update balanza "
                             + " set "
-                            + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') ";
+                            + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
+                            + " where id = " + idEmpresa
+                            +"  and cuenta_unificada is null";
 
             try
             {
