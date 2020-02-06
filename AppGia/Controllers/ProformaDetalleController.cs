@@ -26,7 +26,7 @@ namespace AppGia.Controllers
             int anio = 2020;
             int idTipoCaptura = 1;
             //return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
-            return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, idRubro, anio, idTipoCaptura);
+            return ObjProformaDetalle.GetProformaCalculada(mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
         }
 
         // GET: api/ProformaDetalle/5

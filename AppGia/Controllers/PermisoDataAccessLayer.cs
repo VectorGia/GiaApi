@@ -44,6 +44,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int addPermiso(Permiso permiso)
@@ -67,6 +71,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -94,6 +102,10 @@ namespace AppGia.Controllers
                 conex.ConnexionDB().Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
 
@@ -119,6 +131,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

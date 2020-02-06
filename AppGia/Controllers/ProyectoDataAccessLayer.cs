@@ -52,6 +52,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public Proyecto GetProyectoData(string id)
@@ -84,6 +88,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -133,6 +141,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
 
@@ -166,6 +178,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int Delete(string id)
@@ -187,6 +203,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -222,6 +242,10 @@ namespace AppGia.Controllers
             {
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 

@@ -47,6 +47,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int AddEtlprog(ETLProg etl)
@@ -75,6 +79,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int UpdateEtlprog(ETLProg etl)
@@ -100,6 +108,10 @@ namespace AppGia.Controllers
                 con.Close();
                 string error = ex.Message;
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

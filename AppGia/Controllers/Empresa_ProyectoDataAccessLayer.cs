@@ -9,7 +9,6 @@ namespace AppGia.Controllers
 {
     public class Empresa_ProyectoDataAccessLayer
     {
-
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
 
@@ -85,6 +84,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public Empresa_Proyecto GetEmpresa_ProyectoData(string id)
@@ -115,6 +118,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
@@ -152,6 +159,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public int update(string id, Empresa_Proyecto empresa_proyecto)
@@ -181,6 +192,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
 
         }
 
@@ -206,6 +221,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
     }

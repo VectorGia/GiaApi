@@ -66,6 +66,10 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
+            finally
+            {
+                con.Close();
+            }
         }
         //Obtiene los centro de costos por identificador unico 
         public List<CentroCostos> GetCentroData(int idproyecto)
@@ -214,6 +218,10 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
+            }
+            finally
+            {
+                con.Close();
             }
         }
 
