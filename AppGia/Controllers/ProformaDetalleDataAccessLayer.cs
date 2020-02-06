@@ -220,7 +220,7 @@ namespace AppGia.Controllers
         //      9 =  9+3 - Nueve reales, 3 proformados
         // Los reales se calculan desde los montos consolidados
         // Los proformados se capturan en pantalla
-        public List<ProformaDetalle> GetProformaCalculada(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
@@ -419,7 +419,7 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public List<ProformaDetalle> GetEjercicioAnterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
+        public List<ProformaDetalle> GetEjercicioAnterior(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce(";
@@ -458,8 +458,8 @@ namespace AppGia.Controllers
             consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
             consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            consulta += "	 and mon.rubro_id = " + idRubro.ToString();                       // Rubro
-            consulta += "	 and mon.activo = " + activo.ToString(); // Este puede salir sobrando
+            //consulta += "	 and mon.rubro_id = " + idRubro.ToString();                       // Rubro
+            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
             consulta += "	 group by mon.rubro_id, rub.nombre ";
 
             try
@@ -494,49 +494,49 @@ namespace AppGia.Controllers
             }
         }
 
-        //Calculo de años posteriores
+        //Calculo de años posteriores -- NO USAR
         public List<ProformaDetalle> GetEjercicioPosterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce(";
-            consulta += "	 sum(mon.enero_abono_financiero) + sum(mon.enero_cargo_financiero) + ";
-            consulta += "	 sum(mon.febrero_abono_financiero) + sum(mon.febrero_cargo_financiero) + ";
-            consulta += "	 sum(mon.marzo_abono_financiero) + sum(mon.marzo_cargo_financiero) + ";
-            consulta += "	 sum(mon.abril_abono_financiero) + sum(mon.abril_cargo_financiero) + ";
-            consulta += "	 sum(mon.mayo_abono_financiero) + sum(mon.mayo_cargo_financiero) + ";
-            consulta += "	 sum(mon.junio_abono_financiero) + sum(mon.junio_cargo_financiero) + ";
-            consulta += "	 sum(mon.julio_abono_financiero) + sum(mon.julio_cargo_financiero) + ";
-            consulta += "	 sum(mon.agosto_abono_financiero) + sum(mon.agosto_cargo_financiero) + ";
-            consulta += "	 sum(mon.septiembre_abono_financiero) + sum(mon.septiembre_cargo_financiero) + ";
-            consulta += "	 sum(mon.octubre_abono_financiero) + sum(mon.octubre_cargo_financiero) + ";
-            consulta += "	 sum(mon.noviembre_abono_financiero) + sum(mon.noviembre_cargo_financiero) + ";
-            consulta += "	 sum(mon.diciembre_abono_financiero) + sum(mon.diciembre_cargo_financiero) ";
+            consulta += "	 sum(mon.enero_monto_financiero) + ";
+            consulta += "	 sum(mon.febrero_monto_financiero) + ";
+            consulta += "	 sum(mon.marzo_monto_financiero) + ";
+            consulta += "	 sum(mon.abril_monto_financiero) + ";
+            consulta += "	 sum(mon.mayo_monto_financiero) + ";
+            consulta += "	 sum(mon.junio_monto_financiero) + ";
+            consulta += "	 sum(mon.julio_monto_financiero) + ";
+            consulta += "	 sum(mon.agosto_monto_financiero) + ";
+            consulta += "	 sum(mon.septiembre_monto_financiero) + ";
+            consulta += "	 sum(mon.octubre_monto_financiero) + ";
+            consulta += "	 sum(mon.noviembre_monto_financiero) + ";
+            consulta += "	 sum(mon.diciembre_monto_financiero) ";
             consulta += "	 , 0) as total_financiero, coalesce (";
-            consulta += "	 sum(mon.enero_abono_resultado) + sum(mon.enero_cargo_resultado) + ";
-            consulta += "	 sum(mon.febrero_abono_resultado) + sum(mon.febrero_cargo_resultado) + ";
-            consulta += "	 sum(mon.marzo_abono_resultado) + sum(mon.marzo_cargo_resultado) + ";
-            consulta += "	 sum(mon.abril_abono_resultado) + sum(mon.abril_cargo_resultado) + ";
-            consulta += "	 sum(mon.mayo_abono_resultado) + sum(mon.mayo_cargo_resultado) + ";
-            consulta += "	 sum(mon.junio_abono_resultado) + sum(mon.junio_cargo_resultado) + ";
-            consulta += "	 sum(mon.julio_abono_resultado) + sum(mon.julio_cargo_resultado) + ";
-            consulta += "	 sum(mon.agosto_abono_resultado) + sum(mon.agosto_cargo_resultado) + ";
-            consulta += "	 sum(mon.septiembre_abono_resultado) + sum(mon.septiembre_cargo_resultado) + ";
-            consulta += "	 sum(mon.octubre_abono_resultado) + sum(mon.octubre_cargo_resultado) + ";
-            consulta += "	 sum(mon.noviembre_abono_resultado) + sum(mon.noviembre_cargo_resultado) + ";
-            consulta += "	 sum(mon.diciembre_abono_resultado) + sum(mon.diciembre_cargo_resultado) ";
+            consulta += "	 sum(mon.enero_monto_resultado) + ";
+            consulta += "	 sum(mon.febrero_monto_resultado) + ";
+            consulta += "	 sum(mon.marzo_monto_resultado) + ";
+            consulta += "	 sum(mon.abril_monto_resultado) + ";
+            consulta += "	 sum(mon.mayo_monto_resultado) + ";
+            consulta += "	 sum(mon.junio_monto_resultado) + ";
+            consulta += "	 sum(mon.julio_monto_resultado) + ";
+            consulta += "	 sum(mon.agosto_monto_resultado) + ";
+            consulta += "	 sum(mon.septiembre_monto_resultado) + ";
+            consulta += "	 sum(mon.octubre_monto_resultado) + ";
+            consulta += "	 sum(mon.noviembre_monto_resultado) + ";
+            consulta += "	 sum(mon.diciembre_monto_resultado) ";
             consulta += "	 , 0) as total_resultado, mon.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
-            consulta += "	 from montos_consolidados mon ";
-            consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
-            consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
+            consulta += "	 from proforma_detalle det ";
+            consulta += "	 inner join proyecto pry on det.proyecto_id = pry.id and det.modelo_negocio_id = pry.modelo_negocio_id ";
+            consulta += "	 inner join rubro rub on det.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
             consulta += "	 and anio > " + anio.ToString(); // Corregir para que tome del inicio del proyecto al año actual
             //consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
             consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
-            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
+            consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            consulta += "	 and mon.rubro_id = " + idRubro.ToString();                       // Rubro
-            consulta += "	 and mon.activo = " + activo.ToString(); // Este puede salir sobrando
-            consulta += "	 group by mon.rubro_id, rub.nombre ";
+            consulta += "	 and det.rubro_id = " + idRubro.ToString();                       // Rubro
+            consulta += "	 and det.activo = " + activo.ToString(); // Este puede salir sobrando
+            consulta += "	 group by det.rubro_id, rub.nombre ";
 
             try
             {

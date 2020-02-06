@@ -124,12 +124,38 @@ namespace AppGia.Controllers
             }
         }
 
-        // Metodo a invocar para crear la proforma
+        // Metodo a invocar para crear la proforma (cambiar por lista)
+        // Parametros de entrada: centro de costos, anio y tipo de proforma
         public int GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma)
         {
-            // Se reciben centro de costos, anio y tipo de proforma
-            // Del centro de costos obtiene empresa y proyecto
-            // Del tipo de proforma obtiene 
+            // Del centro de costos se obtienen empresa y proyecto
+            CentroCostos datCenCos = new CentroCostos();
+            datCenCos = ObtenerDatosCC(idCC);
+            int idEmpresa = datCenCos.empresa_id;
+            int idProyecto = datCenCos.proyecto_id;
+
+            // De la empresa se obtiene el modelo de negocio
+            Proyecto datProyec = new Proyecto();
+            datProyec = ObtenerDatosProy(idEmpresa);
+            int idModeloNeg = datProyec.modelo_negocio_id;
+
+            // Del tipo de proforma obtiene mes de inicio
+            Tipo_Proforma datTipoProf = new Tipo_Proforma();
+            datTipoProf = ObtenerDatosTipoProf(idTipoProforma);
+            int mesInicio = datTipoProf.mes_inicio;
+
+            // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
+            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
+
+            // Obtiene los rubros para totales
+            List<Rubros> lstTotRubros = GetRubrosTotales(idModeloNeg);
+
+            // Calcula los totales por rubro acumulador
+            foreach(Rubros itemTotalRubro in lstTotRubros)
+            {
+
+            }
+
             return 0;
         }
 
@@ -247,9 +273,9 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select id_modelo_neg, tipo_id, clave, aritmetica, naturaleza ";
-            consulta += " from rubro ";
-            consulta += " where id_rubro = " + rubro_id.ToString();
-            consulta += " and activo = 'true' ";
+            consulta += " 	from rubro ";
+            consulta += " 	where id_rubro = " + rubro_id.ToString();
+            consulta += " 	and activo = 'true' ";
 
             try
             {
@@ -278,16 +304,109 @@ namespace AppGia.Controllers
 
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCC,int anio,Int64 idTipoProforma)
+        public CentroCostos ObtenerDatosCC(Int64 idCenCos)
+        {
+            string consulta = "";
+            consulta += " select empresa_id, proyecto_id ";
+            consulta += " 	from centro_costo ";
+            consulta += " 	where id = " + idCenCos.ToString();
+            consulta += " 	and activo = 'true' ";
+
+            try
+            {
+                CentroCostos datosCenCos = new CentroCostos();
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
+                datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
+
+                return datosCenCos;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public Proyecto ObtenerDatosProy(Int64 idEmpresa)
+        {
+            string consulta = "";
+            consulta += " select id, modelo_negocio_id ";
+            consulta += " 	from proyecto ";
+            consulta += " 	where id = " + idEmpresa.ToString();
+            consulta += " 	and activo = 'true' ";
+
+            try
+            {
+                Proyecto datosProy = new Proyecto();
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                datosProy.id = Convert.ToInt32(rdr["id"]);
+                datosProy.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+
+                return datosProy;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public Tipo_Proforma ObtenerDatosTipoProf(Int64 idTipoProforma)
+        {
+            string consulta = "";
+            consulta += " select id, clave, mes_inicio ";
+            consulta += " 	from tipo_proforma ";
+            consulta += " 	where id = " + idTipoProforma.ToString();
+            consulta += " 	and activo = 'true' ";
+
+            try
+            {
+                Tipo_Proforma datosTipoProf = new Tipo_Proforma();
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                datosTipoProf.id = Convert.ToInt64(rdr["id"]);
+                datosTipoProf.clave = Convert.ToString(rdr["clave"]);
+                datosTipoProf.mes_inicio = Convert.ToInt32(rdr["mes_inicio"]);
+
+                return datosTipoProf;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public List<ProformaDetalle> CalculaDetalleProforma(int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, int idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
           
-            // Obtiene las listas a partir de los parametros recibidos
-            // Montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(1, 1, 1, 1, 1, 1, 1, 1);
-            // Sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetEjercicioAnterior(1, 1, 1, 1, 1, 1, 1, true, 1);
+            // Obtiene lista de montos consolidados para ejercicio
+            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
+            // Obtiene lista de sumatorias para el acumulado
+            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetEjercicioAnterior(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
