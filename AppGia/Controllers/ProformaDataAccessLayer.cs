@@ -126,7 +126,7 @@ namespace AppGia.Controllers
 
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
-        public int GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma)
+        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma)
         {
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos datCenCos = new CentroCostos();
@@ -147,16 +147,10 @@ namespace AppGia.Controllers
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
 
-            // Obtiene los rubros para totales
-            List<Rubros> lstTotRubros = GetRubrosTotales(idModeloNeg);
+            // Enlista la proforma
+            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, idModeloNeg);
 
-            // Calcula los totales por rubro acumulador
-            foreach(Rubros itemTotalRubro in lstTotRubros)
-            {
-
-            }
-
-            return 0;
+            return lstProformaCompleta;
         }
 
         public ProformaDetalle ConstruyeDetalleTotal(List<ProformaDetalle> detalles, Rubros rubroTotal)
@@ -285,11 +279,14 @@ namespace AppGia.Controllers
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
-                detRubros.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
-                detRubros.tipo_id = Convert.ToInt32(rdr["tipo_id"]);
-                detRubros.clave = Convert.ToString(rdr["clave"]);
-                detRubros.aritmetica = Convert.ToString(rdr["aritmetica"]);
-                detRubros.naturaleza = Convert.ToString(rdr["naturaleza"]);
+                while (rdr.Read())
+                {
+                    detRubros.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
+                    detRubros.tipo_id = Convert.ToInt32(rdr["tipo_id"]);
+                    detRubros.clave = Convert.ToString(rdr["clave"]);
+                    detRubros.aritmetica = Convert.ToString(rdr["aritmetica"]);
+                    detRubros.naturaleza = Convert.ToString(rdr["naturaleza"]);
+                }
 
                 return detRubros;
             }
@@ -320,8 +317,11 @@ namespace AppGia.Controllers
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
-                datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
-                datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
+                while (rdr.Read())
+                {
+                    datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
+                    datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
+                }
 
                 return datosCenCos;
             }
@@ -351,8 +351,11 @@ namespace AppGia.Controllers
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
-                datosProy.id = Convert.ToInt32(rdr["id"]);
-                datosProy.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                while (rdr.Read())
+                {
+                    datosProy.id = Convert.ToInt32(rdr["id"]);
+                    datosProy.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                }
 
                 return datosProy;
             }
@@ -382,9 +385,12 @@ namespace AppGia.Controllers
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
 
-                datosTipoProf.id = Convert.ToInt64(rdr["id"]);
-                datosTipoProf.clave = Convert.ToString(rdr["clave"]);
-                datosTipoProf.mes_inicio = Convert.ToInt32(rdr["mes_inicio"]);
+                while (rdr.Read())
+                {
+                    datosTipoProf.id = Convert.ToInt64(rdr["id"]);
+                    datosTipoProf.clave = Convert.ToString(rdr["clave"]);
+                    datosTipoProf.mes_inicio = Convert.ToInt32(rdr["mes_inicio"]);
+                }
 
                 return datosTipoProf;
             }

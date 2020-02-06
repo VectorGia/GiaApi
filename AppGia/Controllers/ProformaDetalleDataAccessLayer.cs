@@ -220,13 +220,13 @@ namespace AppGia.Controllers
         //      9 =  9+3 - Nueve reales, 3 proformados
         // Los reales se calculan desde los montos consolidados
         // Los proformados se capturan en pantalla
-        public List<ProformaDetalle> GetProformaCalculada(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
             consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, ";
-            if(idTipoCaptura == 0)
+            if(mesInicio == 0)
             {
                 // Para el 0+12 Enero, Febrero y Marzo se capturan
                 consulta += "	 0 as enero_monto_financiero, ";
@@ -246,7 +246,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(marzo_total_financiero, 0) as marzo_monto_financiero, ";
                 consulta += "	 coalesce(marzo_total_resultado, 0) as marzo_monto_resultado, ";
             }
-            if (idTipoCaptura == 0 || idTipoCaptura == 3)
+            if (mesInicio == 0 || mesInicio == 3)
             {
                 // Para el 0+12 y el 3+9 Abril, Mayo y Junio se capturan
                 consulta += "	 0 as abril_monto_financiero, ";
@@ -266,7 +266,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(junio_total_financiero, 0) as junio_monto_financiero, ";
                 consulta += "	 coalesce(junio_total_resultado, 0) as junio_monto_resultado, ";
             }
-            if (idTipoCaptura==0 || idTipoCaptura==3 || idTipoCaptura == 6)
+            if (mesInicio == 0 || mesInicio == 3 || mesInicio == 6)
             {
                 // Para el 0+12, el 3+9 y el 6+6 Julio, Agosto y Septiembre se capturan
                 consulta += "	 0 as julio_monto_financiero, ";
@@ -286,7 +286,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(septiembre_total_financiero, 0) as septiembre_monto_financiero, ";
                 consulta += "	 coalesce(septiembre_total_resultado, 0) as septiembre_monto_resultado, ";
             }
-            if (idTipoCaptura == 0 || idTipoCaptura == 3 || idTipoCaptura == 6 || idTipoCaptura == 9)
+            if (mesInicio == 0 || mesInicio == 3 || mesInicio == 6 || mesInicio == 9)
             {
                 // Para 0+12, 3+9, 6+6 y 9+3 el resto de los meses se capturan
                 consulta += "	 0 as octubre_monto_financiero, ";
@@ -306,7 +306,7 @@ namespace AppGia.Controllers
                 consulta += "	 coalesce(diciembre_total_financiero, 0) as diciembre_monto_financiero, ";
                 consulta += "	 coalesce(diciembre_total_resultado, 0) as diciembre_monto_resultado, ";
             }
-            switch (idTipoCaptura)
+            switch (mesInicio)
             {
                 case 0:
                     consulta += "	 0 as ejercicio_financiero, ";
@@ -346,7 +346,7 @@ namespace AppGia.Controllers
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
             consulta += "	 and anio = " + anio.ToString();                            // Año a proformar
-            consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
+            consulta += "	 and mes = " + mesInicio.ToString();                        // Mes (revisar)
             consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
@@ -402,11 +402,8 @@ namespace AppGia.Controllers
                         proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
                         lstProformaDetalle.Add(proforma_detalle);
                     }
-
                 }
-
                 return lstProformaDetalle;
-
             }
             catch
             {
