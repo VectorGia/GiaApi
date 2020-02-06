@@ -16,7 +16,7 @@ namespace AppGia.Controllers
     {
         ConfigCorreoController configCorreo = new ConfigCorreoController();
         NpgsqlConnection con;
-        Conexion.Conexion conex = new Conexion.Conexion();
+        Conexion.Conexion conex = new Conexion.Conexion(); 
         NpgsqlCommand comP = new NpgsqlCommand();
 
         OdbcConnection odbcCon;
