@@ -16,7 +16,7 @@ namespace AppGia.Controllers
             //Constructor
         }
 
-        public DSN crearDSN(int idEmpresa)
+        public DSN crearDSN(Int64 idEmpresa)
         {
             //Obtener los datos de la Tab_Compania para crear el DSN
             //ETLDataAccesLayer eTLDataAccesLayer = new ETLDataAccesLayer();
@@ -58,7 +58,7 @@ namespace AppGia.Controllers
             {
                 ODBC_PATH = "SOFTWARE\\ODBC\\ODBC.INI\\";
                 driver = "SQL Anywhere 12"; //Nombre del Driver
-                DsnNombre = empresa.id + "_" + empresa.nombre.Substring(0, 15).TrimEnd().Replace(" ", "_") + "_" + empresa.host; //nombre con el que se va identificar el DSN
+                DsnNombre = empresa.id + "_" + empresa.nombre.Substring(0, 5).TrimEnd().Replace(" ", "_") + "_" + empresa.host; //nombre con el que se va identificar el DSN
                 Descri = "DNS_Sybase" + DsnNombre;
                 DireccionDriver = "C:\\Program Files\\SQL Anywhere 12\\Bin64\\dbodbc12.dll";
                 var datasourcesKey = Registry.LocalMachine.CreateSubKey(ODBC_PATH + "ODBC Data Sources");
