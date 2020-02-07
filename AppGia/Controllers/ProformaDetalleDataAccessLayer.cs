@@ -21,7 +21,8 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select ";
-            consulta += "   id, id_proforma, rubro_id, ejercicio_financiero, ejercicio_resultado, ";
+            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro, ";
+            consulta += "   coalesce(ejercicio_financiero, 0) as ejercicio_financiero, coalesce(ejercicio_resultado, 0) as ejercicio_resultado, ";
             consulta += "   coalesce(enero_monto_financiero, 0) as enero_monto_financiero, coalesce(enero_monto_resultado, 0) as enero_monto_resultado, ";
             consulta += "   coalesce(febrero_monto_financiero, 0) as febrero_monto_financiero, coalesce(febrero_monto_resultado, 0) as febrero_monto_resultado, ";
             consulta += "   coalesce(marzo_monto_financiero, 0) as marzo_monto_financiero, coalesce(marzo_monto_resultado, 0) as marzo_monto_resultado, ";
@@ -38,8 +39,9 @@ namespace AppGia.Controllers
             consulta += "   coalesce(acumulado_financiero, 0) as acumulado_financiero, coalesce(acumulado_resultado, 0) as acumulado_resultado, ";
             consulta += "   coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, ";
             consulta += "   coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
-            consulta += " from proforma_detalle ";
-            consulta += " where id = " + idProforma.ToString();
+            consulta += " from proforma_detalle det ";
+            consulta += " inner join rubro rub on det.rubro_id = rub.id ";
+            consulta += " where id_proforma = " + idProforma.ToString();
             consulta += " and activo = 'true' ";
 
             try
@@ -57,6 +59,7 @@ namespace AppGia.Controllers
                     proforma_detalle.id = Convert.ToInt64(rdr["id"]);
                     proforma_detalle.id_proforma = Convert.ToInt64(rdr["id_proforma"]);
                     proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
+                    proforma_detalle.nombre_rubro = Convert.ToString(rdr["nombre_rubro"]);
                     proforma_detalle.ejercicio_financiero = Convert.ToDouble(rdr["ejercicio_financiero"]);
                     proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
                     proforma_detalle.enero_monto_financiero = Convert.ToDouble(rdr["enero_monto_financiero"]);
