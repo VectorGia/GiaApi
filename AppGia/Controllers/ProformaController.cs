@@ -30,8 +30,9 @@ namespace AppGia.Controllers
 
         // POST: api/Proforma
         [HttpPost]
-        public void Post([FromBody] string value)
+        public List<ProformaDetalle> Post([FromBody] Proforma proforma)
         {
+            return objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
 
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)

@@ -126,7 +126,7 @@ namespace AppGia.Util
             {
                 String query = String.Format("( select * " +
                         " from " + NOMBRE_TABLA_BALANZA +
-                        " where " + NOMBRE_COLUM_CTA + " in ({0}) and id_empresa = {1} and year = " + fechaactual.Year + ")", sb.ToString(), empresa_id);
+                        " where " + NOMBRE_COLUM_CTA + " in ({0}) and id_empresa = {1} )", sb.ToString(), empresa_id);
                 return query;
             }
 
@@ -165,7 +165,7 @@ namespace AppGia.Util
                     String.Format("(select *" +
                             " from " + NOMBRE_TABLA_BALANZA +
                             " where " + NOMBRE_COLUM_CTA + "::numeric >= replace(RPAD('{0}', " + LENGTH_COLUM_CTA + ", '0'), '*', '0')::numeric " +
-                            "   and " + NOMBRE_COLUM_CTA + "::numeric <= replace(RPAD('{1}', " + LENGTH_COLUM_CTA + ", '9'), '*', '9')::numeric and id_empresa = " + empresa_id + " and year = " + fechaactual.Year + ")\n", rangoInferior, rangoSuperior);
+                            "   and " + NOMBRE_COLUM_CTA + "::numeric <= replace(RPAD('{1}', " + LENGTH_COLUM_CTA + ", '9'), '*', '9')::numeric and id_empresa = " + empresa_id + ")\n", rangoInferior, rangoSuperior);
 
             return query;
         }

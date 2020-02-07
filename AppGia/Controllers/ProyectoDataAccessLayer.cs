@@ -18,7 +18,7 @@ namespace AppGia.Controllers
         public IEnumerable<Proyecto> GetAllProyectos()
         {
             string cadena = " select * from proyecto "
-                          + "  where  activo  = " + true;
+                          + "  where  activo  = true order by id desc" ;
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
