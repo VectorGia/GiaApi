@@ -31,7 +31,7 @@ namespace AppGia.Controllers
                "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                "INNER JOIN proyecto pry on pry.id = cc.proyecto_id" + 
 
-               " where " + "cc.activo" + " = " + true; 
+               " where " + "cc.activo" + " = true order by cc.id desc" ; 
 
             try
             {
@@ -122,6 +122,46 @@ namespace AppGia.Controllers
                 }
             }
         }
+
+        public CentroCostos GetCentro(int id)
+        {
+            string consulta = "select * from " + "centro_costo " + "where " + "id " + "=" + id;
+
+            try
+            {
+                CentroCostos centroCostos = new CentroCostos();
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                   
+
+                    while (rdr.Read())
+                    {
+                        
+                        centroCostos.id = Convert.ToInt32(rdr["id"]);
+                        centroCostos.desc_id = rdr["desc_id"].ToString().Trim();
+                        centroCostos.activo = Convert.ToBoolean(rdr["activo"]);
+                        centroCostos.estatus = (rdr["estatus"]).ToString().Trim();
+                        centroCostos.nombre = rdr["nombre"].ToString().Trim();
+                        centroCostos.tipo = rdr["tipo"].ToString().Trim();
+                        centroCostos.categoria = rdr["categoria"].ToString().Trim();
+                        centroCostos.gerente = rdr["gerente"].ToString().Trim();
+                        centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
+                     
+                    }
+                    con.Close();
+                }
+                return centroCostos;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                {
+                    con.Close();
+                }
+            }
+        }
         public int AddCentro(CentroCostos centroCostos)
         {
             string add = "insert into " + "centro_costo" + "(" + "id" + "," + "tipo" + "," + "desc_id" + "," + "nombre" + "," + "categoria" + "," + "estatus" + "," + "gerente" + "," + "empresa_id" + "," + "proyecto_id" + "," + "fecha_modificacion" + "," + "activo" + ")" +
@@ -164,7 +204,7 @@ namespace AppGia.Controllers
                 " estatus =   @estatus ," +
                 " gerente =  @gerente ," +
                 " empresa_id =  @empresa_id ," +
-                " fecha_modificacion =  @fecha_modificacion ," +
+                " fecha_modificacion =  @fecha_modificacion " +
                 " where " + "id" + " = " + id;
 
 
@@ -197,17 +237,16 @@ namespace AppGia.Controllers
                 }
             }
         }
-        public int Delete(string id, CentroCostos centroCostos)
+        public int Delete(int id)
         {
 
-            string delete = " update  centro_costo set  activo = @activo  where  @id  = " + id;
+            string delete = " update  centro_costo set  activo = false  where  @id  = " + id;
 
             try
             {
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = centroCostos.activo });
                     //   cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = id });
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();

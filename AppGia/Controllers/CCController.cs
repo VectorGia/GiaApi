@@ -4,35 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using AppGia.Models;
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PreProformaController : ControllerBase
+    public class CCController : ControllerBase
     {
-        PreProformaDataAccessLayer prepro = new PreProformaDataAccessLayer();
-        // GET: api/PreProforma
-       /* [HttpGet]
+        CentroCostosDataAccessLayer objcc = new CentroCostosDataAccessLayer();
+        // GET: api/CC
+        [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
-        }*/
-
-        // GET: api/PreProforma/5
-        [HttpGet]
-        public int GetPreProforma()
-        {
-            return prepro.MontosConsolidados();
         }
 
-        // POST: api/PreProforma
+        // GET: api/CC/5
+        [HttpGet("{id}", Name = "GetC")]
+        public CentroCostos GetC(int id)
+        {
+            return objcc.GetCentro(id);
+        }
+
+        // POST: api/CC
         [HttpPost]
         public void Post([FromBody] string value)
         {
         }
 
-        // PUT: api/PreProforma/5
+        // PUT: api/CC/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {

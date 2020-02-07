@@ -20,7 +20,7 @@ namespace AppGia.Controllers
         {
             //string cadena = "select *from empresa where  activo = " + true;
             string cadena = "select id,activo,nombre,abrev,bd_name,contrasenia_etl," +
-                "desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id from empresa where activo = " + true;
+                "desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id from empresa where activo = true order by id desc";
             try
             {
                 List<Empresa> lstempresa = new List<Empresa>();

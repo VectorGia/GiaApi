@@ -54,9 +54,9 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     ProformaDetalle proforma_detalle = new ProformaDetalle();
-                    proforma_detalle.id = Convert.ToInt32(rdr["id"]);
-                    proforma_detalle.id_proforma = Convert.ToInt32(rdr["id_proforma"]);
-                    proforma_detalle.rubro_id = Convert.ToInt32(rdr["rubro_id"]);
+                    proforma_detalle.id = Convert.ToInt64(rdr["id"]);
+                    proforma_detalle.id_proforma = Convert.ToInt64(rdr["id_proforma"]);
+                    proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                     proforma_detalle.ejercicio_financiero = Convert.ToDouble(rdr["ejercicio_financiero"]);
                     proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
                     proforma_detalle.enero_monto_financiero = Convert.ToDouble(rdr["enero_monto_financiero"]);
@@ -220,11 +220,12 @@ namespace AppGia.Controllers
         //      9 =  9+3 - Nueve reales, 3 proformados
         // Los reales se calculan desde los montos consolidados
         // Los proformados se capturan en pantalla
-        public List<ProformaDetalle> GetProformaCalculada(int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio)
         {
             string consulta = "";
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
+            consulta += "	 mon.centro_costo_id, mon.activo, ";
             consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, ";
             if(mesInicio == 0)
             {
@@ -344,14 +345,13 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where 1 = 1 ";
-            consulta += "	 and anio = " + anio.ToString();                            // Año a proformar
-            consulta += "	 and mes = " + mesInicio.ToString();                        // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
+            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 and anio = " + anio;                            // Año a proformar
+            consulta += "	 and empresa_id = " + idEmpresa;                 // Empresa
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;    // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;               // Proyecto
             //consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
-            // Aparentemente falta el Centro de Costos (en Shadow se debera crear uno)
+            consulta += "	 and centro_costo_id = " + idCenCos;             // Centro de Costos
             consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
             consulta += "	 order by rub.id ";
 
@@ -369,10 +369,12 @@ namespace AppGia.Controllers
                     {
                         ProformaDetalle proforma_detalle = new ProformaDetalle();
 
-                        proforma_detalle.id_proforma = Convert.ToInt32(rdr["id"]);
+                        proforma_detalle.id_proforma = Convert.ToInt64(rdr["id"]);
                         proforma_detalle.anio = Convert.ToInt32(rdr["anio"]);
-                        proforma_detalle.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
-                        proforma_detalle.rubro_id = Convert.ToInt32(rdr["rubro_id"]);
+                        proforma_detalle.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                        proforma_detalle.centro_costo_id= Convert.ToInt64(rdr["centro_costo_id"]);
+                        proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
+                        proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                         proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
                         proforma_detalle.enero_monto_financiero = Convert.ToDouble(rdr["enero_monto_financiero"]);
                         proforma_detalle.enero_monto_resultado = Convert.ToDouble(rdr["enero_monto_resultado"]);
@@ -416,7 +418,7 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public List<ProformaDetalle> GetEjercicioAnterior(int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, int idModeloNegocio, int idProyecto, int anio)
         {
             string consulta = "";
             consulta += " select coalesce(";
@@ -449,14 +451,15 @@ namespace AppGia.Controllers
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where 1 = 1 ";
-            consulta += "	 and anio < " + anio.ToString(); // Corregir para que tome del inicio del proyecto al año actual
-            //consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
-            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            //consulta += "	 and mon.rubro_id = " + idRubro.ToString();                       // Rubro
-            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 and anio < " + anio;                               // Anio a proformar
+            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
+            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
+            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
+            //consulta += "	 and mon.rubro_id = " + idRubro;                    // Rubro
+            consulta += "	 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
+            consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
             consulta += "	 group by mon.rubro_id, rub.nombre ";
 
             try
@@ -473,7 +476,7 @@ namespace AppGia.Controllers
                     ProformaDetalle proforma_detalle_ej_financ = new ProformaDetalle();
                     proforma_detalle_ej_financ.acumulado_financiero = Convert.ToDouble(rdr["acumulado_financiero"]);
                     proforma_detalle_ej_financ.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
-                    proforma_detalle_ej_financ.rubro_id = Convert.ToInt32(rdr["rubro_id"]);
+                    proforma_detalle_ej_financ.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                     proforma_detalle_ej_financ.nombre_rubro = rdr["nombre_rubro"].ToString();
                     lstProfDetalleEjercicioFinanc.Add(proforma_detalle_ej_financ);
                 }
@@ -526,13 +529,13 @@ namespace AppGia.Controllers
             consulta += "	 inner join proyecto pry on det.proyecto_id = pry.id and det.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on det.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
-            consulta += "	 and anio > " + anio.ToString(); // Corregir para que tome del inicio del proyecto al año actual
-            //consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
-            consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            consulta += "	 and det.rubro_id = " + idRubro.ToString();                       // Rubro
-            consulta += "	 and det.activo = " + activo.ToString(); // Este puede salir sobrando
+            consulta += "	 and anio > " + anio;                               // Anio a proformar
+            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
+            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
+            consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
+            consulta += "	 and det.rubro_id = " + idRubro;                    // Rubro
+            consulta += "	 and det.activo = " + activo;                       // Este puede salir sobrando
             consulta += "	 group by det.rubro_id, rub.nombre ";
 
             try
@@ -549,7 +552,7 @@ namespace AppGia.Controllers
                     ProformaDetalle proforma_detalle_ej_financ_post = new ProformaDetalle();
                     proforma_detalle_ej_financ_post.total_financiero = Convert.ToDouble(rdr["total_financiero"]);
                     proforma_detalle_ej_financ_post.total_resultado = Convert.ToDouble(rdr["total_resultado"]);
-                    proforma_detalle_ej_financ_post.rubro_id = Convert.ToInt32(rdr["rubro_id"]);
+                    proforma_detalle_ej_financ_post.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                     proforma_detalle_ej_financ_post.nombre_rubro = rdr["nombre_rubro"].ToString();
                     lstProfDetalleEjercFinancPost.Add(proforma_detalle_ej_financ_post);
                 }

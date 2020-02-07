@@ -90,11 +90,13 @@ namespace AppGia.Controllers
             string addModelo = "insert into " + "modelo_negocio"
                 + "("
                 + "id" + ","
-                + "nombre"+","
+                + "nombre"+"," 
+                + "tipo_captura_id, "
                 +"activo" + ") " +
                 "values " +
-                "(nextval('seq_modelo_neg'),@nombre," + 
-                "@activo)";
+                "(nextval('seq_modelo_neg'),@nombre," 
+                +"@tipo_captura_id,"
+                +"@activo)";
 
             try
             {
@@ -102,7 +104,8 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
                 cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
                     cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
-                    cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
+                cmd.Parameters.AddWithValue("@tipo_captura_id", modeloNegocio.tipo_captura_id);
+                cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
                     //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
                 con.Open();

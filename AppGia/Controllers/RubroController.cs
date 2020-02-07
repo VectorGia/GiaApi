@@ -40,14 +40,16 @@ namespace AppGia.Controllers
 
         // PUT: api/Rubros/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public int Put(int id, [FromBody] Rubros rubro)
         {
+            return objrubro.UpdateRubro(id, rubro);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public int Delete(int id)
         {
+            return objrubro.DeleteRubro(id);
         }
     }
 }
