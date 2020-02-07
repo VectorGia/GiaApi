@@ -7,7 +7,8 @@ namespace AppGia.Util
 {
     public static class Constantes
     {
-        public const string headerBalanzaCSV = "cta,"
+        public const string headerBalanzaCSV = 
+                   "cta,"
                  + "scta,"
                  + "sscta,"
                  + "year,"
@@ -44,6 +45,9 @@ namespace AppGia.Util
                  + "cc,"
                  + "hora_carga,"
                  + "fecha_carga";
+
+        public const int C_EXTRACCION_MANUAL = 1;
+        public const int C_EXTRACCION_PROGRAMADA = 2; 
           
     }
 }
