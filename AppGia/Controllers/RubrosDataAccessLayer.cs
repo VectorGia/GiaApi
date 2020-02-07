@@ -52,10 +52,6 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
-            finally
-            {
-                con.Close();
-            }
         }
 
         public List<Rubros> GetRubroById(int id)
@@ -101,10 +97,6 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
-            }
-            finally
-            {
-                con.Close();
             }
         }
 
@@ -157,10 +149,6 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
-            finally
-            {
-                con.Close();
-            }
 
         }
 
@@ -197,16 +185,12 @@ namespace AppGia.Controllers
                 con.Close();
                 throw;
             }
-            finally
-            {
-                con.Close();
-            }
 
         }
 
         public int DeleteRubro(int id)
         {
-            string add = "UPDATE rubro SET activo = false, WHERE id = " + id;
+            string add = "UPDATE rubro SET activo = false where id = " + id;
 
             try
             {
@@ -222,10 +206,6 @@ namespace AppGia.Controllers
             {
                 con.Close();
                 throw;
-            }
-            finally
-            {
-                con.Close();
             }
 
         }
