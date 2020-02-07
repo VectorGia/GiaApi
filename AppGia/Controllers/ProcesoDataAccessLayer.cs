@@ -105,7 +105,7 @@ namespace AppGia.Controllers
         {
             string add = "INSERT INTO proceso ("
                 + " id,"
-                + " empresa,"
+                //+ " empresa,"
                 + " estatus,"
                 + " fecha_fin,"
                 + " fecha_inicio,"
@@ -115,7 +115,7 @@ namespace AppGia.Controllers
                 + " ) "
                 + " VALUES ("
                 + " @nextval('seq_proceso'),"
-                + " @empresa,"
+                //+ " @empresa,"
                 + " @estatus,"
                 + " @fecha_fin,"
                 + " @fecha_inicio,"
@@ -128,7 +128,7 @@ namespace AppGia.Controllers
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                    cmd.Parameters.AddWithValue("@empresa", NpgsqlTypes.NpgsqlDbType.Text, proceso.empresa);
+                   // cmd.Parameters.AddWithValue("@empresa", NpgsqlTypes.NpgsqlDbType.Text, proceso.empresa);
                     cmd.Parameters.AddWithValue("@estatus", NpgsqlTypes.NpgsqlDbType.Text, proceso.estatus);
                     cmd.Parameters.AddWithValue("@fecha_fin",NpgsqlTypes.NpgsqlDbType.Date, proceso.fecha_fin);
                     cmd.Parameters.AddWithValue("@fecha_inicio",  NpgsqlTypes.NpgsqlDbType.Date, proceso.fecha_inicio);

@@ -34,9 +34,9 @@ namespace AppGia.Controllers
         {
         }
 
-        public int Create([FromBody]Proforma proforma)
+        public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
-            return objProforma.AddProforma(proforma);
+            return objProforma.GuardaProforma(lstGuardaProforma);
         }
 
         // PUT: api/Proforma/5
