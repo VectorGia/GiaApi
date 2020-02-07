@@ -507,7 +507,7 @@ namespace AppGia.Controllers
             Proforma proforma=new Proforma();
             proforma.activo = true;
             proforma.anio=detalles[0].anio;
-            //proforma.usuario=;
+            proforma.usuario = detalles[0].usuario;
             proforma.modelo_negocio_id=detalles[0].modelo_negocio_id;
             proforma.tipo_proforma_id = detalles[0].tipo_proforma_id;
             proforma.tipo_captura_id=detalles[0].tipo_captura_id;

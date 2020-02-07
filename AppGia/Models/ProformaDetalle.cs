@@ -53,6 +53,7 @@ namespace AppGia.Models
         public Int64 centro_costo_id { get; set; }
         public Int64 periodo_id { get; set; }
         public DateTime fecha_captura { get; set; }
+        public Int64 usuario { get; set; }
 
         // Campos de tabla "rubro"
         public string nombre_rubro { get; set; }
