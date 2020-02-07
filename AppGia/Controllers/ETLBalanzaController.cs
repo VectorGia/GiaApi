@@ -28,7 +28,7 @@ namespace AppGia.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            iniciarETLBalanzaCSV(1);
+           // iniciarETLBalanzaCSV(1);
             //iniciarETLBalanza(4);
             return new string[] { "value1", "value2" };
         }
@@ -145,8 +145,8 @@ namespace AppGia.Controllers
             try
             {
                 archivo =  etlBalanzaDa.generarSalContCC_CSV(idEmpresa,ruta);
-
-                archivo = "PruebaBalanzaRecrotado.csv";
+                //prueba
+                //archivo = "PruebaBalanzaRecrotado.csv";
 
                 int cantRegAfectados = etlBalanzaDa.copy_balanza(archivo, ruta);
 
@@ -162,7 +162,8 @@ namespace AppGia.Controllers
                 proceso.fecha_inicio = fechaInicioProceso;
                 proceso.fecha_fin = fechaFinalProceso;
                 proceso.estatus = "finalizado";
-
+                proceso.mensaje = "";
+                 
                 procesoDa.AddProceso(proceso);
 
                 etlBalanzaDa.UpdateCuentaUnificada(idEmpresa);// concatencacion de cuentas 

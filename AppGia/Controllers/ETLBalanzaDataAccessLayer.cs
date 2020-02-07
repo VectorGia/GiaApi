@@ -1,4 +1,5 @@
 ﻿using AppGia.Models;
+using AppGia.Util;
 using AppGia.Util.Models;
 using Npgsql;
 using System;
@@ -376,12 +377,12 @@ namespace AppGia.Controllers
                         cmd.Parameters.AddWithValue("@NOVCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.novcargos);
                         cmd.Parameters.AddWithValue("@NOVABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.novabonos);
                         cmd.Parameters.AddWithValue("@DICCARGOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.diccargos);
-                        cmd.Parameters.AddWithValue("@DICABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.dicabonos);
+                        cmd.Parameters.AddWithValue("@DICABONOS", NpgsqlTypes.NpgsqlDbType.Double, balanza.dicabonos); 
                         //cmd.Parameters.AddWithValue("@CC", NpgsqlTypes.NpgsqlDbType.Integer, balanza.CC);
                         //cmd.Parameters.AddWithValue("@DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION);
                         //cmd.Parameters.AddWithValue("@DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION2);
                         cmd.Parameters.AddWithValue("@INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.incluir_suma);
-                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, 1);
+                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, Constantes.C_EXTRACCION_MANUAL);
                         ////cmd.Parameters.AddWithValue("@FECHA_CARGA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
                         cmd.Parameters.AddWithValue("@FECHA_CARGA", NpgsqlTypes.NpgsqlDbType.Date, DateTime.Now);
                         //cmd.Parameters.AddWithValue("@HORA_CARGA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
@@ -566,7 +567,7 @@ namespace AppGia.Controllers
                         //cmd.Parameters.AddWithValue("@DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION);
                         //cmd.Parameters.AddWithValue("@DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION2);
                         cmd.Parameters.AddWithValue("@INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.incluir_suma);
-                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, 1);
+                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, Constantes.C_EXTRACCION_MANUAL);
                         cmd.Parameters.AddWithValue("@FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
                         cmd.Parameters.AddWithValue("@HORA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
                         cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Bigint, idEmpresa);
@@ -620,46 +621,7 @@ namespace AppGia.Controllers
             StreamWriter layout;
             //layout = File.AppendText(@"C:\Users\Omnisys\Desktop\txtWinConnector\" + "cvsBalanza"+idEmpresa+DateTime.Now + ".csv");
             layout = File.AppendText(ruta + nombreArchivo);
-            
-            cabecera = "cta,"
-                + "scta,"
-                 + "sscta,"
-                 + "year,"
-                 + "salini,"
-                 + "enecargos,"
-                 + "eneabonos,"
-                 + "febcargos,"
-                 + "febabonos,"
-                 + "marcargos,"
-                 + "marabonos,"
-                 + "abrcargos,"
-                 + "abrabonos,"
-                 + "maycargos,"
-                 + "mayabonos,"
-                 + "juncargos,"
-                 + "junabonos,"
-                 + "julcargos,"
-                 + "julabonos,"
-                 + "agocargos,"
-                 + "agoabonos,"
-                 + "sepcargos,"
-                 + "sepabonos,"
-                 + "octcargos,"
-                 + "octabonos,"
-                 + "novcargos,"
-                 + "novabonos,"
-                 + "diccargos,"
-                 + "dicabonos,"
-                 + "tipo_extraccion,"
-                 + "id_empresa,"
-                 + "cierre_cargos,"
-                 + "cierre_abonos,"
-                 + "acta,"
-                 + "cc,"
-                 + "hora_carga,"
-                 + "fecha_carga";
-            layout.WriteLine(cabecera);
-
+             
             try
             {
                 /// creacion de odbc 
@@ -675,6 +637,8 @@ namespace AppGia.Controllers
 
                     try
                     {
+                        odbcCon.Open();
+                        layout.WriteLine(Constantes.headerBalanzaCSV);
 
                         string consulta = " SELECT "
                                     + "year,"
@@ -713,7 +677,7 @@ namespace AppGia.Controllers
                                     + " FROM sc_salcont_cc";
 
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
-                        odbcCon.Open();
+                        
                         OdbcDataReader rdr = cmd.ExecuteReader();
 
                         while (rdr.Read())
@@ -749,7 +713,7 @@ namespace AppGia.Controllers
                             + Convert.ToDouble(rdr["novabonos"]) + ","
                             + Convert.ToDouble(rdr["diccargos"]) + ","
                             + Convert.ToDouble(rdr["dicabonos"]) + ","
-                            + "1" + ","
+                            + Constantes.C_EXTRACCION_MANUAL + ","
                             + idEmpresa + ","
                             + Convert.ToDouble(rdr["cierrecargos"]) + ","
                             + Convert.ToDouble(rdr["cierreabonos"]) + ","
@@ -770,13 +734,13 @@ namespace AppGia.Controllers
                     catch (Exception ex)
                     {
                         string error = ex.Message;
-                        //layout.Close();
+                        layout.Close();
                         odbcCon.Close();
                         throw;
                     }
                     finally
                     {
-                        //layout.Close();
+                        layout.Close();
                         odbcCon.Close();
 
                     }
@@ -802,8 +766,10 @@ namespace AppGia.Controllers
         {
             int resultado;
             string script_copy = string.Empty;
-            //script_copy = " copy balanza from  '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
-            script_copy = " copy tmp_balanza from  '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+            
+            // pruebas 
+            //script_copy = " copy tmp_balanza (" + Constantes.headerBalanzaCSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+            script_copy = " copy balanza (" + Constantes.headerBalanzaCSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
 
             try
             {
