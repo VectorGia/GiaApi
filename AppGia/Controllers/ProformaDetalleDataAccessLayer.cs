@@ -225,6 +225,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
+            consulta += "	 mon.centro_costo_id, mon.activo, ";
             consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, ";
             if(mesInicio == 0)
             {
@@ -371,6 +372,8 @@ namespace AppGia.Controllers
                         proforma_detalle.id_proforma = Convert.ToInt64(rdr["id"]);
                         proforma_detalle.anio = Convert.ToInt32(rdr["anio"]);
                         proforma_detalle.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                        proforma_detalle.centro_costo_id= Convert.ToInt64(rdr["centro_costo_id"]);
+                        proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
                         proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                         proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
                         proforma_detalle.enero_monto_financiero = Convert.ToDouble(rdr["enero_monto_financiero"]);
