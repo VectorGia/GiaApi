@@ -223,6 +223,7 @@ namespace AppGia.Controllers
             });
             ProformaDetalle proformaDetalleTotal = new ProformaDetalle();
             proformaDetalleTotal.rubro_id = rubroTotal.id;
+            proformaDetalleTotal.nombre_rubro = rubroTotal.nombre;
 
             DataTable dt = new DataTable();
             proformaDetalleTotal.enero_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["enero"], ""));
