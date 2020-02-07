@@ -344,9 +344,9 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where  ";
-            consulta += "	 date_trunc('DAY',fecha)=current_date and anio = " + anio;                            // Año a proformar
-             consulta += "	 and empresa_id = " + idEmpresa;                 // Empresa
+            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 and anio = " + anio;                            // Año a proformar
+            consulta += "	 and empresa_id = " + idEmpresa;                 // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio;    // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;               // Proyecto
             //consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
@@ -448,15 +448,15 @@ namespace AppGia.Controllers
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY',fecha)=current_date ";
-            consulta += "	 and anio < " + anio; // Corregir para que tome del inicio del proyecto al año actual
-            //consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa;                 // Empresa
-            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;    // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto;               // Proyecto
-            //consulta += "	 and mon.rubro_id = " + idRubro;                       // Rubro
-            consulta += "	 and mon.centro_costo_id = " + idCenCos;               // Centro de costos
-            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 and anio < " + anio;                               // Anio a proformar
+            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
+            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
+            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
+            //consulta += "	 and mon.rubro_id = " + idRubro;                    // Rubro
+            consulta += "	 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
+            consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
             consulta += "	 group by mon.rubro_id, rub.nombre ";
 
             try
@@ -526,13 +526,13 @@ namespace AppGia.Controllers
             consulta += "	 inner join proyecto pry on det.proyecto_id = pry.id and det.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on det.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
-            consulta += "	 and anio > " + anio.ToString(); // Corregir para que tome del inicio del proyecto al año actual
-            //consulta += "	 and mes = " + mes.ToString();                              // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa.ToString();                 // Empresa
-            consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio.ToString();    // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto.ToString();               // Proyecto
-            consulta += "	 and det.rubro_id = " + idRubro.ToString();                       // Rubro
-            consulta += "	 and det.activo = " + activo.ToString(); // Este puede salir sobrando
+            consulta += "	 and anio > " + anio;                               // Anio a proformar
+            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
+            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
+            consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
+            consulta += "	 and det.rubro_id = " + idRubro;                    // Rubro
+            consulta += "	 and det.activo = " + activo;                       // Este puede salir sobrando
             consulta += "	 group by det.rubro_id, rub.nombre ";
 
             try

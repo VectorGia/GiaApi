@@ -520,9 +520,6 @@ namespace AppGia.Controllers
                 new ProformaDetalleDataAccessLayer().AddProformaDetalle(detalle);    
             });
             
-            // Toma los datos de pantalla
-            // Inserta en la tabla proforma
-            // Inserta en la tabla proforma_detalle
             return 0;
         }
 
