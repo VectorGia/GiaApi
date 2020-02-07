@@ -7,7 +7,7 @@ namespace AppGia.Util
 {
     public static class Constantes
     {
-        public const string headerBalanzaCSV = 
+        public const string headerBalanzaCSV =  
                    "cta,"
                  + "scta,"
                  + "sscta,"
