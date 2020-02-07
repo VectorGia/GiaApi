@@ -143,7 +143,6 @@ namespace AppGia.Controllers
             if(cc.empresa_id == 0 && cc.proyecto_id == 0)
             {
                 throw new InvalidDataException("No hay informacion del centro de costos "+idCC);
-                return null;
             }
 
             // De la empresa se obtiene el modelo de negocio
@@ -481,7 +480,6 @@ namespace AppGia.Controllers
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
             {
-   
                 foreach (ProformaDetalle itemSumProfDet in lstGetEjerc)
                 {
                     // Compara elementos para completar la lista
@@ -490,8 +488,9 @@ namespace AppGia.Controllers
                         // Si coincide el rubro se guardan los acumulados anteriores
                         itemProfDet.acumulado_financiero = itemSumProfDet.acumulado_financiero;
                         itemProfDet.acumulado_resultado = itemSumProfDet.acumulado_resultado;
-                        itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemSumProfDet.ejercicio_financiero;
-                        itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemSumProfDet.ejercicio_resultado;
+                        // Se actualiza el total como la suma del ejercicio + el acumulado
+                        itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemProfDet.ejercicio_financiero;
+                        itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemProfDet.ejercicio_resultado;
                         break;
                     }
                 }
