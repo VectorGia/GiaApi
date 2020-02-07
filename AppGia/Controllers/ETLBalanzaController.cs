@@ -163,7 +163,7 @@ namespace AppGia.Controllers
                 proceso.fecha_fin = fechaFinalProceso;
                 proceso.estatus = "finalizado";
                 proceso.mensaje = "";
-
+                 
                 procesoDa.AddProceso(proceso);
 
                 etlBalanzaDa.UpdateCuentaUnificada(idEmpresa);// concatencacion de cuentas 
