@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AppGia.Models;
@@ -131,49 +132,50 @@ namespace AppGia.Controllers
             }
         }
 
+   
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
-        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma)
+        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma,Int64 idTipoCaptura)
         {
-            string Mensaje=string.Empty;
             // Del centro de costos se obtienen empresa y proyecto
-            CentroCostos datCenCos = new CentroCostos();
-            datCenCos = ObtenerDatosCC(idCC);
-            int idEmpresa = datCenCos.empresa_id;
-            int idProyecto = datCenCos.proyecto_id;
-            if(idEmpresa == 0 && idProyecto == 0)
+            CentroCostos cc =  ObtenerDatosCC(idCC);
+            
+            if(cc.empresa_id == 0 && cc.proyecto_id == 0)
             {
-                Mensaje = "No hay informacion del centro de costos";
+                throw new InvalidDataException("No hay informacion del centro de costos "+idCC);
                 return null;
             }
 
-            idEmpresa = 51; // JMQE Prueba. ¡¡¡¡ QUITAR !!!!
             // De la empresa se obtiene el modelo de negocio
-            Proyecto datProyec = new Proyecto();
-            datProyec = ObtenerDatosProy(idEmpresa);
-            int idModeloNeg = datProyec.modelo_negocio_id;
-            if (idModeloNeg == 0)
+            Proyecto proy = ObtenerDatosProy(cc.proyecto_id);
+            if (proy.modelo_negocio_id == 0)
             {
-                Mensaje = "No hay informacion del modelo de negocios";
-                return null;
+                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al proyecto "+cc.proyecto_id);
             }
 
             // Del tipo de proforma obtiene mes de inicio
-            Tipo_Proforma datTipoProf = new Tipo_Proforma();
-            idTipoProforma = 6; // JMQE Prueba. ¡¡¡¡ QUITAR !!!!
-            datTipoProf = ObtenerDatosTipoProf(idTipoProforma);
-            int mesInicio = datTipoProf.mes_inicio;
-            if (mesInicio < 0)
+            Tipo_Proforma datTipoProf = ObtenerDatosTipoProf(idTipoProforma);
+            if (datTipoProf.mes_inicio < 0)
             {
-                Mensaje = "Error en el mes de inicio de la proforma";
-                return null;
+                throw new InvalidDataException("Error en el mes de inicio de la proforma ");
             }
+            
 
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
-            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, Convert.ToInt32(idTipoProforma));
+            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
+                cc.empresa_id, proy.modelo_negocio_id,
+                cc.proyecto_id, anio);
 
             // Enlista la proforma
-            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, idModeloNeg);
+            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, proy.modelo_negocio_id);
+            listDetProformaCalc.ForEach(detalle =>
+            {
+                detalle.centro_costo_id = idCC;
+                detalle.anio = anio;
+                detalle.tipo_proforma_id = idTipoProforma;
+                detalle.tipo_captura_id = idTipoCaptura;
+                detalle.modelo_negocio_id=proy.modelo_negocio_id;
+            });
 
             return lstProformaCompleta;
         }
@@ -303,7 +305,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select id_modelo_neg, tipo_id, clave, aritmetica, naturaleza ";
             consulta += " 	from rubro ";
-            consulta += " 	where id_rubro = " + rubro_id.ToString();
+            consulta += " 	where id = " + rubro_id.ToString();
             consulta += " 	and activo = 'true' ";
 
             try
@@ -377,12 +379,12 @@ namespace AppGia.Controllers
             }
         }
 
-        public Proyecto ObtenerDatosProy(Int64 idEmpresa)
+        public Proyecto ObtenerDatosProy(Int64 idProyecto)
         {
             string consulta = "";
             consulta += " select id, modelo_negocio_id ";
             consulta += " 	from proyecto ";
-            consulta += " 	where id = " + idEmpresa.ToString();
+            consulta += " 	where id = " + idProyecto;
             consulta += " 	and activo = 'true' ";
 
             try
@@ -466,15 +468,15 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, int idTipoCaptura)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
           
             // Obtiene lista de montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
+            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio);
             // Obtiene lista de sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetEjercicioAnterior(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
+            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
