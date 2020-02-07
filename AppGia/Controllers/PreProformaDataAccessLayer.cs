@@ -196,7 +196,7 @@ namespace AppGia.Controllers
 
         public DataTable Cia_CC()
         {
-            string consulta = "SELECT * FROM centro_costo";
+            string consulta = "SELECT * FROM centro_costo WHERE activo = true";
             //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
 
             try
