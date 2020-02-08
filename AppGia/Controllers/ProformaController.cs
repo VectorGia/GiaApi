@@ -21,6 +21,16 @@ namespace AppGia.Controllers
             return null; //objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
 
+        public List<Proforma> GetAllProformas()
+        {
+            return objProforma.GetAllProformas();
+        }
+
+        public List<Proforma> GetProformaPorId(int idProforma)
+        {
+            return objProforma.GetProforma(idProforma);
+        }
+
         // GET: api/Proforma/5
         [HttpGet("{id}", Name = "GetProforma")]
         public string GetProforma(int id)

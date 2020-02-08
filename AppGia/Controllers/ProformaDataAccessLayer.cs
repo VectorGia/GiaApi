@@ -22,10 +22,17 @@ namespace AppGia.Controllers
         public List<Proforma> GetProforma(int idProforma)
         {
             string consulta = "";
-            consulta += " select id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
-            consulta += " from proforma ";
-            consulta += " where id = " + idProforma.ToString();
-            consulta += " and activo = 'true' ";
+            consulta += " select ";
+            consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
+            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
+            consulta += " 		upper(concat(py.nombre, ' - ' , mm.nombre, ' - ', tip.nombre)) as nombre_proforma ";
+            consulta += " from proforma pf ";
+            consulta += " inner join modelo_negocio mm on mm.id = pf.modelo_negocio_id ";
+            consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
+            consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
+            consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
+            consulta += " where pf.activo = 'true' ";
+            consulta += " and pf.id = " + idProforma.ToString();
 
             try
             {
@@ -46,6 +53,57 @@ namespace AppGia.Controllers
                     proforma.activo = Convert.ToBoolean(rdr["activo"]);
                     proforma.usuario = Convert.ToInt32(rdr["usuario"]);
                     proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+                    proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
+                    lstProforma.Add(proforma);
+                }
+
+                return lstProforma;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+        public List<Proforma> GetAllProformas()
+        {
+            string consulta = "";
+            consulta += " select ";
+            consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
+            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
+            consulta += " 		upper(concat(py.nombre, ' - ' , mm.nombre, ' - ', tip.nombre)) as nombre_proforma ";
+            consulta += " from proforma pf ";
+            consulta += " inner join modelo_negocio mm on mm.id = pf.modelo_negocio_id ";
+            consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
+            consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
+            consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
+            consulta += " where pf.activo = 'true' ";
+
+            try
+            {
+                List<Proforma> lstProforma = new List<Proforma>();
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    Proforma proforma = new Proforma();
+                    proforma.id = Convert.ToInt32(rdr["id"]);
+                    proforma.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                    proforma.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
+                    proforma.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
+                    proforma.centro_costo_id = Convert.ToInt32(rdr["centro_costo_id"]);
+                    proforma.activo = Convert.ToBoolean(rdr["activo"]);
+                    proforma.usuario = Convert.ToInt32(rdr["usuario"]);
+                    proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+                    proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
                     lstProforma.Add(proforma);
                 }
 

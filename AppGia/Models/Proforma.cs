@@ -16,6 +16,7 @@ namespace AppGia.Models
 		public Int64 centro_costo_id { get; set; }
 		public bool activo { get; set; }
 		public DateTime fecha_captura { get; set; }
+		public string nombre_proforma { get; set; }
 
 	}
 }
