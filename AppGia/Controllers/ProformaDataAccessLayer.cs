@@ -126,7 +126,7 @@ namespace AppGia.Controllers
             consulta += " insert into proforma ( ";
             consulta += " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
             consulta += " ) values ( ";
-            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
+            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, current_timestamp ";
             consulta += " ) ";
 
             try
@@ -140,7 +140,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@centro_costo_id", proforma.centro_costo_id);
                 cmd.Parameters.AddWithValue("@activo", proforma.activo);
                 cmd.Parameters.AddWithValue("@usuario", proforma.usuario);
-                cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
+                //cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
                 int regInsert = cmd.ExecuteNonQuery();
                 
@@ -259,6 +259,7 @@ namespace AppGia.Controllers
             detalles.ForEach(detalle =>
             {
                 Rubros rubrosCta = BuscaRubroPorId(detalle.rubro_id);
+                detalle.clave_rubro=rubrosCta.clave;
                 if (rubroTotal.aritmetica.Contains(rubrosCta.clave))
                 {
                     aritmeticas["enero"] = aritmeticas["enero"].Replace(rubrosCta.clave, detalle.enero_monto_resultado.ToString());
@@ -283,6 +284,7 @@ namespace AppGia.Controllers
             proformaDetalleTotal.rubro_id = rubroTotal.id;
             proformaDetalleTotal.nombre_rubro = rubroTotal.nombre;
             proformaDetalleTotal.aritmetica = rubroTotal.aritmetica;
+            proformaDetalleTotal.clave_rubro = rubroTotal.clave;
 
             DataTable dt = new DataTable();
             proformaDetalleTotal.enero_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["enero"], ""));
