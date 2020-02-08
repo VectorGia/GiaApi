@@ -126,7 +126,7 @@ namespace AppGia.Controllers
             consulta += " insert into proforma ( ";
             consulta += " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
             consulta += " ) values ( ";
-            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
+            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, current_timestamp ";
             consulta += " ) ";
 
             try
@@ -140,7 +140,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@centro_costo_id", proforma.centro_costo_id);
                 cmd.Parameters.AddWithValue("@activo", proforma.activo);
                 cmd.Parameters.AddWithValue("@usuario", proforma.usuario);
-                cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
+                //cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
                 int regInsert = cmd.ExecuteNonQuery();
                 
