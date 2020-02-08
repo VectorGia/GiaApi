@@ -42,7 +42,7 @@ namespace AppGia.Controllers
             consulta += " from proforma_detalle det ";
             consulta += " inner join rubro rub on det.rubro_id = rub.id ";
             consulta += " where id_proforma = " + idProforma.ToString();
-            consulta += " and activo = 'true' ";
+            consulta += " and det.activo = 'true' ";
 
             try
             {
@@ -92,7 +92,7 @@ namespace AppGia.Controllers
                     proforma_detalle.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
                     proforma_detalle.valor_tipo_cambio_financiero = Convert.ToDouble(rdr["valor_tipo_cambio_financiero"]);
                     proforma_detalle.valor_tipo_cambio_resultado = Convert.ToDouble(rdr["valor_tipo_cambio_resultado"]);
-                    proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
+                   // proforma_detalle.activo = Convert.ToBoolean(rdr["det.activo"]);
                     lstProformaDetalle.Add(proforma_detalle);
                 }
 

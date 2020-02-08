@@ -16,16 +16,16 @@ namespace AppGia.Controllers
         ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/Proforma
         [HttpGet]
-        public List<ProformaDetalle> Get()
+        public List<Proforma> Get()
         {
-            return null; //objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
+            return  objProforma.GetAllProformas();
         }
 
         // GET: api/Proforma/5
         [HttpGet("{id}", Name = "GetProforma")]
-        public string GetProforma(int id)
+        public List<ProformaDetalle> GetProforma(int id)
         {
-            return "value";
+            return objProformaDetalle.GetProformaDetalle(id);
         }
 
         // POST: api/Proforma
@@ -35,12 +35,14 @@ namespace AppGia.Controllers
             return objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
 
+        [HttpPost("/save")]
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
             return objProforma.GuardaProforma(lstGuardaProforma);
         }
 
         // PUT: api/Proforma/5
+
         [HttpPut("{id}")]
         public int Put(int id, [FromBody] Proforma proforma)
         {

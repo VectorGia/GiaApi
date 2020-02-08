@@ -19,6 +19,47 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
+        public List<Proforma> GetAllProformas()
+        {
+            string consulta = "";
+            consulta += " select id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
+            consulta += " from proforma ";
+            consulta += " where activo = 'true' ";
+
+            try
+            {
+                List<Proforma> lstProforma = new List<Proforma>();
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    Proforma proforma = new Proforma();
+                    proforma.id = Convert.ToInt32(rdr["id"]);
+                    proforma.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                    proforma.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
+                    proforma.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
+                    proforma.centro_costo_id = Convert.ToInt32(rdr["centro_costo_id"]);
+                    proforma.activo = Convert.ToBoolean(rdr["activo"]);
+                    proforma.usuario = Convert.ToInt32(rdr["usuario"]);
+                    proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+                    lstProforma.Add(proforma);
+                }
+
+                return lstProforma;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         public List<Proforma> GetProforma(int idProforma)
         {
             string consulta = "";
