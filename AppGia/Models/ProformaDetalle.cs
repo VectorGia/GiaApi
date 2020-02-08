@@ -57,6 +57,8 @@ namespace AppGia.Models
 
         // Campos de tabla "rubro"
         public string nombre_rubro { get; set; }
+        
+        public string clave_rubro { get; set; }
 
         public string aritmetica { get; set; }
 

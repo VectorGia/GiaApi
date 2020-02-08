@@ -259,6 +259,7 @@ namespace AppGia.Controllers
             detalles.ForEach(detalle =>
             {
                 Rubros rubrosCta = BuscaRubroPorId(detalle.rubro_id);
+                detalle.clave_rubro=rubrosCta.clave;
                 if (rubroTotal.aritmetica.Contains(rubrosCta.clave))
                 {
                     aritmeticas["enero"] = aritmeticas["enero"].Replace(rubrosCta.clave, detalle.enero_monto_resultado.ToString());
@@ -283,6 +284,7 @@ namespace AppGia.Controllers
             proformaDetalleTotal.rubro_id = rubroTotal.id;
             proformaDetalleTotal.nombre_rubro = rubroTotal.nombre;
             proformaDetalleTotal.aritmetica = rubroTotal.aritmetica;
+            proformaDetalleTotal.clave_rubro = rubroTotal.clave;
 
             DataTable dt = new DataTable();
             proformaDetalleTotal.enero_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["enero"], ""));
