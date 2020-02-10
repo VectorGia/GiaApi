@@ -126,7 +126,7 @@ namespace AppGia.Controllers
             consulta += " insert into proforma ( ";
             consulta += " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
             consulta += " ) values ( ";
-            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, current_timestamp ";
+            consulta += " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
             consulta += " ) ";
 
             try
@@ -140,7 +140,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@centro_costo_id", proforma.centro_costo_id);
                 cmd.Parameters.AddWithValue("@activo", proforma.activo);
                 cmd.Parameters.AddWithValue("@usuario", proforma.usuario);
-                //cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
+                cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
 
                 int regInsert = cmd.ExecuteNonQuery();
                 
@@ -565,6 +565,7 @@ namespace AppGia.Controllers
         public int GuardaProforma(List<ProformaDetalle> detalles)
         {
             Proforma proforma=new Proforma();
+            DateTime fechaProc = DateTime.Today;
             proforma.activo = true;
             proforma.anio=detalles[0].anio;
             proforma.usuario = detalles[0].usuario;
@@ -572,7 +573,7 @@ namespace AppGia.Controllers
             proforma.tipo_proforma_id = detalles[0].tipo_proforma_id;
             proforma.tipo_captura_id=detalles[0].tipo_captura_id;
             proforma.centro_costo_id = detalles[0].centro_costo_id;
-            proforma.fecha_captura=new DateTime();
+            proforma.fecha_captura = fechaProc;
             AddProforma(proforma);
             detalles.ForEach(detalle =>
             {
