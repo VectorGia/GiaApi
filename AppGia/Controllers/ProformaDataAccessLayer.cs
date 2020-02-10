@@ -193,7 +193,7 @@ namespace AppGia.Controllers
    
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
-        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma,Int64 idTipoCaptura)
+        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc =  ObtenerDatosCC(idCC);
@@ -221,7 +221,7 @@ namespace AppGia.Controllers
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
                 cc.empresa_id, proy.modelo_negocio_id,
-                cc.proyecto_id, anio);
+                cc.proyecto_id, anio, idTipoCaptura);
 
             // Enlista la proforma
             List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, proy.modelo_negocio_id);
@@ -529,15 +529,15 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
           
             // Obtiene lista de montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio);
+            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio);
+            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
