@@ -320,7 +320,7 @@ namespace AppGia.Controllers
 
         public DataTable Proyecto_Modelo(Int64 proyecto_id)
         {
-            string consulta = "select p.id,tipo_captura_id from proyecto p join modelo_negocio mn on p.modelo_negocio_id = mn.id where p.id= " + proyecto_id;
+            string consulta = "select mn.id,tipo_captura_id from proyecto p join modelo_negocio mn on p.modelo_negocio_id = mn.id where p.id= " + proyecto_id;
             //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
 
             try
