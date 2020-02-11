@@ -200,19 +200,23 @@ namespace AppGia.Controllers
 
 
                                 }
-                                montos.activo = true;
-                                montos.anio = fechaactual.Year;
-                                montos.fecha = fechaactual;
-                                montos.mes = fechaactual.Month;
-                                montos.valor_tipo_cambio_resultado = cambiop;
-                                montos.centro_costo_id = EmpCCProy.id;
-                                montos.empresa_id = EmpCCProy.empresa_id;
-                                montos.modelo_negocio_id = modelo;
-                                montos.proyecto_id = EmpCCProy.proyecto_id;
-                                montos.rubro_id = rubros.id;
-                                montos.tipo_captura_id = 2;
+                                if (dr.Rows.Count > 0)
+                                {
+                                    montos.activo = true;
+                                    montos.anio = fechaactual.Year;
+                                    montos.fecha = fechaactual;
+                                    montos.mes = fechaactual.Month;
+                                    montos.valor_tipo_cambio_resultado = cambiop;
+                                    montos.centro_costo_id = EmpCCProy.id;
+                                    montos.empresa_id = EmpCCProy.empresa_id;
+                                    montos.modelo_negocio_id = modelo;
+                                    montos.proyecto_id = EmpCCProy.proyecto_id;
+                                    montos.rubro_id = rubros.id;
+                                    montos.tipo_captura_id = 2;
 
-                                cantcol = insertarMontos(montos);
+                                    cantcol = insertarMontos(montos);
+                                }
+                                
 
                             }
 
