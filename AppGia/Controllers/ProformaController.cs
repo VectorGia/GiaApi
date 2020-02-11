@@ -16,9 +16,19 @@ namespace AppGia.Controllers
         ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/Proforma
         [HttpGet]
-        public List<ProformaDetalle> Get(Proforma proforma)
+        public List<ProformaDetalle> Get()
         {
-            return objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id,proforma.tipo_captura_id);
+            return null; //objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
+        }
+
+        public List<Proforma> GetAllProformas()
+        {
+            return objProforma.GetAllProformas();
+        }
+
+        public List<Proforma> GetProformaPorId(int idProforma)
+        {
+            return objProforma.GetProforma(idProforma);
         }
 
         // GET: api/Proforma/5

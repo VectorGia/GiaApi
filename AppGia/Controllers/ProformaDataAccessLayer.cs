@@ -22,10 +22,17 @@ namespace AppGia.Controllers
         public List<Proforma> GetProforma(int idProforma)
         {
             string consulta = "";
-            consulta += " select id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
-            consulta += " from proforma ";
-            consulta += " where id = " + idProforma.ToString();
-            consulta += " and activo = 'true' ";
+            consulta += " select ";
+            consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
+            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
+            consulta += " 		upper(concat(py.nombre, ' - ' , mm.nombre, ' - ', tip.nombre)) as nombre_proforma ";
+            consulta += " from proforma pf ";
+            consulta += " inner join modelo_negocio mm on mm.id = pf.modelo_negocio_id ";
+            consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
+            consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
+            consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
+            consulta += " where pf.activo = 'true' ";
+            consulta += " and pf.id = " + idProforma.ToString();
 
             try
             {
@@ -46,6 +53,57 @@ namespace AppGia.Controllers
                     proforma.activo = Convert.ToBoolean(rdr["activo"]);
                     proforma.usuario = Convert.ToInt32(rdr["usuario"]);
                     proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+                    proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
+                    lstProforma.Add(proforma);
+                }
+
+                return lstProforma;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+
+        }
+
+        public List<Proforma> GetAllProformas()
+        {
+            string consulta = "";
+            consulta += " select ";
+            consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
+            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
+            consulta += " 		upper(concat(py.nombre, ' - ' , mm.nombre, ' - ', tip.nombre)) as nombre_proforma ";
+            consulta += " from proforma pf ";
+            consulta += " inner join modelo_negocio mm on mm.id = pf.modelo_negocio_id ";
+            consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
+            consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
+            consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
+            consulta += " where pf.activo = 'true' ";
+
+            try
+            {
+                List<Proforma> lstProforma = new List<Proforma>();
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    Proforma proforma = new Proforma();
+                    proforma.id = Convert.ToInt32(rdr["id"]);
+                    proforma.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                    proforma.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
+                    proforma.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
+                    proforma.centro_costo_id = Convert.ToInt32(rdr["centro_costo_id"]);
+                    proforma.activo = Convert.ToBoolean(rdr["activo"]);
+                    proforma.usuario = Convert.ToInt32(rdr["usuario"]);
+                    proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+                    proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
                     lstProforma.Add(proforma);
                 }
 
@@ -135,7 +193,7 @@ namespace AppGia.Controllers
    
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
-        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma,Int64 idTipoCaptura)
+        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc =  ObtenerDatosCC(idCC);
@@ -143,7 +201,6 @@ namespace AppGia.Controllers
             if(cc.empresa_id == 0 && cc.proyecto_id == 0)
             {
                 throw new InvalidDataException("No hay informacion del centro de costos "+idCC);
-                return null;
             }
 
             // De la empresa se obtiene el modelo de negocio
@@ -164,7 +221,7 @@ namespace AppGia.Controllers
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
                 cc.empresa_id, proy.modelo_negocio_id,
-                cc.proyecto_id, anio);
+                cc.proyecto_id, anio, idTipoCaptura);
 
             // Enlista la proforma
             List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, proy.modelo_negocio_id);
@@ -202,6 +259,7 @@ namespace AppGia.Controllers
             detalles.ForEach(detalle =>
             {
                 Rubros rubrosCta = BuscaRubroPorId(detalle.rubro_id);
+                detalle.clave_rubro=rubrosCta.clave;
                 if (rubroTotal.aritmetica.Contains(rubrosCta.clave))
                 {
                     aritmeticas["enero"] = aritmeticas["enero"].Replace(rubrosCta.clave, detalle.enero_monto_resultado.ToString());
@@ -224,6 +282,9 @@ namespace AppGia.Controllers
             });
             ProformaDetalle proformaDetalleTotal = new ProformaDetalle();
             proformaDetalleTotal.rubro_id = rubroTotal.id;
+            proformaDetalleTotal.nombre_rubro = rubroTotal.nombre;
+            proformaDetalleTotal.aritmetica = rubroTotal.aritmetica;
+            proformaDetalleTotal.clave_rubro = rubroTotal.clave;
 
             DataTable dt = new DataTable();
             proformaDetalleTotal.enero_monto_resultado = Convert.ToDouble(dt.Compute(aritmeticas["enero"], ""));
@@ -468,20 +529,19 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
           
             // Obtiene lista de montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio);
+            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio);
+            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
             {
-   
                 foreach (ProformaDetalle itemSumProfDet in lstGetEjerc)
                 {
                     // Compara elementos para completar la lista
@@ -490,8 +550,9 @@ namespace AppGia.Controllers
                         // Si coincide el rubro se guardan los acumulados anteriores
                         itemProfDet.acumulado_financiero = itemSumProfDet.acumulado_financiero;
                         itemProfDet.acumulado_resultado = itemSumProfDet.acumulado_resultado;
-                        itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemSumProfDet.ejercicio_financiero;
-                        itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemSumProfDet.ejercicio_resultado;
+                        // Se actualiza el total como la suma del ejercicio + el acumulado
+                        itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemProfDet.ejercicio_financiero;
+                        itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemProfDet.ejercicio_resultado;
                         break;
                     }
                 }
@@ -504,14 +565,15 @@ namespace AppGia.Controllers
         public int GuardaProforma(List<ProformaDetalle> detalles)
         {
             Proforma proforma=new Proforma();
+            DateTime fechaProc = DateTime.Today;
             proforma.activo = true;
             proforma.anio=detalles[0].anio;
-            //proforma.usuario=;
+            proforma.usuario = detalles[0].usuario;
             proforma.modelo_negocio_id=detalles[0].modelo_negocio_id;
             proforma.tipo_proforma_id = detalles[0].tipo_proforma_id;
             proforma.tipo_captura_id=detalles[0].tipo_captura_id;
             proforma.centro_costo_id = detalles[0].centro_costo_id;
-            proforma.fecha_captura=new DateTime();
+            proforma.fecha_captura = fechaProc;
             AddProforma(proforma);
             detalles.ForEach(detalle =>
             {
