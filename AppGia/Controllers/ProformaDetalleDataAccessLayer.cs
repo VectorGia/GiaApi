@@ -216,14 +216,18 @@ namespace AppGia.Controllers
         }
 
         // Calculo de la proforma a partir de los montos consolidados
-        // El parametro idTipoCaptura define el calculo de la proforma
+        // El parametro mesInicio define el calculo de la proforma
         //      0 = 0+12 - Cero reales, doce proformados
         //      3 =  3+9 - Tres reales, 9 proformados
         //      6 =  6+6 - Seis reales, 6 proformados
         //      9 =  9+3 - Nueve reales, 3 proformados
         // Los reales se calculan desde los montos consolidados
         // Los proformados se capturan en pantalla
-        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio)
+        // El parametreo idTipoCaptura indica si la proforma es:
+        //      1 - Contable
+        //      2 - Flujo
+        //
+        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
@@ -349,12 +353,13 @@ namespace AppGia.Controllers
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
             consulta += "	 where date_trunc('DAY',fecha) = current_date ";
-            consulta += "	 and anio = " + anio;                            // Año a proformar
-            consulta += "	 and empresa_id = " + idEmpresa;                 // Empresa
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;    // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto;               // Proyecto
-            //consulta += "	 and rub.id = " + idRubro.ToString();                       // Rubro
-            consulta += "	 and centro_costo_id = " + idCenCos;             // Centro de Costos
+            consulta += "	 and anio = " + anio;                           // Año a proformar
+            consulta += "	 and empresa_id = " + idEmpresa;                // Empresa
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;              // Proyecto
+            //consulta += "	 and rub.id = " + idRubro.ToString();           // Rubro
+            consulta += "	 and centro_costo_id = " + idCenCos;            // Centro de Costos
+            consulta += "	 and tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
             consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
             consulta += "	 order by rub.id ";
 
@@ -421,7 +426,7 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, int idModeloNegocio, int idProyecto, int anio)
+        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, int idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce(";
@@ -462,6 +467,7 @@ namespace AppGia.Controllers
             consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
             //consulta += "	 and mon.rubro_id = " + idRubro;                    // Rubro
             consulta += "	 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
+            consulta += "	 and mon.tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
             consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
             consulta += "	 group by mon.rubro_id, rub.nombre ";
 

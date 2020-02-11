@@ -194,21 +194,21 @@ namespace AppGia.Controllers
    
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
-        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma,Int64 idTipoCaptura)
+        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc =  ObtenerDatosCC(idCC);
             
             if(cc.empresa_id == 0 && cc.proyecto_id == 0)
             {
-                throw new InvalidDataException("No hay informacion del centro de costos "+idCC);
+                throw new InvalidDataException("No hay informacion del centro de costos " + idCC);
             }
 
             // De la empresa se obtiene el modelo de negocio
             Proyecto proy = ObtenerDatosProy(cc.proyecto_id);
             if (proy.modelo_negocio_id == 0)
             {
-                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al proyecto "+cc.proyecto_id);
+                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al proyecto " + cc.proyecto_id);
             }
 
             // Del tipo de proforma obtiene mes de inicio
@@ -222,7 +222,23 @@ namespace AppGia.Controllers
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
                 cc.empresa_id, proy.modelo_negocio_id,
-                cc.proyecto_id, anio);
+                cc.proyecto_id, anio, idTipoCaptura);
+
+            if (listDetProformaCalc.Count == 0)
+            {
+                DateTime fechaProf = DateTime.Today;
+                string tipoProforma = string.Empty;
+                switch (idTipoCaptura)
+                {
+                    case 1:
+                        tipoProforma = "contable";
+                        break;
+                    case 2:
+                        tipoProforma = "de flujo";
+                        break;
+                }
+                throw new InvalidDataException("No existe información con fecha " + fechaProf.ToString() + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id.ToString() + " y modelo de negocio " + proy.modelo_negocio_id.ToString());
+            }
 
             // Enlista la proforma
             List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, proy.modelo_negocio_id);
@@ -530,15 +546,15 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
           
             // Obtiene lista de montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio);
+            List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio);
+            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
