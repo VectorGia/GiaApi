@@ -38,7 +38,7 @@ namespace AppGia.Controllers
             Double cambiol, cambiop;
             DateTime fechaactual = DateTime.Today;
             int cantcol = 0;
-            Int64 datos = Sindatos();
+            Int64 datos;
 
 
             foreach (DataRow r in dt.Rows)
@@ -61,6 +61,7 @@ namespace AppGia.Controllers
                         lstModel = lstModeloNeg(modelo);
                         if (tipo_captura == 1)
                         {
+                             datos = Sindatos(1);
                             foreach (Rubros rubros in lstModel)
                             {
                                 String consulta = qry.getQuerySums(rubros.rangos_cuentas_incluidas, rubros.rango_cuentas_excluidas, EmpCCProy.empresa_id, "balanza", "cuenta_unificada", 12,datos);
@@ -137,6 +138,7 @@ namespace AppGia.Controllers
                         }
                         else
                         {
+                            datos = Sindatos(2);
                             foreach (Rubros rubros in lstModel)
                             {
                                 String consulta = qry.getQuerySemanalSums(rubros.rangos_cuentas_incluidas, rubros.rango_cuentas_excluidas, EmpCCProy.empresa_id, "semanal", "lpad(tm::text,4,'0')", 4,datos);
@@ -610,9 +612,9 @@ namespace AppGia.Controllers
             }
         }
 
-        public Int64 Sindatos()
+        public Int64 Sindatos(Int64 captura)
         {
-            string consulta = "SELECT count(*) FROM montos_consolidados";
+            string consulta = "SELECT count(*) FROM montos_consolidados WHERE tipo_captura_id = " + captura ;
             Int64 contador = 0;
 
             try
