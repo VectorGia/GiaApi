@@ -133,6 +133,7 @@ namespace AppGia.Controllers
             {
                 con.Open();
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                cmd.Parameters.AddWithValue("@id", proforma.id);
                 cmd.Parameters.AddWithValue("@anio", proforma.anio);
                 cmd.Parameters.AddWithValue("@modelo_negocio_id", proforma.modelo_negocio_id);
                 cmd.Parameters.AddWithValue("@tipo_captura_id", proforma.tipo_captura_id);
