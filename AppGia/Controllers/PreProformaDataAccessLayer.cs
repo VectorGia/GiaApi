@@ -118,7 +118,7 @@ namespace AppGia.Controllers
                                     montos.diciembre_abono_resultado = ((Convert.ToDouble(rub["dicabonos"]) * cambiol) / cambiop);
                                     montos.diciembre_cargo_resultado = ((Convert.ToDouble(rub["diccargos"]) * cambiol) / cambiop);
                                     montos.diciembre_total_resultado = ((Convert.ToDouble(rub["dictotal"]) * cambiol) / cambiop);
-                                    montos.anio = fechaactual.Year;
+                                    montos.anio = Convert.ToInt32(rub["year"]);
                                     montos.fecha = fechaactual;
                                     montos.mes = fechaactual.Month;
                                     montos.valor_tipo_cambio_resultado = cambiop;
