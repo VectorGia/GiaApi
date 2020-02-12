@@ -201,7 +201,7 @@ namespace AppGia.Controllers
 
                     cmd.Parameters.AddWithValue("@desc_id", empresa.desc_id);
                     cmd.Parameters.AddWithValue("@nombre", empresa.nombre);
-                    cmd.Parameters.AddWithValue("@abrev", empresa.abrev);
+                    cmd.Parameters.AddWithValue("@abrev", empresa.abrev); 
                     cmd.Parameters.AddWithValue("@etl", empresa.etl);
                     cmd.Parameters.AddWithValue("@host", empresa.host);
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl);
