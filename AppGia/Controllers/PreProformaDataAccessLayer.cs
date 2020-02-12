@@ -320,7 +320,9 @@ namespace AppGia.Controllers
 
         public DataTable Proyecto_Modelo(Int64 proyecto_id)
         {
-            string consulta = "SELECT * FROM proyecto WHERE id = " + proyecto_id;
+            string consulta = "SELECT m.id,m.tipo_captura_id FROM proyecto p, modelo_negocio m " +
+                              "WHERE m.id = p.modelo_negocio_id " +
+                              "and p.id = " + proyecto_id;
             //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
 
             try
