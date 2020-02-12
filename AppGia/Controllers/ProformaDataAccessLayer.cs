@@ -200,14 +200,14 @@ namespace AppGia.Controllers
             
             if(cc.empresa_id == 0 && cc.proyecto_id == 0)
             {
-                throw new InvalidDataException("No hay informacion del centro de costos "+idCC);
+                throw new InvalidDataException("No hay informacion del centro de costos " + idCC);
             }
 
             // De la empresa se obtiene el modelo de negocio
             Proyecto proy = ObtenerDatosProy(cc.proyecto_id);
             if (proy.modelo_negocio_id == 0)
             {
-                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al proyecto "+cc.proyecto_id);
+                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al proyecto " + cc.proyecto_id);
             }
 
             // Del tipo de proforma obtiene mes de inicio
@@ -222,6 +222,22 @@ namespace AppGia.Controllers
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
                 cc.empresa_id, proy.modelo_negocio_id,
                 cc.proyecto_id, anio, idTipoCaptura);
+
+            if (listDetProformaCalc.Count == 0)
+            {
+                DateTime fechaProf = DateTime.Today;
+                string tipoProforma = string.Empty;
+                switch (idTipoCaptura)
+                {
+                    case 1:
+                        tipoProforma = "contable";
+                        break;
+                    case 2:
+                        tipoProforma = "de flujo";
+                        break;
+                }
+                throw new InvalidDataException("No existe información con fecha " + fechaProf.ToString() + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id.ToString() + " y modelo de negocio " + proy.modelo_negocio_id.ToString());
+            }
 
             // Enlista la proforma
             List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, proy.modelo_negocio_id);

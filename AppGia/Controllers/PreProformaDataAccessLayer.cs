@@ -141,7 +141,7 @@ namespace AppGia.Controllers
                             datos = Sindatos(2);
                             foreach (Rubros rubros in lstModel)
                             {
-                                String consulta = qry.getQuerySemanalSums(rubros.rangos_cuentas_incluidas, rubros.rango_cuentas_excluidas, EmpCCProy.empresa_id, "semanal", "lpad(tm::text,4,'0')", 4,datos);
+                                String consulta = qry.getQuerySemanalSums(rubros.rangos_cuentas_incluidas, rubros.rango_cuentas_excluidas, EmpCCProy.empresa_id, "semanal", "itm::text", 2,datos);
                                 dr = Rubros(consulta);
                                 tipo = Moneda(EmpCCProy.empresa_id);
                                 cambiop = CambioPesos();
