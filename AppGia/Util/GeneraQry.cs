@@ -99,6 +99,9 @@ namespace AppGia.Util
                 if (rangeOrCta.Contains("-"))
                 {
                     rangos.Add(rangeOrCta.Trim());
+                }else if (rangeOrCta.EndsWith("*"))
+                {
+                    rangos.Add(rangeOrCta+"-"+rangeOrCta);
                 }
                 else
                 {
