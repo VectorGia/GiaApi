@@ -543,7 +543,7 @@ namespace AppGia.Controllers
             consulta += " 	and prf.tipo_captura_id = " + idTipoCaptura;
             consulta += " 	and prf.tipo_proforma_id = " + idTipoProforma;
             consulta += " 	and prf.activo = 'true' ";
-            consulta += " 	group by prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, det.rubro_id ";
+            consulta += " 	group by prf.centro_costo_id, prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, det.rubro_id ";
 
             try
             {
