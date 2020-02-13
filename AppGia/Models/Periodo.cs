@@ -15,10 +15,6 @@ namespace AppGia.Models
         public Int64 idusuario { get; set; }
         public Int64 tipo_captura_id { get; set; }
         public Int64 tipo_proforma_id { get; set; }
-        
-        
-        public int nombre { get; set; }
-        public int mes_inicio { get; set; }
 
     }
 }

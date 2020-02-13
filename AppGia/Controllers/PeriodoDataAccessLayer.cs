@@ -17,7 +17,7 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-        public IEnumerable<Periodo> GetAllCentros()
+        public IEnumerable<Periodo> GetAllPeriodos()
         {
             //Obtiene todos los periodods habilitados "TRUE"            
             string consulta = "SELECT * FROM periodo WHERE activo = true";
@@ -48,6 +48,44 @@ namespace AppGia.Controllers
                 return lstperiodo;
             }
             catch (Exception ex)
+            {
+                con.Close();
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public Periodo GetPeriodoData(string id)
+        {
+            try
+            {
+                Periodo periodo = new Periodo();
+                {
+                    string consulta = "  select * from periodo"
+                                     + " where  id  = " + id;
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+
+                        periodo.id = Convert.ToInt64(rdr["id"]);
+                        periodo.activo = Convert.ToBoolean(rdr["activo"]);
+                        periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
+                        periodo.estatus = rdr["estatus"].ToString().Trim();
+                        periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
+                        periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
+                        periodo.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                        periodo.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                    }
+                }
+                return periodo;
+            }
+            catch
             {
                 con.Close();
                 throw;
@@ -145,9 +183,10 @@ namespace AppGia.Controllers
             }
         }
 
-        public int deletePeriodo(string id, Periodo periodo)
+        public int deletePeriodo(string id)
         {
-            string update = "UPDATE periodo SET activo=false";
+            string update = "UPDATE periodo SET activo=false" +
+                            " where id = " + id;
             {
                 try
                 {
