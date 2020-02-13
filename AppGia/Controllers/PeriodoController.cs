@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AppGia.Models;
 
 namespace AppGia.Controllers
 {
@@ -11,36 +12,41 @@ namespace AppGia.Controllers
     [ApiController]
     public class PeriodoController : ControllerBase
     {
+        PeriodoDataAccessLayer objPeriodo = new PeriodoDataAccessLayer();
+        Periodo periodo = new Periodo();
         // GET: api/Periodo
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Periodo> Get()
         {
-            return new string[] { "value1", "value2" };
+            return objPeriodo.GetAllPeriodos();
         }
 
         // GET: api/Periodo/5
         [HttpGet("{id}", Name = "GetPeriodo")]
-        public string Get(int id)
+        public Periodo GetPeriodo(string id)
         {
-            return "value";
+            return objPeriodo.GetPeriodoData(id);
         }
 
         // POST: api/Periodo
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Create([FromBody]Periodo periodo)
         {
+            objPeriodo.AddPeriodo(periodo);
         }
 
         // PUT: api/Periodo/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public int Put(string id, [FromBody] Periodo periodo)
         {
+            return objPeriodo.updatePeriodo(id, periodo);
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public int Delete(string id)
         {
+            return objPeriodo.deletePeriodo(id);
         }
     }
 }

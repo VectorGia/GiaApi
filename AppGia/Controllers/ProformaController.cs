@@ -21,6 +21,7 @@ namespace AppGia.Controllers
             return  objProforma.GetAllProformas();
         }
 
+
         public List<Proforma> GetProformaPorId(int idProforma)
         {
             return objProforma.GetProforma(idProforma);
