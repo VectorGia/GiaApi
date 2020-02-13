@@ -118,7 +118,7 @@ namespace AppGia.Controllers
                                     montos.diciembre_abono_resultado = ((Convert.ToDouble(rub["dicabonos"]) * cambiol) / cambiop);
                                     montos.diciembre_cargo_resultado = ((Convert.ToDouble(rub["diccargos"]) * cambiol) / cambiop);
                                     montos.diciembre_total_resultado = ((Convert.ToDouble(rub["dictotal"]) * cambiol) / cambiop);
-                                    montos.anio = fechaactual.Year;
+                                    montos.anio = Convert.ToInt32(rub["year"]);
                                     montos.fecha = fechaactual;
                                     montos.mes = fechaactual.Month;
                                     montos.valor_tipo_cambio_resultado = cambiop;
@@ -320,9 +320,9 @@ namespace AppGia.Controllers
 
         public DataTable Proyecto_Modelo(Int64 proyecto_id)
         {
-            string consulta = "SELECT m.id,m.tipo_captura_id FROM proyecto p, modelo_negocio m " +
-                              "WHERE m.id = p.modelo_negocio_id " +
-                              "and p.id = " + proyecto_id;
+
+            string consulta = "select mn.id,tipo_captura_id from proyecto p join modelo_negocio mn on p.modelo_negocio_id = mn.id where p.id= " + proyecto_id;
+
             //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
 
             try
