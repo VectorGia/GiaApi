@@ -39,7 +39,7 @@ namespace AppGia.Controllers
                         periodo.id = Convert.ToInt64(rdr["id"]);
                         periodo.activo = Convert.ToBoolean(rdr["activo"]);
                         periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
-                        periodo.estatus = rdr["estatus"].ToString().Trim();
+                        periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
                         periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         //periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
                         periodo.clave = rdr["clave"].ToString();
@@ -79,7 +79,7 @@ namespace AppGia.Controllers
                         periodo.id = Convert.ToInt64(rdr["id"]);
                         periodo.activo = Convert.ToBoolean(rdr["activo"]);
                         periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
-                        periodo.estatus = rdr["estatus"].ToString().Trim();
+                        periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
                         periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         //periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
                         periodo.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
