@@ -18,7 +18,7 @@ namespace AppGia.Controllers
         [HttpGet]
         public List<ProformaDetalle> Get()
         {
-            return null; //objProformaDetalle.GetEjercicioPosterior(2018, 17, 29, 2, 6);
+            return null; // objProformaDetalle.GetProformaCalculada(17, 3, 89, 29, 96, 2019, 1);
         }
 
         public List<Proforma> GetAllProformas()
