@@ -156,8 +156,16 @@ namespace AppGia.Controllers
                                     cambiop = 1;
                                 }
                                 MontosConsolidados montos = new MontosConsolidados();
+                                List<int> anios = new List<int>();
                                 foreach (DataRow rubf in dr.Rows)
                                 {
+                                    anios.Add(Convert.ToInt32(rubf["year"]));
+                                }
+                                foreach (int anio in anios) { }
+
+                                foreach (DataRow rubf in dr.Rows)
+                                {
+                                   
                                     Double casaSwitch = Convert.ToDouble(rubf["mes"]);
 
                                     switch (casaSwitch)
@@ -321,7 +329,7 @@ namespace AppGia.Controllers
         public DataTable Proyecto_Modelo(Int64 proyecto_id)
         {
 
-            string consulta = "select mn.id,tipo_captura_id from proyecto p join modelo_negocio mn on p.modelo_negocio_id = mn.id where p.id= " + proyecto_id;
+            string consulta = "select mn.id,tipo_captura_id from proyecto p join modelo_negocio mn on p.modelo_negocio_id = mn.id where mn.activo = true and p.id= " + proyecto_id;
 
             //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
 
