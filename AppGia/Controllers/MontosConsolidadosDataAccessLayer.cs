@@ -51,12 +51,12 @@ namespace AppGia.Controllers
             consulta += "	 activo, fecha ";
             consulta += " from montos_consolidados ";
             consulta += " where activo = 'true' ";
-            consulta += " and anio = " + montConsAnio.ToString();
-            consulta += " and mes = " + montConsMes.ToString();
-            consulta += " and empresa_id = " + montConsEmpresa.ToString();
-            consulta += " and modelo_negocio_id = " + montConsModeloNeg.ToString();
-            consulta += " and proyecto_id = " + montConsProyecto.ToString();
-            consulta += " and rubro_id = " + montConsRubro.ToString();
+            consulta += " and anio = " + montConsAnio;
+            consulta += " and mes = " + montConsMes;
+            consulta += " and empresa_id = " + montConsEmpresa;
+            consulta += " and modelo_negocio_id = " + montConsModeloNeg;
+            consulta += " and proyecto_id = " + montConsProyecto;
+            consulta += " and rubro_id = " + montConsRubro;
 
             try
             {
@@ -258,7 +258,7 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " update montos_consolidados set activo = '" + bandActivo.ToString() +"' ";
-            consulta += " where id = " + idMontosConsolidados.ToString();
+            consulta += " where id = " + idMontosConsolidados;
 
             try
             {

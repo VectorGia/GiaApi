@@ -19,7 +19,8 @@ namespace AppGia.Controllers
         public IEnumerable<Empresa> GetAllEmpresas()
         {
             //string cadena = "select *from empresa where  activo = " + true;
-            string cadena = "select id,activo,nombre,abrev,bd_name,contrasenia_etl," +
+            string cadena = "select id,activo,nombre,abrev,bd_name," +
+                //"contrasenia_etl," +
                 "desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id from empresa where activo = true order by id desc";
             try
             {
@@ -39,7 +40,7 @@ namespace AppGia.Controllers
                         empresa.nombre = rdr["nombre"].ToString().Trim();
                         empresa.abrev = rdr["abrev"].ToString().Trim();
                         empresa.bd_name = rdr["bd_name"].ToString().Trim();
-                        empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
+                        //empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
                         empresa.etl = Convert.ToBoolean(rdr["etl"]);
                         empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         empresa.host = rdr["host"].ToString().Trim();
@@ -69,7 +70,7 @@ namespace AppGia.Controllers
                 Empresa empresa = new Empresa();
                 {
 
-                    string consulta = " select id , activo , nombre , abrev , bd_name , contrasenia_etl,desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
+                    string consulta = " select id , activo , nombre , abrev , bd_name , desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
                         " from empresa  where  id  = " + id;
 
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
@@ -84,7 +85,7 @@ namespace AppGia.Controllers
                         empresa.nombre = rdr["nombre"].ToString().Trim();
                         empresa.abrev = rdr["abrev"].ToString().Trim();
                         empresa.bd_name = rdr["bd_name"].ToString().Trim();
-                        empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
+                        //empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
                         empresa.etl = Convert.ToBoolean(rdr["etl"]);
                         empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         empresa.host = rdr["host"].ToString().Trim();
@@ -200,7 +201,7 @@ namespace AppGia.Controllers
 
                     cmd.Parameters.AddWithValue("@desc_id", empresa.desc_id);
                     cmd.Parameters.AddWithValue("@nombre", empresa.nombre);
-                    cmd.Parameters.AddWithValue("@abrev", empresa.abrev);
+                    cmd.Parameters.AddWithValue("@abrev", empresa.abrev); 
                     cmd.Parameters.AddWithValue("@etl", empresa.etl);
                     cmd.Parameters.AddWithValue("@host", empresa.host);
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl);

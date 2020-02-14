@@ -17,6 +17,7 @@ namespace AppGia.Models
         public string rangos_cuentas_incluidas { get; set; }
         public Int64 tipo_id { get; set; }
         public Int64 id_modelo_neg { get; set; }
+        public string hijos { get; set; }
 
     }
 }
