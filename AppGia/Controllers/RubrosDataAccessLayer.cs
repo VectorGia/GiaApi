@@ -215,5 +215,29 @@ namespace AppGia.Controllers
             }
 
         }
+
+        public int ActualizaHijos(Int64 id, string strHijos)
+        {
+            string consulta = "";
+            consulta += " update rubro set hijos = '" + strHijos + "'";
+            consulta += " where id = " + id;
+
+            try
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                con.Open();
+                int cantFilAfec = cmd.ExecuteNonQuery();
+
+                return cantFilAfec;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
     }
 }
