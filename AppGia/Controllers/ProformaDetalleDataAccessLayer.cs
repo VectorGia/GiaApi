@@ -462,7 +462,7 @@ namespace AppGia.Controllers
             consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
             //consulta += "	 where date_trunc('DAY',fecha) = current_date ";
-            consulta += "	 where anio < " + anio;                               // Anios anteriores a la proforma actual
+            consulta += "	 where anio < " + anio;                             // Anios anteriores a la proforma actual
             consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
             consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
