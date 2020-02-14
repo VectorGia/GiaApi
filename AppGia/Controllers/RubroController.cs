@@ -45,11 +45,6 @@ namespace AppGia.Controllers
             return objrubro.UpdateRubro(id, rubro);
         }
 
-        public int GuardaHijos(int id, string strHijos)
-        {
-            return objrubro.ActualizaHijos(id, strHijos);
-        }
-
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public int Delete(int id)
