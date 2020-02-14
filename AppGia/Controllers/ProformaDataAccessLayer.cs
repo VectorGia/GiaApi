@@ -164,7 +164,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateProforma(int idProforma, bool bandActivo, int idUsuario)
+        public int UpdateProforma(Int64 idProforma, bool bandActivo, Int64 idUsuario)
         {
             string consulta = "";
             consulta += " update proforma set activo = '" + bandActivo.ToString() + "', ";
@@ -613,5 +613,21 @@ namespace AppGia.Controllers
             return 0;
         }
 
+        public int ActualizaProforma(List<ProformaDetalle> proformaDetalle)
+        {
+            Proforma proforma = new Proforma();
+            DateTime fechaProc = DateTime.Today;
+            proforma.activo = true;
+            proforma.fecha_captura = fechaProc;
+            proforma.id = proformaDetalle[0].id;
+            UpdateProforma(proforma.id, proforma.activo, proforma.usuario);
+            proformaDetalle.ForEach(detalle =>
+            {
+                detalle.activo = true;
+                new ProformaDetalleDataAccessLayer().UpdateProformaDetalle(detalle);
+            });
+
+            return 0;
+        }
     }
 }
