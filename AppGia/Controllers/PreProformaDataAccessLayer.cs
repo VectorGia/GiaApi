@@ -284,6 +284,7 @@ namespace AppGia.Controllers
                 modelosnegocio.rangos_cuentas_incluidas = r["rangos_cuentas_incluidas"].ToString();
                 modelosnegocio.tipo_id = Convert.ToInt64(r["tipo_id"]);
                 modelosnegocio.id_modelo_neg = Convert.ToInt64(r["id_modelo_neg"]);
+                modelosnegocio.hijos = r["hijos"].ToString();
 
                 lstModel.Add(modelosnegocio);
             }
