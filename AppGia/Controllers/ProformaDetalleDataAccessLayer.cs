@@ -354,16 +354,15 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            //consulta += "	 where date_trunc('DAY',fecha) = current_date "; // Cambio de fecha
+            //consulta += "	 where date_trunc('DAY',fecha) = current_date ";    // Cambio de fecha
             consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + DateTime.Today.ToString("dd/MM/yyyy") + "'::date) "; // Compara fecha sin hora
-            consulta += "	 and anio = " + anio;                           // Año a proformar
-            consulta += "	 and empresa_id = " + idEmpresa;                // Empresa
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto;              // Proyecto
-            //consulta += "	 and rub.id = " + idRubro.ToString();           // Rubro
-            consulta += "	 and centro_costo_id = " + idCenCos;            // Centro de Costos
-            consulta += "	 and tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
-            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 and anio = " + anio;                               // Año a proformar
+            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;       // Modelo de Negocio
+            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
+            consulta += "	 and centro_costo_id = " + idCenCos;                // Centro de Costos
+            consulta += "	 and tipo_captura_id = " + idTipoCaptura;           // Tipo de captura
+            consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
             consulta += "	 order by rub.id ";
 
             try
@@ -463,13 +462,10 @@ namespace AppGia.Controllers
             consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
             //consulta += "	 where date_trunc('DAY',fecha) = current_date ";
-            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + DateTime.Today.ToString("dd/MM/yyyy") + "'::date) "; // Compara fecha sin hora
-            consulta += "	 and anio < " + anio;                               // Anio a proformar
-            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
+            consulta += "	 where anio < " + anio;                               // Anios anteriores a la proforma actual
             consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
             consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
-            //consulta += "	 and mon.rubro_id = " + idRubro;                    // Rubro
             consulta += "	 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
             consulta += "	 and mon.tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
             consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
@@ -541,7 +537,7 @@ namespace AppGia.Controllers
             consulta += " 	, 0) as anios_posteriores_resultado, det.rubro_id as rubro_id ";
             consulta += " 	from proforma_detalle det ";
             consulta += " 	inner join proforma prf on det.id_proforma = prf.id ";
-            consulta += " 	where prf.anio > " + anio;
+            consulta += " 	where prf.anio > " + anio;                      // Anios posteriores a la proforma actual
             consulta += " 	and prf.centro_costo_id = " + idCenCos;
             consulta += " 	and prf.modelo_negocio_id = " + idModNeg;
             consulta += " 	and prf.tipo_captura_id = " + idTipoCaptura;
