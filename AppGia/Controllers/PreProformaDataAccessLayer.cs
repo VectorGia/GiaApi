@@ -10,223 +10,69 @@ namespace AppGia.Controllers
 {
     public class PreProformaDataAccessLayer
     {
-        NpgsqlConnection con;
-        NpgsqlCommand comP = new NpgsqlCommand();
-        private  Conexion.Conexion conex = new Conexion.Conexion();
+        private const  int TipoCapturaContable = 1;
+        private const  int TipoCapturaFlujo = 2;
+        private NpgsqlConnection con;
+      
+        private Conexion.Conexion conex = new Conexion.Conexion();
 
         public PreProformaDataAccessLayer()
         {
             con = conex.ConnexionDB();
         }
 
+
         public int MontosConsolidados()
         {
-            GeneraQry qry = new GeneraQry();
-            DataTable dt =  Cia_CC();
-            
-            String tipo;
-            Double cambiol, cambiop;
+            DataTable centrosCostoDt = GetCentrosCostro();
             DateTime fechaactual = DateTime.Today;
-            int cantcol = 0;
-            Int64 datos;
+            int numInserts = 0;
 
 
-            foreach (DataRow r in dt.Rows)
+            foreach (DataRow centrosCostoRow in centrosCostoDt.Rows)
             {
-                EmpresaCC EmpCCProy = new EmpresaCC();
-                EmpCCProy.id = Convert.ToInt64(r["id"]);
-                EmpCCProy.empresa_id = Convert.ToInt64(r["empresa_id"]);
-                EmpCCProy.proyecto_id = Convert.ToInt64(r["proyecto_id"]);
-
+                EmpresaCC EmpProy = new EmpresaCC();
+                EmpProy.id = Convert.ToInt64(centrosCostoRow["id"]);
+                EmpProy.empresa_id = Convert.ToInt64(centrosCostoRow["empresa_id"]);
+                EmpProy.proyecto_id = Convert.ToInt64(centrosCostoRow["proyecto_id"]);
+                Int64 modeloId = Convert.ToInt64(centrosCostoRow["modelo_id"]);
 
                 try
                 {
-                    DataTable dpm = Proyecto_Modelo(EmpCCProy.proyecto_id);
-                    foreach (DataRow p in dpm.Rows)
+                    DataTable modeloNegTable = ExecuteQuery("select * from modelo_negocio where id=" + modeloId);
+                    //DataTable modeloNegDataTable = Proyecto_Modelo(EmpProy.proyecto_id);
+                    foreach (DataRow modeloNegRow in modeloNegTable.Rows)
                     {
-                        Int64 modelo = Convert.ToInt64(p["id"]);
-                        Int64 tipo_captura = Convert.ToInt64(p["tipo_captura_id"]);
-                        List<Rubros> lstModel = lstModeloNeg(modelo);
-                        if (tipo_captura == 1)
+                        //Int64 modeloId = Convert.ToInt64(modeloNegRow["id"]);
+                        Int64 tipoCaptura = Convert.ToInt64(modeloNegRow["tipo_captura_id"]);
+                        List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
+                        if (tipoCaptura == TipoCapturaContable)
                         {
-                            datos = Sindatos(1);
-                            foreach (Rubros rubros in lstModel)
+                            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaContable);
+                            GeneraQry qry = new GeneraQry("balanza", "cuenta_unificada", 12);
+                            foreach (Rubros rubro in rubrosDeModelo)
                             {
-                                String consulta = qry.getQuerySums(rubros.rangos_cuentas_incluidas,
-                                    rubros.rango_cuentas_excluidas, EmpCCProy.empresa_id, "balanza", "cuenta_unificada",
-                                    12, datos);
-                                DataTable dr = Rubros(consulta);
-                                tipo = Moneda(EmpCCProy.empresa_id);
-                                cambiop = CambioPesos();
-                                if (tipo != "MX")
-                                {
-                                    cambiol = CambioLocal(EmpCCProy.empresa_id);
-                                }
-                                else
-                                {
-                                    cambiol = 1;
-                                    cambiop = 1;
-                                }
+                                String consulta = qry.getQuerySums(rubro.rangos_cuentas_incluidas,
+                                    rubro.rango_cuentas_excluidas, EmpProy.empresa_id, numRegistrosExistentes);
+                                DataTable sumaMontosDt = ExecuteQuery(consulta);
 
-                                foreach (DataRow rub in dr.Rows)
+                                foreach (DataRow rubroMontosRow in sumaMontosDt.Rows)
                                 {
-                                    MontosConsolidados montos = new MontosConsolidados();
-                                    montos.activo = true;
-                                    montos.enero_abono_resultado = ((Convert.ToDouble(rub["eneabonos"]) * cambiol) / cambiop);
-                                    montos.enero_cargo_resultado = ((Convert.ToDouble(rub["enecargos"]) * cambiol) / cambiop);
-                                    montos.enero_total_resultado = ((Convert.ToDouble(rub["enetotal"]) * cambiol) / cambiop);
-                                    montos.febrero_abono_resultado = ((Convert.ToDouble(rub["febabonos"]) * cambiol) / cambiop);
-                                    montos.febrero_cargo_resultado = ((Convert.ToDouble(rub["febcargos"]) * cambiol) / cambiop);
-                                    montos.febrero_total_resultado = ((Convert.ToDouble(rub["febtotal"]) * cambiol) / cambiop);
-                                    montos.marzo_abono_resultado = ((Convert.ToDouble(rub["marabonos"]) * cambiol) / cambiop);
-                                    montos.marzo_cargo_resultado = ((Convert.ToDouble(rub["marcargos"]) * cambiol) / cambiop);
-                                    montos.marzo_total_resultado = ((Convert.ToDouble(rub["martotal"]) * cambiol) / cambiop);
-                                    montos.abril_abono_resultado = ((Convert.ToDouble(rub["abrabonos"]) * cambiol) / cambiop);
-                                    montos.abril_cargo_resultado = ((Convert.ToDouble(rub["abrcargos"]) * cambiol) / cambiop);
-                                    montos.abril_total_resultado = ((Convert.ToDouble(rub["abrtotal"]) * cambiol) / cambiop);
-                                    montos.mayo_abono_resultado = ((Convert.ToDouble(rub["mayabonos"]) * cambiol) / cambiop);
-                                    montos.mayo_cargo_resultado = ((Convert.ToDouble(rub["maycargos"]) * cambiol) / cambiop);
-                                    montos.mayo_total_resultado = ((Convert.ToDouble(rub["maytotal"]) * cambiol) / cambiop);
-                                    montos.junio_abono_resultado = ((Convert.ToDouble(rub["junabonos"]) * cambiol) / cambiop);
-                                    montos.junio_cargo_resultado = ((Convert.ToDouble(rub["juncargos"]) * cambiol) / cambiop);
-                                    montos.junio_total_resultado = ((Convert.ToDouble(rub["juntotal"]) * cambiol) / cambiop);
-                                    montos.julio_abono_resultado = ((Convert.ToDouble(rub["julabonos"]) * cambiol) / cambiop);
-                                    montos.julio_cargo_resultado = ((Convert.ToDouble(rub["julcargos"]) * cambiol) / cambiop);
-                                    montos.julio_total_resultado = ((Convert.ToDouble(rub["jultotal"]) * cambiol) / cambiop);
-                                    montos.agosto_abono_resultado = ((Convert.ToDouble(rub["agoabonos"]) * cambiol) / cambiop);
-                                    montos.agosto_cargo_resultado = ((Convert.ToDouble(rub["agocargos"]) * cambiol) / cambiop);
-                                    montos.agosto_total_resultado = ((Convert.ToDouble(rub["agototal"]) * cambiol) / cambiop);
-                                    montos.septiembre_abono_resultado = ((Convert.ToDouble(rub["sepabonos"]) * cambiol) / cambiop);
-                                    montos.septiembre_cargo_resultado = ((Convert.ToDouble(rub["sepcargos"]) * cambiol) / cambiop);
-                                    montos.septiembre_total_resultado = ((Convert.ToDouble(rub["septotal"]) * cambiol) / cambiop);
-                                    montos.octubre_abono_resultado = ((Convert.ToDouble(rub["octabonos"]) * cambiol) / cambiop);
-                                    montos.octubre_cargo_resultado = ((Convert.ToDouble(rub["octcargos"]) * cambiol) / cambiop);
-                                    montos.octubre_total_resultado = ((Convert.ToDouble(rub["octtotal"]) * cambiol) / cambiop);
-                                    montos.noviembre_abono_resultado = ((Convert.ToDouble(rub["novabonos"]) * cambiol) / cambiop);
-                                    montos.noviembre_cargo_resultado = ((Convert.ToDouble(rub["novcargos"]) * cambiol) / cambiop);
-                                    montos.noviembre_total_resultado = ((Convert.ToDouble(rub["novtotal"]) * cambiol) / cambiop);
-                                    montos.diciembre_abono_resultado = ((Convert.ToDouble(rub["dicabonos"]) * cambiol) / cambiop);
-                                    montos.diciembre_cargo_resultado = ((Convert.ToDouble(rub["diccargos"]) * cambiol) / cambiop);
-                                    montos.diciembre_total_resultado = ((Convert.ToDouble(rub["dictotal"]) * cambiol) / cambiop);
-                                    montos.anio = Convert.ToInt32(rub["year"]);
-                                    montos.fecha = fechaactual;
-                                    montos.mes = fechaactual.Month;
-                                    montos.valor_tipo_cambio_resultado = cambiop;
-                                    montos.centro_costo_id = EmpCCProy.id;
-                                    montos.empresa_id = EmpCCProy.empresa_id;
-                                    montos.modelo_negocio_id = modelo;
-                                    montos.proyecto_id = EmpCCProy.proyecto_id;
-                                    montos.rubro_id = rubros.id;
-                                    montos.tipo_captura_id = 1;
-
-                                    cantcol += insertarMontos(montos);
+                                    numInserts += BuildMontosConsolContable(rubroMontosRow, EmpProy, modeloId, rubro.id,
+                                        fechaactual);
                                 }
                             }
                         }
                         else
                         {
-                            datos = Sindatos(2);
-                            foreach (Rubros rubros in lstModel)
+                            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaFlujo);
+                            foreach (Rubros rubro in rubrosDeModelo)
                             {
-                                String consulta = qry.getQuerySemanalSums(rubros.rangos_cuentas_incluidas,
-                                    rubros.rango_cuentas_excluidas, EmpCCProy.empresa_id, "semanal", "itm::text", 2,
-                                    datos);
-                                DataTable dr = Rubros(consulta);
-                                tipo = Moneda(EmpCCProy.empresa_id);
-                                cambiop = CambioPesos();
-                                if (tipo != "MX")
-                                {
-                                    cambiol = CambioLocal(EmpCCProy.empresa_id);
-                                }
-                                else
-                                {
-                                    cambiol = 1;
-                                    cambiop = 1;
-                                }
-
-                                Dictionary<int, MontosConsolidados> montosPorAnio =
-                                    new Dictionary<int, MontosConsolidados>();
-                                foreach (DataRow rubf in dr.Rows)
-                                {
-                                    int year = Convert.ToInt32(rubf["year"]);
-                                    if (!montosPorAnio.ContainsKey(year))
-                                    {
-                                        montosPorAnio.Add(year, new MontosConsolidados());
-                                    }
-
-                                    MontosConsolidados montos = montosPorAnio[year];
-                                    Double mes = Convert.ToDouble(rubf["mes"]);
-
-                                    switch (mes)
-                                    {
-                                        case 1:
-                                            montos.enero_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 2:
-                                            montos.febrero_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 3:
-                                            montos.marzo_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 4:
-                                            montos.abril_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 5:
-                                            montos.mayo_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 6:
-                                            montos.junio_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 7:
-                                            montos.julio_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 8:
-                                            montos.agosto_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 9:
-                                            montos.septiembre_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 10:
-                                            montos.octubre_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 11:
-                                            montos.noviembre_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                        case 12:
-                                            montos.diciembre_total_resultado =
-                                                ((Convert.ToDouble(rubf["saldo"]) * cambiol) / cambiop);
-                                            break;
-                                    }
-                                }
-
-                                foreach (KeyValuePair<int, MontosConsolidados> kv in montosPorAnio)
-                                {
-                                    MontosConsolidados montos = kv.Value;
-                                    montos.anio = kv.Key;
-                                    montos.activo = true;
-                                    montos.fecha = fechaactual;
-                                    montos.mes = fechaactual.Month;
-                                    montos.valor_tipo_cambio_resultado = cambiop;
-                                    montos.centro_costo_id = EmpCCProy.id;
-                                    montos.empresa_id = EmpCCProy.empresa_id;
-                                    montos.modelo_negocio_id = modelo;
-                                    montos.proyecto_id = EmpCCProy.proyecto_id;
-                                    montos.rubro_id = rubros.id;
-                                    montos.tipo_captura_id = 2;
-
-                                    cantcol += insertarMontos(montos);
-                                }
+                                GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
+                                String consulta = qry.getQuerySemanalSums(rubro.rangos_cuentas_incluidas,
+                                    rubro.rango_cuentas_excluidas, EmpProy.empresa_id, numRegistrosExistentes);
+                                DataTable sumaMontos = ExecuteQuery(consulta);
+                                numInserts += BuildMontosFujo(sumaMontos, EmpProy, modeloId, rubro.id, fechaactual);
                             }
                         }
                     }
@@ -237,240 +83,58 @@ namespace AppGia.Controllers
                 }
             }
 
-            return cantcol;
+            return numInserts;
         }
 
-       
 
-        public DataTable Modelos_Negocio(Int64 modelo_id)
+        public DataTable findRubrosByIdModelo(Int64 modelo_id)
         {
-            string consulta = "SELECT * FROM rubro WHERE tipo_id = 2 AND id_modelo_neg = " + modelo_id;
-
-
-            try
-            {
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
+            return ExecuteQuery("SELECT * FROM rubro WHERE tipo_id = 2 AND id_modelo_neg = " + modelo_id);
         }
 
-        public List<Rubros> lstModeloNeg(Int64 modelo_id)
+        public List<Rubros> GetRubrosFromModeloId(Int64 modeloId)
         {
-            List<Rubros> lstModel = new List<Rubros>();
-            DataTable dt = new DataTable();
-            dt = Modelos_Negocio(modelo_id);
-            foreach (DataRow r in dt.Rows)
+            List<Rubros> listaRubros = new List<Rubros>();
+            DataTable rubrosDt = findRubrosByIdModelo(modeloId);
+            foreach (DataRow rubrosRow in rubrosDt.Rows)
             {
-                Rubros modelosnegocio = new Rubros();
-                modelosnegocio.id = Convert.ToInt64(r["id"]);
-                modelosnegocio.activo = Convert.ToBoolean(r["activo"]);
-                modelosnegocio.nombre = r["nombre"].ToString();
-                modelosnegocio.aritmetica = r["aritmetica"].ToString();
-                modelosnegocio.clave = r["clave"].ToString();
-                modelosnegocio.naturaleza = r["naturaleza"].ToString();
-                modelosnegocio.rango_cuentas_excluidas = r["rango_cuentas_excluidas"].ToString();
-                modelosnegocio.rangos_cuentas_incluidas = r["rangos_cuentas_incluidas"].ToString();
-                modelosnegocio.tipo_id = Convert.ToInt64(r["tipo_id"]);
-                modelosnegocio.id_modelo_neg = Convert.ToInt64(r["id_modelo_neg"]);
-                modelosnegocio.hijos = r["hijos"].ToString();
-
-                lstModel.Add(modelosnegocio);
+                Rubros rubro = new Rubros();
+                rubro.id = Convert.ToInt64(rubrosRow["id"]);
+                rubro.activo = Convert.ToBoolean(rubrosRow["activo"]);
+                rubro.nombre = rubrosRow["nombre"].ToString();
+                rubro.aritmetica = rubrosRow["aritmetica"].ToString();
+                rubro.clave = rubrosRow["clave"].ToString();
+                rubro.naturaleza = rubrosRow["naturaleza"].ToString();
+                rubro.rango_cuentas_excluidas = rubrosRow["rango_cuentas_excluidas"].ToString();
+                rubro.rangos_cuentas_incluidas = rubrosRow["rangos_cuentas_incluidas"].ToString();
+                rubro.tipo_id = Convert.ToInt64(rubrosRow["tipo_id"]);
+                rubro.id_modelo_neg = Convert.ToInt64(rubrosRow["id_modelo_neg"]);
+                rubro.hijos = rubrosRow["hijos"].ToString();
+                listaRubros.Add(rubro);
             }
 
-            return lstModel;
+            return listaRubros;
         }
 
-        public DataTable Cia_CC()
+        public DataTable GetCentrosCostro()
         {
-            string consulta = "SELECT * FROM centro_costo WHERE activo = true";
-            //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
-
-            try
-            {
-                //eve.WriteEntry("Se inicio el proceso de consulta empresa centro de costo", EventLogEntryType.Information);
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                //eve.WriteEntry(ex.Message, EventLogEntryType.Error);
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
+            return ExecuteQuery("SELECT * FROM centro_costo WHERE activo = true");
         }
 
-        public DataTable Proyecto_Modelo(Int64 proyecto_id)
-        {
 
-            string consulta = "select mn.id,tipo_captura_id from proyecto p join modelo_negocio mn on p.modelo_negocio_id = mn.id where p.id= " + proyecto_id;
-
-            //+ " WHERE " + cod + "INT_ID_EMPRESA" + cod + " = " + id_empresa;
-
-            try
-            {
-                //eve.WriteEntry("Se inicio el proceso de consulta modelo empresa", EventLogEntryType.Information);
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        public DataTable Rubros(String qry)
+        private DataTable ExecuteQuery(String qry)
         {
             string consulta = qry;
 
             try
             {
                 con.Open();
-                comP = new NpgsqlCommand(consulta, con);
+                NpgsqlCommand comP = new NpgsqlCommand(consulta, con);
                 NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
 
                 DataTable dt = new DataTable();
                 daP.Fill(dt);
                 return dt;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        public String Moneda(Int64 empresa_id)
-        {
-            string consulta = "SELECT clave FROM moneda m, empresa e" +
-                              " WHERE m.id = e.moneda_id" +
-                              " AND e.id = " + empresa_id;
-            String tipo = "";
-
-            try
-            {
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                foreach (DataRow r in dt.Rows)
-                {
-                    tipo = r["clave"].ToString();
-                }
-
-                return tipo;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        public Double CambioLocal(Int64 empresa_id)
-        {
-            string consulta = "SELECT t.valor FROM tipo_cambio t, moneda m, empresa e" +
-                              " WHERE t.moneda_id = m.id" +
-                              " AND e.moneda_id = m.id" +
-                              " AND t.fecha = current_date" +
-                              " AND e.id = " + empresa_id;
-            Double tipo = 1;
-
-            try
-            {
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                foreach (DataRow r in dt.Rows)
-                {
-                    tipo = Convert.ToDouble(r["valor"]);
-                }
-
-                return tipo;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        public Double CambioPesos()
-        {
-            string consulta = "SELECT t.valor FROM tipo_cambio t, moneda m" +
-                              " WHERE t.moneda_id = m.id" +
-                              " AND t.fecha = current_date" +
-                              " AND m.clave = 'MX'";
-            Double cambiop = 1;
-
-            try
-            {
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                foreach (DataRow r in dt.Rows)
-                {
-                    cambiop = Convert.ToDouble(r["valor"]);
-                }
-
-                return cambiop;
-            }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
             }
             finally
             {
@@ -551,103 +215,101 @@ namespace AppGia.Controllers
 
             try
             {
-                {
-                    int cantFilaAfect = 0;
-                    NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
-                    cmd.Parameters.AddWithValue("@activo", NpgsqlDbType.Boolean, montos.activo);
-                    cmd.Parameters.AddWithValue("@enero_abono_resultado", NpgsqlDbType.Double,
-                        montos.enero_abono_resultado);
-                    cmd.Parameters.AddWithValue("@enero_cargo_resultado", NpgsqlDbType.Double,
-                        montos.enero_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@enero_total_resultado", NpgsqlDbType.Double,
-                        montos.enero_total_resultado);
-                    cmd.Parameters.AddWithValue("@febrero_abono_resultado", NpgsqlDbType.Double,
-                        montos.febrero_abono_resultado);
-                    cmd.Parameters.AddWithValue("@febrero_cargo_resultado", NpgsqlDbType.Double,
-                        montos.febrero_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@febrero_total_resultado", NpgsqlDbType.Double,
-                        montos.febrero_total_resultado);
-                    cmd.Parameters.AddWithValue("@marzo_abono_resultado", NpgsqlDbType.Double,
-                        montos.marzo_abono_resultado);
-                    cmd.Parameters.AddWithValue("@marzo_cargo_resultado", NpgsqlDbType.Double,
-                        montos.marzo_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@marzo_total_resultado", NpgsqlDbType.Double,
-                        montos.marzo_total_resultado);
-                    cmd.Parameters.AddWithValue("@abril_abono_resultado", NpgsqlDbType.Double,
-                        montos.abril_abono_resultado);
-                    cmd.Parameters.AddWithValue("@abril_cargo_resultado", NpgsqlDbType.Double,
-                        montos.abril_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@abril_total_resultado", NpgsqlDbType.Double,
-                        montos.abril_total_resultado);
-                    cmd.Parameters.AddWithValue("@mayo_abono_resultado", NpgsqlDbType.Double,
-                        montos.mayo_abono_resultado);
-                    cmd.Parameters.AddWithValue("@mayo_cargo_resultado", NpgsqlDbType.Double,
-                        montos.mayo_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@mayo_total_resultado", NpgsqlDbType.Double,
-                        montos.mayo_total_resultado);
-                    cmd.Parameters.AddWithValue("@junio_abono_resultado", NpgsqlDbType.Double,
-                        montos.junio_abono_resultado);
-                    cmd.Parameters.AddWithValue("@junio_cargo_resultado", NpgsqlDbType.Double,
-                        montos.junio_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@junio_total_resultado", NpgsqlDbType.Double,
-                        montos.junio_total_resultado);
-                    cmd.Parameters.AddWithValue("@julio_abono_resultado", NpgsqlDbType.Double,
-                        montos.julio_abono_resultado);
-                    cmd.Parameters.AddWithValue("@julio_cargo_resultado", NpgsqlDbType.Double,
-                        montos.julio_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@julio_total_resultado", NpgsqlDbType.Double,
-                        montos.julio_total_resultado);
-                    cmd.Parameters.AddWithValue("@agosto_abono_resultado", NpgsqlDbType.Double,
-                        montos.agosto_abono_resultado);
-                    cmd.Parameters.AddWithValue("@agosto_cargo_resultado", NpgsqlDbType.Double,
-                        montos.agosto_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@agosto_total_resultado", NpgsqlDbType.Double,
-                        montos.agosto_total_resultado);
-                    cmd.Parameters.AddWithValue("@septiembre_abono_resultado", NpgsqlDbType.Double,
-                        montos.septiembre_abono_resultado);
-                    cmd.Parameters.AddWithValue("@septiembre_cargo_resultado", NpgsqlDbType.Double,
-                        montos.septiembre_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@septiembre_total_resultado", NpgsqlDbType.Double,
-                        montos.septiembre_total_resultado);
-                    cmd.Parameters.AddWithValue("@octubre_abono_resultado", NpgsqlDbType.Double,
-                        montos.octubre_abono_resultado);
-                    cmd.Parameters.AddWithValue("@octubre_cargo_resultado", NpgsqlDbType.Double,
-                        montos.octubre_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@octubre_total_resultado", NpgsqlDbType.Double,
-                        montos.octubre_total_resultado);
-                    cmd.Parameters.AddWithValue("@noviembre_abono_resultado", NpgsqlDbType.Double,
-                        montos.noviembre_abono_resultado);
-                    cmd.Parameters.AddWithValue("@noviembre_cargo_resultado", NpgsqlDbType.Double,
-                        montos.noviembre_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@noviembre_total_resultado", NpgsqlDbType.Double,
-                        montos.noviembre_total_resultado);
-                    cmd.Parameters.AddWithValue("@diciembre_abono_resultado", NpgsqlDbType.Double,
-                        montos.diciembre_abono_resultado);
-                    cmd.Parameters.AddWithValue("@diciembre_cargo_resultado", NpgsqlDbType.Double,
-                        montos.diciembre_cargo_resultado);
-                    cmd.Parameters.AddWithValue("@diciembre_total_resultado", NpgsqlDbType.Double,
-                        montos.diciembre_total_resultado);
-                    cmd.Parameters.AddWithValue("@anio", NpgsqlDbType.Integer, montos.anio);
-                    cmd.Parameters.AddWithValue("@fecha", NpgsqlDbType.Date, montos.fecha);
-                    cmd.Parameters.AddWithValue("@mes", NpgsqlDbType.Integer, montos.mes);
-                    cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado", NpgsqlDbType.Double,
-                        montos.valor_tipo_cambio_resultado);
-                    cmd.Parameters.AddWithValue("@centro_costo_id", NpgsqlDbType.Bigint,
-                        montos.centro_costo_id);
-                    cmd.Parameters.AddWithValue("@empresa_id", NpgsqlDbType.Bigint, montos.empresa_id);
-                    cmd.Parameters.AddWithValue("@modelo_negocio_id", NpgsqlDbType.Bigint,
-                        montos.modelo_negocio_id);
-                    cmd.Parameters.AddWithValue("@proyecto_id", NpgsqlDbType.Bigint, montos.proyecto_id);
-                    cmd.Parameters.AddWithValue("@rubro_id", NpgsqlDbType.Bigint, montos.rubro_id);
-                    cmd.Parameters.AddWithValue("@tipo_captura_id", NpgsqlDbType.Bigint,
-                        montos.tipo_captura_id);
+                int cantFilaAfect = 0;
+                NpgsqlCommand cmd = new NpgsqlCommand(addBalanza, con);
+                cmd.Parameters.AddWithValue("@activo", NpgsqlDbType.Boolean, montos.activo);
+                cmd.Parameters.AddWithValue("@enero_abono_resultado", NpgsqlDbType.Double,
+                    montos.enero_abono_resultado);
+                cmd.Parameters.AddWithValue("@enero_cargo_resultado", NpgsqlDbType.Double,
+                    montos.enero_cargo_resultado);
+                cmd.Parameters.AddWithValue("@enero_total_resultado", NpgsqlDbType.Double,
+                    montos.enero_total_resultado);
+                cmd.Parameters.AddWithValue("@febrero_abono_resultado", NpgsqlDbType.Double,
+                    montos.febrero_abono_resultado);
+                cmd.Parameters.AddWithValue("@febrero_cargo_resultado", NpgsqlDbType.Double,
+                    montos.febrero_cargo_resultado);
+                cmd.Parameters.AddWithValue("@febrero_total_resultado", NpgsqlDbType.Double,
+                    montos.febrero_total_resultado);
+                cmd.Parameters.AddWithValue("@marzo_abono_resultado", NpgsqlDbType.Double,
+                    montos.marzo_abono_resultado);
+                cmd.Parameters.AddWithValue("@marzo_cargo_resultado", NpgsqlDbType.Double,
+                    montos.marzo_cargo_resultado);
+                cmd.Parameters.AddWithValue("@marzo_total_resultado", NpgsqlDbType.Double,
+                    montos.marzo_total_resultado);
+                cmd.Parameters.AddWithValue("@abril_abono_resultado", NpgsqlDbType.Double,
+                    montos.abril_abono_resultado);
+                cmd.Parameters.AddWithValue("@abril_cargo_resultado", NpgsqlDbType.Double,
+                    montos.abril_cargo_resultado);
+                cmd.Parameters.AddWithValue("@abril_total_resultado", NpgsqlDbType.Double,
+                    montos.abril_total_resultado);
+                cmd.Parameters.AddWithValue("@mayo_abono_resultado", NpgsqlDbType.Double,
+                    montos.mayo_abono_resultado);
+                cmd.Parameters.AddWithValue("@mayo_cargo_resultado", NpgsqlDbType.Double,
+                    montos.mayo_cargo_resultado);
+                cmd.Parameters.AddWithValue("@mayo_total_resultado", NpgsqlDbType.Double,
+                    montos.mayo_total_resultado);
+                cmd.Parameters.AddWithValue("@junio_abono_resultado", NpgsqlDbType.Double,
+                    montos.junio_abono_resultado);
+                cmd.Parameters.AddWithValue("@junio_cargo_resultado", NpgsqlDbType.Double,
+                    montos.junio_cargo_resultado);
+                cmd.Parameters.AddWithValue("@junio_total_resultado", NpgsqlDbType.Double,
+                    montos.junio_total_resultado);
+                cmd.Parameters.AddWithValue("@julio_abono_resultado", NpgsqlDbType.Double,
+                    montos.julio_abono_resultado);
+                cmd.Parameters.AddWithValue("@julio_cargo_resultado", NpgsqlDbType.Double,
+                    montos.julio_cargo_resultado);
+                cmd.Parameters.AddWithValue("@julio_total_resultado", NpgsqlDbType.Double,
+                    montos.julio_total_resultado);
+                cmd.Parameters.AddWithValue("@agosto_abono_resultado", NpgsqlDbType.Double,
+                    montos.agosto_abono_resultado);
+                cmd.Parameters.AddWithValue("@agosto_cargo_resultado", NpgsqlDbType.Double,
+                    montos.agosto_cargo_resultado);
+                cmd.Parameters.AddWithValue("@agosto_total_resultado", NpgsqlDbType.Double,
+                    montos.agosto_total_resultado);
+                cmd.Parameters.AddWithValue("@septiembre_abono_resultado", NpgsqlDbType.Double,
+                    montos.septiembre_abono_resultado);
+                cmd.Parameters.AddWithValue("@septiembre_cargo_resultado", NpgsqlDbType.Double,
+                    montos.septiembre_cargo_resultado);
+                cmd.Parameters.AddWithValue("@septiembre_total_resultado", NpgsqlDbType.Double,
+                    montos.septiembre_total_resultado);
+                cmd.Parameters.AddWithValue("@octubre_abono_resultado", NpgsqlDbType.Double,
+                    montos.octubre_abono_resultado);
+                cmd.Parameters.AddWithValue("@octubre_cargo_resultado", NpgsqlDbType.Double,
+                    montos.octubre_cargo_resultado);
+                cmd.Parameters.AddWithValue("@octubre_total_resultado", NpgsqlDbType.Double,
+                    montos.octubre_total_resultado);
+                cmd.Parameters.AddWithValue("@noviembre_abono_resultado", NpgsqlDbType.Double,
+                    montos.noviembre_abono_resultado);
+                cmd.Parameters.AddWithValue("@noviembre_cargo_resultado", NpgsqlDbType.Double,
+                    montos.noviembre_cargo_resultado);
+                cmd.Parameters.AddWithValue("@noviembre_total_resultado", NpgsqlDbType.Double,
+                    montos.noviembre_total_resultado);
+                cmd.Parameters.AddWithValue("@diciembre_abono_resultado", NpgsqlDbType.Double,
+                    montos.diciembre_abono_resultado);
+                cmd.Parameters.AddWithValue("@diciembre_cargo_resultado", NpgsqlDbType.Double,
+                    montos.diciembre_cargo_resultado);
+                cmd.Parameters.AddWithValue("@diciembre_total_resultado", NpgsqlDbType.Double,
+                    montos.diciembre_total_resultado);
+                cmd.Parameters.AddWithValue("@anio", NpgsqlDbType.Integer, montos.anio);
+                cmd.Parameters.AddWithValue("@fecha", NpgsqlDbType.Date, montos.fecha);
+                cmd.Parameters.AddWithValue("@mes", NpgsqlDbType.Integer, montos.mes);
+                cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado", NpgsqlDbType.Double,
+                    montos.valor_tipo_cambio_resultado);
+                cmd.Parameters.AddWithValue("@centro_costo_id", NpgsqlDbType.Bigint,
+                    montos.centro_costo_id);
+                cmd.Parameters.AddWithValue("@empresa_id", NpgsqlDbType.Bigint, montos.empresa_id);
+                cmd.Parameters.AddWithValue("@modelo_negocio_id", NpgsqlDbType.Bigint,
+                    montos.modelo_negocio_id);
+                cmd.Parameters.AddWithValue("@proyecto_id", NpgsqlDbType.Bigint, montos.proyecto_id);
+                cmd.Parameters.AddWithValue("@rubro_id", NpgsqlDbType.Bigint, montos.rubro_id);
+                cmd.Parameters.AddWithValue("@tipo_captura_id", NpgsqlDbType.Bigint,
+                    montos.tipo_captura_id);
 
-                    cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
-                    transaction.Commit();
-                    con.Close();
+                cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
+                transaction.Commit();
+                con.Close();
 
-                    return cantFilaAfect;
-                }
+                return cantFilaAfect;
             }
             catch (Exception ex)
             {
@@ -661,35 +323,145 @@ namespace AppGia.Controllers
             }
         }
 
-        public Int64 Sindatos(Int64 captura)
+        public Int64 getNumMontosOfTipoCaptura(Int64 captura)
         {
-            string consulta = "SELECT count(*) FROM montos_consolidados WHERE tipo_captura_id = " + captura;
-            Int64 contador = 0;
+            string consulta = "SELECT count(1) as numregs FROM montos_consolidados WHERE tipo_captura_id = " + captura;
+            return Convert.ToInt64(ExecuteQuery(consulta).Rows[0]["numregs"]);
+        }
 
-            try
+        private int BuildMontosConsolContable(DataRow rubroMontosRow, EmpresaCC EmpProy, Int64 modeloId, Int64 rubroId,
+            DateTime fechaactual)
+        {
+            MontosConsolidados montos = new MontosConsolidados();
+            montos.activo = true;
+            montos.enero_abono_resultado = Convert.ToDouble(rubroMontosRow["eneabonos"]);
+            montos.enero_cargo_resultado = Convert.ToDouble(rubroMontosRow["enecargos"]);
+            montos.enero_total_resultado = Convert.ToDouble(rubroMontosRow["enetotal"]);
+            montos.febrero_abono_resultado = Convert.ToDouble(rubroMontosRow["febabonos"]);
+            montos.febrero_cargo_resultado = Convert.ToDouble(rubroMontosRow["febcargos"]);
+            montos.febrero_total_resultado = Convert.ToDouble(rubroMontosRow["febtotal"]);
+            montos.marzo_abono_resultado = Convert.ToDouble(rubroMontosRow["marabonos"]);
+            montos.marzo_cargo_resultado = Convert.ToDouble(rubroMontosRow["marcargos"]);
+            montos.marzo_total_resultado = Convert.ToDouble(rubroMontosRow["martotal"]);
+            montos.abril_abono_resultado = Convert.ToDouble(rubroMontosRow["abrabonos"]);
+            montos.abril_cargo_resultado = Convert.ToDouble(rubroMontosRow["abrcargos"]);
+            montos.abril_total_resultado = Convert.ToDouble(rubroMontosRow["abrtotal"]);
+            montos.mayo_abono_resultado = Convert.ToDouble(rubroMontosRow["mayabonos"]);
+            montos.mayo_cargo_resultado = Convert.ToDouble(rubroMontosRow["maycargos"]);
+            montos.mayo_total_resultado = Convert.ToDouble(rubroMontosRow["maytotal"]);
+            montos.junio_abono_resultado = Convert.ToDouble(rubroMontosRow["junabonos"]);
+            montos.junio_cargo_resultado = Convert.ToDouble(rubroMontosRow["juncargos"]);
+            montos.junio_total_resultado = Convert.ToDouble(rubroMontosRow["juntotal"]);
+            montos.julio_abono_resultado = Convert.ToDouble(rubroMontosRow["julabonos"]);
+            montos.julio_cargo_resultado = Convert.ToDouble(rubroMontosRow["julcargos"]);
+            montos.julio_total_resultado = Convert.ToDouble(rubroMontosRow["jultotal"]);
+            montos.agosto_abono_resultado = Convert.ToDouble(rubroMontosRow["agoabonos"]);
+            montos.agosto_cargo_resultado = Convert.ToDouble(rubroMontosRow["agocargos"]);
+            montos.agosto_total_resultado = Convert.ToDouble(rubroMontosRow["agototal"]);
+            montos.septiembre_abono_resultado = Convert.ToDouble(rubroMontosRow["sepabonos"]);
+            montos.septiembre_cargo_resultado = Convert.ToDouble(rubroMontosRow["sepcargos"]);
+            montos.septiembre_total_resultado = Convert.ToDouble(rubroMontosRow["septotal"]);
+            montos.octubre_abono_resultado = Convert.ToDouble(rubroMontosRow["octabonos"]);
+            montos.octubre_cargo_resultado = Convert.ToDouble(rubroMontosRow["octcargos"]);
+            montos.octubre_total_resultado = Convert.ToDouble(rubroMontosRow["octtotal"]);
+            montos.noviembre_abono_resultado = Convert.ToDouble(rubroMontosRow["novabonos"]);
+            montos.noviembre_cargo_resultado = Convert.ToDouble(rubroMontosRow["novcargos"]);
+            montos.noviembre_total_resultado = Convert.ToDouble(rubroMontosRow["novtotal"]);
+            montos.diciembre_abono_resultado = Convert.ToDouble(rubroMontosRow["dicabonos"]);
+            montos.diciembre_cargo_resultado = Convert.ToDouble(rubroMontosRow["diccargos"]);
+            montos.diciembre_total_resultado = Convert.ToDouble(rubroMontosRow["dictotal"]);
+            montos.anio = Convert.ToInt32(rubroMontosRow["year"]);
+            montos.fecha = fechaactual;
+            montos.mes = fechaactual.Month;
+            //montos.valor_tipo_cambio_resultado = cambiop;
+            montos.centro_costo_id = EmpProy.id;
+            montos.empresa_id = EmpProy.empresa_id;
+            montos.modelo_negocio_id = modeloId;
+            montos.proyecto_id = EmpProy.proyecto_id;
+            montos.rubro_id = rubroId;
+            montos.tipo_captura_id = TipoCapturaContable;
+
+            return insertarMontos(montos);
+        }
+
+        private int BuildMontosFujo(DataTable sumaMontos, EmpresaCC EmpProy, Int64 modeloId, Int64 rubroId,
+            DateTime fechaactual)
+        {
+            int numInserts = 0;
+            Dictionary<int, MontosConsolidados> montosPorAnio =
+                new Dictionary<int, MontosConsolidados>();
+            foreach (DataRow rubf in sumaMontos.Rows)
             {
-                con.Open();
-                comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                foreach (DataRow r in dt.Rows)
+                int year = Convert.ToInt32(rubf["year"]);
+                if (!montosPorAnio.ContainsKey(year))
                 {
-                    contador = Convert.ToInt64(r["count"]);
+                    montosPorAnio.Add(year, new MontosConsolidados());
                 }
 
-                return contador;
+                MontosConsolidados montos = montosPorAnio[year];
+                Double mes = Convert.ToDouble(rubf["mes"]);
+
+                switch (mes)
+                {
+                    case 1:
+                        montos.enero_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 2:
+                        montos.febrero_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 3:
+                        montos.marzo_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 4:
+                        montos.abril_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 5:
+                        montos.mayo_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 6:
+                        montos.junio_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 7:
+                        montos.julio_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 8:
+                        montos.agosto_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 9:
+                        montos.septiembre_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 10:
+                        montos.octubre_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 11:
+                        montos.noviembre_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                    case 12:
+                        montos.diciembre_total_resultado = Convert.ToDouble(rubf["saldo"]);
+                        break;
+                }
             }
-            catch (Exception ex)
+
+            foreach (KeyValuePair<int, MontosConsolidados> kv in montosPorAnio)
             {
-                con.Close();
-                throw;
+                MontosConsolidados montos = kv.Value;
+                montos.anio = kv.Key;
+                montos.activo = true;
+                montos.fecha = fechaactual;
+                montos.mes = fechaactual.Month;
+                //montos.valor_tipo_cambio_resultado = cambiop;
+                montos.centro_costo_id = EmpProy.id;
+                montos.empresa_id = EmpProy.empresa_id;
+                montos.modelo_negocio_id = modeloId;
+                montos.proyecto_id = EmpProy.proyecto_id;
+                montos.rubro_id = rubroId;
+                montos.tipo_captura_id = TipoCapturaFlujo;
+
+                numInserts += insertarMontos(montos);
             }
-            finally
-            {
-                con.Close();
-            }
+
+            return numInserts;
         }
+        
     }
 }
