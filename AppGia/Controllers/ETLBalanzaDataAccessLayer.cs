@@ -796,7 +796,7 @@ namespace AppGia.Controllers
             string update = "   update balanza "
                             + " set "
                             + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
-                            + " where id_empresa = " + idEmpresa
+                            + " where id_empresa =  " + idEmpresa
                             +"  and cuenta_unificada is null"; 
 
             try
