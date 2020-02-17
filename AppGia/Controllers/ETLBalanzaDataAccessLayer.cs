@@ -683,7 +683,7 @@ namespace AppGia.Controllers
                         while (rdr.Read())
                         {
 
-                            registros = 
+                            registros =
                              Convert.ToString(rdr["cta"].ToString()) + ","
                             + Convert.ToString(rdr["scta"].ToString()) + ","
                             + Convert.ToString(rdr["sscta"].ToString()) + ","
@@ -713,6 +713,7 @@ namespace AppGia.Controllers
                             + Convert.ToDouble(rdr["novabonos"]) + ","
                             + Convert.ToDouble(rdr["diccargos"]) + ","
                             + Convert.ToDouble(rdr["dicabonos"]) + ","
+                            + "0," 
                             + Constantes.EXTRACCION_MANUAL + ","
                             + idEmpresa + ","
                             + Convert.ToDouble(rdr["cierrecargos"]) + ","
@@ -795,8 +796,8 @@ namespace AppGia.Controllers
             string update = "   update balanza "
                             + " set "
                             + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
-                            + " where id = " + idEmpresa
-                            +"  and cuenta_unificada is null";
+                            + " where id_empresa =  " + idEmpresa
+                            +"  and cuenta_unificada is null"; 
 
             try
             {
