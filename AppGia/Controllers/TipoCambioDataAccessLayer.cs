@@ -63,6 +63,43 @@ namespace AppGia.Controllers
             }
         }
 
+        public List<TipoCambio> GetTpoCambioPorIdProforma(int idProforma)
+        {
+            string consulta = "";
+            consulta += " select t.id, t.valor, t.moneda_id ";
+            consulta += " from tipo_cambio t, moneda m ";
+            consulta += " where t.moneda_id = m.id ";
+            consulta += " AND m.clave = 'MX' ";
+            consulta += " and tipo_proforma_id = " + idProforma;
+
+            try
+            {
+                List<TipoCambio> lstTipoCambio = new List<TipoCambio>();
+
+                con.Open();
+
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    TipoCambio detTipoCambio = new TipoCambio();
+                    detTipoCambio.id= Convert.ToInt64(rdr["id"]);
+                    detTipoCambio.valor= Convert.ToInt32(rdr["valor"]);
+                    detTipoCambio.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
+                    lstTipoCambio.Add(detTipoCambio);
+                }
+                return lstTipoCambio;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
 
         public int insert(TipoCambio tipoCambio)
         {
