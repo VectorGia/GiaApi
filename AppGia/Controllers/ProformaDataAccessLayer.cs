@@ -32,7 +32,7 @@ namespace AppGia.Controllers
             consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
             consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
             consulta += " where pf.activo = 'true' ";
-            consulta += " and pf.id = " + idProforma;
+            consulta += " and pf.id = " + idProforma.ToString();
 
             try
             {
@@ -133,7 +133,6 @@ namespace AppGia.Controllers
             {
                 con.Open();
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                cmd.Parameters.AddWithValue("@id", proforma.id);
                 cmd.Parameters.AddWithValue("@anio", proforma.anio);
                 cmd.Parameters.AddWithValue("@modelo_negocio_id", proforma.modelo_negocio_id);
                 cmd.Parameters.AddWithValue("@tipo_captura_id", proforma.tipo_captura_id);
@@ -164,12 +163,12 @@ namespace AppGia.Controllers
             }
         }
 
-        public int UpdateProforma(Int64 idProforma, bool bandActivo, Int64 idUsuario)
+        public int UpdateProforma(int idProforma, bool bandActivo, int idUsuario)
         {
             string consulta = "";
             consulta += " update proforma set activo = '" + bandActivo.ToString() + "', ";
-            consulta += " 	usuario = " + idUsuario + ", fecha_captura = current_timestamp ";
-            consulta += " 	where id = " + idProforma;
+            consulta += " 	usuario = " + idUsuario.ToString() + ", fecha_captura = current_timestamp ";
+            consulta += " 	where id = " + idProforma.ToString();
 
             try
             {
@@ -222,7 +221,7 @@ namespace AppGia.Controllers
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
                 cc.empresa_id, proy.modelo_negocio_id,
-                cc.proyecto_id, anio, idTipoCaptura, idTipoProforma);
+                cc.proyecto_id, anio, idTipoCaptura);
 
             if (listDetProformaCalc.Count == 0)
             {
@@ -237,7 +236,7 @@ namespace AppGia.Controllers
                         tipoProforma = "de flujo";
                         break;
                 }
-                throw new InvalidDataException("No existe información con fecha " + fechaProf + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id + " y modelo de negocio " + proy.modelo_negocio_id);
+                throw new InvalidDataException("No existe información con fecha " + fechaProf.ToString() + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id.ToString() + " y modelo de negocio " + proy.modelo_negocio_id.ToString());
             }
 
             // Enlista la proforma
@@ -342,7 +341,7 @@ namespace AppGia.Controllers
             consulta += " select rub.id, rub.nombre, rub.clave, rub.aritmetica ";
             consulta += " 	from rubro rub ";
             consulta += " 	inner join tipo_rubro tip on rub.tipo_id = tip.id ";
-            consulta += " 	where rub.id_modelo_neg = " + idModelo;
+            consulta += " 	where rub.id_modelo_neg = " + idModelo.ToString();
             consulta += " 	and tip.clave = 'RUBROS' ";
             consulta += " 	and rub.activo = 'true' ";
 
@@ -383,7 +382,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select id_modelo_neg, tipo_id, clave, aritmetica, naturaleza ";
             consulta += " 	from rubro ";
-            consulta += " 	where id = " + rubro_id;
+            consulta += " 	where id = " + rubro_id.ToString();
             consulta += " 	and activo = 'true' ";
 
             try
@@ -421,7 +420,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select empresa_id, proyecto_id ";
             consulta += " 	from centro_costo ";
-            consulta += " 	where id = " + idCenCos;
+            consulta += " 	where id = " + idCenCos.ToString();
             consulta += " 	and activo = 'true' ";
 
             try
@@ -504,7 +503,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select id, clave, mes_inicio ";
             consulta += " 	from tipo_proforma ";
-            consulta += " 	where id = " + idTipoProforma;
+            consulta += " 	where id = " + idTipoProforma.ToString();
             consulta += " 	and activo = 'true' ";
 
             try
@@ -546,7 +545,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura, Int64 idTipoProforma)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
@@ -555,8 +554,6 @@ namespace AppGia.Controllers
             List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
             List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
-            // Obtiene montos para anios posteriores
-            List<ProformaDetalle> lstGetPosterior = objProfDetalle.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
@@ -573,15 +570,6 @@ namespace AppGia.Controllers
                         itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemProfDet.ejercicio_financiero;
                         itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemProfDet.ejercicio_resultado;
                         break;
-                    }
-                }
-                foreach(ProformaDetalle itemProfPost in lstGetPosterior)
-                {
-                    if(itemProfDet.rubro_id == itemProfPost.rubro_id)
-                    {
-                        // Si coincide el rubro se guardan los acumulados de anios posteriores
-                        itemProfDet.anios_posteriores_financiero = itemProfPost.anios_posteriores_financiero;
-                        itemProfDet.anios_posteriores_resultado = itemProfPost.anios_posteriores_resultado;
                     }
                 }
             }
@@ -613,21 +601,5 @@ namespace AppGia.Controllers
             return 0;
         }
 
-        public int ActualizaProforma(List<ProformaDetalle> proformaDetalle)
-        {
-            Proforma proforma = new Proforma();
-            DateTime fechaProc = DateTime.Today;
-            proforma.activo = true;
-            proforma.fecha_captura = fechaProc;
-            proforma.id = proformaDetalle[0].id;
-            UpdateProforma(proforma.id, proforma.activo, proforma.usuario);
-            proformaDetalle.ForEach(detalle =>
-            {
-                detalle.activo = true;
-                new ProformaDetalleDataAccessLayer().UpdateProformaDetalle(detalle);
-            });
-
-            return 0;
-        }
     }
 }
