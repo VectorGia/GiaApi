@@ -137,6 +137,8 @@ namespace AppGia.Controllers
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_id", Value = rubro.tipo_id });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id_modelo_neg", Value = rubro.id_modelo_neg });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@hijos", Value = rubro.hijos.Trim() });
+
 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();

@@ -410,15 +410,14 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + DateTime.Today + "'::date) ";
             consulta += "	 and anio = " + anio;                           // Año a proformar
             consulta += "	 and empresa_id = " + idEmpresa;                // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;              // Proyecto
-            //consulta += "	 and rub.id = " + idRubro.ToString();           // Rubro
             consulta += "	 and centro_costo_id = " + idCenCos;            // Centro de Costos
             consulta += "	 and tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
-            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 and mon.activo = 'true' ";                     // Este puede salir sobrando
             consulta += "	 order by rub.id ";
 
             try
@@ -517,8 +516,8 @@ namespace AppGia.Controllers
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
-            consulta += "	 and anio < " + anio;                               // Anio a proformar
+            //consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 where anio < " + anio;                               // Anio a proformar
             //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
             consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
             consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
@@ -637,5 +636,7 @@ namespace AppGia.Controllers
             }
 
         }
+
+
     }
 }
