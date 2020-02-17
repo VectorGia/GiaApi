@@ -12,7 +12,7 @@ namespace AppGia.Controllers
 
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        char cod = '"';
+        //char cod = '"';
 
         public TipoCambioDataAccessLayer()
         {

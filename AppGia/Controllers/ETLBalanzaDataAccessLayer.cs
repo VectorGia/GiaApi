@@ -43,7 +43,7 @@ namespace AppGia.Controllers
             string add = "SELECT  id ,"
                     + "  usuario_etl ,"
                     + " nombre ,"
-                    + " contrasenia_etl ,"
+                    //+ " contrasenia_etl ,"
                     + " host ,"
                     + " puerto_compania ,"
                     + " bd_name ,"
@@ -86,7 +86,7 @@ namespace AppGia.Controllers
             {
                 Empresa cia = new Empresa();
                 cia.usuario_etl = r["usuario_etl"].ToString();
-                cia.contrasenia_etl = r["contrasenia_etl"].ToString();
+                //cia.contrasenia_etl = r["contrasenia_etl"].ToString();
                 cia.host = r["host"].ToString();
                 cia.puerto_compania = Convert.ToInt32(r["puerto_compania"]);
                 cia.bd_name = r["bd_name"].ToString();
@@ -382,7 +382,7 @@ namespace AppGia.Controllers
                         //cmd.Parameters.AddWithValue("@DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION);
                         //cmd.Parameters.AddWithValue("@DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION2);
                         cmd.Parameters.AddWithValue("@INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.incluir_suma);
-                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, Constantes.C_EXTRACCION_MANUAL);
+                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, Constantes.EXTRACCION_MANUAL);
                         ////cmd.Parameters.AddWithValue("@FECHA_CARGA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
                         cmd.Parameters.AddWithValue("@FECHA_CARGA", NpgsqlTypes.NpgsqlDbType.Date, DateTime.Now);
                         //cmd.Parameters.AddWithValue("@HORA_CARGA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
@@ -567,7 +567,7 @@ namespace AppGia.Controllers
                         //cmd.Parameters.AddWithValue("@DESCRIPCION", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION);
                         //cmd.Parameters.AddWithValue("@DESCRIPCION2", NpgsqlTypes.NpgsqlDbType.Text, balanza.DESCRIPCION2);
                         cmd.Parameters.AddWithValue("@INCLUIR_SUMA", NpgsqlTypes.NpgsqlDbType.Integer, balanza.incluir_suma);
-                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, Constantes.C_EXTRACCION_MANUAL);
+                        cmd.Parameters.AddWithValue("@TIPO_EXTRACCION", NpgsqlTypes.NpgsqlDbType.Integer, Constantes.EXTRACCION_MANUAL);
                         cmd.Parameters.AddWithValue("@FECH_EXTR", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("dd/MM/yyyy"));
                         cmd.Parameters.AddWithValue("@HORA", NpgsqlTypes.NpgsqlDbType.Text, DateTime.Now.ToString("h:mm tt"));
                         cmd.Parameters.AddWithValue("@ID_EMPRESA", NpgsqlTypes.NpgsqlDbType.Bigint, idEmpresa);
@@ -617,7 +617,7 @@ namespace AppGia.Controllers
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             string cabecera = string.Empty;
-            nombreArchivo = "BalanzaExport" + idEmpresa + DateTime.Now.ToString("ddMMyyyy") + DateTime.Now.ToString("HHmmSS") +".csv";
+            nombreArchivo = Constantes.NOMBRE_ARCHIVO_BALANZA +"_"+ idEmpresa + DateTime.Now.ToString("ddMMyyyy") + DateTime.Now.ToString("HHmmSS") +".csv";
             StreamWriter layout;
             //layout = File.AppendText(@"C:\Users\Omnisys\Desktop\txtWinConnector\" + "cvsBalanza"+idEmpresa+DateTime.Now + ".csv");
             layout = File.AppendText(ruta + nombreArchivo);
@@ -638,7 +638,7 @@ namespace AppGia.Controllers
                     try
                     {
                         odbcCon.Open();
-                        layout.WriteLine(Constantes.headerBalanzaCSV);
+                        layout.WriteLine(Constantes.HEADER_BALANZA_CSV);
 
                         string consulta = " SELECT "
                                     + "year,"
@@ -683,7 +683,7 @@ namespace AppGia.Controllers
                         while (rdr.Read())
                         {
 
-                            registros = 
+                            registros =
                              Convert.ToString(rdr["cta"].ToString()) + ","
                             + Convert.ToString(rdr["scta"].ToString()) + ","
                             + Convert.ToString(rdr["sscta"].ToString()) + ","
@@ -713,7 +713,8 @@ namespace AppGia.Controllers
                             + Convert.ToDouble(rdr["novabonos"]) + ","
                             + Convert.ToDouble(rdr["diccargos"]) + ","
                             + Convert.ToDouble(rdr["dicabonos"]) + ","
-                            + Constantes.C_EXTRACCION_MANUAL + ","
+                            + "0," 
+                            + Constantes.EXTRACCION_MANUAL + ","
                             + idEmpresa + ","
                             + Convert.ToDouble(rdr["cierrecargos"]) + ","
                             + Convert.ToDouble(rdr["cierreabonos"]) + ","
@@ -769,7 +770,7 @@ namespace AppGia.Controllers
             
             // pruebas 
             //script_copy = " copy tmp_balanza (" + Constantes.headerBalanzaCSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
-            script_copy = " copy balanza (" + Constantes.headerBalanzaCSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+            script_copy = " copy balanza (" + Constantes.HEADER_BALANZA_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
 
             try
             {
@@ -795,8 +796,8 @@ namespace AppGia.Controllers
             string update = "   update balanza "
                             + " set "
                             + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
-                            + " where id = " + idEmpresa
-                            +"  and cuenta_unificada is null";
+                            + " where id_empresa =  " + idEmpresa
+                            +"  and cuenta_unificada is null"; 
 
             try
             {

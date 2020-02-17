@@ -18,9 +18,15 @@ namespace AppGia.Controllers
         [HttpGet]
         public List<Proforma> Get()
         {
-            return null; // objProformaDetalle.GetProformaCalculada(17, 3, 89, 29, 96, 2019, 1);
+
+            return objProforma.GetAllProformas(); // objProformaDetalle.GetProformaCalculada(17, 3, 89, 29, 96, 2019, 1);
+
         }
 
+        public List<Proforma> GetAllProformas()
+        {
+            return objProforma.GetAllProformas();
+        }
 
         public List<Proforma> GetProformaPorId(int idProforma)
         {
@@ -29,9 +35,9 @@ namespace AppGia.Controllers
 
         // GET: api/Proforma/5
         [HttpGet("{id}", Name = "GetProforma")]
-        public List<ProformaDetalle> GetProforma(int id)
+        public string GetProforma(int id)
         {
-            return objProformaDetalle.GetProformaDetalle(id);
+            return "value";
         }
 
         // POST: api/Proforma
@@ -41,14 +47,12 @@ namespace AppGia.Controllers
             return objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
 
-        [HttpPost("/save")]
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
             return objProforma.GuardaProforma(lstGuardaProforma);
         }
 
         // PUT: api/Proforma/5
-
         [HttpPut("{id}")]
         public int Put(int id, [FromBody] Proforma proforma)
         {
