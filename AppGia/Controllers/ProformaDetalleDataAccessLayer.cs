@@ -41,7 +41,7 @@ namespace AppGia.Controllers
             consulta += "   coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += " from proforma_detalle det ";
             consulta += " inner join rubro rub on det.rubro_id = rub.id ";
-            consulta += " where id_proforma = " + idProforma.ToString();
+            consulta += " where id_proforma = " + idProforma;
             consulta += " and activo = 'true' ";
 
             try
@@ -192,8 +192,8 @@ namespace AppGia.Controllers
         public int UpdateProformaDetalle(int idProformaDetalle, bool bandActivo)
         {
             string consulta = "";
-            consulta += " update proforma_detalle set activo = '" + bandActivo.ToString() + "' ";
-            consulta += " where id = " + idProformaDetalle.ToString();
+            consulta += " update proforma_detalle set activo = '" + bandActivo + "' ";
+            consulta += " where id = " + idProformaDetalle;
 
             try
             {
@@ -440,7 +440,7 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + DateTime.Today + "'::date) ";
+            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + DateTime.Today.ToString("yyyy-MM-dd") + "'::date) ";
             consulta += "	 and anio = " + anio;                           // Año a proformar
             consulta += "	 and empresa_id = " + idEmpresa;                // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
