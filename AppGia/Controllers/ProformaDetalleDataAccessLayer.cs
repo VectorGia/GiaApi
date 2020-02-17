@@ -486,47 +486,53 @@ namespace AppGia.Controllers
         public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, int idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
-            consulta += " select coalesce(";
-            consulta += "	 sum(mon.enero_total_financiero) + ";
-            consulta += "	 sum(mon.febrero_total_financiero) + ";
-            consulta += "	 sum(mon.marzo_total_financiero) + ";
-            consulta += "	 sum(mon.abril_total_financiero) + ";
-            consulta += "	 sum(mon.mayo_total_financiero) + ";
-            consulta += "	 sum(mon.junio_total_financiero) + ";
-            consulta += "	 sum(mon.julio_total_financiero) + ";
-            consulta += "	 sum(mon.agosto_total_financiero) + ";
-            consulta += "	 sum(mon.septiembre_total_financiero) + ";
-            consulta += "	 sum(mon.octubre_total_financiero) + ";
-            consulta += "	 sum(mon.noviembre_total_financiero) + ";
-            consulta += "	 sum(mon.diciembre_total_financiero) ";
-            consulta += "	 , 0) as acumulado_financiero, coalesce (";
-            consulta += "	 sum(mon.enero_total_resultado) + ";
-            consulta += "	 sum(mon.febrero_total_resultado) + ";
-            consulta += "	 sum(mon.marzo_total_resultado) + ";
-            consulta += "	 sum(mon.abril_total_resultado) + ";
-            consulta += "	 sum(mon.mayo_total_resultado) + ";
-            consulta += "	 sum(mon.junio_total_resultado) + ";
-            consulta += "	 sum(mon.julio_total_resultado) + ";
-            consulta += "	 sum(mon.agosto_total_resultado) + ";
-            consulta += "	 sum(mon.septiembre_total_resultado) + ";
-            consulta += "	 sum(mon.octubre_total_resultado) + ";
-            consulta += "	 sum(mon.noviembre_total_resultado) + ";
-            consulta += "	 sum(mon.diciembre_total_resultado) ";
-            consulta += "	 , 0) as acumulado_resultado, mon.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
-            consulta += "	 from montos_consolidados mon ";
-            consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
-            consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            //consulta += "	 where date_trunc('DAY',fecha) = current_date ";
-            consulta += "	 where anio < " + anio;                               // Anio a proformar
-            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
-            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
-            //consulta += "	 and mon.rubro_id = " + idRubro;                    // Rubro
-            consulta += "	 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
-            consulta += "	 and mon.tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
-            consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
-            consulta += "	 group by mon.rubro_id, rub.nombre ";
+            consulta += " select coalesce( ";
+            consulta += "	 sum(cns.enero_total_financiero) + ";
+            consulta += "	 sum(cns.febrero_total_financiero) + ";
+            consulta += "	 sum(cns.marzo_total_financiero) + ";
+            consulta += "	 sum(cns.abril_total_financiero) + ";
+            consulta += "	 sum(cns.mayo_total_financiero) + ";
+            consulta += "	 sum(cns.junio_total_financiero) + ";
+            consulta += "	 sum(cns.julio_total_financiero) + ";
+            consulta += "	 sum(cns.agosto_total_financiero) + ";
+            consulta += "	 sum(cns.septiembre_total_financiero) + ";
+            consulta += "	 sum(cns.octubre_total_financiero) + ";
+            consulta += "	 sum(cns.noviembre_total_financiero) + ";
+            consulta += "	 sum(cns.diciembre_total_financiero) ";
+            consulta += "	 , 0) as acumulado_financiero, coalesce ( ";
+            consulta += "	 sum(cns.enero_total_resultado) + ";
+            consulta += "	 sum(cns.febrero_total_resultado) + ";
+            consulta += "	 sum(cns.marzo_total_resultado) + ";
+            consulta += "	 sum(cns.abril_total_resultado) + ";
+            consulta += "	 sum(cns.mayo_total_resultado) + ";
+            consulta += "	 sum(cns.junio_total_resultado) + ";
+            consulta += "	 sum(cns.julio_total_resultado) + ";
+            consulta += "	 sum(cns.agosto_total_resultado) + ";
+            consulta += "	 sum(cns.septiembre_total_resultado) + ";
+            consulta += "	 sum(cns.octubre_total_resultado) + ";
+            consulta += "	 sum(cns.noviembre_total_resultado) + ";
+            consulta += "	 sum(cns.diciembre_total_resultado) ";
+            consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
+            consulta += "	 from montos_consolidados cns ";
+            consulta += "	 inner join proyecto pry on cns.proyecto_id = pry.id and cns.modelo_negocio_id = pry.modelo_negocio_id ";
+            consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
+            consulta += "	 where cns.id in ( ";
+            consulta += "		 select nue.id ";
+            consulta += "		 from montos_consolidados nue ";
+            consulta += "		 inner join ( ";
+            consulta += "			 select distinct anio as aniosort from montos_consolidados mon ";
+            consulta += "				 where mon.anio < " + anio;                         // Anio a proformar
+            consulta += "				 and mon.empresa_id = " + idEmpresa;                // Empresa
+            consulta += "				 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "				 and mon.proyecto_id = " + idProyecto;              // Proyecto
+            consulta += "				 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
+            consulta += "				 and mon.tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
+            consulta += "				 and mon.activo = 'true' ";
+            consulta += "		 ) anios on anios.aniosort = nue.anio ";
+            consulta += "		 group by nue.id ";
+            consulta += "	 ) ";
+            consulta += "	 group by cns.rubro_id, rub.nombre ";
+            consulta += "	 order by cns.rubro_id ";
 
             try
             {
@@ -560,7 +566,7 @@ namespace AppGia.Controllers
             }
         }
 
-        //Calculo de años posteriores -- NO USAR
+        //Calculo de años posteriores
         public List<ProformaDetalle> GetEjercicioPosterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
         {
             string consulta = "";
@@ -596,7 +602,6 @@ namespace AppGia.Controllers
             consulta += "	 inner join rubro rub on det.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
             consulta += "	 and anio > " + anio;                               // Anio a proformar
-            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
             consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
             consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
