@@ -143,20 +143,6 @@ namespace AppGia.Controllers
                                     cambiol = 1;
                                     cambiop = 1;
                                 }
-<<<<<<< HEAD
-                                MontosConsolidados montos = new MontosConsolidados();
-                                List<int> anios = new List<int>();
-                                foreach (DataRow rubf in dr.Rows)
-                                {
-                                    anios.Add(Convert.ToInt32(rubf["year"]));
-                                }
-                                foreach (int anio in anios) { }
-
-                                foreach (DataRow rubf in dr.Rows)
-                                {
-                                   
-                                    Double casaSwitch = Convert.ToDouble(rubf["mes"]);
-=======
 
                                 Dictionary<int, MontosConsolidados> montosPorAnio =
                                     new Dictionary<int, MontosConsolidados>();
@@ -170,7 +156,6 @@ namespace AppGia.Controllers
 
                                     MontosConsolidados montos = montosPorAnio[year];
                                     Double mes = Convert.ToDouble(rubf["mes"]);
->>>>>>> a947e3c8e44a8f3398a24c766f9064a777073b60
 
                                     switch (mes)
                                     {
