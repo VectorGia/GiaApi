@@ -29,7 +29,9 @@ namespace AppGia.Conexion
 
         {
             var configuration = GetConfiguration();
-            con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+           // con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+            con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionStringLocal").Value);
+            
             return con;
         }
 
