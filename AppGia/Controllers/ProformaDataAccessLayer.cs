@@ -190,7 +190,33 @@ namespace AppGia.Controllers
             }
         }
 
-   
+        public int UpdateProforma(Proforma proforma)
+        {
+            string consulta = "";
+            consulta += " update proforma set activo = '" + proforma.activo + "', ";
+            consulta += " 	usuario = " + proforma.usuario + ", fecha_captura = current_timestamp ";
+            consulta += " 	where id = " + proforma.id;
+
+            try
+            {
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+
+                    int regActual = cmd.ExecuteNonQuery();
+                    return regActual;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
         public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
@@ -598,6 +624,24 @@ namespace AppGia.Controllers
                 new ProformaDetalleDataAccessLayer().AddProformaDetalle(detalle);    
             });
             
+            return 0;
+        }
+
+        public int ActualizaProforma(List<ProformaDetalle> profDetalle)
+        {
+            Proforma proforma = new Proforma();
+            DateTime fechaProc = DateTime.Today;
+            proforma.activo = true;
+            proforma.usuario = profDetalle[0].usuario;
+            proforma.fecha_captura = fechaProc;
+            UpdateProforma(proforma);
+            profDetalle.ForEach(detalle =>
+            {
+                detalle.id_proforma = proforma.id;
+                detalle.activo = true;
+                new ProformaDetalleDataAccessLayer().AddProformaDetalle(detalle);
+            });
+
             return 0;
         }
 

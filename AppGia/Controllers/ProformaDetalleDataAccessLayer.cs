@@ -215,6 +215,64 @@ namespace AppGia.Controllers
             }
         }
 
+        public int UpdateProformaDetalle(ProformaDetalle proformaDetalle)
+        {
+            string consulta = "";
+            consulta += " update proforma_detalle set activo = @activo, ";
+            consulta += "    enero_monto_resultado = @enero_monto_resultado, ";
+            consulta += "    febrero_monto_resultado = @febrero_monto_resultado, ";
+            consulta += "    marzo_monto_resultado = @marzo_monto_resultado, ";
+            consulta += "    abril_monto_resultado = @abril_monto_resultado, ";
+            consulta += "    mayo_monto_resultado = @mayo_monto_resultado, ";
+            consulta += "    junio_monto_resultado = @junio_monto_resultado, ";
+            consulta += "    julio_monto_resultado = @julio_monto_resultado, ";
+            consulta += "    agosto_monto_resultado = @agosto_monto_resultado, ";
+            consulta += "    septiembre_monto_resultado = @septiembre_monto_resultado, ";
+            consulta += "    octubre_monto_resultado = @octubre_monto_resultado, ";
+            consulta += "    noviembre_monto_resultado = @noviembre_monto_resultado, ";
+            consulta += "    diciembre_monto_resultado = @diciembre_monto_resultado, ";
+            consulta += "    acumulado_resultado = @acumulado_resultado, ";
+            consulta += "    ejercicio_resultado = @ejercicio_resultado, ";
+            consulta += "    total_resultado = @total_resultado ";
+            consulta += " where id = @id ";
+
+            try
+            {
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                    cmd.Parameters.AddWithValue("@id", proformaDetalle.id);
+                    cmd.Parameters.AddWithValue("@enero_monto_resultado", proformaDetalle.enero_monto_resultado);
+                    cmd.Parameters.AddWithValue("@febrero_monto_resultado", proformaDetalle.febrero_monto_resultado);
+                    cmd.Parameters.AddWithValue("@marzo_monto_resultado", proformaDetalle.marzo_monto_resultado);
+                    cmd.Parameters.AddWithValue("@abril_monto_resultado", proformaDetalle.abril_monto_resultado);
+                    cmd.Parameters.AddWithValue("@mayo_monto_resultado", proformaDetalle.mayo_monto_resultado);
+                    cmd.Parameters.AddWithValue("@junio_monto_resultado", proformaDetalle.junio_monto_resultado);
+                    cmd.Parameters.AddWithValue("@julio_monto_resultado", proformaDetalle.julio_monto_resultado);
+                    cmd.Parameters.AddWithValue("@agosto_monto_resultado", proformaDetalle.agosto_monto_resultado);
+                    cmd.Parameters.AddWithValue("@septiembre_monto_resultado", proformaDetalle.septiembre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@octubre_monto_resultado", proformaDetalle.octubre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@noviembre_monto_resultado", proformaDetalle.noviembre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@diciembre_monto_resultado", proformaDetalle.diciembre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@acumulado_resultado", proformaDetalle.acumulado_resultado);
+                    cmd.Parameters.AddWithValue("@ejercicio_resultado", proformaDetalle.ejercicio_resultado);
+                    cmd.Parameters.AddWithValue("@total_resultado", proformaDetalle.total_resultado);
+                    cmd.Parameters.AddWithValue("@activo", proformaDetalle.activo);
+
+                    int regActual = cmd.ExecuteNonQuery();
+                    return regActual;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         // Calculo de la proforma a partir de los montos consolidados
         // El parametro mesInicio define el calculo de la proforma
         //      0 = 0+12 - Cero reales, doce proformados
