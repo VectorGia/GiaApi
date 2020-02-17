@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AppGia.Util
 {
-    public static class Constantes
+    public static class Constantes 
 
 
     {
