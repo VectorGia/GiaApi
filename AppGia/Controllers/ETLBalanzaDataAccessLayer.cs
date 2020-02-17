@@ -797,7 +797,7 @@ namespace AppGia.Controllers
                             + " set "
                             + " cuenta_unificada=LPAD(cta,4,'0')||LPAD(scta,4,'0')||LPAD(sscta,4,'0') " 
                             + " where id_empresa = " + idEmpresa
-                            +"  and cuenta_unificada is null";
+                            +"  and cuenta_unificada is null"; 
 
             try
             {
