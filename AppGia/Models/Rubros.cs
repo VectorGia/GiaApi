@@ -12,12 +12,12 @@ namespace AppGia.Models
         public string nombre { get; set; }
         public string aritmetica { get; set; }
         public string clave { get; set; }
+        public string hijos { get; set; }
         public string naturaleza { get; set; }
         public string rango_cuentas_excluidas { get; set; }
         public string rangos_cuentas_incluidas { get; set; }
         public Int64 tipo_id { get; set; }
         public Int64 id_modelo_neg { get; set; }
-        public string hijos { get; set; }
 
     }
 }

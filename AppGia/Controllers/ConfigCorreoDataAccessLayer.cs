@@ -77,7 +77,7 @@ namespace AppGia.Controllers
                             + " email"
                             + " FROM "
                             + " USUARIO"
-                            + " WHERE " + cod + "email" + cod + "!='sin Correo'";
+                            + " WHERE   email != 'sin Correo'";
 
             try
             {

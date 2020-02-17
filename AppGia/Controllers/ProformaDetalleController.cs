@@ -15,16 +15,8 @@ namespace AppGia.Controllers
         ProformaDetalleDataAccessLayer ObjProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/ProformaDetalle
         [HttpGet]
-        public IEnumerable<ProformaDetalle> Get(int idProformaDetalle)
+        public IEnumerable<ProformaDetalle> Get()
         {
-            Int64 idCentroCosto = 1;
-            int idEmpresa = 4;
-            int mes = 1;
-            int idModeloNegocio = 20;
-            int idProyecto = 51;
-            int idRubro = 7;
-            int anio = 2020;
-            int idTipoCaptura = 6;
             //return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
             //return ObjProformaDetalle.GetProformaCalculada(idCentroCosto, mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
             return null;

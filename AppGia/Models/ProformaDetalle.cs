@@ -44,8 +44,6 @@ namespace AppGia.Models
         public double ejercicio_resultado { get; set; }
         public double total_financiero { get; set; }
         public double total_resultado { get; set; }
-        public double anios_posteriores_financiero { get; set; }
-        public double anios_posteriores_resultado { get; set; }
 
         // Campos de tabla "proforma"
         public int anio { get; set; }

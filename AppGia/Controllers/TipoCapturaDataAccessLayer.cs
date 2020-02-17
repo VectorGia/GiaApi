@@ -11,7 +11,7 @@ namespace AppGia.Controllers
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        char cod = '"';
+        //char cod = '"';
 
         public TipoCapturaDataAccessLayer()
         {
@@ -20,7 +20,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<TipoCaptura> GetAllTipoCaptura()
         {
-            string cadena = "SELECT id, activo, clave, descripcion, fec_modif FROM public.tipo_captura WHERE activo = true;";
+            string cadena = "SELECT id, activo, clave, descripcion, fec_modif, idusuario FROM public.tipo_captura WHERE activo = true;";
             try
             {
                 List<TipoCaptura> lsttipocaptura = new List<TipoCaptura>();
@@ -39,6 +39,7 @@ namespace AppGia.Controllers
                         tipocaptura.clave = rdr["clave"].ToString().Trim();
                         tipocaptura.descripcion = rdr["descripcion"].ToString(); ;
                         tipocaptura.fec_modif = rdr["fec_modif"].ToString();
+                        tipocaptura.idusuario = Convert.ToInt64(rdr["iduduario"]);
                         lsttipocaptura.Add(tipocaptura);
                     }
                     con.Close();
