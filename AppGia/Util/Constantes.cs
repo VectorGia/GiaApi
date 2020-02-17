@@ -64,6 +64,7 @@ namespace AppGia.Util
                                                  + "novabonos,"
                                                  + "diccargos,"
                                                  + "dicabonos,"
+                                                 + "incluir_suma,"
                                                  + "tipo_extraccion,"
                                                  + "id_empresa,"
                                                  + "cierre_cargos,"
