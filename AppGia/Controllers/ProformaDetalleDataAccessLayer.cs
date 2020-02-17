@@ -215,6 +215,8 @@ namespace AppGia.Controllers
             }
         }
 
+
+
         // Calculo de la proforma a partir de los montos consolidados
         // El parametro mesInicio define el calculo de la proforma
         //      0 = 0+12 - Cero reales, doce proformados
