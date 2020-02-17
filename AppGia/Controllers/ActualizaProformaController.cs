@@ -23,7 +23,7 @@ namespace AppGia.Controllers
         }
 
         // GET: api/ActualizaProforma/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetActualiza")]
         public string Get(int id)
         {
             return "value";

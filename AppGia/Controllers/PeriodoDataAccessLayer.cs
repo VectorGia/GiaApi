@@ -36,7 +36,7 @@ namespace AppGia.Controllers
                         periodo.id = Convert.ToInt64(rdr["id"]);
                         periodo.activo = Convert.ToBoolean(rdr["activo"]);
                         periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
-                        periodo.estatus = rdr["estatus"].ToString().Trim();
+                        periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
                         periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
                         periodo.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
@@ -48,6 +48,44 @@ namespace AppGia.Controllers
                 return lstperiodo;
             }
             catch (Exception ex)
+            {
+                con.Close();
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public Periodo GetPeriodoData(string id)
+        {
+            try
+            {
+                Periodo periodo = new Periodo();
+                {
+                    string consulta = "  select * from periodo"
+                                     + " where  id  = " + id;
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+
+                        periodo.id = Convert.ToInt64(rdr["id"]);
+                        periodo.activo = Convert.ToBoolean(rdr["activo"]);
+                        periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
+                        periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
+                        periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
+                        //periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
+                        periodo.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                        periodo.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                    }
+                }
+                return periodo;
+            }
+            catch
             {
                 con.Close();
                 throw;

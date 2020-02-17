@@ -215,6 +215,94 @@ namespace AppGia.Controllers
             }
         }
 
+        public int UpdateProformaDetalle(ProformaDetalle proformaDetalle)
+        {
+            string consulta = "";
+            consulta += " update proforma_detalle set activo = @activo, ";
+            consulta += "    enero_monto_financiero = @enero_monto_financiero, ";
+            consulta += "    enero_monto_resultado = @enero_monto_resultado, ";
+            consulta += "    febrero_monto_financiero = @febrero_monto_financiero, ";
+            consulta += "    febrero_monto_resultado = @febrero_monto_resultado, ";
+            consulta += "    marzo_monto_financiero = @marzo_monto_financiero, ";
+            consulta += "    marzo_monto_resultado = @marzo_monto_resultado, ";
+            consulta += "    abril_monto_financiero = @abril_monto_financiero, ";
+            consulta += "    abril_monto_resultado = @abril_monto_resultado, ";
+            consulta += "    mayo_monto_financiero = @mayo_monto_financiero, ";
+            consulta += "    mayo_monto_resultado = @mayo_monto_resultado, ";
+            consulta += "    junio_monto_financiero = @junio_monto_financiero, ";
+            consulta += "    junio_monto_resultado = @junio_monto_resultado, ";
+            consulta += "    julio_monto_financiero = @julio_monto_financiero, ";
+            consulta += "    julio_monto_resultado = @julio_monto_resultado, ";
+            consulta += "    agosto_monto_financiero = @agosto_monto_financiero, ";
+            consulta += "    agosto_monto_resultado = @agosto_monto_resultado, ";
+            consulta += "    septiembre_monto_financiero = @septiembre_monto_financiero, ";
+            consulta += "    septiembre_monto_resultado = @septiembre_monto_resultado, ";
+            consulta += "    octubre_monto_financiero = @octubre_monto_financiero, ";
+            consulta += "    octubre_monto_resultado = @octubre_monto_resultado, ";
+            consulta += "    noviembre_monto_financiero = @noviembre_monto_financiero, ";
+            consulta += "    noviembre_monto_resultado = @noviembre_monto_resultado, ";
+            consulta += "    diciembre_monto_financiero = @diciembre_monto_financiero, ";
+            consulta += "    diciembre_monto_resultado = @diciembre_monto_resultado, ";
+            consulta += "    acumulado_financiero = @acumulado_financiero, ";
+            consulta += "    acumulado_resultado = @acumulado_resultado, ";
+            consulta += "    ejercicio_financiero = @ejercicio_financiero, ";
+            consulta += "    ejercicio_resultado = @ejercicio_resultado, ";
+            consulta += "    total_financiero = @total_financiero, ";
+            consulta += "    total_resultado = @total_resultado ";
+            consulta += " where id = @id ";
+
+            try
+            {
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
+                    cmd.Parameters.AddWithValue("@id", proformaDetalle.id);
+                    cmd.Parameters.AddWithValue("@enero_monto_financiero", proformaDetalle.enero_monto_financiero);
+                    cmd.Parameters.AddWithValue("@enero_monto_resultado", proformaDetalle.enero_monto_resultado);
+                    cmd.Parameters.AddWithValue("@febrero_monto_financiero", proformaDetalle.febrero_monto_financiero);
+                    cmd.Parameters.AddWithValue("@febrero_monto_resultado", proformaDetalle.febrero_monto_resultado);
+                    cmd.Parameters.AddWithValue("@marzo_monto_financiero", proformaDetalle.marzo_monto_financiero);
+                    cmd.Parameters.AddWithValue("@marzo_monto_resultado", proformaDetalle.marzo_monto_resultado);
+                    cmd.Parameters.AddWithValue("@abril_monto_financiero", proformaDetalle.abril_monto_financiero);
+                    cmd.Parameters.AddWithValue("@abril_monto_resultado", proformaDetalle.abril_monto_resultado);
+                    cmd.Parameters.AddWithValue("@mayo_monto_financiero", proformaDetalle.mayo_monto_financiero);
+                    cmd.Parameters.AddWithValue("@mayo_monto_resultado", proformaDetalle.mayo_monto_resultado);
+                    cmd.Parameters.AddWithValue("@junio_monto_financiero", proformaDetalle.junio_monto_financiero);
+                    cmd.Parameters.AddWithValue("@junio_monto_resultado", proformaDetalle.junio_monto_resultado);
+                    cmd.Parameters.AddWithValue("@julio_monto_financiero", proformaDetalle.julio_monto_financiero);
+                    cmd.Parameters.AddWithValue("@julio_monto_resultado", proformaDetalle.julio_monto_resultado);
+                    cmd.Parameters.AddWithValue("@agosto_monto_financiero", proformaDetalle.agosto_monto_financiero);
+                    cmd.Parameters.AddWithValue("@agosto_monto_resultado", proformaDetalle.agosto_monto_resultado);
+                    cmd.Parameters.AddWithValue("@septiembre_monto_financiero", proformaDetalle.septiembre_monto_financiero);
+                    cmd.Parameters.AddWithValue("@septiembre_monto_resultado", proformaDetalle.septiembre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@octubre_monto_financiero", proformaDetalle.octubre_monto_financiero);
+                    cmd.Parameters.AddWithValue("@octubre_monto_resultado", proformaDetalle.octubre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@noviembre_monto_financiero", proformaDetalle.noviembre_monto_financiero);
+                    cmd.Parameters.AddWithValue("@noviembre_monto_resultado", proformaDetalle.noviembre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@diciembre_monto_financiero", proformaDetalle.diciembre_monto_financiero);
+                    cmd.Parameters.AddWithValue("@diciembre_monto_resultado", proformaDetalle.diciembre_monto_resultado);
+                    cmd.Parameters.AddWithValue("@acumulado_financiero", proformaDetalle.acumulado_financiero);
+                    cmd.Parameters.AddWithValue("@acumulado_resultado", proformaDetalle.acumulado_resultado);
+                    cmd.Parameters.AddWithValue("@ejercicio_financiero", proformaDetalle.ejercicio_financiero);
+                    cmd.Parameters.AddWithValue("@ejercicio_resultado", proformaDetalle.ejercicio_resultado);
+                    cmd.Parameters.AddWithValue("@total_financiero", proformaDetalle.total_financiero);
+                    cmd.Parameters.AddWithValue("@total_resultado", proformaDetalle.total_resultado);
+                    cmd.Parameters.AddWithValue("@activo", proformaDetalle.activo);
+
+                    int regActual = cmd.ExecuteNonQuery();
+                    return regActual;
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         // Calculo de la proforma a partir de los montos consolidados
         // El parametro mesInicio define el calculo de la proforma
         //      0 = 0+12 - Cero reales, doce proformados
@@ -352,15 +440,14 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_financiero, 0) as valor_tipo_cambio_financiero, coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
+            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + DateTime.Today + "'::date) ";
             consulta += "	 and anio = " + anio;                           // Año a proformar
             consulta += "	 and empresa_id = " + idEmpresa;                // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;              // Proyecto
-            //consulta += "	 and rub.id = " + idRubro.ToString();           // Rubro
             consulta += "	 and centro_costo_id = " + idCenCos;            // Centro de Costos
             consulta += "	 and tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
-            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 and mon.activo = 'true' ";                     // Este puede salir sobrando
             consulta += "	 order by rub.id ";
 
             try
@@ -429,47 +516,53 @@ namespace AppGia.Controllers
         public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, int idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
-            consulta += " select coalesce(";
-            consulta += "	 sum(mon.enero_total_financiero) + ";
-            consulta += "	 sum(mon.febrero_total_financiero) + ";
-            consulta += "	 sum(mon.marzo_total_financiero) + ";
-            consulta += "	 sum(mon.abril_total_financiero) + ";
-            consulta += "	 sum(mon.mayo_total_financiero) + ";
-            consulta += "	 sum(mon.junio_total_financiero) + ";
-            consulta += "	 sum(mon.julio_total_financiero) + ";
-            consulta += "	 sum(mon.agosto_total_financiero) + ";
-            consulta += "	 sum(mon.septiembre_total_financiero) + ";
-            consulta += "	 sum(mon.octubre_total_financiero) + ";
-            consulta += "	 sum(mon.noviembre_total_financiero) + ";
-            consulta += "	 sum(mon.diciembre_total_financiero) ";
-            consulta += "	 , 0) as acumulado_financiero, coalesce (";
-            consulta += "	 sum(mon.enero_total_resultado) + ";
-            consulta += "	 sum(mon.febrero_total_resultado) + ";
-            consulta += "	 sum(mon.marzo_total_resultado) + ";
-            consulta += "	 sum(mon.abril_total_resultado) + ";
-            consulta += "	 sum(mon.mayo_total_resultado) + ";
-            consulta += "	 sum(mon.junio_total_resultado) + ";
-            consulta += "	 sum(mon.julio_total_resultado) + ";
-            consulta += "	 sum(mon.agosto_total_resultado) + ";
-            consulta += "	 sum(mon.septiembre_total_resultado) + ";
-            consulta += "	 sum(mon.octubre_total_resultado) + ";
-            consulta += "	 sum(mon.noviembre_total_resultado) + ";
-            consulta += "	 sum(mon.diciembre_total_resultado) ";
-            consulta += "	 , 0) as acumulado_resultado, mon.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
-            consulta += "	 from montos_consolidados mon ";
-            consulta += "	 inner join proyecto pry on mon.proyecto_id = pry.id and mon.modelo_negocio_id = pry.modelo_negocio_id ";
-            consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY',fecha) = current_date ";
-            consulta += "	 and anio < " + anio;                               // Anio a proformar
-            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
-            consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
-            consulta += "	 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
-            //consulta += "	 and mon.rubro_id = " + idRubro;                    // Rubro
-            consulta += "	 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
-            consulta += "	 and mon.tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
-            consulta += "	 and mon.activo = 'true' ";                         // Este puede salir sobrando
-            consulta += "	 group by mon.rubro_id, rub.nombre ";
+            consulta += " select coalesce( ";
+            consulta += "	 sum(cns.enero_total_financiero) + ";
+            consulta += "	 sum(cns.febrero_total_financiero) + ";
+            consulta += "	 sum(cns.marzo_total_financiero) + ";
+            consulta += "	 sum(cns.abril_total_financiero) + ";
+            consulta += "	 sum(cns.mayo_total_financiero) + ";
+            consulta += "	 sum(cns.junio_total_financiero) + ";
+            consulta += "	 sum(cns.julio_total_financiero) + ";
+            consulta += "	 sum(cns.agosto_total_financiero) + ";
+            consulta += "	 sum(cns.septiembre_total_financiero) + ";
+            consulta += "	 sum(cns.octubre_total_financiero) + ";
+            consulta += "	 sum(cns.noviembre_total_financiero) + ";
+            consulta += "	 sum(cns.diciembre_total_financiero) ";
+            consulta += "	 , 0) as acumulado_financiero, coalesce ( ";
+            consulta += "	 sum(cns.enero_total_resultado) + ";
+            consulta += "	 sum(cns.febrero_total_resultado) + ";
+            consulta += "	 sum(cns.marzo_total_resultado) + ";
+            consulta += "	 sum(cns.abril_total_resultado) + ";
+            consulta += "	 sum(cns.mayo_total_resultado) + ";
+            consulta += "	 sum(cns.junio_total_resultado) + ";
+            consulta += "	 sum(cns.julio_total_resultado) + ";
+            consulta += "	 sum(cns.agosto_total_resultado) + ";
+            consulta += "	 sum(cns.septiembre_total_resultado) + ";
+            consulta += "	 sum(cns.octubre_total_resultado) + ";
+            consulta += "	 sum(cns.noviembre_total_resultado) + ";
+            consulta += "	 sum(cns.diciembre_total_resultado) ";
+            consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
+            consulta += "	 from montos_consolidados cns ";
+            consulta += "	 inner join proyecto pry on cns.proyecto_id = pry.id and cns.modelo_negocio_id = pry.modelo_negocio_id ";
+            consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
+            consulta += "	 where cns.id in ( ";
+            consulta += "		 select nue.id ";
+            consulta += "		 from montos_consolidados nue ";
+            consulta += "		 inner join ( ";
+            consulta += "			 select distinct anio as aniosort from montos_consolidados mon ";
+            consulta += "				 where mon.anio < " + anio;                         // Anio a proformar
+            consulta += "				 and mon.empresa_id = " + idEmpresa;                // Empresa
+            consulta += "				 and mon.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
+            consulta += "				 and mon.proyecto_id = " + idProyecto;              // Proyecto
+            consulta += "				 and mon.centro_costo_id = " + idCenCos;            // Centro de costos
+            consulta += "				 and mon.tipo_captura_id = " + idTipoCaptura;       // Tipo de captura
+            consulta += "				 and mon.activo = 'true' ";
+            consulta += "		 ) anios on anios.aniosort = nue.anio ";
+            consulta += "		 group by nue.id ";
+            consulta += "	 ) ";
+            consulta += "	 group by cns.rubro_id, rub.nombre ";
+            consulta += "	 order by cns.rubro_id ";
 
             try
             {
@@ -503,7 +596,7 @@ namespace AppGia.Controllers
             }
         }
 
-        //Calculo de años posteriores -- NO USAR
+        //Calculo de años posteriores
         public List<ProformaDetalle> GetEjercicioPosterior(int idCentroCosto, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int idRubro, int anio, bool activo, int idTipoCaptura)
         {
             string consulta = "";
@@ -539,7 +632,6 @@ namespace AppGia.Controllers
             consulta += "	 inner join rubro rub on det.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
             consulta += "	 and anio > " + anio;                               // Anio a proformar
-            //consulta += "	 and mes = " + mes.ToString();                      // Mes (revisar)
             consulta += "	 and empresa_id = " + idEmpresa;                    // Empresa
             consulta += "	 and det.modelo_negocio_id = " + idModeloNegocio;   // Modelo de Negocio
             consulta += "	 and proyecto_id = " + idProyecto;                  // Proyecto
@@ -579,5 +671,7 @@ namespace AppGia.Controllers
             }
 
         }
+
+
     }
 }
