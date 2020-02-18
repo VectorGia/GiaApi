@@ -113,7 +113,7 @@ namespace AppGia.Controllers
                  + "aritmetica" + ","
                  + "clave" + ","
                  + "tipo_id" + ","
-                 + "id_modelo_neg" + ")"
+                 + "id_modelo_neg," + "hijos" + ")"
                  + "values (nextval('seq_rubro'),@nombre" + ","
                  + "@rango_cuentas_excluidas" + ","
                  + "@rangos_cuentas_incluidas" + ","
@@ -121,7 +121,7 @@ namespace AppGia.Controllers
                  + "@aritmetica" + ","
                  + "@clave" + ","
                  + "@tipo_id" + ","
-                 + "@id_modelo_neg )";
+                 + "@id_modelo_neg, @hijos )";
 
             try
             {
