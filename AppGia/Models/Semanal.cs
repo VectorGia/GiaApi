@@ -12,7 +12,7 @@ namespace AppGia.Models
         public int year { get; set; }
         public int mes { get; set; } 
         public int poliza { get; set; }
-        public string tp { get; set; }
+        public string tp { get; set; } 
         public int linea { get; set; }
         public int cta { get; set; }
         public int scta { get; set; }
