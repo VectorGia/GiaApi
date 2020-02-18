@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data;
 using AppGia.Models;
 using Npgsql;
+using NpgsqlTypes;
+using static AppGia.Util.Constantes;
+
 namespace AppGia.Controllers
 {
     public class ModeloNegocioDataAccessLayer
     {
+
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         public ModeloNegocioDataAccessLayer()
@@ -84,6 +87,31 @@ namespace AppGia.Controllers
                 con.Close();
             }
         }
+
+        public int addModeloNegocioContableAndFlujo(Modelo_Negocio modeloNegocio)
+        {
+            int co;
+            if (existeModeloConNombreYTipo(modeloNegocio.nombre, TipoCapturaContable))
+            {
+                throw new DataException("Ya existe un modelo con ese nombre");
+            }
+            if (existeModeloConNombreYTipo(modeloNegocio.nombre, TipoCapturaFlujo))
+            {
+                throw new DataException("Ya existe un modelo con ese nombre");
+            }
+            modeloNegocio.tipo_captura_id = TipoCapturaContable;
+            co=addModeloNegocio(modeloNegocio);
+            modeloNegocio.tipo_captura_id = TipoCapturaFlujo;
+            co+=addModeloNegocio(modeloNegocio);
+            return co;
+        }
+
+        private bool existeModeloConNombreYTipo(string nombreModelo, int tipoCaptura)
+        {
+            DataTable dt=new QueryExecuter().ExecuteQuery(
+                "select 1 as res from modelo_negocio where activo=true and upper(nombre)=upper('"+nombreModelo+"') and tipo_captura_id="+tipoCaptura);
+            return dt.Rows.Count > 0;
+        }
         public int addModeloNegocio(Modelo_Negocio modeloNegocio)
         {
 
@@ -137,9 +165,9 @@ namespace AppGia.Controllers
 
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = modeloNegocio.activo });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = modeloNegocio.tipo_captura_id });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@activo", Value = modeloNegocio.activo });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = modeloNegocio.tipo_captura_id });
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();
@@ -167,7 +195,7 @@ namespace AppGia.Controllers
             {
                 con.Open();
                 NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = status });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@activo", Value = status });
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();
                 return cantFilas;
