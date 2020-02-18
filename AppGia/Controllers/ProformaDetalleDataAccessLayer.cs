@@ -321,7 +321,7 @@ namespace AppGia.Controllers
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
             consulta += "	 mon.centro_costo_id, mon.activo, ";
-            consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, ";
+            consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro,";
             if(mesInicio == 0)
             {
                 // Para el 0+12 Enero, Febrero y Marzo se capturan
@@ -497,6 +497,7 @@ namespace AppGia.Controllers
                         proforma_detalle.diciembre_monto_resultado = Convert.ToDouble(rdr["diciembre_monto_resultado"]);
                         proforma_detalle.ejercicio_financiero = Convert.ToDouble(rdr["ejercicio_financiero"]);
                         proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
+                        
                         lstProformaDetalle.Add(proforma_detalle);
                     }
                 }

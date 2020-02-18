@@ -17,9 +17,9 @@ namespace AppGia.Controllers
 
         // GET: api/ActualizaProforma
         [HttpGet]
-        public List<TipoCambio> Get(int idProforma)
+        public List<TipoCambio> Get(int idProforma, int idTipoCaptura)
         {
-            return objTipoCambio.GetTpoCambioPorIdProforma(idProforma);
+            return objTipoCambio.GetTpoCambioPorIdProforma(idProforma, idTipoCaptura);
         }
 
         // GET: api/ActualizaProforma/5

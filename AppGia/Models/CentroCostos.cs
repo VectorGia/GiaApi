@@ -26,19 +26,6 @@ namespace AppGia.Models
         public string nombre_empresa { get; set; }
         public string nombre_proyecto { get; set; }
 
-        public Int64 modelo_negocio_id;
-        public double porcentaje=1.0;
-
-        public double Porcentaje
-        {
-            get => porcentaje;
-            set => porcentaje = value;
-        }
-
-        public long ModeloNegocioId
-        {
-            get => modelo_negocio_id;
-            set => modelo_negocio_id = value;
-        }
+        public double porcentaje { get; set; }
     }
 }

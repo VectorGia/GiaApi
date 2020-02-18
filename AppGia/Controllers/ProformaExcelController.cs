@@ -25,6 +25,11 @@ namespace AppGia.Controllers
         }
 
         // GET: api/ProformaExcel/5
+
+       /* [HttpGet("{id}", Name = "GetExcel")]
+        public IActionResult ImportExcel(int id) 
+        { }*/
+
         [HttpGet("{id}", Name = "Get")]
         public string Get(int id)
         {
@@ -51,6 +56,7 @@ namespace AppGia.Controllers
 
         [HttpPost]
         public IActionResult ImportExcel(Int64 idProforma)
+
         {
             ProformaExcelDataAccessLayer dat = new ProformaExcelDataAccessLayer();
             String consulta= "SELECT * FROM proforma_detalle WHERE id_proforma = "+idProforma;
@@ -84,9 +90,12 @@ namespace AppGia.Controllers
             byte[] fileContents;
             using (var package = new ExcelPackage())
             {
+
                 var workSheet = package.Workbook.Worksheets.Add("Sheet1");
                 int count = 2;
+
                 foreach (ProformaDetalle detalle in detalles)
+
                 {
                     DataTable dt2 = dat.Detalle( "SELECT * FROM rubro WHERE id = " + detalle.rubro_id);
                     
