@@ -104,13 +104,12 @@ namespace AppGia.Controllers
                 + "estatus" + ","
                 + "nombre" + ","
                 + "responsable" + ","
-                + "modelo_negocio_id" + ","
                 + "fecha_inicio" + ","
                 + "fecha_fin" + ","
                 + "fecha_creacion" + ","
                 + "fecha_modificacion" + ","
                 + "activo" + ") values " +
-                "(nextval('seq_proyecto'),@desc_id,@estatus,@nombre,@responsable,@modelo_negocio_id,@fecha_inicio,@fecha_fin,@fecha_fin,@fecha_modificacion,@activo)RETURNING id ";
+                "(nextval('seq_proyecto'),@desc_id,@estatus,@nombre,@responsable,@fecha_inicio,@fecha_fin,@fecha_fin,@fecha_modificacion,@activo)RETURNING id ";
             try
             {
                 {
@@ -121,7 +120,6 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@estatus", proyecto.estatus.Trim());
                     cmd.Parameters.AddWithValue("@nombre", proyecto.nombre.Trim());
                     cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
-                    cmd.Parameters.AddWithValue("@modelo_negocio_id", proyecto.modelo_negocio_id);
                     cmd.Parameters.AddWithValue("@fecha_inicio", proyecto.fecha_inicio);
                     cmd.Parameters.AddWithValue("@fecha_fin", proyecto.fecha_fin);
                     cmd.Parameters.AddWithValue("@fecha_creacion", DateTime.Now);
