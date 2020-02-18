@@ -364,7 +364,7 @@ namespace AppGia.Controllers
         public List<Rubros> GetRubrosTotales(Int64 idModelo)
         {
             string consulta = "";
-            consulta += " select rub.id, rub.nombre, rub.clave, rub.aritmetica ";
+            consulta += " select rub.id, rub.nombre, rub.clave, rub.aritmetica, rub.hijos ";
             consulta += " 	from rubro rub ";
             consulta += " 	inner join tipo_rubro tip on rub.tipo_id = tip.id ";
             consulta += " 	where rub.id_modelo_neg = " + idModelo.ToString();
@@ -387,6 +387,7 @@ namespace AppGia.Controllers
                     rubsObtenidos.nombre = Convert.ToString(rdr["nombre"]);
                     rubsObtenidos.clave = Convert.ToString(rdr["clave"]);
                     rubsObtenidos.aritmetica = Convert.ToString(rdr["aritmetica"]);
+                    rubsObtenidos.hijos = Convert.ToString(rdr["hijos"]);
                     lstRubrosTot.Add(rubsObtenidos);
                 }
 
