@@ -13,18 +13,18 @@ namespace AppGia.Controllers
     public class ActualizaProformaController : ControllerBase
     {
         ProformaDataAccessLayer objProforma = new ProformaDataAccessLayer();
-        ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
+        TipoCambioDataAccessLayer objTipoCambio = new TipoCambioDataAccessLayer();
 
         // GET: api/ActualizaProforma
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<TipoCambio> Get(int idProforma)
         {
-            return new string[] { "value1", "value2" };
+            return objTipoCambio.GetTpoCambioPorIdProforma(idProforma);
         }
 
         // GET: api/ActualizaProforma/5
         [HttpGet("{id}", Name = "GetActualiza")]
-        public string Get(int id)
+        public string Get(string value)
         {
             return "value";
         }
