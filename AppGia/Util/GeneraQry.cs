@@ -13,15 +13,17 @@ namespace AppGia.Util
         private int lengthColumCta;
 
 
-        public void Parser(String nombreTablaBalanza, String nombreColumCta, int lengthColumCta)
+        public GeneraQry(string nombreTablaBalanza, string nombreColumCta, int lengthColumCta)
         {
             this.nombreTablaBalanza = nombreTablaBalanza;
             this.nombreColumCta = nombreColumCta;
             this.lengthColumCta = lengthColumCta;
         }
-        public String getQuerySums(String includes, String excludes, Int64 empresa_id, String nombreTablaBalanza, String nombreColumCta, int lengthColumCta, Int64 datos)
+
+     
+        public String getQuerySums(String includes, String excludes, Int64 empresa_id,  Int64 existenRegistros)
         {
-            Parser(nombreTablaBalanza, nombreColumCta, lengthColumCta);
+      
             String query = "select id_empresa,\n" +
                     "       year,\n" +
                     "       sum(eneabonos) as eneabonos,\n" +
@@ -61,33 +63,32 @@ namespace AppGia.Util
                     "       sum(diccargos) as diccargos,\n" +
                     "       (sum(dicabonos) + sum(diccargos)) as dictotal\n" +
                     "from (\n" +
-                    getQueryIncludesExcludes(includes, excludes, empresa_id, datos) +
+                    getQueryIncludesExcludes(includes, excludes, empresa_id, existenRegistros) +
                     "     ) balanza_ctas\n" +
                     "group by id_empresa, year";
             return query;
         }
 
-        public String getQuerySemanalSums(String includes, String excludes, Int64 empresa_id, String nombreTablaBalanza, String nombreColumCta, int lengthColumCta, Int64 datos)
+        public String getQuerySemanalSums(String includes, String excludes, Int64 empresa_id,  Int64 numRegistrosExistentes)
         {
-            Parser(nombreTablaBalanza, nombreColumCta, lengthColumCta);
             String query = "select id_empresa, year, mes,   \n" +
-                    "       sum(monto::numeric) as saldo\n" +
-                    "from (\n" +
-                    getQueryIncludesExcludes(includes, excludes, empresa_id, datos) +
-                    "     ) semanal_itms\n" +
-                    "group by id_empresa, year, mes";
+                           "       sum(monto::numeric) as saldo\n" +
+                           "from (\n" +
+                           getQueryIncludesExcludes(includes, excludes, empresa_id, numRegistrosExistentes) +
+                           "     ) semanal_itms\n" +
+                           "group by id_empresa, year, mes";
             return query;
         }
-        public String getQueryIncludesExcludes(String includes, String excludes, Int64 empresa_id, Int64 datos)
+        public String getQueryIncludesExcludes(String includes, String excludes, Int64 empresa_id, Int64 numRegistrosExistentes)
         {
-            String query = getQuery(includes, empresa_id, datos);
+            String query = getQuery(includes, empresa_id, numRegistrosExistentes);
             if (excludes != null && excludes.Length > 0)
             {
-                query += " EXCEPT " + getQuery(excludes, empresa_id,datos);
+                query += " EXCEPT " + getQuery(excludes, empresa_id,numRegistrosExistentes);
             }
             return query;
         }
-        public String getQuery(String rangesAndCtas, Int64 empresa_id, Int64 datos)
+        public String getQuery(String rangesAndCtas, Int64 empresa_id, Int64 numRegistrosExistentes)
         {
             //String[] arrIncludes = rangesAndCtas.split(",");
             String[] arrIncludes = rangesAndCtas.Split(',');
@@ -110,21 +111,21 @@ namespace AppGia.Util
             }
             if (rangos.Count > 0 && cuentas.Count > 0)
             {
-                return "(" + getQueryCuentas(cuentas, empresa_id,datos) + " union " + getQueryRangos(rangos, empresa_id,datos) + ")";
+                return "(" + getQueryCuentas(cuentas, empresa_id,numRegistrosExistentes) + " union " + getQueryRangos(rangos, empresa_id,numRegistrosExistentes) + ")";
             }
             else if (rangos.Count > 0)
             {
-                return "(" + getQueryRangos(rangos, empresa_id, datos) + ")";
+                return "(" + getQueryRangos(rangos, empresa_id, numRegistrosExistentes) + ")";
             }
             else if (cuentas.Count > 0)
             {
-                return "(" + getQueryCuentas(cuentas, empresa_id,datos) + ")";
+                return "(" + getQueryCuentas(cuentas, empresa_id,numRegistrosExistentes) + ")";
             }
             return "";
         }
 
 
-        public String getQueryCuentas(List<String> cuentas, Int64 empresa_id, Int64 datos)
+        public String getQueryCuentas(List<String> cuentas, Int64 empresa_id, Int64 numRegistrosExistentes)
         {
             StringBuilder sb = new StringBuilder();
             DateTime fechaactual = DateTime.Today;
@@ -142,7 +143,7 @@ namespace AppGia.Util
             if (cuentas.Count > 0)
             {
                 String query;
-                if(datos == 0)
+                if(numRegistrosExistentes == 0)
                 {
                     query = String.Format("( select * " +
                         " from " + nombreTablaBalanza +
@@ -160,18 +161,18 @@ namespace AppGia.Util
             return "";
         }
 
-        public String getQueryRangos(List<String> rangos, Int64 empresa_id, Int64 datos)
+        public String getQueryRangos(List<String> rangos, Int64 empresa_id, Int64 numRegistrosExistentes)
         {
             StringBuilder query = new StringBuilder();
             for (int i = 0; i < rangos.Count; i++)
             {
                 if (i + 1 == rangos.Count)
                 {
-                    query.Append(getQueryRango(rangos[i], empresa_id, datos));
+                    query.Append(getQueryRango(rangos[i], empresa_id, numRegistrosExistentes));
                 }
                 else
                 {
-                    query.Append(getQueryRango(rangos[i], empresa_id, datos)).Append(" union ");
+                    query.Append(getQueryRango(rangos[i], empresa_id, numRegistrosExistentes)).Append(" union ");
                 }
             }
             if (rangos.Count > 0)
@@ -181,7 +182,7 @@ namespace AppGia.Util
             return query.ToString();
         }
 
-        public String getQueryRango(String rango, Int64 empresa_id, Int64 datos)
+        public String getQueryRango(String rango, Int64 empresa_id, Int64 numRegistrosExistentes)
         {
             String[] rangoData = rango.Split('-');
             String rangoInferior = rangoData[0].Trim();
@@ -189,7 +190,7 @@ namespace AppGia.Util
             DateTime fechaactual = DateTime.Today;
 
             String query;
-            if (datos == 0)
+            if (numRegistrosExistentes == 0)
             {
                 query = String.Format("(select *" +
                             " from " + nombreTablaBalanza +
