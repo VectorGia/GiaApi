@@ -33,7 +33,10 @@ namespace AppGia.Util
                                                     + "id_version,"
                                                     + "cfd_ruta_pdf,"
                                                     + "cfd_ruta_xml,"
-                                                    + "uuid";
+                                                    + "uuid,"
+                                                    + "tipo_extraccion,"
+                                                    + "fecha_carga," 
+                                                    + "hora_carga";
 
         public const string HEADER_BALANZA_CSV = "cta,"
                                                  + "scta,"
