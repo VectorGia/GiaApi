@@ -44,8 +44,8 @@ namespace AppGia.Controllers
             string script_copy = string.Empty;
 
             //script_copy = " copy tmp_semanal (" + Constantes.HEADER_SEMANAL_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
-
-            script_copy = " copy semanal (" + Constantes.HEADER_SEMANAL_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+             
+            script_copy  = " copy semanal (" + Constantes.HEADER_SEMANAL_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
 
             try
             {
