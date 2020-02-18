@@ -67,10 +67,10 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select t.id, t.valor, t.moneda_id ";
-            consulta += " from tipo_cambio t, moneda m ";
-            consulta += " where t.moneda_id = m.id ";
-            consulta += " AND m.clave = 'MX' ";
-            consulta += " and tipo_proforma_id = " + idProforma;
+            consulta += "	 from tipo_cambio t, moneda m ";
+            consulta += "	 where t.moneda_id = m.id ";
+            consulta += "	 AND m.clave = 'MX' ";
+            consulta += "	 and tipo_proforma_id = " + idProforma;
 
             try
             {
