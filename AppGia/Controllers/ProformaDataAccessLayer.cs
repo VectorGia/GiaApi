@@ -32,7 +32,7 @@ namespace AppGia.Controllers
             consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
             consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
             consulta += " where pf.activo = 'true' ";
-            consulta += " and pf.id = " + idProforma.ToString();
+            consulta += " and pf.id = " + idProforma;
 
             try
             {
@@ -224,16 +224,15 @@ namespace AppGia.Controllers
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc =  ObtenerDatosCC(idCC);
             
-            if(cc.empresa_id == 0 && cc.proyecto_id == 0)
+            if(cc.empresa_id == 0 ||  cc.modelo_negocio_id == 0 )
             {
                 throw new InvalidDataException("No hay informacion del centro de costos " + idCC);
             }
 
             // De la empresa se obtiene el modelo de negocio
-            Proyecto proy = ObtenerDatosProy(cc.proyecto_id);
-            if (proy.modelo_negocio_id == 0)
+            if (cc.modelo_negocio_id == 0)
             {
-                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al proyecto " + cc.proyecto_id);
+                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al CC " + cc.id);
             }
 
             // Del tipo de proforma obtiene mes de inicio
@@ -246,7 +245,7 @@ namespace AppGia.Controllers
 
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
-                cc.empresa_id, proy.modelo_negocio_id,
+                cc.empresa_id, cc.modelo_negocio_id,
                 cc.proyecto_id, anio, idTipoCaptura);
 
             if (listDetProformaCalc.Count == 0)
@@ -262,47 +261,52 @@ namespace AppGia.Controllers
                         tipoProforma = "de flujo";
                         break;
                 }
-                throw new InvalidDataException("No existe información con fecha " + fechaProf.ToString() + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id.ToString() + " y modelo de negocio " + proy.modelo_negocio_id.ToString());
+                throw new InvalidDataException("No existe información con fecha " + fechaProf + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id + " y modelo de negocio " + cc.modelo_negocio_id);
             }
 
             // Enlista la proforma
-            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, proy.modelo_negocio_id);
+            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, cc);
             listDetProformaCalc.ForEach(detalle =>
             {
                 detalle.centro_costo_id = idCC;
                 detalle.anio = anio;
                 detalle.tipo_proforma_id = idTipoProforma;
                 detalle.tipo_captura_id = idTipoCaptura;
-                detalle.modelo_negocio_id=proy.modelo_negocio_id;
+                detalle.modelo_negocio_id=cc.modelo_negocio_id;
             });
 
             return lstProformaCompleta;
         }
 
-        public ProformaDetalle ConstruyeDetalleTotal(List<ProformaDetalle> detalles, Rubros rubroTotal)
+        public ProformaDetalle ConstruyeDetalleTotal(List<ProformaDetalle> detalles, Rubros rubroTotal,double porcentaje)
         {
+            string aritmetica = rubroTotal.aritmetica;
+            if (porcentaje != 1.0)
+            {
+                aritmetica = "(" + aritmetica + ") * "+porcentaje;
+            }
             var aritmeticas = new Dictionary<string, string>();
-            aritmeticas.Add("enero", rubroTotal.aritmetica);
-            aritmeticas.Add("febrero", rubroTotal.aritmetica);
-            aritmeticas.Add("marzo", rubroTotal.aritmetica);
-            aritmeticas.Add("abril", rubroTotal.aritmetica);
-            aritmeticas.Add("mayo", rubroTotal.aritmetica);
-            aritmeticas.Add("junio", rubroTotal.aritmetica);
-            aritmeticas.Add("julio", rubroTotal.aritmetica);
-            aritmeticas.Add("agosto", rubroTotal.aritmetica);
-            aritmeticas.Add("septiembre", rubroTotal.aritmetica);
-            aritmeticas.Add("octubre", rubroTotal.aritmetica);
-            aritmeticas.Add("noviembre", rubroTotal.aritmetica);
-            aritmeticas.Add("diciembre", rubroTotal.aritmetica);
-            aritmeticas.Add("ejercicio", rubroTotal.aritmetica);
-            aritmeticas.Add("acumulado", rubroTotal.aritmetica);
-            aritmeticas.Add("total", rubroTotal.aritmetica);
+            aritmeticas.Add("enero", aritmetica);
+            aritmeticas.Add("febrero", aritmetica);
+            aritmeticas.Add("marzo", aritmetica);
+            aritmeticas.Add("abril", aritmetica);
+            aritmeticas.Add("mayo", aritmetica);
+            aritmeticas.Add("junio", aritmetica);
+            aritmeticas.Add("julio", aritmetica);
+            aritmeticas.Add("agosto", aritmetica);
+            aritmeticas.Add("septiembre", aritmetica);
+            aritmeticas.Add("octubre", aritmetica);
+            aritmeticas.Add("noviembre", aritmetica);
+            aritmeticas.Add("diciembre", aritmetica);
+            aritmeticas.Add("ejercicio", aritmetica);
+            aritmeticas.Add("acumulado", aritmetica);
+            aritmeticas.Add("total", aritmetica);
 
             detalles.ForEach(detalle =>
             {
                 Rubros rubrosCta = BuscaRubroPorId(detalle.rubro_id);
                 detalle.clave_rubro=rubrosCta.clave;
-                if (rubroTotal.aritmetica.Contains(rubrosCta.clave))
+                if (aritmetica.Contains(rubrosCta.clave))
                 {
                     aritmeticas["enero"] = aritmeticas["enero"].Replace(rubrosCta.clave, detalle.enero_monto_resultado.ToString());
                     aritmeticas["febrero"] = aritmeticas["febrero"].Replace(rubrosCta.clave, detalle.febrero_monto_resultado.ToString());
@@ -325,7 +329,7 @@ namespace AppGia.Controllers
             ProformaDetalle proformaDetalleTotal = new ProformaDetalle();
             proformaDetalleTotal.rubro_id = rubroTotal.id;
             proformaDetalleTotal.nombre_rubro = rubroTotal.nombre;
-            proformaDetalleTotal.aritmetica = rubroTotal.aritmetica;
+            proformaDetalleTotal.aritmetica = aritmetica;
             proformaDetalleTotal.clave_rubro = rubroTotal.clave;
 
             DataTable dt = new DataTable();
@@ -348,13 +352,13 @@ namespace AppGia.Controllers
         }
 
 
-        public List<ProformaDetalle> CompletaDetalles(List<ProformaDetalle> detCtas, Int64 idModelo)
+        public List<ProformaDetalle> CompletaDetalles(List<ProformaDetalle> detCtas, CentroCostos centroCostos)
         {
-            List<Rubros> rubTots = GetRubrosTotales(idModelo);
+            List<Rubros> rubTots = GetRubrosTotales(centroCostos.modelo_negocio_id);
             List<ProformaDetalle> totales = new List<ProformaDetalle>();
             foreach (Rubros rubTot in rubTots)
             {
-                ProformaDetalle detTot = ConstruyeDetalleTotal(detCtas, rubTot);
+                ProformaDetalle detTot = ConstruyeDetalleTotal(detCtas, rubTot,centroCostos.porcentaje);
                 totales.Add(detTot);
             }
             detCtas.AddRange(totales);
@@ -367,7 +371,7 @@ namespace AppGia.Controllers
             consulta += " select rub.id, rub.nombre, rub.clave, rub.aritmetica, rub.hijos ";
             consulta += " 	from rubro rub ";
             consulta += " 	inner join tipo_rubro tip on rub.tipo_id = tip.id ";
-            consulta += " 	where rub.id_modelo_neg = " + idModelo.ToString();
+            consulta += " 	where rub.id_modelo_neg = " + idModelo;
             consulta += " 	and tip.clave = 'RUBROS' ";
             consulta += " 	and rub.activo = 'true' ";
 
@@ -445,9 +449,9 @@ namespace AppGia.Controllers
         public CentroCostos ObtenerDatosCC(Int64 idCenCos)
         {
             string consulta = "";
-            consulta += " select empresa_id, proyecto_id ";
+            consulta += " select empresa_id, proyecto_id, modelo_negocio_id,porcentaje ";
             consulta += " 	from centro_costo ";
-            consulta += " 	where id = " + idCenCos.ToString();
+            consulta += " 	where id = " + idCenCos;
             consulta += " 	and activo = 'true' ";
 
             try
@@ -464,11 +468,23 @@ namespace AppGia.Controllers
                         datosCenCos.empresa_id = 0;
                     else
                         datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
-
-                    if (rdr["empresa_id"] == null)
+                    if(rdr["modelo_negocio_id"] == null)
+                        datosCenCos.modelo_negocio_id = 0;
+                    else
+                        datosCenCos.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
+                    if(rdr["proyecto_id"] == null)
                         datosCenCos.proyecto_id = 0;
                     else
                         datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
+                    Object porcentajeFromDb = rdr["porcentaje"];
+                    if (porcentajeFromDb != null)
+                    {
+                        datosCenCos.porcentaje = Convert.ToDouble(porcentajeFromDb);
+                    }
+                    else
+                    {
+                        datosCenCos.porcentaje = 1.0;
+                    }
                 }
 
                 return datosCenCos;
@@ -486,7 +502,7 @@ namespace AppGia.Controllers
         public Proyecto ObtenerDatosProy(Int64 idProyecto)
         {
             string consulta = "";
-            consulta += " select id, modelo_negocio_id ";
+            consulta += " select id ";
             consulta += " 	from proyecto ";
             consulta += " 	where id = " + idProyecto;
             consulta += " 	and activo = 'true' ";
@@ -506,18 +522,9 @@ namespace AppGia.Controllers
                     else
                         datosProy.id = Convert.ToInt32(rdr["id"]);
 
-                    if (rdr["modelo_negocio_id"] == null)
-                        datosProy.modelo_negocio_id = 0;
-                    else
-                        datosProy.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
-
                 }
 
                 return datosProy;
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -572,7 +579,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, Int64 idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();

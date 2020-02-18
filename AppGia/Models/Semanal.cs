@@ -10,9 +10,9 @@ namespace AppGia.Models
     {
         public long id { get; set; }
         public int year { get; set; }
-        public int mes { get; set; }
+        public int mes { get; set; } 
         public int poliza { get; set; }
-        public string tp { get; set; }
+        public string tp { get; set; } 
         public int linea { get; set; }
         public int cta { get; set; }
         public int scta { get; set; }
@@ -32,5 +32,8 @@ namespace AppGia.Models
         public string cfd_ruta_pdf { get; set; }
         public string cfd_ruta_xml { get; set; }
         public string uuid { get; set; }
+        public string tipo_extraccion { get; set; }
+        public string fecha_carga { get; set; }
+        public string hora_carga { get; set; }
     }
 }

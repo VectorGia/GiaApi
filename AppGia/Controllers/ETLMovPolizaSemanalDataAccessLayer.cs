@@ -45,7 +45,7 @@ namespace AppGia.Controllers
 
             //script_copy = " copy tmp_semanal (" + Constantes.HEADER_SEMANAL_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
              
-            script_copy  = " copy semanal (" + Constantes.HEADER_SEMANAL_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
+            script_copy    = " copy semanal (" + Constantes.HEADER_SEMANAL_CSV + ") from '" + ruta_archivo + nombre_archivo + "'" + " delimiter ',' csv header ";
 
             try
             {
@@ -132,30 +132,33 @@ namespace AppGia.Controllers
 
 
 
-                            
-                                registros = Convert.ToInt32(rdr["year"]) + ","
-                                         + Convert.ToInt32(rdr["mes"]) + ","
-                                         + Convert.ToInt32(rdr["poliza"]) + ","
-                                         + Convert.ToString(rdr["tp"]) + ","
-                                         + Convert.ToInt32(rdr["linea"]) + ","
-                                         + Convert.ToInt32(rdr["cta"]) + ","
-                                         + Convert.ToInt32(rdr["scta"]) + ","
-                                         + Convert.ToInt32(rdr["sscta"]) + ","
-                                         + Convert.ToString(rdr["concepto"]).Replace(",", "").Replace(@"""", "") + ","
-                                         + Convert.ToDouble(rdr["monto"]) + ","/// integer original
+
+                            registros = Convert.ToInt32(rdr["year"]) + ","
+                                     + Convert.ToInt32(rdr["mes"]) + ","
+                                     + Convert.ToInt32(rdr["poliza"]) + ","
+                                     + Convert.ToString(rdr["tp"]) + ","
+                                     + Convert.ToInt32(rdr["linea"]) + ","
+                                     + Convert.ToInt32(rdr["cta"]) + ","
+                                     + Convert.ToInt32(rdr["scta"]) + ","
+                                     + Convert.ToInt32(rdr["sscta"]) + ","
+                                     + Convert.ToString(rdr["concepto"]).Replace(",", "").Replace(@"""", "") + ","
+                                     + Convert.ToDouble(rdr["monto"]) + ","/// integer original
                                          + Convert.ToString(rdr["folio_imp"].ToString()) + ","///
                                          + Convert.ToInt32(rdr["itm"]) + ","
-                                         + Convert.ToInt32(rdr["tm"]) + ","
-                                         + Convert.ToString(rdr["NumProveedor"].ToString()) + ","///
+                                     + Convert.ToInt32(rdr["tm"]) + ","
+                                     + Convert.ToString(rdr["NumProveedor"].ToString()) + ","///
                                          + Convert.ToString(rdr["CentroCostos"]) + ","
-                                         + Convert.ToString(rdr["referencia"]) + ","
-                                         + Convert.ToString(rdr["orden_compra"].ToString()) + ","//                  
-                                         + Convert.ToDateTime(rdr["fechapol"].ToString()) + ","//date
-                                         + idEmpresa + ","
-                                         + Convert.ToInt32(rdr["idVersion"]) + ","
-                                         + Convert.ToString(rdr["cfd_ruta_pdf"]) + ","
-                                         + Convert.ToString(rdr["cfd_ruta_xml"]) + ","
-                                         + Convert.ToString(rdr["uuid"]) + ",";
+                                     + Convert.ToString(rdr["referencia"]) + ","
+                                     + Convert.ToString(rdr["orden_compra"].ToString()) + ","//                  
+                                     + Convert.ToDateTime(rdr["fechapol"].ToString()) + ","//date
+                                     + idEmpresa + ","
+                                     + Convert.ToInt32(rdr["idVersion"]) + ","
+                                     + Convert.ToString(rdr["cfd_ruta_pdf"]) + ","
+                                     + Convert.ToString(rdr["cfd_ruta_xml"]) + ","
+                                     + Convert.ToString(rdr["uuid"]) + ","
+                                     + Constantes.EXTRACCION_MANUAL + ","
+                                     + "'"+ DateTime.Now +"',"
+                                     + "'" +DateTime.Now.ToString("h:mm tt")+"'";
                             layout.WriteLine(registros, Environment.NewLine);
 
                             

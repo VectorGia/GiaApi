@@ -26,7 +26,7 @@ namespace AppGia.Controllers
                "cc.categoria, cc.desc_id, cc.estatus, " +
                "cc.fecha_modificacion, cc.gerente,cc.tipo, cc.empresa_id, " +
                "emp.nombre as nombre_empresa,cc.proyecto_id, " +
-               "pry.nombre as nombre_proyecto " +
+               "pry.nombre as nombre_proyecto, cc.modelo_negocio_id  " +
                "FROM centro_costo cc " +
                "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                "INNER JOIN proyecto pry on pry.id = cc.proyecto_id" + 
@@ -55,6 +55,7 @@ namespace AppGia.Controllers
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
                         centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
                         centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
+                        centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"].ToString());
                         lstcentros.Add(centroCostos);
                     }
                     con.Close();
@@ -79,7 +80,7 @@ namespace AppGia.Controllers
                 "cc.categoria, cc.desc_id, cc.estatus, " +
                 "cc.fecha_modificacion, cc.gerente,cc.tipo, cc.empresa_id, " +
                 "emp.nombre as nombre_empresa,cc.proyecto_id, " +
-                "pry.nombre as nombre_proyecto " +
+                "pry.nombre as nombre_proyecto,cc.modelo_negocio_id " +
                 "FROM centro_costo cc " +
                 "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                 "INNER JOIN proyecto pry on pry.id = cc.proyecto_id " + "and cc.activo = true and cc.proyecto_id = " + idproyecto;
@@ -108,6 +109,7 @@ namespace AppGia.Controllers
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
                         centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
                         centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
+                        centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
                         listcentrocostos.Add(centroCostos);
                     }
                     con.Close();
@@ -148,6 +150,7 @@ namespace AppGia.Controllers
                         centroCostos.categoria = rdr["categoria"].ToString().Trim();
                         centroCostos.gerente = rdr["gerente"].ToString().Trim();
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
+                        centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
                      
                     }
                     con.Close();
@@ -164,8 +167,8 @@ namespace AppGia.Controllers
         }
         public int AddCentro(CentroCostos centroCostos)
         {
-            string add = "insert into " + "centro_costo" + "(" + "id" + "," + "tipo" + "," + "desc_id" + "," + "nombre" + "," + "categoria" + "," + "estatus" + "," + "gerente" + "," + "empresa_id" + "," + "proyecto_id" + "," + "fecha_modificacion" + "," + "activo" + ")" +
-                "values (nextval('seq_centro_costo'),@tipo,@desc_id,@nombre,@categoria,@estatus,@gerente,@empresa_id,@proyecto_id,@fecha_modificacion,@activo)";
+            string add = "insert into " + "centro_costo" + "(" + "id" + "," + "tipo" + "," + "desc_id" + "," + "nombre" + "," + "categoria" + "," + "estatus" + "," + "gerente" + "," + "empresa_id" + "," + "proyecto_id" + "," + "fecha_modificacion" + "," + "activo" + ","+ "modelo_negocio_id" +  ")" +
+                "values (nextval('seq_centro_costo'),@tipo,@desc_id,@nombre,@categoria,@estatus,@gerente,@empresa_id,@proyecto_id,@fecha_modificacion,@activo,@modelo_negocio_id)";
             {
                 try
                 {
@@ -182,6 +185,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("proyecto_id", centroCostos.proyecto_id);
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
+                    cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
