@@ -22,32 +22,8 @@ namespace AppGia.Controllers
         }
 
         // GET: api/ProformaExcel/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/ProformaExcel
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT: api/ProformaExcel/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-
-        [HttpPost]
-        public IActionResult ImportExcel()
+        [HttpGet("{id}", Name = "GetExcel")]
+        public IActionResult ImportExcel(int id)
         {
             byte[] fileContents;
             DataTable dt = new DataTable();
@@ -57,7 +33,7 @@ namespace AppGia.Controllers
 
             using (var package = new ExcelPackage())
             {
-                
+
 
                 var workSheet = package.Workbook.Worksheets.Add("Sheet1");
                 #region Header
@@ -147,7 +123,7 @@ namespace AppGia.Controllers
                 workSheet.Cells[1, 17].Style.Border.Top.Style = ExcelBorderStyle.Hair;
                 #endregion
                 int count = 2;
-                consulta = "SELECT * FROM proforma_detalle WHERE id_proforma = 28";
+                consulta = "SELECT * FROM proforma_detalle WHERE id_proforma = " + id;
                 dt = dat.Detalle(consulta);
                 foreach (DataRow r in dt.Rows)
                 {
@@ -241,6 +217,24 @@ namespace AppGia.Controllers
 
             return File(fileContents: fileContents, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileDownloadName: "Proforma.xlsx");
             //return View();
+        }
+
+        // POST: api/ProformaExcel
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
+
+        // PUT: api/ProformaExcel/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
         }
     }
 }
