@@ -30,7 +30,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody] Modelo_Negocio negocio)
         {
-            return objModelo.addModeloNegocio(negocio);
+            return objModelo.addModeloNegocioContableAndFlujo(negocio);
         }
 
         // PUT: api/ModeloNegocio/5
