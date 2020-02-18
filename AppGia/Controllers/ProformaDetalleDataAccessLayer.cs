@@ -315,7 +315,7 @@ namespace AppGia.Controllers
         //      1 - Contable
         //      2 - Flujo
         //
-        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa, Int64 idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
@@ -513,7 +513,7 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, int idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
+        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos,  int idEmpresa, Int64 idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
             consulta += " select coalesce( ";
@@ -544,7 +544,7 @@ namespace AppGia.Controllers
             consulta += "	 sum(cns.diciembre_total_resultado) ";
             consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
             consulta += "	 from montos_consolidados cns ";
-            consulta += "	 inner join proyecto pry on cns.proyecto_id = pry.id and cns.modelo_negocio_id = pry.modelo_negocio_id ";
+            consulta += "	 inner join centro_costo cc on cns.proyecto_id = pry.proyecto_id and cns.modelo_negocio_id = cc.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
             consulta += "	 where cns.id in ( ";
             consulta += "		 select nue.id ";
@@ -628,7 +628,7 @@ namespace AppGia.Controllers
             consulta += "	 sum(mon.diciembre_monto_resultado) ";
             consulta += "	 , 0) as total_resultado, mon.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
             consulta += "	 from proforma_detalle det ";
-            consulta += "	 inner join proyecto pry on det.proyecto_id = pry.id and det.modelo_negocio_id = pry.modelo_negocio_id ";
+            consulta += "	 inner join centro_costo cc on det.proyecto_id = cc.proyecto_id and det.modelo_negocio_id = cc.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on det.rubro_id = rub.id ";
             consulta += "	 where 1 = 1 ";
             consulta += "	 and anio > " + anio;                               // Anio a proformar
