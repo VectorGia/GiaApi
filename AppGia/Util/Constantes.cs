@@ -80,7 +80,7 @@ namespace AppGia.Util
                                                  + "tipo_extraccion,"
                                                  + "id_empresa,"
                                                  + "cierre_cargos,"
-                                                 + "cierre_abonos," 
+                                                 + "cierre_abonos,"  
                                                  + "acta,"
                                                  + "cc,"
                                                  + "hora_carga,"
@@ -88,7 +88,6 @@ namespace AppGia.Util
 
         public const int EXTRACCION_MANUAL = 1;
         public const int EXTRACCION_PROGRAMADA = 2; 
-        public const int TipoCapturaContable = 1;
-        public const int TipoCapturaFlujo = 2;
+          
     }
 }
