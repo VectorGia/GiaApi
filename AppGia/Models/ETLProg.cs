@@ -7,7 +7,7 @@ namespace AppGia.Models
 {
     public class ETLProg
     {
-        public Int64 id { set; get; }
+        public Int64 id { set; get; } 
         public string fecha_extraccion { set; get; }
         public string hora_extraccion { set; get; }
         public Int64 id_empresa { get; set; }
