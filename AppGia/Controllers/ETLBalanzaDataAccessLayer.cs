@@ -100,6 +100,45 @@ namespace AppGia.Controllers
             return lst;
         }
 
+
+        public int Delete(int anioInicio ,int anioFin ,Int64 idEmpresa  )
+
+        {
+            string  condicion = "";
+            
+            if (anioFin >0 && anioInicio>0) {
+                condicion = " and year between " + anioInicio +" and "+ anioFin;
+            }
+
+            if (anioFin == 0 && anioInicio > 0) {
+                condicion = " and year = " + anioInicio;
+            }
+
+
+            string delete = "delete from balanza "
+                                + " where id_empresa = " + idEmpresa
+                                + condicion;
+            try
+            {
+                {
+                    con.Open();
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
+                }
+            }
+            catch
+            {
+                con.Close();
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         public List<Balanza> obtenerSalContCCD(Int64 idEmpresa)
         {
 
@@ -612,7 +651,7 @@ namespace AppGia.Controllers
         }
 
 
-        public string generarSalContCC_CSV(Int64 idEmpresa,string ruta)
+        public string generarSalContCC_CSV(Int64 idEmpresa,string ruta,int anioInicio,int anioFin)
         {
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
@@ -640,7 +679,7 @@ namespace AppGia.Controllers
                         odbcCon.Open();
                         layout.WriteLine(Constantes.HEADER_BALANZA_CSV);
 
-                        string consulta = " SELECT "
+                        String consulta = " SELECT "
                                     + "year,"
                                     + "cta,"
                                     + "scta,"
@@ -675,6 +714,17 @@ namespace AppGia.Controllers
                                     + "acta,"
                                     + "cc"
                                     + " FROM sc_salcont_cc";
+
+                        if (anioInicio > 0 && anioFin > 0) {
+                            consulta = consulta + "  where year between " + anioInicio + " and " + anioFin;
+                                    
+                        }
+
+                        if (anioInicio>0 && anioFin ==0 ) {
+                            consulta = consulta + "  where year = " + anioInicio;
+
+                        }
+
 
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                         
