@@ -87,7 +87,8 @@ namespace AppGia.Util
                                                  + "fecha_carga";
 
         public const int EXTRACCION_MANUAL = 1;
-        public const int EXTRACCION_PROGRAMADA = 2; 
-          
+        public const int EXTRACCION_PROGRAMADA = 2;
+        public const int TipoCapturaContable = 1;
+        public const int TipoCapturaFlujo = 2;
     }
 }
