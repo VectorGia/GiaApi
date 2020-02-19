@@ -80,7 +80,7 @@ namespace AppGia.Util
                                                  + "tipo_extraccion,"
                                                  + "id_empresa,"
                                                  + "cierre_cargos,"
-                                                 + "cierre_abonos,"
+                                                 + "cierre_abonos," 
                                                  + "acta,"
                                                  + "cc,"
                                                  + "hora_carga,"
