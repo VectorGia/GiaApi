@@ -16,7 +16,7 @@ namespace AppGia.Controllers
     public class ETLBalanzaDataAccessLayer 
     {
         ConfigCorreoController configCorreo = new ConfigCorreoController();
-        NpgsqlConnection con;
+        NpgsqlConnection con; 
         Conexion.Conexion conex = new Conexion.Conexion(); 
         NpgsqlCommand comP = new NpgsqlCommand();
 

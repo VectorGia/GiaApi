@@ -13,7 +13,7 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ETLMovPolizaSemanalController : ControllerBase
+    public class ETLMovPolizaSemanalController : ControllerBase 
     {
         ConfigCorreoController configCorreoDa = new ConfigCorreoController();
         ProcesoDataAccessLayer procesoDa = new ProcesoDataAccessLayer();
