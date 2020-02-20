@@ -20,7 +20,7 @@ namespace AppGia.Controllers
         public IEnumerable<Modelo_Negocio> GetAllModeloNegocios()
         {
 
-            string consulta = "select * from modelo_negocio where activo = " + true + " order by id desc";
+            string consulta = "select mn.*,tc.clave as nombre_tipo_captura from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id where mn.activo = true order by mn.id desc";
 
             try
             {
@@ -37,6 +37,7 @@ namespace AppGia.Controllers
                     modeloNegocio.id = Convert.ToInt64(rdr["id"]);
                     modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                     modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
+                    modeloNegocio.nombre_tipo_captura = rdr["nombre_tipo_captura"].ToString();
                     //modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
                     lstmodelo.Add(modeloNegocio);
                 }
