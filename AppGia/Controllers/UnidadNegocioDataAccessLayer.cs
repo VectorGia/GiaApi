@@ -63,8 +63,7 @@ namespace AppGia.Controllers
             consulta += " select ";
             consulta += "   id, clave, descripcion, usuario, fec_modif, activo ";
             consulta += "   from unidad_negocio ";
-            consulta += "   where activo = 'true' ";
-            consulta += "   and id = " + idUnidadNegocio;
+            consulta += "   where id = " + idUnidadNegocio;
 
             try
             {
@@ -103,7 +102,7 @@ namespace AppGia.Controllers
             consulta += " insert into unidad_negocio ( ";
             consulta += "	 id, clave, descripcion, usuario, fec_modif, activo ";
             consulta += " ) values ( ";
-            consulta += "	 nextval('seq_unidad_negocio'), @clave, @descripcion, @usuario, @fec_modif, @activo ";
+            consulta += "	 nextval('seq_unidad_negocio'), @clave, @descripcion, @usuario, @fec_modif, true ";
             consulta += " ) ";
 
             try
@@ -114,7 +113,6 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@descripcion", unidadNegocio.descripcion);
                 cmd.Parameters.AddWithValue("@usuario", unidadNegocio.idusuario);
                 cmd.Parameters.AddWithValue("@fec_modif", unidadNegocio.fec_modif);
-                cmd.Parameters.AddWithValue("@activo", unidadNegocio.activo);
 
                 int regInsert = cmd.ExecuteNonQuery();
 
@@ -137,8 +135,7 @@ namespace AppGia.Controllers
             consulta += "   clave = @clave, ";
             consulta += "   descripcion = @descripcion, ";
             consulta += "   usuario = @usuario, ";
-            consulta += "   fec_modif = @fec_modif, ";
-            consulta += "   activo = @activo ";
+            consulta += "   fec_modif = @fec_modif ";
             consulta += " where id = @id ";
 
             try
@@ -172,7 +169,7 @@ namespace AppGia.Controllers
             consulta += " update unidad_negocio set ";
             consulta += "   usuario = @usuario, ";
             consulta += "   fec_modif = @fec_modif, ";
-            consulta += "   activo = 'false' ";
+            consulta += "   activo = false ";
             consulta += " where id = @id ";
 
             try
