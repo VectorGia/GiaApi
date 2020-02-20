@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AppGia.Util;
 
 namespace AppGia.Controllers
 {
@@ -75,15 +76,14 @@ namespace AppGia.Controllers
             consulta += "	 and t.fec_modif = ( ";
             switch (idTipoCaptura)
             {
-                case 1: // Contable (mensual): Busca la fecha de inicio de mes para el tipo de cambio
+                case Constantes.TipoCapturaContable:    // Busca la fecha de inicio de mes para el tipo de cambio
                     consulta += "	 select min(fec_modif) from tipo_cambio where moneda_id = m.id";
                     consulta += "		 and extract(month from fecha) = extract(month from current_date) ";
                     break;
-                case 2: // Flujo (semanal): Busca la ultima fecha del tipo de cambio
+                case Constantes.TipoCapturaFlujo:       // Busca la ultima fecha del tipo de cambio
                     consulta += "	 select max(fec_modif) from tipo_cambio where moneda_id = m.id ";
                     break;
             }
-            consulta += "		 select max(fec_modif) from tipo_cambio where moneda_id = m.id ";
             consulta += "	 ) ";
             consulta += "	 and p.id = " + idProforma;
 
