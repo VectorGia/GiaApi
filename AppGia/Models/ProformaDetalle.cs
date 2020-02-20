@@ -61,6 +61,7 @@ namespace AppGia.Models
         public string clave_rubro { get; set; }
 
         public string aritmetica { get; set; }
+        public double anios_posteriores_resultado { get; set; }
 
     }
 }

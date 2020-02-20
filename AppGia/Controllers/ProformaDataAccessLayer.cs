@@ -246,7 +246,7 @@ namespace AppGia.Controllers
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
             List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
                 cc.empresa_id, cc.modelo_negocio_id,
-                cc.proyecto_id, anio, idTipoCaptura);
+                cc.proyecto_id, anio, idTipoCaptura,idTipoProforma);
 
             if (listDetProformaCalc.Count == 0)
             {
@@ -578,7 +578,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, Int64 idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, Int64 idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura,Int64 idTipoProforma)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
@@ -587,6 +587,9 @@ namespace AppGia.Controllers
             List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
             List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
+            //TODO:HNA revisar ya que en este punto no hay manera de obtener el rubro solicitado
+            // Obtiene montos para anios posteriores
+            List<ProformaDetalle> lstGetPosterior = objProfDetalle.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
@@ -603,6 +606,14 @@ namespace AppGia.Controllers
                         itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemProfDet.ejercicio_financiero;
                         itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemProfDet.ejercicio_resultado;
                         break;
+                    }
+                }
+                foreach(ProformaDetalle itemProfPost in lstGetPosterior)
+                {
+                    if(itemProfDet.rubro_id == itemProfPost.rubro_id)
+                    {
+                        // Si coincide el rubro se guardan los acumulados de anios posteriores
+                        itemProfDet.anios_posteriores_resultado = itemProfPost.anios_posteriores_resultado;
                     }
                 }
             }
