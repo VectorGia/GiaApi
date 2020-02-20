@@ -600,10 +600,8 @@ namespace AppGia.Controllers
                     if(itemProfDet.rubro_id == itemSumProfDet.rubro_id)
                     {
                         // Si coincide el rubro se guardan los acumulados anteriores
-                        itemProfDet.acumulado_financiero = itemSumProfDet.acumulado_financiero;
                         itemProfDet.acumulado_resultado = itemSumProfDet.acumulado_resultado;
                         // Se actualiza el total como la suma del ejercicio + el acumulado
-                        itemProfDet.total_financiero = itemSumProfDet.acumulado_financiero + itemProfDet.ejercicio_financiero;
                         itemProfDet.total_resultado = itemSumProfDet.acumulado_resultado + itemProfDet.ejercicio_resultado;
                         break;
                     }
