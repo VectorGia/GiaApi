@@ -98,6 +98,7 @@ namespace AppGia.Controllers
 
         public int AddUnidadNegocio(UnidadNegocio unidadNegocio)
         {
+            string fechaHoy = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             string consulta = "";
             consulta += " insert into unidad_negocio ( ";
             consulta += "	 id, clave, descripcion, usuario, fec_modif, activo ";
@@ -112,7 +113,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@clave", unidadNegocio.clave);
                 cmd.Parameters.AddWithValue("@descripcion", unidadNegocio.descripcion);
                 cmd.Parameters.AddWithValue("@usuario", unidadNegocio.idusuario);
-                cmd.Parameters.AddWithValue("@fec_modif", unidadNegocio.fec_modif);
+                cmd.Parameters.AddWithValue("@fec_modif", fechaHoy);
 
                 int regInsert = cmd.ExecuteNonQuery();
 
@@ -130,6 +131,7 @@ namespace AppGia.Controllers
 
         public int UpdateUnidadNegocio(UnidadNegocio unidadNegocio)
         {
+            string fechaHoy = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             string consulta = "";
             consulta += " update unidad_negocio set ";
             consulta += "   clave = @clave, ";
@@ -145,7 +147,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@clave", unidadNegocio.clave);
                 cmd.Parameters.AddWithValue("@descripcion", unidadNegocio.descripcion);
                 cmd.Parameters.AddWithValue("@usuario", unidadNegocio.idusuario);
-                cmd.Parameters.AddWithValue("@fec_modif", unidadNegocio.fec_modif);
+                cmd.Parameters.AddWithValue("@fec_modif", fechaHoy);
                 cmd.Parameters.AddWithValue("@activo", unidadNegocio.activo);
                 cmd.Parameters.AddWithValue("@id", unidadNegocio.id);
 
@@ -165,6 +167,7 @@ namespace AppGia.Controllers
 
         public int DeleteUnidadNegocio(UnidadNegocio unidadNegocio)
         {
+            string fechaHoy = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             string consulta = "";
             consulta += " update unidad_negocio set ";
             consulta += "   usuario = @usuario, ";
@@ -177,7 +180,7 @@ namespace AppGia.Controllers
                 con.Open();
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 cmd.Parameters.AddWithValue("@usuario", unidadNegocio.idusuario);
-                cmd.Parameters.AddWithValue("@fec_modif", unidadNegocio.fec_modif);
+                cmd.Parameters.AddWithValue("@fec_modif", fechaHoy);
                 cmd.Parameters.AddWithValue("@id", unidadNegocio.id);
 
                 int regActual = cmd.ExecuteNonQuery();
