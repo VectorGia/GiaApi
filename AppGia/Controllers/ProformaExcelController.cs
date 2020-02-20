@@ -70,12 +70,36 @@ namespace AppGia.Controllers
             List<ProformaDetalle> detalles = new ProformaDataAccessLayer().GeneraProforma(proforma.centro_costo_id,
                 proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
             return buildProformaToExcel(detalles);
+
         }
 
         private List<ProformaDetalle> transformDtToDetalles(DataTable dataTableDetalles)
         {
-            //llenado de lista
-            return null;
+            List<ProformaDetalle> listaRubros = new List<ProformaDetalle>();
+            
+            foreach (DataRow rubrosRow in dataTableDetalles.Rows)
+            {
+                ProformaDetalle rubro = new ProformaDetalle();
+                rubro.id = Convert.ToInt64(rubrosRow["id"]);
+                rubro.activo = Convert.ToBoolean(rubrosRow["activo"]);
+                rubro.acumulado_resultado = Convert.ToDouble(rubrosRow["acumulado_resultado"]);
+                rubro.ejercicio_resultado = Convert.ToDouble(rubrosRow["ejercicio_resultado"]);
+                rubro.enero_monto_resultado = Convert.ToDouble(rubrosRow["enero_monto_resultado"]);
+                rubro.febrero_monto_resultado = Convert.ToDouble(rubrosRow["febrero_monto_resultado"]);
+                rubro.marzo_monto_resultado = Convert.ToDouble(rubrosRow["marzo_monto_resultado"]);
+                rubro.abril_monto_resultado = Convert.ToDouble(rubrosRow["abril_monto_resultado"]);
+                rubro.mayo_monto_resultado = Convert.ToDouble(rubrosRow["mayo_monto_resultado"]);
+                rubro.junio_monto_resultado = Convert.ToDouble(rubrosRow["junio_monto_resultado"]);
+                rubro.julio_monto_resultado = Convert.ToDouble(rubrosRow["julio_monto_resultado"]);
+                rubro.agosto_monto_resultado = Convert.ToDouble(rubrosRow["agosto_monto_resultado"]);
+                rubro.septiembre_monto_resultado = Convert.ToDouble(rubrosRow["septiembre_monto_resultado"]);
+                rubro.octubre_monto_resultado = Convert.ToDouble(rubrosRow["octubre_monto_resultado"]);
+                rubro.noviembre_monto_resultado = Convert.ToDouble(rubrosRow["noviembre_monto_resultado"]);
+                rubro.diciembre_monto_resultado = Convert.ToDouble(rubrosRow["diciembre_monto_resultado"]);
+                listaRubros.Add(rubro);
+            }
+
+            return listaRubros;
         }
 
         public IActionResult buildProformaToExcel(List<ProformaDetalle> detalles)
@@ -85,6 +109,90 @@ namespace AppGia.Controllers
             using (var package = new ExcelPackage())
             {
                 var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+                workSheet.Cells[1, 1].Value = "Rubro";
+                workSheet.Cells[1, 1].Style.Font.Size = 12;
+                workSheet.Cells[1, 1].Style.Font.Bold = true;
+                workSheet.Cells[1, 1].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 2].Value = "Total";
+                workSheet.Cells[1, 2].Style.Font.Size = 12;
+                workSheet.Cells[1, 2].Style.Font.Bold = true;
+                workSheet.Cells[1, 2].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 3].Value = "Años Anteriores";
+                workSheet.Cells[1, 3].Style.Font.Size = 12;
+                workSheet.Cells[1, 3].Style.Font.Bold = true;
+                workSheet.Cells[1, 3].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 4].Value = "Ejercicio";
+                workSheet.Cells[1, 4].Style.Font.Size = 12;
+                workSheet.Cells[1, 4].Style.Font.Bold = true;
+                workSheet.Cells[1, 4].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 5].Value = "Enero";
+                workSheet.Cells[1, 5].Style.Font.Size = 12;
+                workSheet.Cells[1, 5].Style.Font.Bold = true;
+                workSheet.Cells[1, 5].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 6].Value = "Febrero";
+                workSheet.Cells[1, 6].Style.Font.Size = 12;
+                workSheet.Cells[1, 6].Style.Font.Bold = true;
+                workSheet.Cells[1, 6].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 7].Value = "Marzo";
+                workSheet.Cells[1, 7].Style.Font.Size = 12;
+                workSheet.Cells[1, 7].Style.Font.Bold = true;
+                workSheet.Cells[1, 7].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 8].Value = "Abril";
+                workSheet.Cells[1, 8].Style.Font.Size = 12;
+                workSheet.Cells[1, 8].Style.Font.Bold = true;
+                workSheet.Cells[1, 8].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 9].Value = "Mayo";
+                workSheet.Cells[1, 9].Style.Font.Size = 12;
+                workSheet.Cells[1, 9].Style.Font.Bold = true;
+                workSheet.Cells[1, 9].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 10].Value = "Junio";
+                workSheet.Cells[1, 10].Style.Font.Size = 12;
+                workSheet.Cells[1, 10].Style.Font.Bold = true;
+                workSheet.Cells[1, 10].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 11].Value = "Julio";
+                workSheet.Cells[1, 11].Style.Font.Size = 12;
+                workSheet.Cells[1, 11].Style.Font.Bold = true;
+                workSheet.Cells[1, 11].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 12].Value = "Agosto";
+                workSheet.Cells[1, 12].Style.Font.Size = 12;
+                workSheet.Cells[1, 12].Style.Font.Bold = true;
+                workSheet.Cells[1, 12].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 13].Value = "Septiembre";
+                workSheet.Cells[1, 13].Style.Font.Size = 12;
+                workSheet.Cells[1, 13].Style.Font.Bold = true;
+                workSheet.Cells[1, 13].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 14].Value = "Octubre";
+                workSheet.Cells[1, 14].Style.Font.Size = 12;
+                workSheet.Cells[1, 14].Style.Font.Bold = true;
+                workSheet.Cells[1, 14].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 15].Value = "Noviembre";
+                workSheet.Cells[1, 15].Style.Font.Size = 12;
+                workSheet.Cells[1, 15].Style.Font.Bold = true;
+                workSheet.Cells[1, 15].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 16].Value = "Diciembre";
+                workSheet.Cells[1, 16].Style.Font.Size = 12;
+                workSheet.Cells[1, 16].Style.Font.Bold = true;
+                workSheet.Cells[1, 16].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+
+                workSheet.Cells[1, 17].Value = "Años Posteriores";
+                workSheet.Cells[1, 17].Style.Font.Size = 12;
+                workSheet.Cells[1, 17].Style.Font.Bold = true;
+                workSheet.Cells[1, 17].Style.Border.Top.Style = ExcelBorderStyle.Hair;
                 int count = 2;
                 foreach (ProformaDetalle detalle in detalles)
                 {
