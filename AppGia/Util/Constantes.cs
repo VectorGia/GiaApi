@@ -9,6 +9,15 @@ namespace AppGia.Util
 
 
     {
+        public const string EST_EXT_ERR = "Con error";
+        public const string EST_EXT_FIN = "Finaliazdo";
+        public const string MSJ_CORREO_ETL_BALANZA = "ETL Balanza Programada";
+        public const string MODULO_SEMANAL = "semanal";
+        public const string MODULO_BALANZA = "balanza";
+        public const string TIPO_EXT_MANUAL = "Manual";
+        public const string TIPO_EXT_PROGRAMADA = "Programada";
+        public const string CSV_PATH_BALANZA = @"C:\GIA\balanza\";
+        public const string CSV_PATH_SEMANAL = @"C:\GIA\semanal\";
         public const string NOMBRE_ARCHIVO_POL_SEM = "MovPolizaSemanalExport";
         public const string NOMBRE_ARCHIVO_BALANZA = "BalanzaExport";
         public const string HEADER_SEMANAL_CSV = "year,"
@@ -33,7 +42,10 @@ namespace AppGia.Util
                                                     + "id_version,"
                                                     + "cfd_ruta_pdf,"
                                                     + "cfd_ruta_xml,"
-                                                    + "uuid";
+                                                    + "uuid,"
+                                                    + "tipo_extraccion,"
+                                                    + "fecha_carga," 
+                                                    + "hora_carga";
 
         public const string HEADER_BALANZA_CSV = "cta,"
                                                  + "scta,"
@@ -68,14 +80,15 @@ namespace AppGia.Util
                                                  + "tipo_extraccion,"
                                                  + "id_empresa,"
                                                  + "cierre_cargos,"
-                                                 + "cierre_abonos,"
+                                                 + "cierre_abonos,"  
                                                  + "acta,"
                                                  + "cc,"
                                                  + "hora_carga,"
                                                  + "fecha_carga";
 
         public const int EXTRACCION_MANUAL = 1;
-        public const int EXTRACCION_PROGRAMADA = 2; 
-          
+        public const int EXTRACCION_PROGRAMADA = 2;
+        public const int TipoCapturaContable = 1;
+        public const int TipoCapturaFlujo = 2;
     }
 }

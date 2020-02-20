@@ -15,6 +15,8 @@ namespace AppGia.Models
         public string mensaje { set; get; }
         public string tipo { set; get; }
         public Int64 id_empresa { get; set; }
+        public string modulo { get; set; }
+        public Int64 id_etl_prog { get; set; }
 
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AppGia.Models;
+using AppGia.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,7 @@ namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ETLMovPolizaSemanalController : ControllerBase
+    public class ETLMovPolizaSemanalController : ControllerBase 
     {
         ConfigCorreoController configCorreoDa = new ConfigCorreoController();
         ProcesoDataAccessLayer procesoDa = new ProcesoDataAccessLayer();
@@ -87,10 +88,12 @@ namespace AppGia.Controllers
 
 
                 proceso.id_empresa = idEmpresa;
-                proceso.tipo = "Manual";
+                proceso.tipo = Constantes.TIPO_EXT_MANUAL;
                 proceso.fecha_inicio = fechaInicioProceso;
                 proceso.fecha_fin = fechaFinalProceso;
-                proceso.estatus = "finalizado";
+                proceso.estatus = Constantes.EST_EXT_FIN;
+                proceso.modulo = Constantes.MODULO_SEMANAL;
+                proceso.id_etl_prog = 0;
                 proceso.mensaje = "";
 
                 procesoDa.AddProceso(proceso);
@@ -106,12 +109,13 @@ namespace AppGia.Controllers
                                            , "ETL Movimiento de Polizas Semanal Manual ");
                 string error = ex.Message;
                 proceso.id_empresa = idEmpresa;
-                proceso.tipo = "Manual";
+                proceso.tipo = Constantes.TIPO_EXT_MANUAL;
                 proceso.fecha_inicio = fechaInicioProceso;
                 proceso.fecha_fin = fechaFinalProceso;
-                proceso.estatus = "finalizado";
+                proceso.estatus = Constantes.EST_EXT_ERR;
                 proceso.mensaje = ex.Message;
-
+                proceso.modulo = Constantes.MODULO_SEMANAL;
+                proceso.id_etl_prog = 0;
                 procesoDa.AddProceso(proceso);
 
                 throw;

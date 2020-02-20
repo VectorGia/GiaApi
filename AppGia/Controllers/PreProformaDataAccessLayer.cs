@@ -5,13 +5,12 @@ using AppGia.Models;
 using AppGia.Util;
 using Npgsql;
 using NpgsqlTypes;
+using static AppGia.Util.Constantes;
 
 namespace AppGia.Controllers
 {
     public class PreProformaDataAccessLayer
     {
-        private const  int TipoCapturaContable = 1;
-        private const  int TipoCapturaFlujo = 2;
         private NpgsqlConnection con;
       
         private Conexion.Conexion conex = new Conexion.Conexion();

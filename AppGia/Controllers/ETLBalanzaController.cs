@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AppGia.Models;
+using AppGia.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -28,8 +29,9 @@ namespace AppGia.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-           // iniciarETLBalanzaCSV(1);
+            // iniciarETLBalanzaCSV(1);
             //iniciarETLBalanza(4);
+            iniciarETLBalanzaCSV(1,2005,0);
             return new string[] { "value1", "value2" };
         }
 
@@ -133,7 +135,7 @@ namespace AppGia.Controllers
 
 
         [HttpPost]
-        public void iniciarETLBalanzaCSV(Int64 idEmpresa)
+        public void iniciarETLBalanzaCSV(Int64 idEmpresa,int anioInicio,int anioFin)
         {
             string archivo = string.Empty;
             var configRuta = GetConfiguration();
@@ -142,9 +144,13 @@ namespace AppGia.Controllers
 
             DateTime fechaInicioProceso = DateTime.Now;
             Proceso proceso = new Proceso();
+
+            /// se borran historicos por extraer 
+            etlBalanzaDa.Delete(anioInicio,anioFin,idEmpresa);
+
             try
             {
-                archivo =  etlBalanzaDa.generarSalContCC_CSV(idEmpresa,ruta);
+                archivo =  etlBalanzaDa.generarSalContCC_CSV(idEmpresa,ruta,anioInicio,anioFin);
                 //prueba
                 //archivo = "PruebaBalanzaRecrotado.csv";
 
@@ -156,12 +162,13 @@ namespace AppGia.Controllers
                                            + "\nTiempo de ejecucion : " + (fechaFinalProceso - fechaInicioProceso).TotalMinutes + " mins"
                                            , "ETL Balanza Manual");
 
-
                 proceso.id_empresa = idEmpresa;
-                proceso.tipo = "Manual";
+                proceso.tipo = Constantes.TIPO_EXT_MANUAL;
                 proceso.fecha_inicio = fechaInicioProceso;
                 proceso.fecha_fin = fechaFinalProceso;
-                proceso.estatus = "finalizado";
+                proceso.estatus = Constantes.EST_EXT_FIN;
+                proceso.modulo = Constantes.MODULO_BALANZA;
+                proceso.id_etl_prog = 0;
                 proceso.mensaje = "";
                  
                 procesoDa.AddProceso(proceso);
@@ -181,11 +188,13 @@ namespace AppGia.Controllers
                                            , "ETL Balanza Manual ");
                 string error = ex.Message;
                 proceso.id_empresa = idEmpresa;
-                proceso.tipo = "Manual";
+                proceso.tipo = Constantes.TIPO_EXT_MANUAL;
                 proceso.fecha_inicio = fechaInicioProceso;
                 proceso.fecha_fin = fechaFinalProceso;
-                proceso.estatus = "con error";
+                proceso.estatus = Constantes.EST_EXT_ERR;
+                proceso.modulo = Constantes.MODULO_BALANZA;
                 proceso.mensaje = ex.Message;
+                proceso.id_etl_prog = 0;
                 procesoDa.AddProceso(proceso);
                 //etlBalanza.UpdateCuentaUnificada();// concatencacion de cuentas 
                 throw;

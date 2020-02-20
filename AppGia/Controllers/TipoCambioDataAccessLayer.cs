@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AppGia.Util;
 
 namespace AppGia.Controllers
 {
@@ -63,14 +64,28 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<TipoCambio> GetTpoCambioPorIdProforma(int idProforma)
+        public List<TipoCambio> GetTpoCambioPorIdProforma(int idProforma, int idTipoCaptura)
         {
             string consulta = "";
-            consulta += " select t.id, t.valor, t.moneda_id ";
-            consulta += "	 from tipo_cambio t, moneda m ";
+            consulta += " select t.id, t.moneda_id, t.valor, t.fecha ";
+            consulta += "	 from tipo_cambio t, moneda m, empresa e, proforma p, centro_costo c ";
             consulta += "	 where t.moneda_id = m.id ";
-            consulta += "	 AND m.clave = 'MX' ";
-            consulta += "	 and tipo_proforma_id = " + idProforma;
+            consulta += "	 and e.moneda_id = m.id ";
+            consulta += "	 and p.centro_costo_id = c.id ";
+            consulta += "	 and e.id = c.empresa_id ";
+            consulta += "	 and t.fec_modif = ( ";
+            switch (idTipoCaptura)
+            {
+                case Constantes.TipoCapturaContable:    // Busca la fecha de inicio de mes para el tipo de cambio
+                    consulta += "	 select min(fec_modif) from tipo_cambio where moneda_id = m.id";
+                    consulta += "		 and extract(month from fecha) = extract(month from current_date) ";
+                    break;
+                case Constantes.TipoCapturaFlujo:       // Busca la ultima fecha del tipo de cambio
+                    consulta += "	 select max(fec_modif) from tipo_cambio where moneda_id = m.id ";
+                    break;
+            }
+            consulta += "	 ) ";
+            consulta += "	 and p.id = " + idProforma;
 
             try
             {
@@ -85,8 +100,9 @@ namespace AppGia.Controllers
                 {
                     TipoCambio detTipoCambio = new TipoCambio();
                     detTipoCambio.id= Convert.ToInt64(rdr["id"]);
-                    detTipoCambio.valor= Convert.ToInt32(rdr["valor"]);
                     detTipoCambio.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
+                    detTipoCambio.valor= Convert.ToInt32(rdr["valor"]);
+                    detTipoCambio.fec_modif = Convert.ToDateTime(rdr["fec_modif"]).ToString("yyyy/mm/dd");
                     lstTipoCambio.Add(detTipoCambio);
                 }
                 return lstTipoCambio;
