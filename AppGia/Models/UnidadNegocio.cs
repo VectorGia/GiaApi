@@ -11,7 +11,7 @@ namespace AppGia.Models
         public int clave { get; set; }
         public string descripcion { get; set; }
         public Int64 idusuario { get; set; }
-        public string fec_modif { get; set; }
+        public DateTime fec_modif { get; set; }
         public Boolean activo { get; set; }
 
     }

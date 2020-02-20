@@ -41,7 +41,7 @@ namespace AppGia.Controllers
                     unidadNegocio.clave = Convert.ToInt32(rdr["id"]);
                     unidadNegocio.descripcion = (rdr["descripcion"]).ToString();
                     unidadNegocio.idusuario = Convert.ToInt64(rdr["usuario"]);
-                    unidadNegocio.fec_modif = (rdr["fec_modif"]).ToString();
+                    unidadNegocio.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                     unidadNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                     lstUnidadNegocio.Add(unidadNegocio);
                 }
@@ -80,7 +80,7 @@ namespace AppGia.Controllers
                     unidadNegocio.clave = Convert.ToInt32(rdr["id"]);
                     unidadNegocio.descripcion = (rdr["descripcion"]).ToString();
                     unidadNegocio.idusuario = Convert.ToInt64(rdr["usuario"]);
-                    unidadNegocio.fec_modif = (rdr["fec_modif"]).ToString();
+                    unidadNegocio.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                     unidadNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                 }
 
@@ -98,7 +98,7 @@ namespace AppGia.Controllers
 
         public int AddUnidadNegocio(UnidadNegocio unidadNegocio)
         {
-            string fechaHoy = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            DateTime fechaHoy = DateTime.Now;
             string consulta = "";
             consulta += " insert into unidad_negocio ( ";
             consulta += "	 id, clave, descripcion, usuario, fec_modif, activo ";
@@ -131,7 +131,7 @@ namespace AppGia.Controllers
 
         public int UpdateUnidadNegocio(UnidadNegocio unidadNegocio)
         {
-            string fechaHoy = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            DateTime fechaHoy = DateTime.Now;
             string consulta = "";
             consulta += " update unidad_negocio set ";
             consulta += "   clave = @clave, ";
@@ -167,7 +167,7 @@ namespace AppGia.Controllers
 
         public int DeleteUnidadNegocio(UnidadNegocio unidadNegocio)
         {
-            string fechaHoy = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            DateTime fechaHoy = DateTime.Now;
             string consulta = "";
             consulta += " update unidad_negocio set ";
             consulta += "   usuario = @usuario, ";
