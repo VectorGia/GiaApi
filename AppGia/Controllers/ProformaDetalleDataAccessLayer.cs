@@ -438,7 +438,7 @@ namespace AppGia.Controllers
             consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
             consulta += "	 from montos_consolidados cns ";
             consulta +=
-                "	 inner join centro_costo cc on cns.proyecto_id = pry.proyecto_id and cns.modelo_negocio_id = cc.modelo_negocio_id ";
+                "	 inner join centro_costo cc on cns.proyecto_id = cc.proyecto_id and cns.modelo_negocio_id = cc.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
             consulta += "	 where cns.id in ( ";
             consulta += "		 select nue.id ";

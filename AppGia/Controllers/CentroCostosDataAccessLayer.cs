@@ -194,8 +194,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
-                    cmd.Parameters.AddWithValue("@porcentaje", centroCostos.porcentaje);
-                    cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion);
+                    cmd.Parameters.AddWithValue("@porcentaje", 1); // por defecto, debe venir de pantalla cuando sea base, en otro caso, vendra como un valor entre 0 y 1
+                    cmd.Parameters.AddWithValue("@proyeccion", "BASE"); // esto debe venir de un combo
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -288,7 +288,7 @@ namespace AppGia.Controllers
             DataTable dataTable = _queryExecuter.ExecuteQuery("select nombre from modelo_negocio where id="+centroCostos.modelo_negocio_id);
             string nombreModelo=dataTable.Rows[0]["nombre"].ToString();
             dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='FLUJO' " +
-                                                    " where and mn.activo=true and mn.nombre='"+nombreModelo+"'");
+                                                    " where mn.activo=true and mn.nombre='"+nombreModelo+"'");
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
                 centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
@@ -296,7 +296,7 @@ namespace AppGia.Controllers
             }
             
             dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='CONTABLE' " +
-                                                    " where and mn.activo=true and mn.nombre='"+nombreModelo+"'");
+                                                    " where mn.activo=true and mn.nombre='"+nombreModelo+"'");
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
                 centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);

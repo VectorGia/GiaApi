@@ -35,7 +35,7 @@ namespace AppGia.Controllers
                 EmpProy.id = Convert.ToInt64(centrosCostoRow["id"]);
                 EmpProy.empresa_id = Convert.ToInt64(centrosCostoRow["empresa_id"]);
                 EmpProy.proyecto_id = Convert.ToInt64(centrosCostoRow["proyecto_id"]);
-                Int64 modeloId = Convert.ToInt64(centrosCostoRow["modelo_id"]);
+                Int64 modeloId = Convert.ToInt64(centrosCostoRow["modelo_negocio_id"]);
 
                 try
                 {
