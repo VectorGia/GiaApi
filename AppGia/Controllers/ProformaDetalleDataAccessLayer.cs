@@ -261,13 +261,8 @@ namespace AppGia.Controllers
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
             consulta += "	 mon.centro_costo_id, mon.activo, ";
-<<<<<<< HEAD
             consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, rub.hijos as hijos,";
             if(mesInicio == 0)
-=======
-            consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro,";
-            if (mesInicio == 0)
->>>>>>> 79d455249cf213c5e4f0ec044de95ee2cd3c9d55
             {
                 // Para el 0+12 Enero, Febrero y Marzo se capturan
                 consulta += "	 0 as enero_monto_resultado, ";
@@ -390,11 +385,7 @@ namespace AppGia.Controllers
                         proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
                         proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                         proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
-<<<<<<< HEAD
                         proforma_detalle.hijos = (rdr["hijos"]).ToString().Trim();
-                        proforma_detalle.enero_monto_financiero = Convert.ToDouble(rdr["enero_monto_financiero"]);
-=======
->>>>>>> 79d455249cf213c5e4f0ec044de95ee2cd3c9d55
                         proforma_detalle.enero_monto_resultado = Convert.ToDouble(rdr["enero_monto_resultado"]);
                         proforma_detalle.febrero_monto_resultado = Convert.ToDouble(rdr["febrero_monto_resultado"]);
                         proforma_detalle.marzo_monto_resultado = Convert.ToDouble(rdr["marzo_monto_resultado"]);
