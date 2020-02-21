@@ -6,6 +6,7 @@ using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using AppGia.Conexion;
+using static AppGia.Util.Constantes;
 
 namespace AppGia.Controllers
 {
@@ -285,24 +286,28 @@ namespace AppGia.Controllers
         public int AddCentroManageModelos(CentroCostos centroCostos)
         {
             int co = 0;
-            DataTable dataTable = _queryExecuter.ExecuteQuery("select nombre from modelo_negocio where id="+centroCostos.modelo_negocio_id);
-            string nombreModelo=dataTable.Rows[0]["nombre"].ToString();
-            dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='FLUJO' " +
-                                                    " where mn.activo=true and mn.nombre='"+nombreModelo+"'");
+            DataTable dataTable =
+                _queryExecuter.ExecuteQuery("select agrupador from modelo_negocio where id=" +
+                                            centroCostos.modelo_negocio_id);
+            Object agrupador = dataTable.Rows[0]["agrupador"];
+            dataTable = _queryExecuter.ExecuteQuery(
+                "select mn.id,mn.tipo_captura_id  from modelo_negocio mn" +
+                " where mn.activo=true and mn.agrupador='" + agrupador + "'");
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
-                centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
-                co+=AddCentro(centroCostos);
+                Int64 modeloId = Convert.ToInt64(modeloIdRow["id"]);
+                Object tipocapturaId=  modeloIdRow["tipo_captura_id"];
+                if (tipocapturaId.Equals(TipoCapturaContable))
+                {
+                    centroCostos.modelo_negocio_id = modeloId;
+                }
+                else if (tipocapturaId.Equals(TipoCapturaFlujo))
+                {
+                    centroCostos.modelo_negocio_flujo_id = modeloId;
+                }
+                co += AddCentro(centroCostos);
             }
             
-            dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='CONTABLE' " +
-                                                    " where mn.activo=true and mn.nombre='"+nombreModelo+"'");
-            foreach (DataRow modeloIdRow in dataTable.Rows)
-            {
-                centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
-                co+=AddCentro(centroCostos);
-            }
-
             return co;
         }
 

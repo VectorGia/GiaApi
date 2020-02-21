@@ -26,6 +26,7 @@ namespace AppGia.Models
         public string nombre_empresa { get; set; }
         public string nombre_proyecto { get; set; }
         public Int64 modelo_negocio_id { get; set; }
+        public Int64 modelo_negocio_flujo_id { get; set; }
         public double porcentaje { get; set; }
         public string proyeccion { get; set; }
     }

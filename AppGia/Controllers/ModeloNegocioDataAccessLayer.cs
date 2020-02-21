@@ -101,6 +101,11 @@ namespace AppGia.Controllers
             {
                 throw new DataException("Ya existe un modelo con ese nombre");
             }
+
+            string agrupador=Guid.NewGuid().ToString();
+            agrupador=agrupador.Substring(agrupador.Length-12);
+            modeloNegocio.agrupador = agrupador;
+            
             modeloNegocio.tipo_captura_id = TipoCapturaContable;
             co=addModeloNegocio(modeloNegocio);
             modeloNegocio.tipo_captura_id = TipoCapturaFlujo;
@@ -111,7 +116,7 @@ namespace AppGia.Controllers
         private bool existeModeloConNombreYTipo(string nombreModelo, int tipoCaptura)
         {
             DataTable dt=new QueryExecuter().ExecuteQuery(
-                "select 1 as res from modelo_negocio where activo=true and upper(nombre)=upper('"+nombreModelo+"') and tipo_captura_id="+tipoCaptura);
+                "select 1 as res from modelo_negocio where activo=true and trim(upper(nombre))=trim(upper('"+nombreModelo+"')) and tipo_captura_id="+tipoCaptura);
             return dt.Rows.Count > 0;
         }
         public int addModeloNegocio(Modelo_Negocio modeloNegocio)
@@ -123,12 +128,14 @@ namespace AppGia.Controllers
                 + "nombre"+"," 
                 + "tipo_captura_id, "
                 + "unidad_negocio_id, "
-                + "activo" + ") " +
+                + "activo," 
+                + "agrupador" +
+                ") " +
                 "values " +
                 "(nextval('seq_modelo_neg'),@nombre," 
                 + "@tipo_captura_id,"
                 + "@unidad_negocio_id,"
-                + "@activo)";
+                + "@activo,@agrupador)";
 
             try
             {
@@ -139,6 +146,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.AddWithValue("@tipo_captura_id", modeloNegocio.tipo_captura_id);
                 cmd.Parameters.AddWithValue("@unidad_negocio_id", modeloNegocio.unidad_negocio_id);
                 cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
+                cmd.Parameters.AddWithValue("@agrupador", modeloNegocio.agrupador);
                 //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
                 con.Open();
