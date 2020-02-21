@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using AppGia.Models;
 using Npgsql;
+using static AppGia.Util.Constantes;
 
 namespace AppGia.Controllers
 {
@@ -45,23 +44,19 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     Proforma proforma = new Proforma();
-                    proforma.id = Convert.ToInt32(rdr["id"]);
-                    proforma.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
-                    proforma.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
-                    proforma.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
-                    proforma.centro_costo_id = Convert.ToInt32(rdr["centro_costo_id"]);
+                    proforma.id = Convert.ToInt64(rdr["id"]);
+                    proforma.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                    proforma.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                    proforma.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                    proforma.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
                     proforma.activo = Convert.ToBoolean(rdr["activo"]);
-                    proforma.usuario = Convert.ToInt32(rdr["usuario"]);
+                    proforma.usuario = Convert.ToInt64(rdr["usuario"]);
                     proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
                     proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
                     lstProforma.Add(proforma);
                 }
 
                 return lstProforma;
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -95,23 +90,19 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     Proforma proforma = new Proforma();
-                    proforma.id = Convert.ToInt32(rdr["id"]);
-                    proforma.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
-                    proforma.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
-                    proforma.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
-                    proforma.centro_costo_id = Convert.ToInt32(rdr["centro_costo_id"]);
+                    proforma.id = Convert.ToInt64(rdr["id"]);
+                    proforma.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                    proforma.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                    proforma.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                    proforma.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
                     proforma.activo = Convert.ToBoolean(rdr["activo"]);
-                    proforma.usuario = Convert.ToInt32(rdr["usuario"]);
+                    proforma.usuario = Convert.ToInt64(rdr["usuario"]);
                     proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
                     proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
                     lstProforma.Add(proforma);
                 }
 
                 return lstProforma;
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -153,42 +144,12 @@ namespace AppGia.Controllers
                 
                 return regInsert;
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 con.Close();
             }
         }
-
-        public int UpdateProforma(Int64 idProforma, bool bandActivo, Int64 idUsuario)
-        {
-            string consulta = "";
-            consulta += " update proforma set activo = '" + bandActivo.ToString() + "', ";
-            consulta += " 	usuario = " + idUsuario.ToString() + ", fecha_captura = current_timestamp ";
-            consulta += " 	where id = " + idProforma.ToString();
-
-            try
-            {
-                {
-                    con.Open();
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-
-                    int regActual = cmd.ExecuteNonQuery();
-                    return regActual;
-                }
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
+        
 
         public int UpdateProforma(Proforma proforma)
         {
@@ -207,10 +168,6 @@ namespace AppGia.Controllers
                     return regActual;
                 }
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 con.Close();
@@ -224,16 +181,11 @@ namespace AppGia.Controllers
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc =  ObtenerDatosCC(idCC);
             
-            if(cc.empresa_id == 0 ||  cc.modelo_negocio_id == 0 )
+            if(cc == null )
             {
                 throw new InvalidDataException("No hay informacion del centro de costos " + idCC);
             }
-
-            // De la empresa se obtiene el modelo de negocio
-            if (cc.modelo_negocio_id == 0)
-            {
-                throw new InvalidDataException("No hay informacion del modelo de negocios asociado al CC " + cc.id);
-            }
+            
 
             // Del tipo de proforma obtiene mes de inicio
             Tipo_Proforma datTipoProf = ObtenerDatosTipoProf(idTipoProforma);
@@ -241,38 +193,31 @@ namespace AppGia.Controllers
             {
                 throw new InvalidDataException("Error en el mes de inicio de la proforma ");
             }
-            
 
+            Int64 idModeloNeg = idTipoCaptura == TipoCapturaContable
+                ? cc.modelo_negocio_id
+                : cc.modelo_negocio_flujo_id;
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
-            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio, 
-                cc.empresa_id, cc.modelo_negocio_id,
-                cc.proyecto_id, anio, idTipoCaptura,idTipoProforma);
+            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio,
+                cc.empresa_id, idModeloNeg,
+                cc.proyecto_id, anio, idTipoCaptura, idTipoProforma);
 
             if (listDetProformaCalc.Count == 0)
             {
                 DateTime fechaProf = DateTime.Today;
-                string tipoProforma = string.Empty;
-                switch (idTipoCaptura)
-                {
-                    case 1:
-                        tipoProforma = "contable";
-                        break;
-                    case 2:
-                        tipoProforma = "de flujo";
-                        break;
-                }
-                throw new InvalidDataException("No existe información con fecha " + fechaProf + " para la proforma " + tipoProforma + " de la empresa " + cc.empresa_id + " y modelo de negocio " + cc.modelo_negocio_id);
+                string nombreTipoCaptura = idTipoCaptura==TipoCapturaContable?"contable":"de flujo";
+                throw new InvalidDataException("No existe información con fecha '" + fechaProf + "' para proforma " + nombreTipoCaptura + " de la empresa '" + cc.empresa_id + "' y modelo de negocio '" + idModeloNeg+"'");
             }
 
             // Enlista la proforma
-            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, cc);
+            List<ProformaDetalle> lstProformaCompleta = CompletaDetalles(listDetProformaCalc, cc,idModeloNeg);
             listDetProformaCalc.ForEach(detalle =>
             {
                 detalle.centro_costo_id = idCC;
                 detalle.anio = anio;
                 detalle.tipo_proforma_id = idTipoProforma;
                 detalle.tipo_captura_id = idTipoCaptura;
-                detalle.modelo_negocio_id=cc.modelo_negocio_id;
+                detalle.modelo_negocio_id=idModeloNeg;
             });
 
             return lstProformaCompleta;
@@ -352,9 +297,9 @@ namespace AppGia.Controllers
         }
 
 
-        public List<ProformaDetalle> CompletaDetalles(List<ProformaDetalle> detCtas, CentroCostos centroCostos)
+        private List<ProformaDetalle> CompletaDetalles(List<ProformaDetalle> detCtas, CentroCostos centroCostos,Int64 idModeloNeg)
         {
-            List<Rubros> rubTots = GetRubrosTotales(centroCostos.modelo_negocio_id);
+            List<Rubros> rubTots = GetRubrosTotales(idModeloNeg);
             List<ProformaDetalle> totales = new List<ProformaDetalle>();
             foreach (Rubros rubTot in rubTots)
             {
@@ -365,7 +310,7 @@ namespace AppGia.Controllers
             return detCtas;
         }
 
-        public List<Rubros> GetRubrosTotales(Int64 idModelo)
+        private List<Rubros> GetRubrosTotales(Int64 idModelo)
         {
             string consulta = "";
             consulta += " select rub.id, rub.nombre, rub.clave, rub.aritmetica, rub.hijos ";
@@ -387,7 +332,7 @@ namespace AppGia.Controllers
                 {
                     Rubros rubsObtenidos = new Rubros();
 
-                    rubsObtenidos.id = Convert.ToInt32(rdr["id"]);
+                    rubsObtenidos.id = Convert.ToInt64(rdr["id"]);
                     rubsObtenidos.nombre = Convert.ToString(rdr["nombre"]);
                     rubsObtenidos.clave = Convert.ToString(rdr["clave"]);
                     rubsObtenidos.aritmetica = Convert.ToString(rdr["aritmetica"]);
@@ -396,10 +341,6 @@ namespace AppGia.Controllers
                 }
 
                 return lstRubrosTot;
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -426,18 +367,14 @@ namespace AppGia.Controllers
 
                 while (rdr.Read())
                 {
-                    detRubros.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
-                    detRubros.tipo_id = Convert.ToInt32(rdr["tipo_id"]);
+                    detRubros.id_modelo_neg = Convert.ToInt64(rdr["id_modelo_neg"]);
+                    detRubros.tipo_id = Convert.ToInt64(rdr["tipo_id"]);
                     detRubros.clave = Convert.ToString(rdr["clave"]);
                     detRubros.aritmetica = Convert.ToString(rdr["aritmetica"]);
                     detRubros.naturaleza = Convert.ToString(rdr["naturaleza"]);
                 }
 
                 return detRubros;
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -449,10 +386,10 @@ namespace AppGia.Controllers
         public CentroCostos ObtenerDatosCC(Int64 idCenCos)
         {
             string consulta = "";
-            consulta += " select empresa_id, proyecto_id, modelo_negocio_id,porcentaje ";
+            consulta += " select empresa_id, proyecto_id, modelo_negocio_id,modelo_negocio_flujo_id,porcentaje,proyeccion ";
             consulta += " 	from centro_costo ";
             consulta += " 	where id = " + idCenCos;
-            consulta += " 	and activo = 'true' ";
+            consulta += " 	and activo = 'true' and modelo_negocio_id is not null and  modelo_negocio_flujo_id is not null";
 
             try
             {
@@ -461,21 +398,16 @@ namespace AppGia.Controllers
 
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
-
+                bool existenDatos = false;
                 while (rdr.Read())
                 {
-                    if(rdr["empresa_id"] == null)
-                        datosCenCos.empresa_id = 0;
-                    else
-                        datosCenCos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
-                    if(rdr["modelo_negocio_id"] == null)
-                        datosCenCos.modelo_negocio_id = 0;
-                    else
-                        datosCenCos.modelo_negocio_id = Convert.ToInt32(rdr["modelo_negocio_id"]);
-                    if(rdr["proyecto_id"] == null)
-                        datosCenCos.proyecto_id = 0;
-                    else
-                        datosCenCos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
+                    existenDatos = true;
+                    datosCenCos.empresa_id = Convert.ToInt64(rdr["empresa_id"]);
+                    datosCenCos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                    datosCenCos.modelo_negocio_flujo_id = Convert.ToInt64(rdr["modelo_negocio_flujo_id"]);
+                    datosCenCos.proyecto_id = Convert.ToInt64(rdr["proyecto_id"]);
+                    datosCenCos.proyeccion = rdr["proyeccion"].ToString();
+
                     Object porcentajeFromDb = rdr["porcentaje"];
                     if (porcentajeFromDb != null)
                     {
@@ -485,52 +417,26 @@ namespace AppGia.Controllers
                     {
                         datosCenCos.porcentaje = 1.0;
                     }
+                    
+                    
                 }
 
-                return datosCenCos;
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        public Proyecto ObtenerDatosProy(Int64 idProyecto)
-        {
-            string consulta = "";
-            consulta += " select id ";
-            consulta += " 	from proyecto ";
-            consulta += " 	where id = " + idProyecto;
-            consulta += " 	and activo = 'true' ";
-
-            try
-            {
-                Proyecto datosProy = new Proyecto();
-                con.Open();
-
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
+                if (existenDatos)
                 {
-                    if (rdr["id"] == null)
-                        datosProy.id = 0;
-                    else
-                        datosProy.id = Convert.ToInt32(rdr["id"]);
-
+                    return datosCenCos;
                 }
-
-                return datosProy;
+                else
+                {
+                    return null;
+                }
+                
             }
             finally
             {
                 con.Close();
             }
         }
+        
 
         public Tipo_Proforma ObtenerDatosTipoProf(Int64 idTipoProforma)
         {
@@ -569,10 +475,6 @@ namespace AppGia.Controllers
 
                 return datosTipoProf;
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 con.Close();
@@ -588,7 +490,6 @@ namespace AppGia.Controllers
             List<ProformaDetalle> lstGetProfDet= objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
             List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg, idProyecto, anio, idTipoCaptura);
-            //TODO:HNA revisar ya que en este punto no hay manera de obtener el rubro solicitado
             // Obtiene montos para anios posteriores
             List<ProformaDetalle> lstGetPosterior = objProfDetalle.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 

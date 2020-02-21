@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AppGia.Models;
 using Npgsql;
 
@@ -81,10 +79,7 @@ namespace AppGia.Controllers
 
                 return lstProformaDetalle;
             }
-            catch
-            {
-                throw;
-            }
+         
             finally
             {
                 con.Close();
@@ -145,10 +140,7 @@ namespace AppGia.Controllers
 
                 return regInsert;
             }
-            catch
-            {
-                throw;
-            }
+        
             finally
             {
                 con.Close();
@@ -170,10 +162,6 @@ namespace AppGia.Controllers
                     int regActual = cmd.ExecuteNonQuery();
                     return regActual;
                 }
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -232,10 +220,7 @@ namespace AppGia.Controllers
                     return regActual;
                 }
             }
-            catch
-            {
-                throw;
-            }
+         
             finally
             {
                 con.Close();
@@ -406,10 +391,6 @@ namespace AppGia.Controllers
                 }
                 return lstProformaDetalle;
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 con.Close();
@@ -437,14 +418,9 @@ namespace AppGia.Controllers
             consulta += "	 sum(cns.diciembre_total_resultado) ";
             consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
             consulta += "	 from montos_consolidados cns ";
-            consulta +=
-                "	 inner join centro_costo cc on cns.proyecto_id = cc.proyecto_id and cns.modelo_negocio_id = cc.modelo_negocio_id ";
             consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
             consulta += "	 where cns.id in ( ";
-            consulta += "		 select nue.id ";
-            consulta += "		 from montos_consolidados nue ";
-            consulta += "		 inner join ( ";
-            consulta += "			 select distinct anio as aniosort from montos_consolidados mon ";
+            consulta += "			 select max(id) as idMontoLast from montos_consolidados mon ";
             consulta += "				 where mon.anio < " + anio; // Anio a proformar
             consulta += "				 and mon.empresa_id = " + idEmpresa; // Empresa
             consulta += "				 and mon.modelo_negocio_id = " + idModeloNegocio; // Modelo de Negocio
@@ -452,12 +428,17 @@ namespace AppGia.Controllers
             consulta += "				 and mon.centro_costo_id = " + idCenCos; // Centro de costos
             consulta += "				 and mon.tipo_captura_id = " + idTipoCaptura; // Tipo de captura
             consulta += "				 and mon.activo = 'true' ";
-            consulta += "		 ) anios on anios.aniosort = nue.anio ";
-            consulta += "		 group by nue.id ";
-            consulta += "	 ) ";
+            consulta += "		 ) ";
+            consulta += "    AND  cns.anio < "+anio;
+            consulta += "    AND  cns.empresa_id="+idEmpresa;
+            consulta += "    AND  cns.modelo_negocio_id="+idModeloNegocio;
+            consulta += "    AND  cns.proyecto_id="+idProyecto;
+            consulta += "    AND  cns.centro_costo_id="+idCenCos;
+            consulta += "    AND  cns.tipo_captura_id="+idTipoCaptura;
+            consulta += "    AND  cns.activo=true";
             consulta += "	 group by cns.rubro_id, rub.nombre ";
             consulta += "	 order by cns.rubro_id ";
-
+            
             try
             {
                 List<ProformaDetalle> lstProfDetalleEjercicioFinanc = new List<ProformaDetalle>();
@@ -478,10 +459,6 @@ namespace AppGia.Controllers
 
                 return lstProfDetalleEjercicioFinanc;
             }
-            catch
-            {
-                throw;
-            }
             finally
             {
                 con.Close();
@@ -493,20 +470,7 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select prf.centro_costo_id, prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, ";
-            consulta += " 	coalesce(";
-            consulta += " 	sum(det.enero_monto_financiero) + ";
-            consulta += " 	sum(det.febrero_monto_financiero) + ";
-            consulta += " 	sum(det.marzo_monto_financiero) + ";
-            consulta += " 	sum(det.abril_monto_financiero) + ";
-            consulta += " 	sum(det.mayo_monto_financiero) + ";
-            consulta += " 	sum(det.junio_monto_financiero) + ";
-            consulta += " 	sum(det.julio_monto_financiero) + ";
-            consulta += " 	sum(det.agosto_monto_financiero) + ";
-            consulta += " 	sum(det.septiembre_monto_financiero) + ";
-            consulta += " 	sum(det.octubre_monto_financiero) + ";
-            consulta += " 	sum(det.noviembre_monto_financiero) + ";
-            consulta += " 	sum(det.diciembre_monto_financiero) ";
-            consulta += " 	, 0) as anios_posteriores_financiero, coalesce (";
+            consulta += " 	coalesce (";
             consulta += " 	sum(det.enero_monto_resultado) + ";
             consulta += " 	sum(det.febrero_monto_resultado) + ";
             consulta += " 	sum(det.marzo_monto_resultado) + ";
@@ -554,10 +518,6 @@ namespace AppGia.Controllers
 
                 return lstProfDetalleAniosPost;
 
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
