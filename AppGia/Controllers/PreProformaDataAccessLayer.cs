@@ -14,6 +14,7 @@ namespace AppGia.Controllers
         private NpgsqlConnection con;
       
         private Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter _queryExecuter= new QueryExecuter();
 
         public PreProformaDataAccessLayer()
         {
@@ -38,7 +39,7 @@ namespace AppGia.Controllers
 
                 try
                 {
-                    DataTable modeloNegTable = ExecuteQuery("select * from modelo_negocio where id=" + modeloId);
+                    DataTable modeloNegTable = _queryExecuter.ExecuteQuery("select * from modelo_negocio where id=" + modeloId);
                     //DataTable modeloNegDataTable = Proyecto_Modelo(EmpProy.proyecto_id);
                     foreach (DataRow modeloNegRow in modeloNegTable.Rows)
                     {
@@ -53,7 +54,7 @@ namespace AppGia.Controllers
                             {
                                 String consulta = qry.getQuerySums(rubro.rangos_cuentas_incluidas,
                                     rubro.rango_cuentas_excluidas, EmpProy.empresa_id, numRegistrosExistentes);
-                                DataTable sumaMontosDt = ExecuteQuery(consulta);
+                                DataTable sumaMontosDt = _queryExecuter.ExecuteQuery(consulta);
 
                                 foreach (DataRow rubroMontosRow in sumaMontosDt.Rows)
                                 {
@@ -70,7 +71,7 @@ namespace AppGia.Controllers
                                 GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
                                 String consulta = qry.getQuerySemanalSums(rubro.rangos_cuentas_incluidas,
                                     rubro.rango_cuentas_excluidas, EmpProy.empresa_id, numRegistrosExistentes);
-                                DataTable sumaMontos = ExecuteQuery(consulta);
+                                DataTable sumaMontos = _queryExecuter.ExecuteQuery(consulta);
                                 numInserts += BuildMontosFujo(sumaMontos, EmpProy, modeloId, rubro.id, fechaactual);
                             }
                         }
@@ -88,7 +89,7 @@ namespace AppGia.Controllers
 
         public DataTable findRubrosByIdModelo(Int64 modelo_id)
         {
-            return ExecuteQuery("SELECT * FROM rubro WHERE tipo_id = 2 AND id_modelo_neg = " + modelo_id);
+            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE tipo_id = 2 AND id_modelo_neg = " + modelo_id);
         }
 
         public List<Rubros> GetRubrosFromModeloId(Int64 modeloId)
@@ -117,29 +118,11 @@ namespace AppGia.Controllers
 
         public DataTable GetCentrosCostro()
         {
-            return ExecuteQuery("SELECT * FROM centro_costo WHERE activo = true");
+            return _queryExecuter.ExecuteQuery("SELECT * FROM centro_costo WHERE activo = true");
         }
 
 
-        private DataTable ExecuteQuery(String qry)
-        {
-            string consulta = qry;
-
-            try
-            {
-                con.Open();
-                NpgsqlCommand comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
-
-                DataTable dt = new DataTable();
-                daP.Fill(dt);
-                return dt;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
+       
 
         public int insertarMontos(MontosConsolidados montos)
         {
@@ -325,7 +308,7 @@ namespace AppGia.Controllers
         public Int64 getNumMontosOfTipoCaptura(Int64 captura)
         {
             string consulta = "SELECT count(1) as numregs FROM montos_consolidados WHERE tipo_captura_id = " + captura;
-            return Convert.ToInt64(ExecuteQuery(consulta).Rows[0]["numregs"]);
+            return Convert.ToInt64(_queryExecuter.ExecuteQuery(consulta).Rows[0]["numregs"]);
         }
 
         private int BuildMontosConsolContable(DataRow rubroMontosRow, EmpresaCC EmpProy, Int64 modeloId, Int64 rubroId,
