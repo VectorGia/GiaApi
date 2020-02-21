@@ -286,7 +286,7 @@ namespace AppGia.Controllers
         {
             int co = 0;
             DataTable dataTable = _queryExecuter.ExecuteQuery("select nombre from modelo_negocio where id="+centroCostos.modelo_negocio_id);
-            string nombreModelo=dataTable.Rows[0].ToString();
+            string nombreModelo=dataTable.Rows[0]["nombre"].ToString();
             dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='FLUJO' " +
                                                     " where and mn.activo=true and mn.nombre='"+nombreModelo+"'");
             foreach (DataRow modeloIdRow in dataTable.Rows)
