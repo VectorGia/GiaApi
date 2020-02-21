@@ -38,6 +38,7 @@ namespace AppGia.Controllers
                     modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                     modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                     modeloNegocio.nombre_tipo_captura = rdr["nombre_tipo_captura"].ToString();
+                    modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
                     //modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
                     lstmodelo.Add(modeloNegocio);
                 }
@@ -61,7 +62,7 @@ namespace AppGia.Controllers
             {
                 Modelo_Negocio modeloNegocio = new Modelo_Negocio();
                 {
-                    string consulta = "select id,activo,nombre,tipo_captura_id from modelo_negocio  where id = " + id;
+                    string consulta = "select id, activo, nombre, tipo_captura_id, modelo_negocio_id from modelo_negocio  where id = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -72,7 +73,7 @@ namespace AppGia.Controllers
                         modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                         modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                         modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-
+                        modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
                     }
                     con.Close();
                 }
@@ -121,21 +122,24 @@ namespace AppGia.Controllers
                 + "id" + ","
                 + "nombre"+"," 
                 + "tipo_captura_id, "
-                +"activo" + ") " +
+                + "unidad_negocio_id, "
+                + "activo" + ") " +
                 "values " +
                 "(nextval('seq_modelo_neg'),@nombre," 
-                +"@tipo_captura_id,"
-                +"@activo)";
+                + "@tipo_captura_id,"
+                + "@unidad_negocio_id,"
+                + "@activo)";
 
             try
             {
     
-                    NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
+                NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
                 cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
-                    cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
+                cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
                 cmd.Parameters.AddWithValue("@tipo_captura_id", modeloNegocio.tipo_captura_id);
+                cmd.Parameters.AddWithValue("@unidad_negocio_id", modeloNegocio.unidad_negocio_id);
                 cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
-                    //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
+                //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
@@ -159,7 +163,8 @@ namespace AppGia.Controllers
             string add = "update modelo_negocio set "
                  + "nombre = @nombre ,"
                  + "activo = @activo ,"
-                 + "tipo_captura_id = @tipo_captura_id "
+                 + "tipo_captura_id = @tipo_captura_id, "
+                 + "unidad_negocio_id = @unidad_negocio_id "
                  + " where id  = " + id;
             try
             {
@@ -169,6 +174,7 @@ namespace AppGia.Controllers
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@activo", Value = modeloNegocio.activo });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = modeloNegocio.tipo_captura_id });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@unidad_negocio_id", Value = modeloNegocio.unidad_negocio_id });
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();
