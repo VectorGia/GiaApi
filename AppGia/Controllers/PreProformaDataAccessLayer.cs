@@ -12,9 +12,9 @@ namespace AppGia.Controllers
     public class PreProformaDataAccessLayer
     {
         private NpgsqlConnection con;
-      
+
         private Conexion.Conexion conex = new Conexion.Conexion();
-        private QueryExecuter _queryExecuter= new QueryExecuter();
+        private QueryExecuter _queryExecuter = new QueryExecuter();
 
         public PreProformaDataAccessLayer()
         {
@@ -28,54 +28,19 @@ namespace AppGia.Controllers
             DateTime fechaactual = DateTime.Today;
             int numInserts = 0;
 
-
             foreach (DataRow centrosCostoRow in centrosCostoDt.Rows)
             {
-                EmpresaCC EmpProy = new EmpresaCC();
-                EmpProy.id = Convert.ToInt64(centrosCostoRow["id"]);
-                EmpProy.empresa_id = Convert.ToInt64(centrosCostoRow["empresa_id"]);
-                EmpProy.proyecto_id = Convert.ToInt64(centrosCostoRow["proyecto_id"]);
-                Int64 modeloId = Convert.ToInt64(centrosCostoRow["modelo_negocio_id"]);
+                CentroCostos centroCostos = new CentroCostos();
+                centroCostos.id = Convert.ToInt64(centrosCostoRow["id"]);
+                centroCostos.empresa_id = Convert.ToInt64(centrosCostoRow["empresa_id"]);
+                centroCostos.proyecto_id = Convert.ToInt64(centrosCostoRow["proyecto_id"]);
+                centroCostos.modelo_negocio_id = Convert.ToInt64(centrosCostoRow["modelo_negocio_id"]);
+                centroCostos.modelo_negocio_flujo_id = Convert.ToInt64(centrosCostoRow["modelo_negocio_flujo_id"]);
 
                 try
                 {
-                    DataTable modeloNegTable = _queryExecuter.ExecuteQuery("select * from modelo_negocio where id=" + modeloId);
-                    //DataTable modeloNegDataTable = Proyecto_Modelo(EmpProy.proyecto_id);
-                    foreach (DataRow modeloNegRow in modeloNegTable.Rows)
-                    {
-                        //Int64 modeloId = Convert.ToInt64(modeloNegRow["id"]);
-                        Int64 tipoCaptura = Convert.ToInt64(modeloNegRow["tipo_captura_id"]);
-                        List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
-                        if (tipoCaptura == TipoCapturaContable)
-                        {
-                            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaContable);
-                            GeneraQry qry = new GeneraQry("balanza", "cuenta_unificada", 12);
-                            foreach (Rubros rubro in rubrosDeModelo)
-                            {
-                                String consulta = qry.getQuerySums(rubro.rangos_cuentas_incluidas,
-                                    rubro.rango_cuentas_excluidas, EmpProy.empresa_id, numRegistrosExistentes);
-                                DataTable sumaMontosDt = _queryExecuter.ExecuteQuery(consulta);
-
-                                foreach (DataRow rubroMontosRow in sumaMontosDt.Rows)
-                                {
-                                    numInserts += BuildMontosConsolContable(rubroMontosRow, EmpProy, modeloId, rubro.id,
-                                        fechaactual);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaFlujo);
-                            foreach (Rubros rubro in rubrosDeModelo)
-                            {
-                                GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
-                                String consulta = qry.getQuerySemanalSums(rubro.rangos_cuentas_incluidas,
-                                    rubro.rango_cuentas_excluidas, EmpProy.empresa_id, numRegistrosExistentes);
-                                DataTable sumaMontos = _queryExecuter.ExecuteQuery(consulta);
-                                numInserts += BuildMontosFujo(sumaMontos, EmpProy, modeloId, rubro.id, fechaactual);
-                            }
-                        }
-                    }
+                    numInserts += manageModeloContable(centroCostos, fechaactual);
+                    numInserts += manageModeloFlujo(centroCostos, fechaactual);
                 }
                 finally
                 {
@@ -86,10 +51,51 @@ namespace AppGia.Controllers
             return numInserts;
         }
 
+        private int manageModeloContable(CentroCostos centroCostos, DateTime fechaactual)
+        {
+            int numInserts = 0;
+            Int64 modeloId = centroCostos.modelo_negocio_id;
+            List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
+            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaContable);
+            GeneraQry qry = new GeneraQry("balanza", "cuenta_unificada", 12);
+            foreach (Rubros rubro in rubrosDeModelo)
+            {
+                String consulta = qry.getQuerySums(rubro.rangos_cuentas_incluidas,
+                    rubro.rango_cuentas_excluidas, centroCostos.empresa_id, numRegistrosExistentes);
+                DataTable sumaMontosDt = _queryExecuter.ExecuteQuery(consulta);
+
+                foreach (DataRow rubroMontosRow in sumaMontosDt.Rows)
+                {
+                    numInserts += BuildMontosConsolContable(rubroMontosRow, centroCostos, modeloId, rubro.id,
+                        fechaactual);
+                }
+            }
+
+            return numInserts;
+        }
+
+        private int manageModeloFlujo(CentroCostos centroCostos, DateTime fechaactual)
+        {
+            int numInserts = 0;
+            Int64 modeloId = centroCostos.modelo_negocio_flujo_id;
+            List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
+            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaFlujo);
+            foreach (Rubros rubro in rubrosDeModelo)
+            {
+                GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
+                String consulta = qry.getQuerySemanalSums(rubro.rangos_cuentas_incluidas,
+                    rubro.rango_cuentas_excluidas, centroCostos.empresa_id, numRegistrosExistentes);
+                DataTable sumaMontos = _queryExecuter.ExecuteQuery(consulta);
+                numInserts += BuildMontosFujo(sumaMontos, centroCostos, modeloId, rubro.id, fechaactual);
+            }
+
+            return numInserts;
+        }
 
         public DataTable findRubrosByIdModelo(Int64 modelo_id)
         {
-            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE tipo_id = 2 AND id_modelo_neg = " + modelo_id);
+            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE tipo_id = "+TipoRubroCuentas+" AND id_modelo_neg = " +
+                                               modelo_id);
         }
 
         public List<Rubros> GetRubrosFromModeloId(Int64 modeloId)
@@ -118,11 +124,10 @@ namespace AppGia.Controllers
 
         public DataTable GetCentrosCostro()
         {
-            return _queryExecuter.ExecuteQuery("SELECT * FROM centro_costo WHERE activo = true");
+            return _queryExecuter.ExecuteQuery(
+                "SELECT * FROM centro_costo WHERE activo = true and modelo_negocio_id is not null and modelo_negocio_flujo_id is not null");
         }
 
-
-       
 
         public int insertarMontos(MontosConsolidados montos)
         {
@@ -289,14 +294,12 @@ namespace AppGia.Controllers
 
                 cantFilaAfect = cantFilaAfect + Convert.ToInt32(cmd.ExecuteNonQuery());
                 transaction.Commit();
-                con.Close();
 
                 return cantFilaAfect;
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
-                con.Close();
                 throw;
             }
             finally
@@ -311,7 +314,8 @@ namespace AppGia.Controllers
             return Convert.ToInt64(_queryExecuter.ExecuteQuery(consulta).Rows[0]["numregs"]);
         }
 
-        private int BuildMontosConsolContable(DataRow rubroMontosRow, EmpresaCC EmpProy, Int64 modeloId, Int64 rubroId,
+        private int BuildMontosConsolContable(DataRow rubroMontosRow, CentroCostos centroCostos, Int64 modeloId,
+            Int64 rubroId,
             DateTime fechaactual)
         {
             MontosConsolidados montos = new MontosConsolidados();
@@ -356,17 +360,17 @@ namespace AppGia.Controllers
             montos.fecha = fechaactual;
             montos.mes = fechaactual.Month;
             //montos.valor_tipo_cambio_resultado = cambiop;
-            montos.centro_costo_id = EmpProy.id;
-            montos.empresa_id = EmpProy.empresa_id;
+            montos.centro_costo_id = centroCostos.id;
+            montos.empresa_id = centroCostos.empresa_id;
             montos.modelo_negocio_id = modeloId;
-            montos.proyecto_id = EmpProy.proyecto_id;
+            montos.proyecto_id = centroCostos.proyecto_id;
             montos.rubro_id = rubroId;
             montos.tipo_captura_id = TipoCapturaContable;
 
             return insertarMontos(montos);
         }
 
-        private int BuildMontosFujo(DataTable sumaMontos, EmpresaCC EmpProy, Int64 modeloId, Int64 rubroId,
+        private int BuildMontosFujo(DataTable sumaMontos, CentroCostos centroCostos, Int64 modeloId, Int64 rubroId,
             DateTime fechaactual)
         {
             int numInserts = 0;
@@ -432,10 +436,10 @@ namespace AppGia.Controllers
                 montos.fecha = fechaactual;
                 montos.mes = fechaactual.Month;
                 //montos.valor_tipo_cambio_resultado = cambiop;
-                montos.centro_costo_id = EmpProy.id;
-                montos.empresa_id = EmpProy.empresa_id;
+                montos.centro_costo_id = centroCostos.id;
+                montos.empresa_id = centroCostos.empresa_id;
                 montos.modelo_negocio_id = modeloId;
-                montos.proyecto_id = EmpProy.proyecto_id;
+                montos.proyecto_id = centroCostos.proyecto_id;
                 montos.rubro_id = rubroId;
                 montos.tipo_captura_id = TipoCapturaFlujo;
 
@@ -444,6 +448,5 @@ namespace AppGia.Controllers
 
             return numInserts;
         }
-        
     }
 }

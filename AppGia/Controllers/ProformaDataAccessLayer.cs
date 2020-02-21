@@ -579,7 +579,7 @@ namespace AppGia.Controllers
             }
         }
 
-        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, int idEmpresa, Int64 idModeloNeg, int idProyecto, int anio, Int64 idTipoCaptura,Int64 idTipoProforma)
+        public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, Int64 idEmpresa, Int64 idModeloNeg, Int64 idProyecto, int anio, Int64 idTipoCaptura,Int64 idTipoProforma)
         {
             ///obtener las variables
             ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();

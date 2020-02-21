@@ -254,8 +254,8 @@ namespace AppGia.Controllers
         //      1 - Contable
         //      2 - Flujo
         //
-        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, int idEmpresa,
-            Int64 idModeloNegocio, int idProyecto, int anio, Int64 idTipoCaptura)
+        public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, Int64 idEmpresa,
+            Int64 idModeloNegocio, Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
             consulta += " select ";
@@ -417,8 +417,8 @@ namespace AppGia.Controllers
         }
 
         // Calculo del ejercicio anterior
-        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos, int idEmpresa, Int64 idModeloNegocio,
-            int idProyecto, int anio, Int64 idTipoCaptura)
+        public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos, Int64 idEmpresa, Int64 idModeloNegocio,
+            Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
             string consulta = "";
             consulta += " select  ";
