@@ -56,13 +56,10 @@ namespace AppGia.Controllers
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
                         centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
                         centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
-<<<<<<< HEAD
-                        centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
-=======
                         centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"].ToString());
                         centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"]);
                         centroCostos.proyeccion = rdr["proyeccion"].ToString().Trim();
->>>>>>> eb5299dfdaebb4b6132e620d6ccc34ac357dca09
+
                         lstcentros.Add(centroCostos);
                     }
                     con.Close();
