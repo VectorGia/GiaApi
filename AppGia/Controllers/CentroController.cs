@@ -28,7 +28,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public int Create([FromBody] CentroCostos centroCostos)
             {
-                return objcentro.AddCentro(centroCostos);
+                return objcentro.AddCentroManageModelos(centroCostos);
             }
 
         // PUT: api/Centro/5

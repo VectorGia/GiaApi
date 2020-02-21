@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using AppGia.Models;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ namespace AppGia.Controllers
 
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter _queryExecuter= new QueryExecuter();
 
         public CentroCostosDataAccessLayer()
         {
@@ -266,6 +268,30 @@ namespace AppGia.Controllers
             {
                 con.Close();
             }
+        }
+
+        public int AddCentroManageModelos(CentroCostos centroCostos)
+        {
+            int co = 0;
+            DataTable dataTable = _queryExecuter.ExecuteQuery("select nombre from modelo_negocio where id="+centroCostos.modelo_negocio_id);
+            string nombreModelo=dataTable.Rows[0].ToString();
+            dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='FLUJO' " +
+                                                    " where and mn.activo=true and mn.nombre='"+nombreModelo+"'");
+            foreach (DataRow modeloIdRow in dataTable.Rows)
+            {
+                centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
+                co+=AddCentro(centroCostos);
+            }
+            
+            dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='CONTABLE' " +
+                                                    " where and mn.activo=true and mn.nombre='"+nombreModelo+"'");
+            foreach (DataRow modeloIdRow in dataTable.Rows)
+            {
+                centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
+                co+=AddCentro(centroCostos);
+            }
+
+            return co;
         }
 
     }
