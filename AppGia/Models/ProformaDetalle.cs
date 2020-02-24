@@ -47,6 +47,8 @@ namespace AppGia.Models
 
         public string aritmetica { get; set; }
         public double anios_posteriores_resultado { get; set; }
+        //HNA: nos permitira saber desde que mes es proforma y que es real
+        public int mes_inicio { get; set; }
 
     }
 }

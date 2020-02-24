@@ -37,5 +37,19 @@ namespace AppGia.Controllers
                 con.Close();
             }
         }
+
+        public DataRow ExecuteQueryUniqueresult(String qry)
+        {
+            DataTable dataTable = ExecuteQuery(qry);
+            if (dataTable.Rows.Count == 1)
+            {
+                return dataTable.Rows[0];
+            }
+            if (dataTable.Rows.Count == 0)
+            {
+                return null;
+            }
+            throw new DataException("Se esperaba un resultado pero se obtuvieron "+dataTable.Rows.Count);
+        }
     }
 }
