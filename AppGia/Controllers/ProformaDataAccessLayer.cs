@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using AppGia.Models;
 using Npgsql;
@@ -12,6 +13,7 @@ namespace AppGia.Controllers
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         private ProformaHelper _proformaHelper = new ProformaHelper();
+        private QueryExecuter _queryExecuter;
 
         public ProformaDataAccessLayer()
         {
@@ -174,9 +176,35 @@ namespace AppGia.Controllers
             }
         }
 
+        public List<ProformaDetalle> manageBuildProforma(Int64 idCC, int anio, Int64 idTipoProforma,
+            Int64 idTipoCaptura)
+        {
+            string proyeccion = ObtenerDatosCC(idCC).proyeccion;
+            if (proyeccion.Equals(ProyeccionBase))
+            {
+                return GeneraProforma(idCC, anio, idTipoProforma, idTipoCaptura);
+            }
+
+            if (proyeccion.Equals(ProyeccionMetodo))
+            {
+                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma, idTipoCaptura);
+            }
+
+            if (proyeccion.Equals(ProyeccionShadow))
+            {
+                DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select id from tipo_proforma where clave='"+ClaveProforma012+"'");
+                Int64 idTipoProforma012 = Convert.ToInt64(dataRow["id"]);
+                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma012, idTipoCaptura);
+            }
+
+
+            throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
+        }
+
+
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
-        public List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
+        private List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc = ObtenerDatosCC(idCC);
@@ -212,7 +240,8 @@ namespace AppGia.Controllers
             }
 
             // se contruyen los rubros totales
-            List<ProformaDetalle> lstProformaCompleta = _proformaHelper.CompletaDetalles(listDetProformaCalc, cc, idModeloNeg);
+            List<ProformaDetalle> lstProformaCompleta =
+                _proformaHelper.CompletaDetalles(listDetProformaCalc, cc, idModeloNeg);
             lstProformaCompleta.ForEach(detalle =>
             {
                 detalle.centro_costo_id = idCC;
@@ -224,10 +253,6 @@ namespace AppGia.Controllers
 
             return lstProformaCompleta;
         }
-
-
-       
-       
 
 
         public CentroCostos ObtenerDatosCC(Int64 idCenCos)

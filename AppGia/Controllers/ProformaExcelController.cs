@@ -63,7 +63,7 @@ namespace AppGia.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Proforma proforma)
         {
-            List<ProformaDetalle> detalles = new ProformaDataAccessLayer().GeneraProforma(proforma.centro_costo_id,
+            List<ProformaDetalle> detalles = new ProformaDataAccessLayer().manageBuildProforma(proforma.centro_costo_id,
                 proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
             return buildProformaToExcel(detalles);
         }

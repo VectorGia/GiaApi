@@ -10,51 +10,53 @@ namespace AppGia.Controllers
     {
         private QueryExecuter _queryExecuter = new QueryExecuter();
 
-        public List<ProformaDetalle> buildProformaFrom(Proforma proforma)
+        public List<ProformaDetalle> buildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
-            if (proforma.centro_costo_id == 0|| proforma.tipo_captura_id == 0||proforma.tipo_proforma_id == 0)
-            {
-                throw new ArgumentException("Alguno de los parametros es incorrecto. Revisar centro_costo_id, tipo_captura_id, tipo_proforma_id ");
-            }
             DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult(
-                "select modelo_negocio_id,modelo_negocio_flujo_id from centro_costo where id="+proforma.centro_costo_id);
-            Int64 modeloAproformar=-1;
-            Int64 tipoCaptura = proforma.tipo_captura_id;
+                "select modelo_negocio_id,modelo_negocio_flujo_id from centro_costo where id=" + idCC);
+            Int64 modeloAproformar = -1;
+            Int64 tipoCaptura = idTipoCaptura;
             if (tipoCaptura == TipoCapturaContable)
             {
-                modeloAproformar= Convert.ToInt64(dataRow["modelo_negocio_id"]);
-            }else if (tipoCaptura == TipoCapturaFlujo)
+                modeloAproformar = Convert.ToInt64(dataRow["modelo_negocio_id"]);
+            }
+            else if (tipoCaptura == TipoCapturaFlujo)
             {
                 modeloAproformar = Convert.ToInt64(dataRow["modelo_negocio_flujo_id"]);
             }
 
             if (modeloAproformar == -1)
             {
-                throw new ArgumentException("No se pudo determinar el modelo con el que se proformara. El tipo de captura recibido fue "+tipoCaptura);
+                throw new ArgumentException(
+                    "No se pudo determinar el modelo con el que se proformara. El tipo de captura recibido fue " +
+                    tipoCaptura);
             }
-            
+
             List<Rubros> rubroses = GetRubrosFromModeloId(modeloAproformar, false);
 
 
-            return buildProformaFromTemplate(rubroses, proforma);
+            return buildProformaFromTemplate(rubroses, idCC, anio, idTipoProforma, idTipoCaptura);
         }
-        
-        public List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Proforma proforma)
+
+        public List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
+            Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             List<Rubros> rubrosesreoder = reorderRubros(rubroses);
             List<ProformaDetalle> detalles = new List<ProformaDetalle>();
-            DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select mes_inicio from tipo_proforma where id="+proforma.tipo_proforma_id);
+            DataRow dataRow =
+                _queryExecuter.ExecuteQueryUniqueresult("select mes_inicio from tipo_proforma where id=" +
+                                                        idTipoProforma);
             int mesInicio = Convert.ToInt32(dataRow["mes_inicio"]);
-            
+
             rubrosesreoder.ForEach(actual =>
             {
                 ProformaDetalle detalle = new ProformaDetalle();
                 detalle.mes_inicio = mesInicio;
                 detalle.modelo_negocio_id = actual.id_modelo_neg;
-                detalle.anio = proforma.anio;
-                detalle.centro_costo_id = proforma.centro_costo_id;
-                detalle.tipo_proforma_id = proforma.tipo_proforma_id;
-                detalle.tipo_captura_id = proforma.tipo_captura_id;
+                detalle.anio = anio;
+                detalle.centro_costo_id = idCC;
+                detalle.tipo_proforma_id = idTipoProforma;
+                detalle.tipo_captura_id = idTipoCaptura;
 
                 detalle.activo = true;
                 detalle.rubro_id = actual.id;
@@ -82,7 +84,7 @@ namespace AppGia.Controllers
         public List<ProformaDetalle> CompletaDetalles(List<ProformaDetalle> detCtas, CentroCostos centroCostos,
             Int64 idModeloNeg)
         {
-            List<Rubros> rubTots = GetRubrosFromModeloId(idModeloNeg,true);
+            List<Rubros> rubTots = GetRubrosFromModeloId(idModeloNeg, true);
             List<ProformaDetalle> totales = new List<ProformaDetalle>();
             foreach (Rubros rubTot in rubTots)
             {
@@ -193,11 +195,11 @@ namespace AppGia.Controllers
             consulta += " 	where id = " + rubro_id;
             consulta += " 	and activo = 'true' ";
             DataRow rubroRow = _queryExecuter.ExecuteQueryUniqueresult(consulta);
-            Rubros detRubros=transformRowToRubro(rubroRow);
+            Rubros detRubros = transformRowToRubro(rubroRow);
             return detRubros;
         }
 
-        private List<Rubros> GetRubrosFromModeloId(Int64 idModelo,Boolean totales)
+        private List<Rubros> GetRubrosFromModeloId(Int64 idModelo, Boolean totales)
         {
             string consulta = "";
             consulta += " select rub.* ";
@@ -206,8 +208,9 @@ namespace AppGia.Controllers
             consulta += " 	where rub.id_modelo_neg = " + idModelo;
             if (totales)
             {
-                consulta += " 	and tip.clave = 'RUBROS' ";      
+                consulta += " 	and tip.clave = 'RUBROS' ";
             }
+
             consulta += " 	and rub.activo = 'true' ";
             DataTable dataTable = _queryExecuter.ExecuteQuery(consulta);
             List<Rubros> lstRubrosTot = new List<Rubros>();
@@ -231,7 +234,7 @@ namespace AppGia.Controllers
             ru.id_modelo_neg = Convert.ToInt64(rubrosRow["id_modelo_neg"]);
             ru.tipo_id = Convert.ToInt64(rubrosRow["tipo_id"]);
             ru.naturaleza = Convert.ToString(rubrosRow["naturaleza"]);
-         
+
             return ru;
         }
 
