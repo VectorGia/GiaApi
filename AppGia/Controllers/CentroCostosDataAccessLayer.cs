@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using AppGia.Models;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using AppGia.Conexion;
+using static AppGia.Util.Constantes;
 
 namespace AppGia.Controllers
 {
@@ -13,6 +15,7 @@ namespace AppGia.Controllers
 
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter _queryExecuter= new QueryExecuter();
 
         public CentroCostosDataAccessLayer()
         {
@@ -26,12 +29,11 @@ namespace AppGia.Controllers
                "cc.categoria, cc.desc_id, cc.estatus, " +
                "cc.fecha_modificacion, cc.gerente,cc.tipo, cc.empresa_id, " +
                "emp.nombre as nombre_empresa,cc.proyecto_id, " +
-               "pry.nombre as nombre_proyecto, cc.modelo_negocio_id  " +
+               "pry.nombre as nombre_proyecto, cc.modelo_negocio_id, cc.porcentaje, cc.proyeccion  " +
                "FROM centro_costo cc " +
                "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                "INNER JOIN proyecto pry on pry.id = cc.proyecto_id" + 
-
-               " where " + "cc.activo" + " = true order by cc.id desc" ; 
+               " where cc.activo = true order by cc.id desc" ; 
 
             try
             {
@@ -47,7 +49,7 @@ namespace AppGia.Controllers
 
                         centroCostos.id = Convert.ToInt32(rdr["id"]);
                         centroCostos.desc_id = rdr["desc_id"].ToString().Trim();
-                        centroCostos.estatus = (rdr["estatus"]).ToString().Trim();
+                        centroCostos.estatus = rdr["estatus"].ToString().Trim();
                         centroCostos.nombre = rdr["nombre"].ToString().Trim();
                         centroCostos.tipo = rdr["tipo"].ToString().Trim();
                         centroCostos.categoria = rdr["categoria"].ToString().Trim();
@@ -56,6 +58,9 @@ namespace AppGia.Controllers
                         centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
                         centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
                         centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"].ToString());
+                        centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"]);
+                        centroCostos.proyeccion = rdr["proyeccion"].ToString().Trim();
+
                         lstcentros.Add(centroCostos);
                     }
                     con.Close();
@@ -80,7 +85,7 @@ namespace AppGia.Controllers
                 "cc.categoria, cc.desc_id, cc.estatus, " +
                 "cc.fecha_modificacion, cc.gerente,cc.tipo, cc.empresa_id, " +
                 "emp.nombre as nombre_empresa,cc.proyecto_id, " +
-                "pry.nombre as nombre_proyecto,cc.modelo_negocio_id " +
+                "pry.nombre as nombre_proyecto,cc.modelo_negocio_id, cc.porcentaje, cc.proyeccion " +
                 "FROM centro_costo cc " +
                 "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                 "INNER JOIN proyecto pry on pry.id = cc.proyecto_id " + "and cc.activo = true and cc.proyecto_id = " + idproyecto;
@@ -110,6 +115,8 @@ namespace AppGia.Controllers
                         centroCostos.nombre_empresa = rdr["nombre_empresa"].ToString().Trim();
                         centroCostos.nombre_proyecto = rdr["nombre_proyecto"].ToString().Trim();
                         centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                        centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"]);
+                        centroCostos.proyeccion = rdr["proyeccion"].ToString().Trim();
                         listcentrocostos.Add(centroCostos);
                     }
                     con.Close();
@@ -127,7 +134,7 @@ namespace AppGia.Controllers
 
         public CentroCostos GetCentro(int id)
         {
-            string consulta = "select * from " + "centro_costo " + "where " + "id " + "=" + id;
+            string consulta = "select * from centro_costo where id = " + id;
 
             try
             {
@@ -151,6 +158,8 @@ namespace AppGia.Controllers
                         centroCostos.gerente = rdr["gerente"].ToString().Trim();
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
                         centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                        centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"]);
+                        centroCostos.proyeccion = rdr["proyeccion"].ToString().Trim();
                      
                     }
                     con.Close();
@@ -167,8 +176,8 @@ namespace AppGia.Controllers
         }
         public int AddCentro(CentroCostos centroCostos)
         {
-            string add = "insert into " + "centro_costo" + "(" + "id" + "," + "tipo" + "," + "desc_id" + "," + "nombre" + "," + "categoria" + "," + "estatus" + "," + "gerente" + "," + "empresa_id" + "," + "proyecto_id" + "," + "fecha_modificacion" + "," + "activo" + ","+ "modelo_negocio_id" +  ")" +
-                "values (nextval('seq_centro_costo'),@tipo,@desc_id,@nombre,@categoria,@estatus,@gerente,@empresa_id,@proyecto_id,@fecha_modificacion,@activo,@modelo_negocio_id)";
+            string add = "insert into centro_costo(id, tipo, desc_id, nombre, categoria, estatus, gerente, empresa_id, proyecto_id, fecha_modificacion, activo, modelo_negocio_id, porcentaje, proyeccion) " +
+                " values (nextval('seq_centro_costo'), @tipo, @desc_id, @nombre, @categoria, @estatus, @gerente, @empresa_id, @proyecto_id, @fecha_modificacion, @activo, @modelo_negocio_id, @porcentaje, @proyeccion)";
             {
                 try
                 {
@@ -186,6 +195,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
+                    cmd.Parameters.AddWithValue("@porcentaje", 1); // por defecto, debe venir de pantalla cuando sea base, en otro caso, vendra como un valor entre 0 y 1
+                    cmd.Parameters.AddWithValue("@proyeccion", "BASE"); // esto debe venir de un combo
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -208,8 +219,10 @@ namespace AppGia.Controllers
                 " estatus =   @estatus ," +
                 " gerente =  @gerente ," +
                 " empresa_id =  @empresa_id ," +
-                " fecha_modificacion =  @fecha_modificacion " +
-                " where " + "id" + " = " + id;
+                " fecha_modificacion =  @fecha_modificacion ," +
+                " porcentaje =  @porcentaje ," +
+                " proyeccion =  @proyeccion " +
+                " where id = " + id;
 
 
             {
@@ -228,6 +241,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@empresa_id", Value = centroCostos.empresa_id });
                     //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = centroCostos.activo });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fecha_modificacion", Value = DateTime.Now });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Double, ParameterName = "@porcentaje", Value = centroCostos.porcentaje });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@proyeccion", Value = centroCostos.proyeccion });
 
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
@@ -266,6 +281,34 @@ namespace AppGia.Controllers
             {
                 con.Close();
             }
+        }
+
+        public int AddCentroManageModelos(CentroCostos centroCostos)
+        {
+            int co = 0;
+            DataTable dataTable =
+                _queryExecuter.ExecuteQuery("select agrupador from modelo_negocio where id=" +
+                                            centroCostos.modelo_negocio_id);
+            Object agrupador = dataTable.Rows[0]["agrupador"];
+            dataTable = _queryExecuter.ExecuteQuery(
+                "select mn.id,mn.tipo_captura_id  from modelo_negocio mn" +
+                " where mn.activo=true and mn.agrupador='" + agrupador + "'");
+            foreach (DataRow modeloIdRow in dataTable.Rows)
+            {
+                Int64 modeloId = Convert.ToInt64(modeloIdRow["id"]);
+                Object tipocapturaId=  modeloIdRow["tipo_captura_id"];
+                if (tipocapturaId.Equals(TipoCapturaContable))
+                {
+                    centroCostos.modelo_negocio_id = modeloId;
+                }
+                else if (tipocapturaId.Equals(TipoCapturaFlujo))
+                {
+                    centroCostos.modelo_negocio_flujo_id = modeloId;
+                }
+                co += AddCentro(centroCostos);
+            }
+            
+            return co;
         }
 
     }

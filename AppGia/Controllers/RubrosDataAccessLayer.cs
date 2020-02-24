@@ -21,7 +21,7 @@ namespace AppGia.Controllers
 
         public IEnumerable<Rubros> GetAllRubros()
         {
-            string consulta = "select modelo_negocio.id, rubro.clave, rubro.nombre as nombre, rubro.rangos_cuentas_incluidas,"
+            string consulta = "select modelo_negocio.id, rubro.clave, rubro.nombre as nombre, rubro.hijos, rubro.rangos_cuentas_incluidas,"
              + "rubro.rango_cuentas_excluidas, rubro.activo from rubro " +
                 "inner join modelo_negocio on rubro.id_modelo_neg = modelo_negocio.id";
             try
@@ -37,6 +37,7 @@ namespace AppGia.Controllers
                     Rubros rubro = new Rubros();
                     rubro.id = Convert.ToInt32(rdr["id"]);
                     rubro.nombre = rdr["nombre"].ToString().Trim();
+                    rubro.hijos = rdr["hijos"].ToString().Trim();
                     rubro.clave = rdr["clave"].ToString().Trim();
                     rubro.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
                     rubro.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
@@ -85,6 +86,7 @@ namespace AppGia.Controllers
                     rubro.aritmetica = rdr["aritmetica"].ToString().Trim();
                     rubro.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
                     rubro.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
+                    rubro.hijos = rdr["hijos"].ToString().Trim();   
                     rubro.naturaleza = rdr["naturaleza"].ToString().Trim();
                     rubro.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
                     lstRubros.Add(rubro);

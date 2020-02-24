@@ -30,16 +30,22 @@ namespace AppGia.Controllers
         public IActionResult ImportExcel(int id) 
         { }*/
 
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetExcel")]
+        public IActionResult ImportExcel(Int64 idProforma)
+
         {
-            return "value";
+            ProformaExcelDataAccessLayer dat = new ProformaExcelDataAccessLayer();
+            String consulta = "SELECT * FROM proforma_detalle WHERE id_proforma = " + idProforma;
+            List<ProformaDetalle> detalles = transformDtToDetalles(dat.Detalle(consulta));
+            return buildProformaToExcel(detalles);
         }
+        
 
         // POST: api/ProformaExcel
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
+            return buildProformaToExcel(lstGuardaProforma);
         }
 
         // PUT: api/ProformaExcel/5
@@ -52,22 +58,6 @@ namespace AppGia.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
-
-        [HttpPost]
-        public IActionResult ImportExcel(Int64 idProforma)
-
-        {
-            ProformaExcelDataAccessLayer dat = new ProformaExcelDataAccessLayer();
-            String consulta= "SELECT * FROM proforma_detalle WHERE id_proforma = "+idProforma;
-            List<ProformaDetalle> detalles=transformDtToDetalles(dat.Detalle(consulta));
-            return buildProformaToExcel(detalles);
-        }
-        
-        [HttpPost]
-        public IActionResult Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
-        {
-            return buildProformaToExcel(lstGuardaProforma);
         }
         
         [HttpPost]

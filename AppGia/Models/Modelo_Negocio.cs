@@ -11,9 +11,9 @@ namespace AppGia.Models
         public bool activo  { get; set; }
         public string nombre { get; set; }
         public Int64 tipo_captura_id { get; set; }
-
         public string nombre_tipo_captura { get; set; }
-
-
+        public Int64 unidad_negocio_id { get; set; }
+        
+        public string agrupador { get; set; }
     }
 }

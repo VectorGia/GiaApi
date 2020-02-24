@@ -8,9 +8,9 @@ namespace AppGia.Models
     public class CentroCostos
     {
 
-        public int id { get; set; }
-        public int proyecto_id { get; set; }
-        public int empresa_id { get; set; }
+        public Int64 id { get; set; }
+        public Int64 proyecto_id { get; set; }
+        public Int64 empresa_id { get; set; }
         public string desc_id { get; set; }
         public bool activo { get; set; }
         public string estatus { get; set; }
@@ -26,6 +26,8 @@ namespace AppGia.Models
         public string nombre_empresa { get; set; }
         public string nombre_proyecto { get; set; }
         public Int64 modelo_negocio_id { get; set; }
+        public Int64 modelo_negocio_flujo_id { get; set; }
         public double porcentaje { get; set; }
+        public string proyeccion { get; set; }
     }
 }
