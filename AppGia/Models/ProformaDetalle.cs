@@ -7,6 +7,11 @@ namespace AppGia.Models
 {
     public class ProformaDetalle
     {
+        public object this[string propertyName]
+        {
+            get { return GetType().GetProperty(propertyName).GetValue(this, null); }
+            set { GetType().GetProperty(propertyName).SetValue(this, value, null); }
+        }
         // Campos de tabla "proforma_detalle"
         public Int64 id { get; set; }
         public Int64 id_proforma { get; set; }
