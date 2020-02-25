@@ -97,43 +97,44 @@ namespace AppGia.Controllers
             aritmeticas.Add("ejercicio", aritmetica);
             aritmeticas.Add("acumulado", aritmetica);
             aritmeticas.Add("total", aritmetica);
+            detalles.ForEach(detalle => { detalle.clave_rubro = BuscaRubroPorId(detalle.rubro_id).clave; });
+            detalles.Sort((d1, d2) => { return d2.clave_rubro.Length.CompareTo(d1.clave_rubro.Length); });
 
             detalles.ForEach(detalle =>
             {
-                Rubros rubrosCta = BuscaRubroPorId(detalle.rubro_id);
-                detalle.clave_rubro = rubrosCta.clave;
-                if (aritmetica.Contains(rubrosCta.clave))
+                var claveRubro=detalle.clave_rubro;
+                if (aritmetica.Contains(claveRubro))
                 {
                     aritmeticas["enero"] = aritmeticas["enero"]
-                        .Replace(rubrosCta.clave, detalle.enero_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.enero_monto_resultado.ToString());
                     aritmeticas["febrero"] = aritmeticas["febrero"]
-                        .Replace(rubrosCta.clave, detalle.febrero_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.febrero_monto_resultado.ToString());
                     aritmeticas["marzo"] = aritmeticas["marzo"]
-                        .Replace(rubrosCta.clave, detalle.marzo_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.marzo_monto_resultado.ToString());
                     aritmeticas["abril"] = aritmeticas["abril"]
-                        .Replace(rubrosCta.clave, detalle.abril_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.abril_monto_resultado.ToString());
                     aritmeticas["mayo"] = aritmeticas["mayo"]
-                        .Replace(rubrosCta.clave, detalle.mayo_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.mayo_monto_resultado.ToString());
                     aritmeticas["junio"] = aritmeticas["junio"]
-                        .Replace(rubrosCta.clave, detalle.junio_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.junio_monto_resultado.ToString());
                     aritmeticas["julio"] = aritmeticas["julio"]
-                        .Replace(rubrosCta.clave, detalle.julio_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.julio_monto_resultado.ToString());
                     aritmeticas["agosto"] = aritmeticas["agosto"]
-                        .Replace(rubrosCta.clave, detalle.agosto_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.agosto_monto_resultado.ToString());
                     aritmeticas["septiembre"] = aritmeticas["septiembre"]
-                        .Replace(rubrosCta.clave, detalle.septiembre_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.septiembre_monto_resultado.ToString());
                     aritmeticas["octubre"] = aritmeticas["octubre"]
-                        .Replace(rubrosCta.clave, detalle.octubre_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.octubre_monto_resultado.ToString());
                     aritmeticas["noviembre"] = aritmeticas["noviembre"]
-                        .Replace(rubrosCta.clave, detalle.noviembre_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.noviembre_monto_resultado.ToString());
                     aritmeticas["diciembre"] = aritmeticas["diciembre"]
-                        .Replace(rubrosCta.clave, detalle.diciembre_monto_resultado.ToString());
+                        .Replace(claveRubro, detalle.diciembre_monto_resultado.ToString());
                     aritmeticas["ejercicio"] = aritmeticas["ejercicio"]
-                        .Replace(rubrosCta.clave, detalle.ejercicio_resultado.ToString());
+                        .Replace(claveRubro, detalle.ejercicio_resultado.ToString());
                     aritmeticas["acumulado"] = aritmeticas["acumulado"]
-                        .Replace(rubrosCta.clave, detalle.acumulado_resultado.ToString());
+                        .Replace(claveRubro, detalle.acumulado_resultado.ToString());
                     aritmeticas["total"] =
-                        aritmeticas["total"].Replace(rubrosCta.clave, detalle.total_resultado.ToString());
+                        aritmeticas["total"].Replace(claveRubro, detalle.total_resultado.ToString());
                 }
             });
             ProformaDetalle proformaDetalleTotal = new ProformaDetalle();
