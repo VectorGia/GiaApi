@@ -38,20 +38,25 @@ namespace AppGia.Controllers
             return buildProformaFromTemplate(rubroses, idCC, anio, idTipoProforma, idTipoCaptura);
         }
 
+        public int getMesInicio(Int64 idTipoProforma)
+        {
+            DataRow dataRow =
+                _queryExecuter.ExecuteQueryUniqueresult("select mes_inicio from tipo_proforma where id=" +
+                                                        idTipoProforma);
+            int mesInicio = Convert.ToInt32(dataRow["mes_inicio"]);
+            return mesInicio;
+        }
         public List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
             Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             List<Rubros> rubrosesreoder = reorderRubros(rubroses);
             List<ProformaDetalle> detalles = new List<ProformaDetalle>();
-            DataRow dataRow =
-                _queryExecuter.ExecuteQueryUniqueresult("select mes_inicio from tipo_proforma where id=" +
-                                                        idTipoProforma);
-            int mesInicio = Convert.ToInt32(dataRow["mes_inicio"]);
+           
 
             rubrosesreoder.ForEach(actual =>
             {
                 ProformaDetalle detalle = new ProformaDetalle();
-                detalle.mes_inicio = mesInicio;
+                detalle.mes_inicio = getMesInicio(idTipoProforma);
                 detalle.modelo_negocio_id = actual.id_modelo_neg;
                 detalle.anio = anio;
                 detalle.centro_costo_id = idCC;

@@ -216,8 +216,8 @@ namespace AppGia.Controllers
 
 
             // Del tipo de proforma obtiene mes de inicio
-            Tipo_Proforma datTipoProf = ObtenerDatosTipoProf(idTipoProforma);
-            if (datTipoProf.mes_inicio < 0)
+            int mesInicio = _proformaHelper.getMesInicio(idTipoProforma);
+            if (mesInicio < 0)
             {
                 throw new InvalidDataException("Error en el mes de inicio de la proforma ");
             }
@@ -226,7 +226,7 @@ namespace AppGia.Controllers
                 ? cc.modelo_negocio_id
                 : cc.modelo_negocio_flujo_id;
             // Obtiene detalle de la proforma calculada con montos, ejercicio y acuumulado
-            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, datTipoProf.mes_inicio,
+            List<ProformaDetalle> listDetProformaCalc = CalculaDetalleProforma(idCC, mesInicio,
                 cc.empresa_id, idModeloNeg,
                 cc.proyecto_id, anio, idTipoCaptura, idTipoProforma);
 
@@ -314,7 +314,7 @@ namespace AppGia.Controllers
             string consulta = "";
             consulta += " select id, clave, mes_inicio ";
             consulta += " 	from tipo_proforma ";
-            consulta += " 	where id = " + idTipoProforma.ToString();
+            consulta += " 	where id = " + idTipoProforma;
             consulta += " 	and activo = 'true' ";
 
             try
@@ -367,6 +367,7 @@ namespace AppGia.Controllers
             List<ProformaDetalle> lstGetPosterior =
                 objProfDetalle.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 
+         
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle itemProfDet in lstGetProfDet)
             {
