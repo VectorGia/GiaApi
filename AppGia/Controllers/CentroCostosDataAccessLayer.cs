@@ -197,6 +197,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
                     cmd.Parameters.AddWithValue("@porcentaje", centroCostos.porcentaje/ 100); 
                     cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); 
+
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
