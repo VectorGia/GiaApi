@@ -195,7 +195,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
                     cmd.Parameters.AddWithValue("@porcentaje", 1); // por defecto, debe venir de pantalla cuando sea base, en otro caso, vendra como un valor entre 0 y 1
-                    cmd.Parameters.AddWithValue("@proyeccion", "BASE"); // esto debe venir de un combo
+                    cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); // esto debe venir de un combo
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;

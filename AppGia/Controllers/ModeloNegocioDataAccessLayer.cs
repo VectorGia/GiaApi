@@ -38,7 +38,7 @@ namespace AppGia.Controllers
                     modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                     modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                     modeloNegocio.nombre_tipo_captura = rdr["nombre_tipo_captura"].ToString();
-                    modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
+                    //modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
                     //modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
                     lstmodelo.Add(modeloNegocio);
                 }
@@ -73,7 +73,7 @@ namespace AppGia.Controllers
                         modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                         modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                         modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                        modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
+                       // modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
                     }
                     con.Close();
                 }
