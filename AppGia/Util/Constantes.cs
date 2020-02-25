@@ -88,7 +88,15 @@ namespace AppGia.Util
 
         public const int EXTRACCION_MANUAL = 1;
         public const int EXTRACCION_PROGRAMADA = 2;
+        
         public const int TipoCapturaContable = 1;
         public const int TipoCapturaFlujo = 2;
+        public const int TipoRubroCuentas = 2;
+        
+        public const string ProyeccionBase = "BASE";
+        public const string ProyeccionMetodo = "METODO";
+        public const string ProyeccionShadow = "SHADOW";
+
+        public const string ClaveProforma012 = "12";
     }
 }

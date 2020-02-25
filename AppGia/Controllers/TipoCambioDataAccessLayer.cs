@@ -170,8 +170,8 @@ namespace AppGia.Controllers
             string update = "UPDATE tipo_cambio SET "
           + "activo = @activo ,"
           + "estatus = @estatus ,"
-          + "fec_modif = @fec_modif"
-          + "fecha = @fecha"
+          + "fec_modif = @fec_modif ,"
+          + "fecha = @fecha ,"
           + "valor = @valor"
           + " WHERE id = @id";
             try

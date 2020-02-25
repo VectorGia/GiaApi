@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppGia.Controllers
 {
@@ -44,7 +41,8 @@ namespace AppGia.Controllers
         [HttpPost]
         public List<ProformaDetalle> Post([FromBody] Proforma proforma)
         {
-            return objProforma.GeneraProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
+            
+            return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
 
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)

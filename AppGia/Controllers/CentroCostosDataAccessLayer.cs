@@ -6,6 +6,7 @@ using Npgsql;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using AppGia.Conexion;
+using static AppGia.Util.Constantes;
 
 namespace AppGia.Controllers
 {
@@ -194,8 +195,13 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
+<<<<<<< HEAD
                     cmd.Parameters.AddWithValue("@porcentaje", 1); // por defecto, debe venir de pantalla cuando sea base, en otro caso, vendra como un valor entre 0 y 1
                     cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); // esto debe venir de un combo
+=======
+                    cmd.Parameters.AddWithValue("@porcentaje", centroCostos.porcentaje/ 100); 
+                    cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); 
+>>>>>>> 41ed72621e0041fd2ade359b3e0fa7f60845fbf9
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
@@ -240,7 +246,7 @@ namespace AppGia.Controllers
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@empresa_id", Value = centroCostos.empresa_id });
                     //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = centroCostos.activo });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fecha_modificacion", Value = DateTime.Now });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Double, ParameterName = "@porcentaje", Value = centroCostos.porcentaje });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Double, ParameterName = "@porcentaje", Value = centroCostos.porcentaje/ 100 });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@proyeccion", Value = centroCostos.proyeccion });
 
                     con.Open();
@@ -285,24 +291,28 @@ namespace AppGia.Controllers
         public int AddCentroManageModelos(CentroCostos centroCostos)
         {
             int co = 0;
-            DataTable dataTable = _queryExecuter.ExecuteQuery("select nombre from modelo_negocio where id="+centroCostos.modelo_negocio_id);
-            string nombreModelo=dataTable.Rows[0]["nombre"].ToString();
-            dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='FLUJO' " +
-                                                    " where mn.activo=true and mn.nombre='"+nombreModelo+"'");
+            DataTable dataTable =
+                _queryExecuter.ExecuteQuery("select agrupador from modelo_negocio where id=" +
+                                            centroCostos.modelo_negocio_id);
+            Object agrupador = dataTable.Rows[0]["agrupador"];
+            dataTable = _queryExecuter.ExecuteQuery(
+                "select mn.id,mn.tipo_captura_id  from modelo_negocio mn" +
+                " where mn.activo=true and mn.agrupador='" + agrupador + "'");
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
-                centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
-                co+=AddCentro(centroCostos);
+                Int64 modeloId = Convert.ToInt64(modeloIdRow["id"]);
+                Object tipocapturaId=  modeloIdRow["tipo_captura_id"];
+                if (tipocapturaId.Equals(TipoCapturaContable))
+                {
+                    centroCostos.modelo_negocio_id = modeloId;
+                }
+                else if (tipocapturaId.Equals(TipoCapturaFlujo))
+                {
+                    centroCostos.modelo_negocio_flujo_id = modeloId;
+                }
+                co += AddCentro(centroCostos);
             }
             
-            dataTable = _queryExecuter.ExecuteQuery("select mn.id from modelo_negocio mn join tipo_captura tc on mn.tipo_captura_id = tc.id and tc.clave='CONTABLE' " +
-                                                    " where mn.activo=true and mn.nombre='"+nombreModelo+"'");
-            foreach (DataRow modeloIdRow in dataTable.Rows)
-            {
-                centroCostos.modelo_negocio_id=Convert.ToInt64(modeloIdRow["id"]);
-                co+=AddCentro(centroCostos);
-            }
-
             return co;
         }
 
