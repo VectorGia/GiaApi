@@ -195,13 +195,9 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
-<<<<<<< HEAD
-                    cmd.Parameters.AddWithValue("@porcentaje", 1); // por defecto, debe venir de pantalla cuando sea base, en otro caso, vendra como un valor entre 0 y 1
-                    cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); // esto debe venir de un combo
-=======
                     cmd.Parameters.AddWithValue("@porcentaje", centroCostos.porcentaje/ 100); 
                     cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); 
->>>>>>> 41ed72621e0041fd2ade359b3e0fa7f60845fbf9
+
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
