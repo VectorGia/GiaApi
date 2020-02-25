@@ -10,81 +10,51 @@ namespace AppGia.Controllers
     {
         private QueryExecuter _queryExecuter = new QueryExecuter();
 
-        public List<ProformaDetalle> buildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
+        public List<ProformaDetalle> buildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma,
+            Int64 idTipoCaptura)
         {
             DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult(
                 "select modelo_negocio_id,modelo_negocio_flujo_id from centro_costo where id=" + idCC);
-            Int64 modeloAproformar = -1;
+            Int64 idModeloAproformar = -1;
             Int64 tipoCaptura = idTipoCaptura;
             if (tipoCaptura == TipoCapturaContable)
             {
-                modeloAproformar = Convert.ToInt64(dataRow["modelo_negocio_id"]);
+                idModeloAproformar = Convert.ToInt64(dataRow["modelo_negocio_id"]);
             }
             else if (tipoCaptura == TipoCapturaFlujo)
             {
-                modeloAproformar = Convert.ToInt64(dataRow["modelo_negocio_flujo_id"]);
+                idModeloAproformar = Convert.ToInt64(dataRow["modelo_negocio_flujo_id"]);
             }
 
-            if (modeloAproformar == -1)
+            if (idModeloAproformar == -1)
             {
                 throw new ArgumentException(
                     "No se pudo determinar el modelo con el que se proformara. El tipo de captura recibido fue " +
                     tipoCaptura);
             }
 
-            List<Rubros> rubroses = GetRubrosFromModeloId(modeloAproformar, false);
+            List<Rubros> rubroses = GetRubrosFromModeloId(idModeloAproformar, false);
 
+            List<ProformaDetalle> detallesAniosPosteriores =
+                new ProformaDetalleDataAccessLayer().GetEjercicioPosterior(anio, idCC, idModeloAproformar,
+                    idTipoCaptura, idTipoProforma);
 
-            return buildProformaFromTemplate(rubroses, idCC, anio, idTipoProforma, idTipoCaptura);
-        }
-
-        public int getMesInicio(Int64 idTipoProforma)
-        {
-            DataRow dataRow =
-                _queryExecuter.ExecuteQueryUniqueresult("select mes_inicio from tipo_proforma where id=" +
-                                                        idTipoProforma);
-            int mesInicio = Convert.ToInt32(dataRow["mes_inicio"]);
-            return mesInicio;
-        }
-        public List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
-            Int64 idTipoProforma, Int64 idTipoCaptura)
-        {
-            List<Rubros> rubrosesreoder = reorderRubros(rubroses);
-            List<ProformaDetalle> detalles = new List<ProformaDetalle>();
-           
-
-            rubrosesreoder.ForEach(actual =>
+            List<ProformaDetalle> proformaDetalles =
+                buildProformaFromTemplate(rubroses, idCC, anio, idTipoProforma, idTipoCaptura);
+            foreach (ProformaDetalle detalle in proformaDetalles)
             {
-                ProformaDetalle detalle = new ProformaDetalle();
-                detalle.mes_inicio = getMesInicio(idTipoProforma);
-                detalle.modelo_negocio_id = actual.id_modelo_neg;
-                detalle.anio = anio;
-                detalle.centro_costo_id = idCC;
-                detalle.tipo_proforma_id = idTipoProforma;
-                detalle.tipo_captura_id = idTipoCaptura;
-
-                detalle.activo = true;
-                detalle.rubro_id = actual.id;
-                detalle.nombre_rubro = actual.nombre;
-                detalle.hijos = actual.hijos;
-                detalle.enero_monto_resultado = 0;
-                detalle.febrero_monto_resultado = 0;
-                detalle.marzo_monto_resultado = 0;
-                detalle.abril_monto_resultado = 0;
-                detalle.mayo_monto_resultado = 0;
-                detalle.junio_monto_resultado = 0;
-                detalle.julio_monto_resultado = 0;
-                detalle.agosto_monto_resultado = 0;
-                detalle.septiembre_monto_resultado = 0;
-                detalle.octubre_monto_resultado = 0;
-                detalle.noviembre_monto_resultado = 0;
-                detalle.diciembre_monto_resultado = 0;
-                detalle.ejercicio_resultado = 0;
-                detalle.aritmetica = actual.aritmetica;
-                detalles.Add(detalle);
-            });
-            return detalles;
+                foreach (ProformaDetalle posterior in detallesAniosPosteriores)
+                {
+                    if (detalle.rubro_id == posterior.rubro_id)
+                    {
+                        detalle.anios_posteriores_resultado = posterior.anios_posteriores_resultado;
+                    }
+                }
+            }
+            
+            return proformaDetalles;
         }
+
 
         public List<ProformaDetalle> CompletaDetalles(List<ProformaDetalle> detCtas, CentroCostos centroCostos,
             Int64 idModeloNeg)
@@ -190,6 +160,55 @@ namespace AppGia.Controllers
             proformaDetalleTotal.acumulado_resultado = Convert.ToDouble(dt.Compute(aritmeticas["acumulado"], ""));
             proformaDetalleTotal.total_resultado = Convert.ToDouble(dt.Compute(aritmeticas["total"], ""));
             return proformaDetalleTotal;
+        }
+
+        public int getMesInicio(Int64 idTipoProforma)
+        {
+            DataRow dataRow =
+                _queryExecuter.ExecuteQueryUniqueresult("select mes_inicio from tipo_proforma where id=" +
+                                                        idTipoProforma);
+            int mesInicio = Convert.ToInt32(dataRow["mes_inicio"]);
+            return mesInicio;
+        }
+
+        private List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
+            Int64 idTipoProforma, Int64 idTipoCaptura)
+        {
+            List<Rubros> rubrosesreoder = reorderRubros(rubroses);
+            List<ProformaDetalle> detalles = new List<ProformaDetalle>();
+
+
+            rubrosesreoder.ForEach(actual =>
+            {
+                ProformaDetalle detalle = new ProformaDetalle();
+                detalle.mes_inicio = getMesInicio(idTipoProforma);
+                detalle.modelo_negocio_id = actual.id_modelo_neg;
+                detalle.anio = anio;
+                detalle.centro_costo_id = idCC;
+                detalle.tipo_proforma_id = idTipoProforma;
+                detalle.tipo_captura_id = idTipoCaptura;
+
+                detalle.activo = true;
+                detalle.rubro_id = actual.id;
+                detalle.nombre_rubro = actual.nombre;
+                detalle.hijos = actual.hijos;
+                detalle.enero_monto_resultado = 0;
+                detalle.febrero_monto_resultado = 0;
+                detalle.marzo_monto_resultado = 0;
+                detalle.abril_monto_resultado = 0;
+                detalle.mayo_monto_resultado = 0;
+                detalle.junio_monto_resultado = 0;
+                detalle.julio_monto_resultado = 0;
+                detalle.agosto_monto_resultado = 0;
+                detalle.septiembre_monto_resultado = 0;
+                detalle.octubre_monto_resultado = 0;
+                detalle.noviembre_monto_resultado = 0;
+                detalle.diciembre_monto_resultado = 0;
+                detalle.ejercicio_resultado = 0;
+                detalle.aritmetica = actual.aritmetica;
+                detalles.Add(detalle);
+            });
+            return detalles;
         }
 
         private Rubros BuscaRubroPorId(Int64 rubro_id)

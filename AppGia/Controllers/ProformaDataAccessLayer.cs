@@ -355,47 +355,47 @@ namespace AppGia.Controllers
             Int64 idModeloNeg, Int64 idProyecto, int anio, Int64 idTipoCaptura, Int64 idTipoProforma)
         {
             ///obtener las variables
-            ProformaDetalleDataAccessLayer objProfDetalle = new ProformaDetalleDataAccessLayer();
+            ProformaDetalleDataAccessLayer detalleAccesLayer = new ProformaDetalleDataAccessLayer();
 
             // Obtiene lista de montos consolidados para ejercicio
-            List<ProformaDetalle> lstGetProfDet = objProfDetalle.GetProformaCalculada(idCenCos, mesInicio, idEmpresa,
+            List<ProformaDetalle> detallesCalculados = detalleAccesLayer.GetProformaCalculada(idCenCos, mesInicio, idEmpresa,
                 idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado
-            List<ProformaDetalle> lstGetEjerc = objProfDetalle.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg,
+            List<ProformaDetalle> detallesAniosAnteriores = detalleAccesLayer.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg,
                 idProyecto, anio, idTipoCaptura);
             // Obtiene montos para anios posteriores
-            List<ProformaDetalle> lstGetPosterior =
-                objProfDetalle.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
+            List<ProformaDetalle> detalleAniosPosteriores =
+                detalleAccesLayer.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 
          
             // Genera una lista para almacenar la informacion consultada
-            foreach (ProformaDetalle itemProfDet in lstGetProfDet)
+            foreach (ProformaDetalle detalleCalculado in detallesCalculados)
             {
-                foreach (ProformaDetalle itemSumProfDet in lstGetEjerc)
+                foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
                 {
                     // Compara elementos para completar la lista
-                    if (itemProfDet.rubro_id == itemSumProfDet.rubro_id)
+                    if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
                     {
                         // Si coincide el rubro se guardan los acumulados anteriores
-                        itemProfDet.acumulado_resultado = itemSumProfDet.acumulado_resultado;
+                        detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
                         // Se actualiza el total como la suma del ejercicio + el acumulado
-                        itemProfDet.total_resultado =
-                            itemSumProfDet.acumulado_resultado + itemProfDet.ejercicio_resultado;
+                        detalleCalculado.total_resultado =
+                            detalleAnioAnt.acumulado_resultado + detalleCalculado.ejercicio_resultado;
                         break;
                     }
                 }
 
-                foreach (ProformaDetalle itemProfPost in lstGetPosterior)
+                foreach (ProformaDetalle detalleAnioPost in detalleAniosPosteriores)
                 {
-                    if (itemProfDet.rubro_id == itemProfPost.rubro_id)
+                    if (detalleCalculado.rubro_id == detalleAnioPost.rubro_id)
                     {
                         // Si coincide el rubro se guardan los acumulados de anios posteriores
-                        itemProfDet.anios_posteriores_resultado = itemProfPost.anios_posteriores_resultado;
+                        detalleCalculado.anios_posteriores_resultado = detalleAnioPost.anios_posteriores_resultado;
                     }
                 }
             }
 
-            return lstGetProfDet;
+            return detallesCalculados;
         }
 
         // Metodo para almacenar una proforma
