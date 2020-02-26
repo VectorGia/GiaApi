@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -201,7 +202,11 @@ namespace AppGia.Controllers
                     foreach (DataRow d in dt2.Rows)
                     {
                         workSheet.Cells[count, 1].Value = Convert.ToString(d["nombre"]);
+                        detalle.hijos = Convert.ToString(d["hijos"]);
+                        detalle.aritmetica = Convert.ToString(d["aritmetica"]);
                     }
+
+                    List<ProformaDetalle> realprof = convierte(detalle);
 
                     workSheet.Cells[count, 1].Style.Font.Size = 12;
                     workSheet.Cells[count, 1].Style.Border.Top.Style = ExcelBorderStyle.Hair;
@@ -281,6 +286,28 @@ namespace AppGia.Controllers
                 return NotFound();
             }
             return File(fileContents: fileContents, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileDownloadName: "Proforma.xlsx");
+        }
+
+        public List<ProformaDetalle> convierte(ProformaDetalle detalle)
+        {
+            List<ProformaDetalle> listaRubros = new List<ProformaDetalle>();
+            listaRubros.Add(detalle);
+            PropertyDescriptorCollection properties =
+            TypeDescriptor.GetProperties(typeof(ProformaDetalle));
+            DataTable profdetalle = new DataTable();
+            foreach (PropertyDescriptor prop in properties)
+                profdetalle.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+            foreach (ProformaDetalle item in listaRubros)
+            {
+                DataRow row = profdetalle.NewRow();
+                foreach (PropertyDescriptor prop in properties)
+                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+                profdetalle.Rows.Add(row);
+            }
+
+
+
+            return listaRubros;
         }
     }
 }
