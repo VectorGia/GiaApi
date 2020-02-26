@@ -193,20 +193,21 @@ namespace AppGia.Controllers
 
             if (proyeccion.Equals(ProyeccionShadow))
             {
-                DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select id from tipo_proforma where clave='"+ClaveProforma012+"'");
-                Int64 idTipoProforma012 = Convert.ToInt64(dataRow["id"]);
-                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma012, idTipoCaptura);
+                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
             }
-
-
             throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
         }
-
-
+        
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
         private List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
+
+            if (anio > new DateTime().Year)
+            {
+                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
+            }
+            
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc = ObtenerDatosCC(idCC);
 
@@ -439,6 +440,11 @@ namespace AppGia.Controllers
             });
 
             return 0;
+        }
+        private Int64 getIdTipoProformaByClave(string claveProforma)
+        {
+            DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select id from tipo_proforma where clave='"+claveProforma+"'");
+            return Convert.ToInt64(dataRow["id"]);
         }
     }
 }
