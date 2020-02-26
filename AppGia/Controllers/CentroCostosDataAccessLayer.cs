@@ -176,8 +176,8 @@ namespace AppGia.Controllers
         }
         public int AddCentro(CentroCostos centroCostos)
         {
-            string add = "insert into centro_costo(id, tipo, desc_id, nombre, categoria, estatus, gerente, empresa_id, proyecto_id, fecha_modificacion, activo, modelo_negocio_id, porcentaje, proyeccion) " +
-                " values (nextval('seq_centro_costo'), @tipo, @desc_id, @nombre, @categoria, @estatus, @gerente, @empresa_id, @proyecto_id, @fecha_modificacion, @activo, @modelo_negocio_id, @porcentaje, @proyeccion)";
+            string add = "insert into centro_costo(id, tipo, desc_id, nombre, categoria, estatus, gerente, empresa_id, proyecto_id, fecha_modificacion, activo, modelo_negocio_id, porcentaje, modelo_negocio_flujo_id, proyeccion) " +
+                " values (nextval('seq_centro_costo'), @tipo, @desc_id, @nombre, @categoria, @estatus, @gerente, @empresa_id, @proyecto_id, @fecha_modificacion, @activo, @modelo_negocio_id, @porcentaje, @modelo_negocio_flujo_id, @proyeccion)";
             {
                 try
                 {
@@ -195,7 +195,8 @@ namespace AppGia.Controllers
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
                     cmd.Parameters.AddWithValue("@activo", centroCostos.activo);
                     cmd.Parameters.AddWithValue("@modelo_negocio_id", centroCostos.modelo_negocio_id);
-                    cmd.Parameters.AddWithValue("@porcentaje", centroCostos.porcentaje/ 100); 
+                    cmd.Parameters.AddWithValue("@porcentaje", centroCostos.porcentaje/ 100);
+                    cmd.Parameters.AddWithValue("@modelo_negocio_flujo_id", centroCostos.modelo_negocio_flujo_id);
                     cmd.Parameters.AddWithValue("@proyeccion", centroCostos.proyeccion); 
 
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -297,18 +298,18 @@ namespace AppGia.Controllers
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
                 Int64 modeloId = Convert.ToInt64(modeloIdRow["id"]);
-                Object tipocapturaId=  modeloIdRow["tipo_captura_id"];
-                if (tipocapturaId.Equals(TipoCapturaContable))
+                Int64 tipocapturaId= Convert.ToInt64(modeloIdRow["tipo_captura_id"]);
+                if (tipocapturaId == TipoCapturaContable)
                 {
                     centroCostos.modelo_negocio_id = modeloId;
                 }
-                else if (tipocapturaId.Equals(TipoCapturaFlujo))
+                else if (tipocapturaId==TipoCapturaFlujo)
                 {
                     centroCostos.modelo_negocio_flujo_id = modeloId;
                 }
-                co += AddCentro(centroCostos);
+               
             }
-            
+            co += AddCentro(centroCostos);
             return co;
         }
 
