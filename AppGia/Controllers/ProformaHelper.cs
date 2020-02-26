@@ -10,6 +10,7 @@ namespace AppGia.Controllers
     public class ProformaHelper
     {
         private QueryExecuter _queryExecuter = new QueryExecuter();
+        private QueryExecuterSQL _queryExecuterSql=new QueryExecuterSQL();
 
         public List<ProformaDetalle> buildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma,
             Int64 idTipoCaptura)
@@ -98,7 +99,7 @@ namespace AppGia.Controllers
             return detCtas;
         }
 
-        public ProformaDetalle ConstruyeDetalleTotal(List<ProformaDetalle> detalles, Rubros rubroTotal,
+        private ProformaDetalle ConstruyeDetalleTotal(List<ProformaDetalle> detalles, Rubros rubroTotal,
             double porcentaje)
         {
             string aritmetica = rubroTotal.aritmetica;
@@ -147,6 +148,7 @@ namespace AppGia.Controllers
             detalleTotal.nombre_rubro = rubroTotal.nombre;
             detalleTotal.aritmetica = aritmetica;
             detalleTotal.clave_rubro = rubroTotal.clave;
+            detalleTotal.hijos = rubroTotal.hijos;
 
             DataTable dt = new DataTable();
             foreach(var key in keys)
@@ -205,6 +207,50 @@ namespace AppGia.Controllers
             return detalles;
         }
 
+        public List<ProformaDetalle> getAjustes(Int64 idCC,Int64 idEmpresa,int anio)
+        {
+            List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
+            Dictionary<string,string> mesValor=new Dictionary<string, string>();
+            mesValor.Add("1","enero_monto_resultado");
+            mesValor.Add("2","febrero_monto_resultado");
+            mesValor.Add("3","marzo_monto_resultado");
+            mesValor.Add("4","abril_monto_resultado");
+            mesValor.Add("5","mayo_monto_resultado");
+            mesValor.Add("6","junio_monto_resultado");
+            mesValor.Add("7","julio_monto_resultado");
+            mesValor.Add("8","agosto_monto_resultado");
+            mesValor.Add("9","septiembre_monto_resultado");
+            mesValor.Add("10","octubre_monto_resultado");
+            mesValor.Add("11","noviembre_monto_resultado");
+            mesValor.Add("12","diciembre_monto_resultado");
+            DataTable ajustesDt = _queryExecuterSql.ExecuteQuerySQL("select ingreso, directo, indirecto, mes " +
+                                                                    " from ajuste" +
+                                                                    " where empresa = "+idEmpresa +
+                                                                    " and centrocosto ="+ idCC+
+                                                                    " and anio ="+anio);
+            DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=" + idCC);
+            List<Rubros> rubroses = GetRubrosFromModeloId(Convert.ToInt64(dataRow["modelo_negocio_id"]), false);
+            rubroses.ForEach(rubro =>
+            {
+                ProformaDetalle detalle = new ProformaDetalle();
+                detalle.rubro_id = rubro.id;
+                detalle.campoEnAjustes = rubro.campoEnAjustes;
+                proformaDetalles.Add(detalle);
+            });
+            proformaDetalles.ForEach(detalle =>
+            {
+                foreach (DataRow ajusteRow in ajustesDt.Rows)
+                {
+                    Object mesData = ajusteRow["mes"];
+                    if (mesData != null)
+                    {
+                        detalle[mesData.ToString()] = ToDouble(ajusteRow[detalle.campoEnAjustes]);
+                    }
+                }
+            });
+            
+            return null;
+        }
         private Rubros BuscaRubroPorId(Int64 rubro_id)
         {
             string consulta = "";
@@ -315,7 +361,7 @@ namespace AppGia.Controllers
             for (var i = 0; i < rubroses.Count; i++)
             {
                 var actual = rubroses[i];
-                if (actual.id.Equals(id))
+                if (actual.id==id)
                 {
                     return actual;
                 }

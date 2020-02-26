@@ -18,6 +18,8 @@ namespace AppGia.Models
         public string rangos_cuentas_incluidas { get; set; }
         public Int64 tipo_id { get; set; }
         public Int64 id_modelo_neg { get; set; }
+        //sirve para saber que columna en tabla de ajustes se debe tomar 
+        public String campoEnAjustes { get; set; }
 
     }
 }
