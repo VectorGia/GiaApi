@@ -124,13 +124,18 @@ namespace AppGia.Controllers
             aritmeticas.Add("acumulado", aritmetica);
             aritmeticas.Add("total", aritmetica);
 
-
+            List<String> keys = new List<string>();
+            foreach (var key in aritmeticas.Keys)
+            {
+                keys.Add(key);
+            }
+                
             detalles.ForEach(detalle =>
             {
                 var claveRubro = detalle.clave_rubro;
                 if (aritmetica.Contains(claveRubro))
                 {
-                    foreach(var key in aritmeticas.Keys)
+                    foreach(var key in keys)
                     {
                         aritmeticas[key] = aritmeticas[key]
                             .Replace(claveRubro, detalle[key+"_resultado"].ToString());
@@ -144,7 +149,7 @@ namespace AppGia.Controllers
             detalleTotal.clave_rubro = rubroTotal.clave;
 
             DataTable dt = new DataTable();
-            foreach(var key in aritmeticas.Keys)
+            foreach(var key in keys)
             {
                 detalleTotal[key+"_resultado"] = ToDouble(dt.Compute(aritmeticas[key], ""));
             }
@@ -274,7 +279,7 @@ namespace AppGia.Controllers
             List<Rubros> padres = new List<Rubros>();
             rubroses.ForEach(rubros =>
             {
-                if (rubros.hijos != null || rubros.aritmetica != null)
+                if ((rubros.hijos != null && rubros.hijos.Trim().Length > 0 ) || (rubros.aritmetica != null && rubros.aritmetica.Trim().Length > 0))
                 {
                     padres.Add(rubros);
                 }
@@ -290,10 +295,14 @@ namespace AppGia.Controllers
                 var arrhijos = padre.hijos.Split(',');
                 for (var i = 0; i < arrhijos.Length; i++)
                 {
-                    var found = findRubroByIdInList(rubroses, ToInt64(arrhijos[i].Trim()));
-                    if (found != null)
+                    if (arrhijos[i].Trim().Length > 0)
                     {
-                        hijos.Add(found);
+                        var found = findRubroByIdInList(rubroses, ToInt64(arrhijos[i].Trim()));
+                        if (found != null)
+                        {
+                            hijos.Add(found);
+                        }
+
                     }
                 }
             }

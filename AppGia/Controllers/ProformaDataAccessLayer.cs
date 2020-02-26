@@ -13,7 +13,7 @@ namespace AppGia.Controllers
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         private ProformaHelper _proformaHelper = new ProformaHelper();
-        private QueryExecuter _queryExecuter;
+        private QueryExecuter _queryExecuter = new QueryExecuter();
 
         public ProformaDataAccessLayer()
         {
