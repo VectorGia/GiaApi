@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using AppGia.Models;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -45,5 +46,7 @@ namespace AppGia.Controllers
                 con.Close();
             }
         }
+
+    
     }
 }

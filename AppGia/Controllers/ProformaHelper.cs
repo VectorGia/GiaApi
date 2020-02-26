@@ -206,7 +206,7 @@ namespace AppGia.Controllers
             });
             return detalles;
         }
-
+        
         public List<ProformaDetalle> getAjustes(Int64 idCC,Int64 idEmpresa,int anio)
         {
             List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
@@ -249,8 +249,10 @@ namespace AppGia.Controllers
                 }
             });
             
-            return null;
+            return proformaDetalles;
         }
+        
+        
         private Rubros BuscaRubroPorId(Int64 rubro_id)
         {
             string consulta = "";
