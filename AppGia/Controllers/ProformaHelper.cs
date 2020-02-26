@@ -10,6 +10,7 @@ namespace AppGia.Controllers
     public class ProformaHelper
     {
         private QueryExecuter _queryExecuter = new QueryExecuter();
+        private QueryExecuterSQL _queryExecuterSql=new QueryExecuterSQL();
 
         public List<ProformaDetalle> buildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma,
             Int64 idTipoCaptura)
@@ -200,6 +201,42 @@ namespace AppGia.Controllers
             return detalles;
         }
 
+        public List<ProformaDetalle> getAjustes(Int64 idCC,Int64 idEmpresa,int anio)
+        {
+            List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
+            DataTable ajustesDt = _queryExecuterSql.ExecuteQuerySQL("select ingreso, directo, indirecto, mes " +
+                                                                    " from ajuste" +
+                                                                    " where empresa = "+idEmpresa +
+                                                                    " and centrocosto ="+ idCC+
+                                                                    " and anio ="+anio);
+            DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=" + idCC);
+            List<Rubros> rubroses = GetRubrosFromModeloId(Convert.ToInt64(dataRow["modelo_negocio_id"]), false);
+            rubroses.ForEach(rubro =>
+            {
+                ProformaDetalle detalle = new ProformaDetalle();
+                detalle.rubro_id = rubro.id;
+                detalle.campoEnAjustes = rubro.campoEnAjustes;
+                proformaDetalles.Add(detalle);
+            });
+            proformaDetalles.ForEach(detalle =>
+            {
+                foreach (DataRow ajusteRow in ajustesDt.Rows)
+                {
+                    Object mesData = ajusteRow["mes"];
+                    if (mesData != null)
+                    {
+                        Int32 mesAjuste = Convert.ToInt32(mesData);
+                        if (mesAjuste == 1)
+                        {
+                            detalle.enero_monto_resultado = ToDouble(detalle.campoEnAjustes);
+                        }
+                        //aun faltan los demas meses
+                    }
+                }
+            });
+            
+            return null;
+        }
         private Rubros BuscaRubroPorId(Int64 rubro_id)
         {
             string consulta = "";
@@ -306,7 +343,7 @@ namespace AppGia.Controllers
             for (var i = 0; i < rubroses.Count; i++)
             {
                 var actual = rubroses[i];
-                if (actual.id.Equals(id))
+                if (actual.id==id)
                 {
                     return actual;
                 }
