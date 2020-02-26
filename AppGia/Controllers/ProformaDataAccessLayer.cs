@@ -202,8 +202,8 @@ namespace AppGia.Controllers
         // Parametros de entrada: centro de costos, anio y tipo de proforma
         private List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
-
-            if (anio > DateTime.Now.Year)
+            
+            if (anio > new DateTime().Year)
             {
                 return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
             }
