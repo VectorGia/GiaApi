@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AppGia.Models
 {
-    public class Rubros
+    public class Rubros : IConceptoProforma
     {
         public Int64 id { get; set; }
         public bool activo { get; set; }
@@ -20,6 +20,21 @@ namespace AppGia.Models
         public Int64 id_modelo_neg { get; set; }
         //sirve para saber que columna en tabla de ajustes se debe tomar 
         public String campoEnAjustes { get; set; }
+        
+        public string GetHijos()
+        {
+            return hijos;
+        }
+
+        public string GetAritmetica()
+        {
+            return aritmetica;
+        }
+
+        public long GetIdConcepto()
+        {
+            return id;
+        }
 
     }
 }
