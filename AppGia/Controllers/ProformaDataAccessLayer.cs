@@ -182,7 +182,8 @@ namespace AppGia.Controllers
             string proyeccion = ObtenerDatosCC(idCC).proyeccion;
             if (proyeccion.Equals(ProyeccionBase))
             {
-                return GeneraProforma(idCC, anio, idTipoProforma, idTipoCaptura);
+                List<ProformaDetalle> detalles= GeneraProforma(idCC, anio, idTipoProforma, idTipoCaptura);
+                return _proformaHelper.reorderConceptos(detalles);
             }
 
             if (proyeccion.Equals(ProyeccionMetodo))

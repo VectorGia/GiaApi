@@ -170,7 +170,7 @@ namespace AppGia.Controllers
         private List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
             Int64 idTipoProforma, Int64 idTipoCaptura)
         {
-            List<Rubros> rubrosesreoder = reorderRubros(rubroses);
+            List<Rubros> rubrosesreoder = reorderConceptos(rubroses);
             List<ProformaDetalle> detalles = new List<ProformaDetalle>();
 
 
@@ -302,15 +302,15 @@ namespace AppGia.Controllers
             return ru;
         }
 
-        private List<Rubros> reorderRubros(List<Rubros> rubroses)
+        public List<T> reorderConceptos<T>(List<T> conceptos) where  T :IConceptoProforma
         {
-            var rubrosReorder = new List<Rubros>();
-            var padres = getRubrosPadresFromList(rubroses);
+            var rubrosReorder = new List<T>();
+            var padres = getConceptosPadresFromList(conceptos);
             for (var i = 0; i < padres.Count; i++)
             {
                 var padre = padres[i];
                 rubrosReorder.Add(padre);
-                var hijos = getRubrosHijosFromList(padre, rubroses);
+                var hijos = getConceptosHijosFromList(padre, conceptos);
                 for (var j = 0; j < hijos.Count; j++)
                 {
                     rubrosReorder.Add(hijos[j]);
@@ -320,12 +320,12 @@ namespace AppGia.Controllers
             return rubrosReorder;
         }
 
-        private List<Rubros> getRubrosPadresFromList(List<Rubros> rubroses)
+        private List<T> getConceptosPadresFromList<T> (List<T> conceptos) where  T :IConceptoProforma
         {
-            List<Rubros> padres = new List<Rubros>();
-            rubroses.ForEach(rubros =>
+            List<T> padres = new List<T>();
+            conceptos.ForEach(rubros =>
             {
-                if ((rubros.hijos != null && rubros.hijos.Trim().Length > 0 ) || (rubros.aritmetica != null && rubros.aritmetica.Trim().Length > 0))
+                if ((rubros.GetHijos() != null && rubros.GetHijos().Trim().Length > 0 ) || (rubros.GetAritmetica() != null && rubros.GetAritmetica().Trim().Length > 0))
                 {
                     padres.Add(rubros);
                 }
@@ -333,17 +333,17 @@ namespace AppGia.Controllers
             return padres;
         }
 
-        private List<Rubros> getRubrosHijosFromList(Rubros padre, List<Rubros> rubroses)
+        private List<T> getConceptosHijosFromList<T>(T conceptoPadre, List<T> conceptos)where  T :IConceptoProforma
         {
-            var hijos = new List<Rubros>();
-            if (padre.hijos != null)
+            var hijos = new List<T>();
+            if (conceptoPadre.GetHijos() != null)
             {
-                var arrhijos = padre.hijos.Split(',');
+                var arrhijos = conceptoPadre.GetHijos().Split(',');
                 for (var i = 0; i < arrhijos.Length; i++)
                 {
                     if (arrhijos[i].Trim().Length > 0)
                     {
-                        var found = findRubroByIdInList(rubroses, ToInt64(arrhijos[i].Trim()));
+                        var found = findConceptoByIdInList(conceptos, ToInt64(arrhijos[i].Trim()));
                         if (found != null)
                         {
                             hijos.Add(found);
@@ -356,18 +356,17 @@ namespace AppGia.Controllers
             return hijos;
         }
 
-        private Rubros findRubroByIdInList(List<Rubros> rubroses, Int64 id)
+        private T findConceptoByIdInList<T>(List<T> conceptos, Int64 idConcepto)where  T :IConceptoProforma
         {
-            for (var i = 0; i < rubroses.Count; i++)
+            for (var i = 0; i < conceptos.Count; i++)
             {
-                var actual = rubroses[i];
-                if (actual.id==id)
+                var actual = conceptos[i];
+                if (actual.GetIdConcepto()==idConcepto)
                 {
                     return actual;
                 }
             }
-
-            return null;
+            return default;
         }
     }
 }
