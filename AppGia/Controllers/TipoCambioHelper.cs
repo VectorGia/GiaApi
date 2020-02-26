@@ -31,7 +31,7 @@ namespace AppGia.Controllers
             query = "select anio,mes,tipo,monedarporte,monedainforme from tipo_cambio_gia" +
                     " where monedaid=" +idMoneda+
                     " and anio= " +anio+
-                    " and mes="+new DateTime().Month;
+                    " and mes="+ DateTime.Now.Month;
             DataTable dataTable=_queryExecuterSql.ExecuteQuerySQL(query);
             Dictionary<string, double> tipoCambio=new Dictionary<string, double>();
             tipoCambio.Add("LOCAL",1.0);

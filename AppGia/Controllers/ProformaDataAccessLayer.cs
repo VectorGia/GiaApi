@@ -203,7 +203,7 @@ namespace AppGia.Controllers
         private List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
 
-            if (anio > new DateTime().Year)
+            if (anio > DateTime.Now.Year)
             {
                 return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
             }
