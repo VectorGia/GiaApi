@@ -62,7 +62,7 @@ namespace AppGia.Controllers
             {
                 Modelo_Negocio modeloNegocio = new Modelo_Negocio();
                 {
-                    string consulta = "select id, activo, nombre, tipo_captura_id, modelo_negocio_id from modelo_negocio  where id = " + id;
+                    string consulta = "select id, activo, nombre, tipo_captura_id from modelo_negocio  where id = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
