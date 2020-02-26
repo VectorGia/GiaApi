@@ -22,7 +22,7 @@ namespace AppGia.Controllers
         public IEnumerable<Rubros> GetAllRubros()
         {
             string consulta = "select modelo_negocio.id, rubro.clave, rubro.nombre as nombre, rubro.hijos, rubro.rangos_cuentas_incluidas,"
-             + "rubro.rango_cuentas_excluidas, rubro.activo from rubro " +
+             + "rubro.rango_cuentas_excluidas, rubro.activo, rubro.tipo_cuenta from rubro " +
                 "inner join modelo_negocio on rubro.id_modelo_neg = modelo_negocio.id";
             try
             {
@@ -41,6 +41,8 @@ namespace AppGia.Controllers
                     rubro.clave = rdr["clave"].ToString().Trim();
                     rubro.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
                     rubro.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
+                    rubro.tipo_cuenta = rdr["tipo_cuenta"].ToString().Trim();
+                    rubro.tipo_cuenta = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.activo = Convert.ToBoolean(rdr["activo"]);
 
                     lstrubro.Add(rubro);
@@ -86,6 +88,8 @@ namespace AppGia.Controllers
                     rubro.aritmetica = rdr["aritmetica"].ToString().Trim();
                     rubro.rango_cuentas_excluidas = rdr["rango_cuentas_excluidas"].ToString().Trim();
                     rubro.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
+                    rubro.tipo_cuenta = rdr["tipo_cuenta"].ToString().Trim();
+                    rubro.tipo_cuenta = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.hijos = rdr["hijos"].ToString().Trim();   
                     rubro.naturaleza = rdr["naturaleza"].ToString().Trim();
                     rubro.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
@@ -111,6 +115,8 @@ namespace AppGia.Controllers
                  + "nombre" + ","
                  + "rango_cuentas_excluidas" + ","
                  + "rangos_cuentas_incluidas" + ","
+                 + "tipo_cuenta" + ","
+                 + "tipo_agrupador" + ","
                  + "activo" + ","
                  + "aritmetica" + ","
                  + "clave" + ","
@@ -119,6 +125,8 @@ namespace AppGia.Controllers
                  + "values (nextval('seq_rubro'),@nombre" + ","
                  + "@rango_cuentas_excluidas" + ","
                  + "@rangos_cuentas_incluidas" + ","
+                 + "@tipo_cuenta" + ","
+                 + "@tipo_agrupador" + ","
                  + "@activo" + ","
                  + "@aritmetica" + ","
                  + "@clave" + ","
@@ -133,7 +141,8 @@ namespace AppGia.Controllers
        
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas!=null?rubro.rango_cuentas_excluidas.Trim():"" });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas !=null?rubro.rangos_cuentas_incluidas.Trim():"" });
-              
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta.Trim()});
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_agrupador.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = rubro.activo });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica", Value = rubro.aritmetica !=null?rubro.aritmetica.Trim():"" });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
@@ -165,6 +174,8 @@ namespace AppGia.Controllers
                 "clave = @clave, " +
                 "rango_cuentas_excluidas = @rango_cuentas_excluidas," +
                 "rangos_cuentas_incluidas = @rangos_cuentas_incluidas " +
+                "tipo_cuenta = @tipo_cuenta " +
+                "tipo_agrupador = @tipo_agrupador " +
                 "where id = " + id;
 
             try
@@ -176,6 +187,8 @@ namespace AppGia.Controllers
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_cuenta });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
 
                 con.Open();
