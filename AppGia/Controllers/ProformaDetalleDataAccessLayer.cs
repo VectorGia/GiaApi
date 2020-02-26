@@ -362,7 +362,7 @@ namespace AppGia.Controllers
                     while (rdr.Read())
                     {
                         ProformaDetalle proforma_detalle = new ProformaDetalle();
-
+                        proforma_detalle.mes_inicio = mesInicio;
                         proforma_detalle.id_proforma = Convert.ToInt64(rdr["id"]);
                         proforma_detalle.anio = Convert.ToInt32(rdr["anio"]);
                         proforma_detalle.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);

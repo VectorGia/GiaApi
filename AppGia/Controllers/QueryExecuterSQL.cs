@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using AppGia.Models;
-using AppGia.Util;
-using Npgsql;
-using NpgsqlTypes;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AppGia.Controllers
 {
-    public class QueryExecuter
+    public class QueryExecuterSQL
     {
-        private NpgsqlConnection con;
+        private SqlConnection con;
         private Conexion.Conexion conex = new Conexion.Conexion();
 
-        public QueryExecuter()
+        public QueryExecuterSQL()
         {
-            con = conex.ConnexionDB();
+            //Constructor
+            con = conex.ConexionSQL();
         }
-        
-        public DataTable ExecuteQuery(String qry)
+
+        public DataTable ExecuteQuerySQL(String qry)
         {
             string consulta = qry;
 
             try
             {
                 con.Open();
-                NpgsqlCommand comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
+                SqlCommand comP = new SqlCommand(consulta, con);
+                SqlDataAdapter daP = new SqlDataAdapter(comP);
 
                 DataTable dt = new DataTable();
                 daP.Fill(dt);
@@ -38,9 +38,9 @@ namespace AppGia.Controllers
             }
         }
 
-        public DataRow ExecuteQueryUniqueresult(String qry)
+        public DataRow ExecuteQueryUniqueresultSQL(String qry)
         {
-            DataTable dataTable = ExecuteQuery(qry);
+            DataTable dataTable = ExecuteQuerySQL(qry);
             if (dataTable.Rows.Count == 1)
             {
                 return dataTable.Rows[0];
@@ -49,7 +49,7 @@ namespace AppGia.Controllers
             {
                 return null;
             }
-            throw new DataException("Se esperaba un resultado pero se obtuvieron "+dataTable.Rows.Count);
+            throw new DataException("Se esperaba un resultado pero se obtuvieron " + dataTable.Rows.Count);
         }
     }
 }

@@ -99,9 +99,9 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     TipoCambio detTipoCambio = new TipoCambio();
-                    detTipoCambio.id= Convert.ToInt64(rdr["id"]);
+                    detTipoCambio.id = Convert.ToInt64(rdr["id"]);
                     detTipoCambio.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
-                    detTipoCambio.valor= Convert.ToInt32(rdr["valor"]);
+                    detTipoCambio.valor = Convert.ToInt32(rdr["valor"]);
                     detTipoCambio.fec_modif = Convert.ToDateTime(rdr["fec_modif"]).ToString("yyyy/mm/dd");
                     lstTipoCambio.Add(detTipoCambio);
                 }
@@ -170,8 +170,8 @@ namespace AppGia.Controllers
             string update = "UPDATE tipo_cambio SET "
           + "activo = @activo ,"
           + "estatus = @estatus ,"
-          + "fec_modif = @fec_modif"
-          + "fecha = @fecha"
+          + "fec_modif = @fec_modif ,"
+          + "fecha = @fecha ,"
           + "valor = @valor"
           + " WHERE id = @id";
             try

@@ -5,8 +5,15 @@ using System.Threading.Tasks;
 
 namespace AppGia.Models
 {
-    public class ProformaDetalle
+    public class ProformaDetalle : IConceptoProforma
     {
+        
+        
+        public object this[string propertyName]
+        {
+            get { return GetType().GetProperty(propertyName).GetValue(this, null); }
+            set { GetType().GetProperty(propertyName).SetValue(this, value, null); }
+        }
         // Campos de tabla "proforma_detalle"
         public Int64 id { get; set; }
         public Int64 id_proforma { get; set; }
@@ -44,9 +51,28 @@ namespace AppGia.Models
         public string nombre_rubro { get; set; }
         public string hijos { get; set; }
         public string clave_rubro { get; set; }
-
+        
         public string aritmetica { get; set; }
         public double anios_posteriores_resultado { get; set; }
+        //HNA: no persistible nos permitira saber desde que mes es proforma y que es real
+        public int mes_inicio { get; set; }
+        //HNA: no persistible, sirve para saber que campo de ajuste tomat cuando aplique 
+        public String campoEnAjustes { get; set; }
+        
+        public string GetHijos()
+        {
+            return hijos;
+        }
+
+        public string GetAritmetica()
+        {
+            return aritmetica;
+        }
+
+        public long GetIdConcepto()
+        {
+            return rubro_id;
+        }
 
     }
 }

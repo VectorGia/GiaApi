@@ -7,16 +7,17 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using AdoNetCore.AseClient;
 using System.Data.Odbc;
-
+using System.Data.SqlClient;
 
 namespace AppGia.Conexion
 {
     public class Conexion
     {
-          string cadena = "";
-          NpgsqlConnection con;
-          AseConnection sysCon;
-          OdbcConnection odbcCon;
+        string cadena = "";
+        NpgsqlConnection con;
+        AseConnection sysCon;
+        OdbcConnection odbcCon;
+        SqlConnection sqlCon;
 
         public IConfigurationRoot GetConfiguration()
         {
@@ -24,29 +25,31 @@ namespace AppGia.Conexion
             return builder.Build();
         }
 
-
         public NpgsqlConnection ConnexionDB()
 
         {
             var configuration = GetConfiguration();
-           // con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
+            // con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
             con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionStringLocal").Value);
-            
+
             return con;
         }
 
         public AseConnection ConexionSybase()
 
         {
-            try {
+            try
+            {
                 var configuration = GetConfiguration();
 
                 sysCon = new AseConnection(configuration.GetSection("DataSybase").GetSection("ConnectionString").Value);
-                 
+
                 return sysCon;
-            }catch (InvalidOperationException ex ){
+            }
+            catch (InvalidOperationException ex)
+            {
                 string error = ex.Message;
-                return null ;
+                return null;
             }
         }
 
@@ -56,8 +59,8 @@ namespace AppGia.Conexion
             try
             {
                 var configuration = GetConfiguration();
-                odbcCon = new OdbcConnection("DSN="+DsnName);
-               // odbcCon = new OdbcConnection("DSN=GIAODBCPRUEBAS"); ////ODBCGIA
+                odbcCon = new OdbcConnection("DSN=" + DsnName);
+                // odbcCon = new OdbcConnection("DSN=GIAODBCPRUEBAS"); ////ODBCGIA
 
                 return odbcCon;
             }
@@ -68,10 +71,12 @@ namespace AppGia.Conexion
             }
         }
 
-
-
-
-
+        public SqlConnection ConexionSQL()
+        {
+            var configuration = GetConfiguration();
+            sqlCon = new SqlConnection(configuration.GetSection("Data").GetSection("ConnectionStringSQL").Value);
+            return sqlCon;
+        }
     }
 }
 
