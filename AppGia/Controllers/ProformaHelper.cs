@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using AppGia.Models;
+using AppGia.Util;
 using static System.Convert;
 using static AppGia.Util.Constantes;
 
@@ -207,50 +208,57 @@ namespace AppGia.Controllers
             return detalles;
         }
         
-        public List<ProformaDetalle> getAjustes(Int64 idCC,int anio)
+        public List<ProformaDetalle> getAjustes(Int64 idCC,int anio,Int64 idTipoCaptura)
         {
             List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
-            Dictionary<string,string> mesValor=new Dictionary<string, string>();
-            mesValor.Add("1","enero_monto_resultado");
-            mesValor.Add("2","febrero_monto_resultado");
-            mesValor.Add("3","marzo_monto_resultado");
-            mesValor.Add("4","abril_monto_resultado");
-            mesValor.Add("5","mayo_monto_resultado");
-            mesValor.Add("6","junio_monto_resultado");
-            mesValor.Add("7","julio_monto_resultado");
-            mesValor.Add("8","agosto_monto_resultado");
-            mesValor.Add("9","septiembre_monto_resultado");
-            mesValor.Add("10","octubre_monto_resultado");
-            mesValor.Add("11","noviembre_monto_resultado");
-            mesValor.Add("12","diciembre_monto_resultado");
-            Object empresaId=_queryExecuter.ExecuteQueryUniqueresult("select empresa_id from centro_costo where id="+idCC)["empresa_id"];
-            
-            DataTable ajustesDt = _queryExecuterSql.ExecuteQuerySQL("select ingreso, directo, indirecto, mes " +
-                                                                    " from ajuste" +
-                                                                    " where empresa = "+empresaId +
-                                                                    " and centrocosto ="+ idCC+
-                                                                    " and anio ="+anio);
-            DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=" + idCC);
-            List<Rubros> rubroses = GetRubrosFromModeloId(Convert.ToInt64(dataRow["modelo_negocio_id"]), false);
-            rubroses.ForEach(rubro =>
+            if (idTipoCaptura == TipoCapturaContable)//Los ajustes solo son para contable
             {
-                ProformaDetalle detalle = new ProformaDetalle();
-                detalle.rubro_id = rubro.id;
-                detalle.campoEnAjustes = rubro.campoEnAjustes;
-                proformaDetalles.Add(detalle);
-            });
-            proformaDetalles.ForEach(detalle =>
-            {
-                foreach (DataRow ajusteRow in ajustesDt.Rows)
+                Dictionary<string, string> mesValor = new Dictionary<string, string>();
+                mesValor.Add("1", "enero_monto_resultado");
+                mesValor.Add("2", "febrero_monto_resultado");
+                mesValor.Add("3", "marzo_monto_resultado");
+                mesValor.Add("4", "abril_monto_resultado");
+                mesValor.Add("5", "mayo_monto_resultado");
+                mesValor.Add("6", "junio_monto_resultado");
+                mesValor.Add("7", "julio_monto_resultado");
+                mesValor.Add("8", "agosto_monto_resultado");
+                mesValor.Add("9", "septiembre_monto_resultado");
+                mesValor.Add("10", "octubre_monto_resultado");
+                mesValor.Add("11", "noviembre_monto_resultado");
+                mesValor.Add("12", "diciembre_monto_resultado");
+                Object empresaId =
+                    _queryExecuter.ExecuteQueryUniqueresult("select empresa_id from centro_costo where id=" + idCC)[
+                        "empresa_id"];
+
+                DataTable ajustesDt = _queryExecuterSql.ExecuteQuerySQL("select ingreso, directo, indirecto, mes " +
+                                                                        " from ajuste" +
+                                                                        " where empresa = " + empresaId +
+                                                                        " and centrocosto =" + idCC +
+                                                                        " and anio =" + anio);
+                DataRow dataRow =
+                    _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=" +
+                                                            idCC);
+                List<Rubros> rubroses = GetRubrosFromModeloId(Convert.ToInt64(dataRow["modelo_negocio_id"]), false);
+                rubroses.ForEach(rubro =>
                 {
-                    Object mesData = ajusteRow["mes"];
-                    if (mesData != null)
+                    ProformaDetalle detalle = new ProformaDetalle();
+                    detalle.rubro_id = rubro.id;
+                    detalle.campoEnAjustes = rubro.campoEnAjustes;
+                    proformaDetalles.Add(detalle);
+                });
+                proformaDetalles.ForEach(detalle =>
+                {
+                    foreach (DataRow ajusteRow in ajustesDt.Rows)
                     {
-                        detalle[mesData.ToString()] = ToDouble(ajusteRow[detalle.campoEnAjustes]);
+                        Object mesData = ajusteRow["mes"];
+                        if (mesData != null)
+                        {
+                            detalle[mesData.ToString()] = ToDouble(ajusteRow[detalle.campoEnAjustes]);
+                        }
                     }
-                }
-            });
-            
+                });
+            }
+
             return proformaDetalles;
         }
         
