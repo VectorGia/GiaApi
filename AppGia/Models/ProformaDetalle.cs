@@ -58,7 +58,11 @@ namespace AppGia.Models
         public int mes_inicio { get; set; }
         //HNA: no persistible, sirve para saber que campo de ajuste tomat cuando aplique 
         public String campoEnAjustes { get; set; }
-        
+
+        public String idInterno { get=> id>0?id.ToString():idInterno; set => idInterno = value; }
+
+     
+
         public string GetHijos()
         {
             return hijos;
@@ -73,6 +77,7 @@ namespace AppGia.Models
         {
             return rubro_id;
         }
+        
 
     }
 }

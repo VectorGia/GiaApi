@@ -12,7 +12,7 @@ namespace AppGia.Controllers
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        private ProformaHelper _proformaHelper = new ProformaHelper();
+        private ProformaHelper _profHelper = new ProformaHelper();
         private QueryExecuter _queryExecuter = new QueryExecuter();
 
         public ProformaDataAccessLayer()
@@ -180,21 +180,29 @@ namespace AppGia.Controllers
             Int64 idTipoCaptura)
         {
             string proyeccion = ObtenerDatosCC(idCC).proyeccion;
+            List<ProformaDetalle> detalles = null;
             if (proyeccion.Equals(ProyeccionBase))
             {
-                List<ProformaDetalle> detalles= GeneraProforma(idCC, anio, idTipoProforma, idTipoCaptura);
-                return _proformaHelper.reorderConceptos(detalles);
+                detalles = GeneraProforma(idCC, anio, idTipoProforma, idTipoCaptura);
+                detalles = _profHelper.reorderConceptos(detalles);
             }
 
             if (proyeccion.Equals(ProyeccionMetodo))
             {
-                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma, idTipoCaptura);
+                detalles = _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma, idTipoCaptura);
             }
 
             if (proyeccion.Equals(ProyeccionShadow))
             {
-                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
+                Int64 idTipoProforma012 = getIdTipoProformaByClave(ClaveProforma012);
+                detalles = _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma012, idTipoCaptura);
             }
+
+            if (detalles != null)
+            {
+                return _profHelper.setIdInterno(detalles);
+            }
+
             throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
         }
         
@@ -205,7 +213,7 @@ namespace AppGia.Controllers
             
             if (anio >  DateTime.Now.Year)
             {
-                return _proformaHelper.buildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
+                return _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
             }
             
             // Del centro de costos se obtienen empresa y proyecto
@@ -218,7 +226,7 @@ namespace AppGia.Controllers
 
 
             // Del tipo de proforma obtiene mes de inicio
-            int mesInicio = _proformaHelper.getMesInicio(idTipoProforma);
+            int mesInicio = _profHelper.getMesInicio(idTipoProforma);
             if (mesInicio < 0)
             {
                 throw new InvalidDataException("Error en el mes de inicio de la proforma ");
@@ -243,7 +251,7 @@ namespace AppGia.Controllers
 
             // se contruyen los rubros totales
             List<ProformaDetalle> lstProformaCompleta =
-                _proformaHelper.CompletaDetalles(listDetProformaCalc, cc, idModeloNeg);
+                _profHelper.CompletaDetalles(listDetProformaCalc, cc, idModeloNeg);
             lstProformaCompleta.ForEach(detalle =>
             {
                 detalle.centro_costo_id = idCC;

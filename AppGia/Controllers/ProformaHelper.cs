@@ -13,7 +13,7 @@ namespace AppGia.Controllers
         private QueryExecuter _queryExecuter = new QueryExecuter();
         private QueryExecuterSQL _queryExecuterSql=new QueryExecuterSQL();
 
-        public List<ProformaDetalle> buildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma,
+        public List<ProformaDetalle> BuildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma,
             Int64 idTipoCaptura)
         {
             DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult(
@@ -260,6 +260,18 @@ namespace AppGia.Controllers
             }
 
             return proformaDetalles;
+        }
+
+        public List<ProformaDetalle> setIdInterno(List<ProformaDetalle> detalles)
+        {
+            foreach (var detalle in detalles)
+            {
+                string uid=Guid.NewGuid().ToString();
+                uid=uid.Substring(uid.Length-12);
+                detalle.idInterno = uid;
+            }
+
+            return detalles;
         }
         
         
