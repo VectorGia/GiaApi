@@ -44,6 +44,11 @@ namespace AppGia.Controllers
             
             return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
+        [HttpGet("ajustes")]
+        public List<ProformaDetalle> GetProforma(Int64 idCC,int anio)
+        {
+            return new ProformaHelper().getAjustes(idCC, anio);
+        }
 
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {

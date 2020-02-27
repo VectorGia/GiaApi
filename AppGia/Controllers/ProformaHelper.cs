@@ -207,7 +207,7 @@ namespace AppGia.Controllers
             return detalles;
         }
         
-        public List<ProformaDetalle> getAjustes(Int64 idCC,Int64 idEmpresa,int anio)
+        public List<ProformaDetalle> getAjustes(Int64 idCC,int anio)
         {
             List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
             Dictionary<string,string> mesValor=new Dictionary<string, string>();
@@ -223,9 +223,11 @@ namespace AppGia.Controllers
             mesValor.Add("10","octubre_monto_resultado");
             mesValor.Add("11","noviembre_monto_resultado");
             mesValor.Add("12","diciembre_monto_resultado");
+            Object empresaId=_queryExecuter.ExecuteQueryUniqueresult("select empresa_id from centro_costo where id="+idCC)["empresa_id"];
+            
             DataTable ajustesDt = _queryExecuterSql.ExecuteQuerySQL("select ingreso, directo, indirecto, mes " +
                                                                     " from ajuste" +
-                                                                    " where empresa = "+idEmpresa +
+                                                                    " where empresa = "+empresaId +
                                                                     " and centrocosto ="+ idCC+
                                                                     " and anio ="+anio);
             DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=" + idCC);
