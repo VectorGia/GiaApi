@@ -49,6 +49,11 @@ namespace AppGia.Controllers
         {
             return new ProformaHelper().getAjustes(idCC, anio,idTipoCaptura);
         }
+        [HttpGet("tipoCambio")]
+        public Dictionary<string, double> getFactoresTipoCambioGia(Int64 idCC,int anio,Int64 idTipoCaptura)
+        {
+            return new TipoCambioHelper().getTiposCambio(idCC, anio,idTipoCaptura);
+        }
 
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {

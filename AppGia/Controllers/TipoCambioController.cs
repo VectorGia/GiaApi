@@ -26,11 +26,6 @@ namespace AppGia.Controllers
             return "value";
         }
         
-        [HttpGet("byCentroAnioTipoCaptura")]
-        public Dictionary<string, double> getFactoresTipoCambioGia(Int64 idCC,int anio,Int64 idTipoCaptura)
-        {
-            return new TipoCambioHelper().getTiposCambio(idCC, anio,idTipoCaptura);
-        }
 
         // POST: api/TipoCambio
         [HttpPost]
