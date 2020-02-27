@@ -44,15 +44,15 @@ namespace AppGia.Controllers
             
             return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
-        [HttpGet("ajustes")]
-        public List<ProformaDetalle> GetProforma(Int64 idCC,int anio,Int64 idTipoCaptura)
+        [HttpPost("ajustes")]
+        public List<ProformaDetalle> GetProforma([FromBody] Proforma proforma)
         {
-            return new ProformaHelper().getAjustes(idCC, anio,idTipoCaptura);
+            return new ProformaHelper().getAjustes(proforma.centro_costo_id, proforma.anio,proforma.tipo_captura_id);
         }
-        [HttpGet("tipoCambio")]
-        public Dictionary<string, double> getFactoresTipoCambioGia(Int64 idCC,int anio,Int64 idTipoCaptura)
+        [HttpPost("tipoCambio")]
+        public Dictionary<string, double> getFactoresTipoCambioGia([FromBody] Proforma proforma)
         {
-            return new TipoCambioHelper().getTiposCambio(idCC, anio,idTipoCaptura);
+            return new TipoCambioHelper().getTiposCambio(proforma.centro_costo_id, proforma.anio,proforma.tipo_captura_id);
         }
 
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
