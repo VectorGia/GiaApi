@@ -59,9 +59,18 @@ namespace AppGia.Models
         //HNA: no persistible, sirve para saber que campo de ajuste tomat cuando aplique 
         public String campoEnAjustes { get; set; }
 
-        public String idInterno { get=> id>0?id.ToString():idInterno; set => idInterno = value; }
+        private string idInternoInternal;
+        public String idInterno
+        {
+            get
+            {
+                String valor = id > 0 ? id.ToString() : idInternoInternal;
+                return valor;
+            }
+            set { idInternoInternal = value; }
+        }
 
-     
+
 
         public string GetHijos()
         {
