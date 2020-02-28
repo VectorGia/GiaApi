@@ -49,7 +49,7 @@ namespace AppGia.Controllers
             catch
             {
                 con.Close();
-                throw;
+                    throw;
             }
             finally
             {
