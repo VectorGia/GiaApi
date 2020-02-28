@@ -54,6 +54,19 @@ namespace AppGia.Controllers
         {
             return new TipoCambioHelper().getTiposCambio(proforma.centro_costo_id, proforma.anio,proforma.tipo_captura_id);
         }
+        [HttpGet("anios")]
+        public List<int> getAnios()
+        {
+            List<int> anios=new List<int>();
+            int anioActual = DateTime.Now.Year;
+            anios.Add(anioActual);
+            for (int i = 0; i < 10; i++)
+            {
+                anios.Add(++anioActual);
+            }
+                
+            return anios;
+        }
 
         public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
