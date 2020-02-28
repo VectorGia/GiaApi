@@ -158,7 +158,7 @@ namespace AppGia.Controllers
                         centroCostos.gerente = rdr["gerente"].ToString().Trim();
                         centroCostos.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
                         centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
-                        centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"]);
+                        centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"])*100;
                         centroCostos.proyeccion = rdr["proyeccion"].ToString().Trim();
                      
                     }
