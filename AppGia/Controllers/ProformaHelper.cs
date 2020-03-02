@@ -69,12 +69,13 @@ namespace AppGia.Controllers
             detCtas.Sort((d1, d2) => { return d2.clave_rubro.Length.CompareTo(d1.clave_rubro.Length); });
 
             List<Rubros> rubrosTotNoEvaluados = new List<Rubros>();
+            List<ProformaDetalle> detallesConstruidos = new List<ProformaDetalle>();
 
             foreach (Rubros rubTot in rubTots)
             {
                 try
                 {
-                    detCtas.Add(ConstruyeDetalleTotal(detCtas, rubTot, porcentaje));
+                    detallesConstruidos.Add(ConstruyeDetalleTotal(detCtas, rubTot, porcentaje));
                 }
                 catch (EvaluateException ee)
                 {
@@ -83,7 +84,7 @@ namespace AppGia.Controllers
                     rubrosTotNoEvaluados.Add(rubTot);
                 }
             }
-
+            detCtas.AddRange(detallesConstruidos);
             foreach (Rubros rubrosTotNoEvaluado in rubrosTotNoEvaluados)
             {
                 try
