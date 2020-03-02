@@ -319,48 +319,7 @@ namespace AppGia.Controllers
         }
 
 
-        public Tipo_Proforma ObtenerDatosTipoProf(Int64 idTipoProforma)
-        {
-            string consulta = "";
-            consulta += " select id, clave, mes_inicio ";
-            consulta += " 	from tipo_proforma ";
-            consulta += " 	where id = " + idTipoProforma;
-            consulta += " 	and activo = 'true' ";
-
-            try
-            {
-                Tipo_Proforma datosTipoProf = new Tipo_Proforma();
-                con.Open();
-
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    if (rdr["id"] == null)
-                        datosTipoProf.id = 0;
-                    else
-                        datosTipoProf.id = Convert.ToInt64(rdr["id"]);
-
-                    if (rdr["clave"] == null)
-                        datosTipoProf.clave = "";
-                    else
-                        datosTipoProf.clave = Convert.ToString(rdr["clave"]);
-
-                    if (rdr["mes_inicio"] == null)
-                        datosTipoProf.mes_inicio = -1;
-                    else
-                        datosTipoProf.mes_inicio = Convert.ToInt32(rdr["mes_inicio"]);
-                }
-
-                return datosTipoProf;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
+      
         public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, Int64 idEmpresa,
             Int64 idModeloNeg, Int64 idProyecto, int anio, Int64 idTipoCaptura, Int64 idTipoProforma)
         {

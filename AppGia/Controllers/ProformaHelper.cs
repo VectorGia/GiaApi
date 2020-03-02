@@ -88,7 +88,7 @@ namespace AppGia.Controllers
             {
                 try
                 {
-                    detCtas.Add(ConstruyeDetalleTotal(detCtas, rubrosTotNoEvaluado, porcentaje));
+                    detCtas.Add(ConstruyeDetalleTotal(detCtas, rubrosTotNoEvaluado, 1.0));
                 }
                 catch (EvaluateException ee)
                 {
