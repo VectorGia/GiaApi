@@ -340,7 +340,7 @@ namespace AppGia.Controllers
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
             consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" +
-                        DateTime.Today.ToString("dd/MM/yyyy") + "'::date) ";
+                        DateTime.Today.ToString("dd/MM/yyyy") + "'::date) ";//cambiar esta logica para considerar semanal o mensual
             consulta += "	 and anio = " + anio; // Año a proformar
             consulta += "	 and empresa_id = " + idEmpresa; // Empresa
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio; // Modelo de Negocio
