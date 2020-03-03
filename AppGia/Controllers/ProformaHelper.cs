@@ -254,7 +254,10 @@ namespace AppGia.Controllers
                         Object mesData = ajusteRow["mes"];
                         if (mesData != null)
                         {
-                            detalle[mesValor[mesData.ToString()]] = ToDouble(ajusteRow[detalle.campoEnAjustes]);
+                            if (detalle.campoEnAjustes!=null&&detalle.campoEnAjustes.Trim().Length>0)
+                            {
+                                detalle[mesValor[mesData.ToString()]] = ToDouble(ajusteRow[detalle.campoEnAjustes]);
+                            }
                         }
                     }
                 });
