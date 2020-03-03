@@ -56,18 +56,18 @@ namespace AppGia.Controllers
             foreach (DataRow row in dataTable.Rows)
             {
                 Double factorDll = 1 / ToDouble(row["monedarporte"]);
-                Double factorPesos = ToDouble(row["monedarporte"]) * factorDll;
+                Double factorPesos = ToDouble(row["monedainforme"]) * factorDll;
                 ;
                 if (RESULTADO.Equals(row["tipo"].ToString().Trim()))
                 {
-                    tipoCambio.Add("DOLARES RESULTADO", factorDll);
-                    tipoCambio.Add("PESOS RESULTADO", factorPesos);
+                    tipoCambio.Add("USD RESUL", factorDll);
+                    tipoCambio.Add("MXN RESUL", factorPesos);
                 }
 
                 if (FINANCIERO.Equals(row["tipo"].ToString().Trim()))
                 {
-                    tipoCambio.Add("DOLARES FINANCIERO", factorDll);
-                    tipoCambio.Add("PESOS FINANCIERO", factorPesos);
+                    tipoCambio.Add("USD FINAN", factorDll);
+                    tipoCambio.Add("MXN FINAN", factorPesos);
                 }
             }
 
