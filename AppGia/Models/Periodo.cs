@@ -13,11 +13,12 @@ namespace AppGia.Models
         public Boolean estatus { get; set; }
         public DateTime fec_modif { get; set; }
         public Int64 idusuario { get; set; }
-        public Int64 tipo_captura_id { get; set; }
-        public Int64 tipo_proforma_id { get; set; }
-        
-        
-        public int nombre { get; set; }
+        public Int32 tipo_captura_id { get; set; }
+        public Int32 tipo_proforma_id { get; set; }
+
+        public string clave { get; set; }
+        public string nombre { get; set; }
+        //public int nombre { get; set; }
         public int mes_inicio { get; set; }
 
     }
