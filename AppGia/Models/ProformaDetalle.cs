@@ -37,28 +37,38 @@ namespace AppGia.Models
         public double ejercicio_resultado { get; set; }
         public double total_resultado { get; set; }
 
-        // Campos de tabla "proforma"
+        // //HNA: no persistible  Campos de tabla "proforma"
         public int anio { get; set; }
+        //HNA: no persistible
         public Int64 modelo_negocio_id { get; set; }
+        //HNA: no persistible
         public Int64 tipo_captura_id { get; set; }
+        //HNA: no persistible
         public Int64 tipo_proforma_id { get; set; }
+        //HNA: no persistible
         public Int64 centro_costo_id { get; set; }
-        public Int64 periodo_id { get; set; }
-        public DateTime fecha_captura { get; set; }
+        //HNA: no persistible
         public Int64 usuario { get; set; }
 
-        // Campos de tabla "rubro"
+        //HNA: no persistible Campos de tabla "rubro"
         public string nombre_rubro { get; set; }
+        //HNA: no persistible
         public string hijos { get; set; }
+       
+        //HNA: no persistible
         public string clave_rubro { get; set; }
         
+        //HNA: no persistible
         public string aritmetica { get; set; }
         public double anios_posteriores_resultado { get; set; }
+        
         //HNA: no persistible nos permitira saber desde que mes es proforma y que es real
         public int mes_inicio { get; set; }
         //HNA: no persistible, sirve para saber que campo de ajuste tomat cuando aplique 
         public String campoEnAjustes { get; set; }
-
+        //HNA: no persistible, sirve para identificar detalles antes de que sean guardados
+        public Boolean editable { get; set; }
+        
         private string idInternoInternal;
         public String idInterno
         {

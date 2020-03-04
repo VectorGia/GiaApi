@@ -277,6 +277,16 @@ namespace AppGia.Controllers
 
             return detalles;
         }
+
+        public Boolean existePeridodoActivo(int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
+        {
+            return _queryExecuter
+                       .ExecuteQuery(
+                           "select distinct anio_periodo from periodo where activo = true and estatus = 'true' and tipo_captura_id = " +
+                           idTipoCaptura + " and tipo_proforma_id = " + idTipoProforma + " and anio_periodo=" + anio)
+                       .Rows.Count > 0;
+
+        }
         
         
         private Rubros BuscaRubroPorId(Int64 rubro_id)

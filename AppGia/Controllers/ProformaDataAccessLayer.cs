@@ -203,6 +203,10 @@ namespace AppGia.Controllers
                 return _profHelper.setIdInterno(detalles);
             }
 
+            Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( anio,  idTipoProforma,  idTipoCaptura);
+            detalles.ForEach(detalle => { detalle.editable = hayPeriodoActivo;});
+            
+
             throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
         }
         
