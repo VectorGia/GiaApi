@@ -15,33 +15,13 @@ namespace AppGia.Controllers
         [HttpGet]
         public List<Proforma> Get()
         {
-
             return objProforma.GetAllProformas(); // objProformaDetalle.GetProformaCalculada(17, 3, 89, 29, 96, 2019, 1);
-
         }
-
-        public List<Proforma> GetAllProformas()
-        {
-            return objProforma.GetAllProformas();
-        }
-
-        public List<Proforma> GetProformaPorId(int idProforma)
-        {
-            return objProforma.GetProforma(idProforma);
-        }
-
-        // GET: api/Proforma/5
-        [HttpGet("{id}", Name = "GetProforma")]
-        public string GetProforma(int id)
-        {
-            return "value";
-        }
-
+        
         // POST: api/Proforma
         [HttpPost]
         public List<ProformaDetalle> Post([FromBody] Proforma proforma)
         {
-            
             return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
         }
         [HttpPost("ajustes")]
@@ -68,11 +48,13 @@ namespace AppGia.Controllers
             return anios;
         }
 
-        public int Create([FromBody]List<ProformaDetalle> lstGuardaProforma)
+  
+        [HttpPost("save")]
+        public int GuardaProforma([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
             return objProforma.GuardaProforma(lstGuardaProforma);
         }
-
+        
         // PUT: api/Proforma/5
         [HttpPut("{id}")]
         public int Put(int id, [FromBody] Proforma proforma)
@@ -80,16 +62,5 @@ namespace AppGia.Controllers
             return objProforma.AddProforma(proforma);
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-
-        public IEnumerable<ProformaDetalle> ObtieneProfCalc(Int64 idCenCos, int mes, int idEmpresa, int idModeloNegocio, int idProyecto, int anio, int idTipoCaptura)
-        {
-            //ProformaDetalle listaProf = new ProformaDetalle();
-            return objProformaDetalle.GetProformaCalculada(idCenCos, mes, idEmpresa, idModeloNegocio, idProyecto, anio, idTipoCaptura);
-        }
     }
 }
