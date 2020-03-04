@@ -20,7 +20,7 @@ namespace AppGia.Controllers
         public IEnumerable<Periodo> GetAllPeriodos()
         {
             //Obtiene todos los periodods habilitados "TRUE"            
-            string consulta = "select p.id as idperiodo, p.estatus, p.anio_periodo, p.fec_modif, tc.clave, tp.nombre " +
+            string consulta = "select p.id as idperiodo, p.estatus, p.activo, p.anio_periodo, p.fec_modif, tc.clave, tp.nombre " +
                 "from periodo p inner join tipo_captura tc on p.tipo_captura_id = tc.id inner join tipo_proforma tp on p.tipo_proforma_id = tp.id where p.activo = true";
             try
             {
@@ -36,6 +36,7 @@ namespace AppGia.Controllers
 
                         periodo.id = Convert.ToInt64(rdr["idperiodo"]);
                         periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
+                        periodo.activo = Convert.ToBoolean(rdr["activo"]);
                         periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
                         periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         //periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
@@ -147,6 +148,7 @@ namespace AppGia.Controllers
         {
             string update = "UPDATE periodo SET " +
                 "anio_periodo = @anio_periodo," +
+                "estatus = @estatus," +
                 "fec_modif = @fec_modif, " +
                 "tipo_captura_id = @tipo_captura_id," +
                 "tipo_proforma_id = @tipo_proforma_id" +
@@ -157,8 +159,8 @@ namespace AppGia.Controllers
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@anio_periodo", Value = periodo.anio_periodo });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = periodo.estatus });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fec_modif", Value = periodo.fec_modif });
-                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@estatus", Value = periodo.estatus });
                     //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@idusuario", Value = periodo.idusuario });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = periodo.tipo_captura_id });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_proforma_id", Value = periodo.tipo_proforma_id });

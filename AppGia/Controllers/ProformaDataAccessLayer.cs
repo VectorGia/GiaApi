@@ -198,14 +198,14 @@ namespace AppGia.Controllers
                 detalles = _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma012, idTipoCaptura);
             }
 
+            Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( anio,  idTipoProforma,  idTipoCaptura);
+            detalles.ForEach(detalle => { detalle.editable = hayPeriodoActivo;});
+            
+
             if (detalles != null)
             {
                 return _profHelper.setIdInterno(detalles);
             }
-
-            Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( anio,  idTipoProforma,  idTipoCaptura);
-            detalles.ForEach(detalle => { detalle.editable = hayPeriodoActivo;});
-            
 
             throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
         }
