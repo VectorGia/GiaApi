@@ -18,8 +18,7 @@ namespace AppGia.Models
 
         public string clave { get; set; }
         public string nombre { get; set; }
-        //public int nombre { get; set; }
-        public int mes_inicio { get; set; }
+
 
     }
 }
