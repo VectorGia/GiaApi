@@ -18,6 +18,12 @@ namespace AppGia.Controllers
             return objProforma.GetAllProformas(); // objProformaDetalle.GetProformaCalculada(17, 3, 89, 29, 96, 2019, 1);
         }
         
+        [HttpGet("{idProforma}")]
+        public List<ProformaDetalle> GetProformaDetalle(Int64 idProforma)
+        {
+            return objProformaDetalle.GetProformaDetalle(idProforma);
+        }
+        
         // POST: api/Proforma
         [HttpPost]
         public List<ProformaDetalle> Post([FromBody] Proforma proforma)
@@ -55,11 +61,13 @@ namespace AppGia.Controllers
             return objProforma.GuardaProforma(lstGuardaProforma);
         }
         
+        
+        
         // PUT: api/Proforma/5
         [HttpPut("{id}")]
-        public int Put(int id, [FromBody] Proforma proforma)
+        public int Put(int id, [FromBody] List<ProformaDetalle> proformaDetalles)
         {
-            return objProforma.AddProforma(proforma);
+            return objProforma.ActualizaProforma(proformaDetalles);
         }
 
     }

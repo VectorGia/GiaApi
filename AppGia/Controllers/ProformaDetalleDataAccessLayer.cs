@@ -15,7 +15,7 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-        public List<ProformaDetalle> GetProformaDetalle(int idProforma)
+        public List<ProformaDetalle> GetProformaDetalle(Int64 idProforma)
         {
             string consulta = "";
             consulta += " select ";
