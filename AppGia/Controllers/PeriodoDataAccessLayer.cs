@@ -17,10 +17,11 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-        public IEnumerable<Periodo> GetAllCentros()
+        public IEnumerable<Periodo> GetAllPeriodos()
         {
             //Obtiene todos los periodods habilitados "TRUE"            
-            string consulta = "SELECT * FROM periodo WHERE activo = true";
+            string consulta = "select p.id as idperiodo, p.estatus, p.anio_periodo, p.fec_modif, tc.clave, tp.nombre " +
+                "from periodo p inner join tipo_captura tc on p.tipo_captura_id = tc.id inner join tipo_proforma tp on p.tipo_proforma_id = tp.id where p.activo = true";
             try
             {
                 List<Periodo> lstperiodo = new List<Periodo>();
@@ -33,14 +34,13 @@ namespace AppGia.Controllers
                     {
                         Periodo periodo = new Periodo();
 
-                        periodo.id = Convert.ToInt64(rdr["id"]);
-                        periodo.activo = Convert.ToBoolean(rdr["activo"]);
-                        periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
+                        periodo.id = Convert.ToInt64(rdr["idperiodo"]);
                         periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
+                        periodo.anio_periodo = Convert.ToInt32(rdr["anio_periodo"]);
                         periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
-                        periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
-                        periodo.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                        periodo.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                        //periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
+                        periodo.clave = rdr["clave"].ToString().Trim();
+                        periodo.nombre = rdr["nombre"].ToString().Trim();
                         lstperiodo.Add(periodo);
                     }
                     con.Close();
@@ -79,8 +79,8 @@ namespace AppGia.Controllers
                         periodo.estatus = Convert.ToBoolean(rdr["estatus"]);
                         periodo.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
                         //periodo.idusuario = Convert.ToInt64(rdr["idusuario"]);
-                        periodo.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                        periodo.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                        periodo.tipo_captura_id = Convert.ToInt32(rdr["tipo_captura_id"]);
+                        periodo.tipo_proforma_id = Convert.ToInt32(rdr["tipo_proforma_id"]);
                     }
                 }
                 return periodo;
@@ -145,26 +145,24 @@ namespace AppGia.Controllers
 
         public int updatePeriodo(string id, Periodo periodo)
         {
-            string update = "UPDATE periodo SET activo=@activo, " +
-                "anio_periodo=@anio_periodo," +
-                "fec_modif=@fec_modif, " +
-                "estatus=@estatus, " +
-                "idusuario=@idusuario," +
-                "tipo_captura_id=@tipo_captura_id," +
-                "tipo_proforma_id=@tipo_proforma_id" +
-                "WHERE id = @id;";
+            string update = "UPDATE periodo SET " +
+                "anio_periodo = @anio_periodo," +
+                "fec_modif = @fec_modif, " +
+                "tipo_captura_id = @tipo_captura_id," +
+                "tipo_proforma_id = @tipo_proforma_id" +
+                " WHERE id = " + id;
             {
                 try
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@anio_periodo", Value = periodo.anio_periodo });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@fec_modif", Value = periodo.fec_modif });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@estatus", Value = periodo.estatus });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@idusuario", Value = periodo.idusuario });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_captura_id", Value = periodo.tipo_captura_id });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_proforma_id", Value = periodo.tipo_captura_id });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = id });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@anio_periodo", Value = periodo.anio_periodo });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fec_modif", Value = periodo.fec_modif });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@estatus", Value = periodo.estatus });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@idusuario", Value = periodo.idusuario });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = periodo.tipo_captura_id });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_proforma_id", Value = periodo.tipo_proforma_id });
+                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = id });
 
                     con.Open();
                     int cantFilas = cmd.ExecuteNonQuery();
@@ -183,9 +181,9 @@ namespace AppGia.Controllers
             }
         }
 
-        public int deletePeriodo(string id, Periodo periodo)
+        public int deletePeriodo(string id)
         {
-            string update = "UPDATE periodo SET activo=false";
+            string update = "UPDATE periodo SET activo=false where id = " +id;
             {
                 try
                 {

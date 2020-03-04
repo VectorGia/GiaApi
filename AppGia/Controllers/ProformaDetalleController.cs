@@ -24,9 +24,9 @@ namespace AppGia.Controllers
 
         // GET: api/ProformaDetalle/5
         [HttpGet("{id}", Name = "GetProformaDetalle")]
-        public string GetProformaDetalle(int idProformaDetalle)
+        public List<ProformaDetalle> GetProformaDetalle(int idProformaDetalle)
         {
-            return "value"; //proforma_detalle.GetProformaDetalle(idProformaDetalle);
+            return ObjProformaDetalle.GetProformaDetalle(idProformaDetalle);
         }
 
         // POST: api/ProformaDetalle

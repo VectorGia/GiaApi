@@ -39,7 +39,7 @@ namespace AppGia.Controllers
             consulta += " from proforma_detalle det ";
             consulta += " inner join rubro rub on det.rubro_id = rub.id ";
             consulta += " where id_proforma = " + idProforma;
-            consulta += " and activo = 'true' ";
+            consulta += " and det.activo = 'true' ";
 
             try
             {

@@ -39,7 +39,7 @@ namespace AppGia.Controllers
                         tipocaptura.clave = rdr["clave"].ToString().Trim();
                         tipocaptura.descripcion = rdr["descripcion"].ToString(); ;
                         tipocaptura.fec_modif = rdr["fec_modif"].ToString();
-                        tipocaptura.idusuario = Convert.ToInt64(rdr["iduduario"]);
+                       // tipocaptura.idusuario = Convert.ToInt64(rdr["iduduario"]);
                         lsttipocaptura.Add(tipocaptura);
                     }
                     con.Close();
@@ -49,7 +49,7 @@ namespace AppGia.Controllers
             catch
             {
                 con.Close();
-                throw;
+                    throw;
             }
             finally
             {
