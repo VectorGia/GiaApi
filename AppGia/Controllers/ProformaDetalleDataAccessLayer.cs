@@ -73,7 +73,6 @@ namespace AppGia.Controllers
                     proforma_detalle.total_resultado = Convert.ToDouble(rdr["total_resultado"]);
                     proforma_detalle.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
                     proforma_detalle.valor_tipo_cambio_resultado = Convert.ToDouble(rdr["valor_tipo_cambio_resultado"]);
-                    proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
                     lstProformaDetalle.Add(proforma_detalle);
                 }
 
