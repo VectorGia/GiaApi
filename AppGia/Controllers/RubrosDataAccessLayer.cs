@@ -91,7 +91,6 @@ namespace AppGia.Controllers
                     rubro.tipo_cuenta = rdr["tipo_cuenta"].ToString().Trim();
                     rubro.tipo_agrupador = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.hijos = rdr["hijos"].ToString().Trim();   
-                    rubro.naturaleza = rdr["naturaleza"].ToString().Trim();
                     rubro.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
                     lstRubros.Add(rubro);
 

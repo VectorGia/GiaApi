@@ -244,7 +244,7 @@ namespace AppGia.Controllers
                 {
                     ProformaDetalle detalle = new ProformaDetalle();
                     detalle.rubro_id = rubro.id;
-                    detalle.campoEnAjustes = rubro.campoEnAjustes;
+                    detalle.tipo_cuenta = rubro.tipo_cuenta;
                     proformaDetalles.Add(detalle);
                 });
                 proformaDetalles.ForEach(detalle =>
@@ -254,9 +254,9 @@ namespace AppGia.Controllers
                         Object mesData = ajusteRow["mes"];
                         if (mesData != null)
                         {
-                            if (detalle.campoEnAjustes!=null&&detalle.campoEnAjustes.Trim().Length>0)
+                            if (detalle.tipo_cuenta!=null&&detalle.tipo_cuenta.Trim().Length>0)
                             {
-                                detalle[mesValor[mesData.ToString()]] = ToDouble(ajusteRow[detalle.campoEnAjustes]);
+                                detalle[mesValor[mesData.ToString()]] = ToDouble(ajusteRow[detalle.tipo_cuenta]);
                             }
                         }
                     }
@@ -335,7 +335,7 @@ namespace AppGia.Controllers
             ru.hijos = Convert.ToString(rubrosRow["hijos"]);
             ru.id_modelo_neg = ToInt64(rubrosRow["id_modelo_neg"]);
             ru.tipo_id = ToInt64(rubrosRow["tipo_id"]);
-            ru.naturaleza = Convert.ToString(rubrosRow["naturaleza"]);
+            ru.tipo_cuenta = Convert.ToString(rubrosRow["tipo_cuenta"]);
 
             return ru;
         }

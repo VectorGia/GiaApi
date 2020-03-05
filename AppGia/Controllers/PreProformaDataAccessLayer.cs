@@ -161,7 +161,6 @@ namespace AppGia.Controllers
                 rubro.nombre = rubrosRow["nombre"].ToString();
                 rubro.aritmetica = rubrosRow["aritmetica"].ToString();
                 rubro.clave = rubrosRow["clave"].ToString();
-                rubro.naturaleza = rubrosRow["naturaleza"].ToString();
                 rubro.rango_cuentas_excluidas = rubrosRow["rango_cuentas_excluidas"].ToString();
                 rubro.rangos_cuentas_incluidas = rubrosRow["rangos_cuentas_incluidas"].ToString();
                 rubro.tipo_id = Convert.ToInt64(rubrosRow["tipo_id"]);

@@ -65,7 +65,7 @@ namespace AppGia.Models
         //HNA: no persistible nos permitira saber desde que mes es proforma y que es real
         public int mes_inicio { get; set; }
         //HNA: no persistible, sirve para saber que campo de ajuste tomat cuando aplique 
-        public String campoEnAjustes { get; set; }
+        public String tipo_cuenta { get; set; }
         //HNA: no persistible, sirve para identificar detalles antes de que sean guardados
         public Boolean editable { get; set; }
         //HNA: no persistible pero usada para renderear la empresa asociada en pantalla
