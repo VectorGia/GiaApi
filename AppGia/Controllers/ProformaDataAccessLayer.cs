@@ -20,7 +20,7 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-        public List<Proforma> GetProforma(int idProforma)
+        public Proforma GetProforma(Int64 idProforma)
         {
             string consulta = "";
             consulta += " select ";
@@ -35,35 +35,20 @@ namespace AppGia.Controllers
             consulta += " where pf.activo = 'true' ";
             consulta += " and pf.id = " + idProforma;
 
-            try
-            {
-                List<Proforma> lstProforma = new List<Proforma>();
-                con.Open();
 
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+            DataRow rdr = _queryExecuter.ExecuteQueryUniqueresult(consulta);
 
-                while (rdr.Read())
-                {
-                    Proforma proforma = new Proforma();
-                    proforma.id = Convert.ToInt64(rdr["id"]);
-                    proforma.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
-                    proforma.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                    proforma.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
-                    proforma.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
-                    proforma.activo = Convert.ToBoolean(rdr["activo"]);
-                    proforma.usuario = Convert.ToInt64(rdr["usuario"]);
-                    proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
-                    proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
-                    lstProforma.Add(proforma);
-                }
-
-                return lstProforma;
-            }
-            finally
-            {
-                con.Close();
-            }
+            Proforma proforma = new Proforma();
+            proforma.id = Convert.ToInt64(rdr["id"]);
+            proforma.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+            proforma.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+            proforma.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+            proforma.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
+            proforma.activo = Convert.ToBoolean(rdr["activo"]);
+            proforma.usuario = Convert.ToInt64(rdr["usuario"]);
+            proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+            proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
+            return proforma;
         }
 
         public List<Proforma> GetAllProformas()

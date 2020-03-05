@@ -9,7 +9,9 @@ namespace AppGia.Controllers
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-
+        private ProformaHelper _profHelper = new ProformaHelper();
+        private ProformaDataAccessLayer _proformaDataAccessLayer=new ProformaDataAccessLayer();
+        
         public ProformaDetalleDataAccessLayer()
         {
             con = conex.ConnexionDB();
@@ -19,7 +21,7 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select ";
-            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro, ";
+            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica ";
             consulta += "   coalesce(ejercicio_resultado, 0) as ejercicio_resultado, ";
             consulta += "   coalesce(enero_monto_resultado, 0) as enero_monto_resultado, ";
             consulta += "   coalesce(febrero_monto_resultado, 0) as febrero_monto_resultado, ";
@@ -57,6 +59,7 @@ namespace AppGia.Controllers
                     proforma_detalle.id_proforma = Convert.ToInt64(rdr["id_proforma"]);
                     proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
                     proforma_detalle.nombre_rubro = Convert.ToString(rdr["nombre_rubro"]);
+                    proforma_detalle.aritmetica = Convert.ToString(rdr["aritmetica"]);
                     proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
                     proforma_detalle.enero_monto_resultado = Convert.ToDouble(rdr["enero_monto_resultado"]);
                     proforma_detalle.febrero_monto_resultado = Convert.ToDouble(rdr["febrero_monto_resultado"]);
@@ -74,10 +77,38 @@ namespace AppGia.Controllers
                     proforma_detalle.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
                     proforma_detalle.valor_tipo_cambio_resultado = Convert.ToDouble(rdr["valor_tipo_cambio_resultado"]);
                     proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
+                    proforma_detalle.hijos=rdr["hijos"].ToString();
+                    
                     lstProformaDetalle.Add(proforma_detalle);
                 }
 
-                return lstProformaDetalle;
+                Proforma pro = _proformaDataAccessLayer.GetProforma(idProforma);
+                Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( pro.anio,  pro.tipo_proforma_id,  pro.tipo_captura_id);
+                lstProformaDetalle.ForEach(proforma_detalle =>
+                {
+                    proforma_detalle.editable = hayPeriodoActivo;
+                    proforma_detalle.mes_inicio = _profHelper.getMesInicio(pro.tipo_proforma_id);
+                    proforma_detalle.modelo_negocio_id = pro.modelo_negocio_id;
+                    proforma_detalle.anio = pro.anio;
+                    proforma_detalle.centro_costo_id = pro.centro_costo_id;
+                    proforma_detalle.tipo_proforma_id = pro.tipo_proforma_id;
+                    proforma_detalle.tipo_captura_id = pro.tipo_captura_id;
+                 
+
+                });
+                List<ProformaDetalle> detallesAniosPosteriores = GetEjercicioPosterior(pro.anio, pro.centro_costo_id,
+                    pro.modelo_negocio_id, pro.tipo_captura_id, pro.tipo_proforma_id);
+                lstProformaDetalle.ForEach(detalle =>
+                {
+                    detallesAniosPosteriores.ForEach(posterior =>
+                    {
+                        if (detalle.rubro_id == posterior.rubro_id)
+                        {
+                            detalle.anios_posteriores_resultado = posterior.anios_posteriores_resultado;
+                        }
+                    });
+                });
+                return  _profHelper.reorderConceptos(lstProformaDetalle);
             }
          
             finally
@@ -464,7 +495,7 @@ namespace AppGia.Controllers
                 con.Close();
             }
         }
-
+        
         //Calculo de años posteriores
         public List<ProformaDetalle> GetEjercicioPosterior(int anio, Int64 idCenCos, Int64 idModNeg, Int64 idTipoCaptura, Int64 idTipoProforma)
         {
