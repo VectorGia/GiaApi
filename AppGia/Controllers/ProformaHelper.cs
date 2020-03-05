@@ -357,6 +357,49 @@ namespace AppGia.Controllers
 
             return rubrosReorder;
         }
+        /*
+         * Permite obtener la fecha de generacion de montos consolidados ya se mensual o semanal segun sea flujo o contable
+         */
+        public DateTime getLastFechaMontosConsol(int anio,Int64 idEmpresa,Int64 idModeloNegocio,Int64 idProyecto,Int64 idCenCos,Int64 idTipoCaptura)
+        {
+            string fechaHoy=DateTime.Today.ToString("dd/MM/yyyy");
+            String consulta="";
+            if (idTipoCaptura == Constantes.TipoCapturaContable)
+            {
+                consulta = "select max(fecha) as fecha from montos_consolidados where activo=true " +
+                           " and fecha >=date_trunc('MONTH',to_date('"+fechaHoy+"','DD/MM/YYYY')) " +
+                           " and fecha <= to_date('"+fechaHoy+"','DD/MM/YYYY') ";
+            }
+            else if(idTipoCaptura==TipoCapturaFlujo)
+            {
+                consulta = "select max(fecha) as fecha from montos_consolidados where activo=true " +
+                           " and fecha >to_date('"+fechaHoy+"','DD/MM/YYYY')-7 " +
+                           " and fecha <= to_date('"+fechaHoy+"','DD/MM/YYYY') ";
+            }
+            else
+            {
+                throw new DataException("El tipo de captura "+idTipoCaptura+" no esta soportado");
+            }
+
+            consulta += "	 and anio = " + anio; 
+            consulta += "	 and empresa_id = " + idEmpresa; 
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio; 
+            consulta += "	 and proyecto_id = " + idProyecto;
+            consulta += "	 and centro_costo_id = " + idCenCos; 
+            consulta += "	 and tipo_captura_id = " + idTipoCaptura;
+           Object objfecha= _queryExecuter.ExecuteQueryUniqueresult(consulta)["fecha"];
+           if (objfecha != null)
+           {
+               return ToDateTime(objfecha);
+           }
+
+           throw new ApplicationException(String.Format(
+               "No se encontraron registros para montos consolidados, con los datos de consulta: " +
+               " anio='{0}',empresa_id='{1}',modelo_negocio_id='{2}',proyecto_id='{3}',centro_costo_id='{4}',tipo_captura_id='{5}'",
+               anio, idEmpresa, idModeloNegocio, idProyecto, idCenCos, idTipoCaptura));
+           
+
+        }
 
         private List<T> getConceptosPadresFromList<T> (List<T> conceptos) where  T :IConceptoProforma
         {

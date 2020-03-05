@@ -270,6 +270,7 @@ namespace AppGia.Controllers
         public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, Int64 idEmpresa,
             Int64 idModeloNegocio, Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
+            DateTime fechaCarga = _profHelper.getLastFechaMontosConsol( anio, idEmpresa, idModeloNegocio, idProyecto, idCenCos, idTipoCaptura);
             string consulta = "";
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
@@ -367,15 +368,14 @@ namespace AppGia.Controllers
             consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" +
-                        DateTime.Today.ToString("dd/MM/yyyy") + "'::date) ";//cambiar esta logica para considerar semanal o mensual
-            consulta += "	 and anio = " + anio; // Año a proformar
-            consulta += "	 and empresa_id = " + idEmpresa; // Empresa
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio; // Modelo de Negocio
-            consulta += "	 and proyecto_id = " + idProyecto; // Proyecto
-            consulta += "	 and centro_costo_id = " + idCenCos; // Centro de Costos
-            consulta += "	 and tipo_captura_id = " + idTipoCaptura; // Tipo de captura
-            consulta += "	 and mon.activo = 'true' "; // Este puede salir sobrando
+            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + fechaCarga.ToString("dd/MM/yyyy") + "'::date) ";
+            consulta += "	 and anio = " + anio; 
+            consulta += "	 and empresa_id = " + idEmpresa; 
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio; 
+            consulta += "	 and proyecto_id = " + idProyecto;
+            consulta += "	 and centro_costo_id = " + idCenCos; 
+            consulta += "	 and tipo_captura_id = " + idTipoCaptura; 
+            consulta += "	 and mon.activo = 'true' ";
             consulta += "	 order by rub.id ";
 
             try
