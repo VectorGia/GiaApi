@@ -40,6 +40,7 @@ namespace AppGia.Controllers
 
             Proforma proforma = new Proforma();
             proforma.id = Convert.ToInt64(rdr["id"]);
+            proforma.anio = Convert.ToInt32(rdr["anio"]);
             proforma.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
             proforma.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
             proforma.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
