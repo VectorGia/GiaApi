@@ -289,7 +289,7 @@ namespace AppGia.Controllers
         }
         
         
-        private Rubros BuscaRubroPorId(Int64 rubro_id)
+        public Rubros BuscaRubroPorId(Int64 rubro_id)
         {
             string consulta = "";
             consulta += " select * ";

@@ -24,7 +24,7 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select ";
-            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica, ";
+            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica, rub.clave,";
             consulta += "   coalesce(ejercicio_resultado, 0) as ejercicio_resultado, ";
             consulta += "   coalesce(enero_monto_resultado, 0) as enero_monto_resultado, ";
             consulta += "   coalesce(febrero_monto_resultado, 0) as febrero_monto_resultado, ";
@@ -76,6 +76,7 @@ namespace AppGia.Controllers
                 proforma_detalle.valor_tipo_cambio_resultado = ToDouble(rdr["valor_tipo_cambio_resultado"]);
                 //proforma_detalle.activo = ToBoolean(rdr["activo"]);
                 proforma_detalle.hijos = rdr["hijos"].ToString();
+                proforma_detalle.clave_rubro = rdr["clave"].ToString();
 
                 lstProformaDetalle.Add(proforma_detalle);
             }
@@ -90,7 +91,7 @@ namespace AppGia.Controllers
 
             List<ProformaDetalle> detallesAniosPosteriores = GetEjercicioPosterior(pro.anio, pro.centro_costo_id,
                 pro.modelo_negocio_id, pro.tipo_captura_id, pro.tipo_proforma_id);
-
+            
             lstProformaDetalle.ForEach(detalle =>
             {
                 detalle.editable = hayPeriodoActivo;
