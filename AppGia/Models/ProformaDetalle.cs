@@ -68,6 +68,8 @@ namespace AppGia.Models
         public String campoEnAjustes { get; set; }
         //HNA: no persistible, sirve para identificar detalles antes de que sean guardados
         public Boolean editable { get; set; }
+        //HNA: no persistible pero usada para renderear la empresa asociada en pantalla
+        public Int64 empresa_id { get; set; }
         
         private string idInternoInternal;
         public String idInterno

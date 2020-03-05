@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using AppGia.Models;
 using Npgsql;
+using static System.Convert;
 
 namespace AppGia.Controllers
 {
@@ -45,84 +46,71 @@ namespace AppGia.Controllers
             consulta += " where id_proforma = " + idProforma;
             consulta += " and det.activo = 'true' ";
 
-            try
+
+            List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
+
+            DataTable dataTable = _queryExecuter.ExecuteQuery(consulta.Trim());
+            foreach (DataRow rdr in dataTable.Rows)
             {
-                List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
-                
-                if (con.State == System.Data.ConnectionState.Closed)
-                {
-                    con.Open();
-                }
+                ProformaDetalle proforma_detalle = new ProformaDetalle();
+                proforma_detalle.id = ToInt64(rdr["id"]);
+                proforma_detalle.id_proforma = ToInt64(rdr["id_proforma"]);
+                proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
+                proforma_detalle.nombre_rubro = Convert.ToString(rdr["nombre_rubro"]);
+                proforma_detalle.aritmetica = Convert.ToString(rdr["aritmetica"]);
+                proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
+                proforma_detalle.enero_monto_resultado = ToDouble(rdr["enero_monto_resultado"]);
+                proforma_detalle.febrero_monto_resultado = ToDouble(rdr["febrero_monto_resultado"]);
+                proforma_detalle.marzo_monto_resultado = ToDouble(rdr["marzo_monto_resultado"]);
+                proforma_detalle.abril_monto_resultado = ToDouble(rdr["abril_monto_resultado"]);
+                proforma_detalle.mayo_monto_resultado = ToDouble(rdr["mayo_monto_resultado"]);
+                proforma_detalle.junio_monto_resultado = ToDouble(rdr["junio_monto_resultado"]);
+                proforma_detalle.julio_monto_resultado = ToDouble(rdr["julio_monto_resultado"]);
+                proforma_detalle.agosto_monto_resultado = ToDouble(rdr["agosto_monto_resultado"]);
+                proforma_detalle.septiembre_monto_resultado = ToDouble(rdr["septiembre_monto_resultado"]);
+                proforma_detalle.octubre_monto_resultado = ToDouble(rdr["octubre_monto_resultado"]);
+                proforma_detalle.noviembre_monto_resultado = ToDouble(rdr["noviembre_monto_resultado"]);
+                proforma_detalle.diciembre_monto_resultado = ToDouble(rdr["diciembre_monto_resultado"]);
+                proforma_detalle.total_resultado = ToDouble(rdr["total_resultado"]);
+                proforma_detalle.acumulado_resultado = ToDouble(rdr["acumulado_resultado"]);
+                proforma_detalle.valor_tipo_cambio_resultado = ToDouble(rdr["valor_tipo_cambio_resultado"]);
+                proforma_detalle.activo = ToBoolean(rdr["activo"]);
+                proforma_detalle.hijos = rdr["hijos"].ToString();
 
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
+                lstProformaDetalle.Add(proforma_detalle);
+            }
 
-                while (rdr.Read())
-                {
-                    ProformaDetalle proforma_detalle = new ProformaDetalle();
-                    proforma_detalle.id = Convert.ToInt64(rdr["id"]);
-                    proforma_detalle.id_proforma = Convert.ToInt64(rdr["id_proforma"]);
-                    proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
-                    proforma_detalle.nombre_rubro = Convert.ToString(rdr["nombre_rubro"]);
-                    proforma_detalle.aritmetica = Convert.ToString(rdr["aritmetica"]);
-                    proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
-                    proforma_detalle.enero_monto_resultado = Convert.ToDouble(rdr["enero_monto_resultado"]);
-                    proforma_detalle.febrero_monto_resultado = Convert.ToDouble(rdr["febrero_monto_resultado"]);
-                    proforma_detalle.marzo_monto_resultado = Convert.ToDouble(rdr["marzo_monto_resultado"]);
-                    proforma_detalle.abril_monto_resultado = Convert.ToDouble(rdr["abril_monto_resultado"]);
-                    proforma_detalle.mayo_monto_resultado = Convert.ToDouble(rdr["mayo_monto_resultado"]);
-                    proforma_detalle.junio_monto_resultado = Convert.ToDouble(rdr["junio_monto_resultado"]);
-                    proforma_detalle.julio_monto_resultado = Convert.ToDouble(rdr["julio_monto_resultado"]);
-                    proforma_detalle.agosto_monto_resultado = Convert.ToDouble(rdr["agosto_monto_resultado"]);
-                    proforma_detalle.septiembre_monto_resultado = Convert.ToDouble(rdr["septiembre_monto_resultado"]);
-                    proforma_detalle.octubre_monto_resultado = Convert.ToDouble(rdr["octubre_monto_resultado"]);
-                    proforma_detalle.noviembre_monto_resultado = Convert.ToDouble(rdr["noviembre_monto_resultado"]);
-                    proforma_detalle.diciembre_monto_resultado = Convert.ToDouble(rdr["diciembre_monto_resultado"]);
-                    proforma_detalle.total_resultado = Convert.ToDouble(rdr["total_resultado"]);
-                    proforma_detalle.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
-                    proforma_detalle.valor_tipo_cambio_resultado = Convert.ToDouble(rdr["valor_tipo_cambio_resultado"]);
-                    proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
-                    proforma_detalle.hijos=rdr["hijos"].ToString();
-                    
-                    lstProformaDetalle.Add(proforma_detalle);
-                }
+            Proforma pro = _proformaDataAccessLayer.GetProforma(idProforma);
+            Boolean hayPeriodoActivo =
+                _profHelper.existePeridodoActivo(pro.anio, pro.tipo_proforma_id, pro.tipo_captura_id);
 
-                Proforma pro = _proformaDataAccessLayer.GetProforma(idProforma);
-                Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( pro.anio,  pro.tipo_proforma_id,  pro.tipo_captura_id);
-                lstProformaDetalle.ForEach(proforma_detalle =>
-                {
-                    proforma_detalle.editable = hayPeriodoActivo;
-                    proforma_detalle.mes_inicio = _profHelper.getMesInicio(pro.tipo_proforma_id);
-                    proforma_detalle.modelo_negocio_id = pro.modelo_negocio_id;
-                    proforma_detalle.anio = pro.anio;
-                    proforma_detalle.centro_costo_id = pro.centro_costo_id;
-                    proforma_detalle.tipo_proforma_id = pro.tipo_proforma_id;
-                    proforma_detalle.tipo_captura_id = pro.tipo_captura_id;
-                 
+            Int64 idEmpresa =
+                ToInt64(_queryExecuter.ExecuteQueryUniqueresult(
+                        "select empresa_id from centro_costo where id =" + pro.centro_costo_id)["empresa_id"]);
 
-                });
-                List<ProformaDetalle> detallesAniosPosteriores = GetEjercicioPosterior(pro.anio, pro.centro_costo_id,
-                    pro.modelo_negocio_id, pro.tipo_captura_id, pro.tipo_proforma_id);
-                lstProformaDetalle.ForEach(detalle =>
+            List<ProformaDetalle> detallesAniosPosteriores = GetEjercicioPosterior(pro.anio, pro.centro_costo_id,
+                pro.modelo_negocio_id, pro.tipo_captura_id, pro.tipo_proforma_id);
+
+            lstProformaDetalle.ForEach(detalle =>
+            {
+                detalle.editable = hayPeriodoActivo;
+                detalle.mes_inicio = _profHelper.getMesInicio(pro.tipo_proforma_id);
+                detalle.modelo_negocio_id = pro.modelo_negocio_id;
+                detalle.anio = pro.anio;
+                detalle.centro_costo_id = pro.centro_costo_id;
+                detalle.tipo_proforma_id = pro.tipo_proforma_id;
+                detalle.tipo_captura_id = pro.tipo_captura_id;
+                detalle.empresa_id = idEmpresa;
+                detallesAniosPosteriores.ForEach(posterior =>
                 {
-                    detallesAniosPosteriores.ForEach(posterior =>
+                    if (detalle.rubro_id == posterior.rubro_id)
                     {
-                        if (detalle.rubro_id == posterior.rubro_id)
-                        {
-                            detalle.anios_posteriores_resultado = posterior.anios_posteriores_resultado;
-                        }
-                    });
+                        detalle.anios_posteriores_resultado = posterior.anios_posteriores_resultado;
+                    }
                 });
-                return  _profHelper.reorderConceptos(lstProformaDetalle);
-            }
-         
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                {
-                    con.Close();
-                }
-            }
+            });
+
+            return _profHelper.reorderConceptos(lstProformaDetalle);
         }
 
         public int AddProformaDetalle(ProformaDetalle proforma_detalle)
@@ -402,28 +390,28 @@ namespace AppGia.Controllers
                     {
                         ProformaDetalle proforma_detalle = new ProformaDetalle();
                         proforma_detalle.mes_inicio = mesInicio;
-                        proforma_detalle.id_proforma = Convert.ToInt64(rdr["id"]);
-                        proforma_detalle.anio = Convert.ToInt32(rdr["anio"]);
-                        proforma_detalle.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
-                        proforma_detalle.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
-                        proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
-                        proforma_detalle.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
+                        proforma_detalle.id_proforma = ToInt64(rdr["id"]);
+                        proforma_detalle.anio = ToInt32(rdr["anio"]);
+                        proforma_detalle.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
+                        proforma_detalle.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
+                        proforma_detalle.activo = ToBoolean(rdr["activo"]);
+                        proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
                         proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
                         proforma_detalle.hijos = (rdr["hijos"]).ToString().Trim();
-                        proforma_detalle.enero_monto_resultado = Convert.ToDouble(rdr["enero_monto_resultado"]);
-                        proforma_detalle.febrero_monto_resultado = Convert.ToDouble(rdr["febrero_monto_resultado"]);
-                        proforma_detalle.marzo_monto_resultado = Convert.ToDouble(rdr["marzo_monto_resultado"]);
-                        proforma_detalle.abril_monto_resultado = Convert.ToDouble(rdr["abril_monto_resultado"]);
-                        proforma_detalle.mayo_monto_resultado = Convert.ToDouble(rdr["mayo_monto_resultado"]);
-                        proforma_detalle.junio_monto_resultado = Convert.ToDouble(rdr["junio_monto_resultado"]);
-                        proforma_detalle.julio_monto_resultado = Convert.ToDouble(rdr["julio_monto_resultado"]);
-                        proforma_detalle.agosto_monto_resultado = Convert.ToDouble(rdr["agosto_monto_resultado"]);
+                        proforma_detalle.enero_monto_resultado = ToDouble(rdr["enero_monto_resultado"]);
+                        proforma_detalle.febrero_monto_resultado = ToDouble(rdr["febrero_monto_resultado"]);
+                        proforma_detalle.marzo_monto_resultado = ToDouble(rdr["marzo_monto_resultado"]);
+                        proforma_detalle.abril_monto_resultado = ToDouble(rdr["abril_monto_resultado"]);
+                        proforma_detalle.mayo_monto_resultado = ToDouble(rdr["mayo_monto_resultado"]);
+                        proforma_detalle.junio_monto_resultado = ToDouble(rdr["junio_monto_resultado"]);
+                        proforma_detalle.julio_monto_resultado = ToDouble(rdr["julio_monto_resultado"]);
+                        proforma_detalle.agosto_monto_resultado = ToDouble(rdr["agosto_monto_resultado"]);
                         proforma_detalle.septiembre_monto_resultado =
-                            Convert.ToDouble(rdr["septiembre_monto_resultado"]);
-                        proforma_detalle.octubre_monto_resultado = Convert.ToDouble(rdr["octubre_monto_resultado"]);
-                        proforma_detalle.noviembre_monto_resultado = Convert.ToDouble(rdr["noviembre_monto_resultado"]);
-                        proforma_detalle.diciembre_monto_resultado = Convert.ToDouble(rdr["diciembre_monto_resultado"]);
-                        proforma_detalle.ejercicio_resultado = Convert.ToDouble(rdr["ejercicio_resultado"]);
+                            ToDouble(rdr["septiembre_monto_resultado"]);
+                        proforma_detalle.octubre_monto_resultado = ToDouble(rdr["octubre_monto_resultado"]);
+                        proforma_detalle.noviembre_monto_resultado = ToDouble(rdr["noviembre_monto_resultado"]);
+                        proforma_detalle.diciembre_monto_resultado = ToDouble(rdr["diciembre_monto_resultado"]);
+                        proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
 
                         lstProformaDetalle.Add(proforma_detalle);
                     }
@@ -490,8 +478,8 @@ namespace AppGia.Controllers
                 while (rdr.Read())
                 {
                     ProformaDetalle proforma_detalle_ej_financ = new ProformaDetalle();
-                    proforma_detalle_ej_financ.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
-                    proforma_detalle_ej_financ.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
+                    proforma_detalle_ej_financ.acumulado_resultado = ToDouble(rdr["acumulado_resultado"]);
+                    proforma_detalle_ej_financ.rubro_id = ToInt64(rdr["rubro_id"]);
                     proforma_detalle_ej_financ.nombre_rubro = rdr["nombre_rubro"].ToString();
                     lstProfDetalleEjercicioFinanc.Add(proforma_detalle_ej_financ);
                 }
@@ -541,13 +529,13 @@ namespace AppGia.Controllers
             foreach (DataRow rdr in dataTable.Rows)
             {
                 ProformaDetalle proforma_detalle_anios_post = new ProformaDetalle();
-                proforma_detalle_anios_post.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
-                proforma_detalle_anios_post.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
-                proforma_detalle_anios_post.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                proforma_detalle_anios_post.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
-                proforma_detalle_anios_post.anio = Convert.ToInt32(rdr["anio"]);
-                proforma_detalle_anios_post.anios_posteriores_resultado = Convert.ToDouble(rdr["anios_posteriores_resultado"]);
-                proforma_detalle_anios_post.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
+                proforma_detalle_anios_post.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
+                proforma_detalle_anios_post.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
+                proforma_detalle_anios_post.tipo_captura_id = ToInt64(rdr["tipo_captura_id"]);
+                proforma_detalle_anios_post.tipo_proforma_id = ToInt64(rdr["tipo_proforma_id"]);
+                proforma_detalle_anios_post.anio = ToInt32(rdr["anio"]);
+                proforma_detalle_anios_post.anios_posteriores_resultado = ToDouble(rdr["anios_posteriores_resultado"]);
+                proforma_detalle_anios_post.rubro_id = ToInt64(rdr["rubro_id"]);
                 lstProfDetalleAniosPost.Add(proforma_detalle_anios_post);
             }
 
