@@ -21,7 +21,7 @@ namespace AppGia.Controllers
         {
             string consulta = "";
             consulta += " select ";
-            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica ";
+            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica, ";
             consulta += "   coalesce(ejercicio_resultado, 0) as ejercicio_resultado, ";
             consulta += "   coalesce(enero_monto_resultado, 0) as enero_monto_resultado, ";
             consulta += "   coalesce(febrero_monto_resultado, 0) as febrero_monto_resultado, ";
@@ -77,7 +77,7 @@ namespace AppGia.Controllers
                     proforma_detalle.acumulado_resultado = Convert.ToDouble(rdr["acumulado_resultado"]);
                     proforma_detalle.valor_tipo_cambio_resultado = Convert.ToDouble(rdr["valor_tipo_cambio_resultado"]);
 
-                    proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
+                    //proforma_detalle.activo = Convert.ToBoolean(rdr["activo"]);
                     proforma_detalle.hijos=rdr["hijos"].ToString();
                     
 
