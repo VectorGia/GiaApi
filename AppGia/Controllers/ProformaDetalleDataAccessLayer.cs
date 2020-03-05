@@ -46,8 +46,11 @@ namespace AppGia.Controllers
             try
             {
                 List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
-
-                con.Open();
+                
+                if (con.State == System.Data.ConnectionState.Closed)
+                {
+                    con.Open();
+                }
 
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -115,7 +118,10 @@ namespace AppGia.Controllers
          
             finally
             {
-                con.Close();
+                if (con.State == System.Data.ConnectionState.Open)
+                {
+                    con.Close();
+                }
             }
         }
 
@@ -530,8 +536,11 @@ namespace AppGia.Controllers
             try
             {
                 List<ProformaDetalle> lstProfDetalleAniosPost = new List<ProformaDetalle>();
-
-                con.Open();
+                if (con.State == System.Data.ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                
 
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -554,7 +563,11 @@ namespace AppGia.Controllers
             }
             finally
             {
-                con.Close();
+                if (con.State == System.Data.ConnectionState.Open)
+                {
+                    con.Close();
+                }
+               
             }
 
         }
