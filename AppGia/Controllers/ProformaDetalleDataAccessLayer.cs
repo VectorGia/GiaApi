@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using AppGia.Models;
 using Npgsql;
 
@@ -11,6 +12,7 @@ namespace AppGia.Controllers
         Conexion.Conexion conex = new Conexion.Conexion();
         private ProformaHelper _profHelper = new ProformaHelper();
         private ProformaDataAccessLayer _proformaDataAccessLayer=new ProformaDataAccessLayer();
+        private QueryExecuter _queryExecuter=new QueryExecuter();
         
         public ProformaDetalleDataAccessLayer()
         {
@@ -506,7 +508,8 @@ namespace AppGia.Controllers
         public List<ProformaDetalle> GetEjercicioPosterior(int anio, Int64 idCenCos, Int64 idModNeg, Int64 idTipoCaptura, Int64 idTipoProforma)
         {
             string consulta = "";
-            consulta += " select prf.centro_costo_id, prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, ";
+            consulta +=
+                " select prf.centro_costo_id, prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, ";
             consulta += " 	coalesce (";
             consulta += " 	sum(det.enero_monto_resultado) + ";
             consulta += " 	sum(det.febrero_monto_resultado) + ";
@@ -523,51 +526,33 @@ namespace AppGia.Controllers
             consulta += " 	, 0) as anios_posteriores_resultado, det.rubro_id as rubro_id ";
             consulta += " 	from proforma_detalle det ";
             consulta += " 	inner join proforma prf on det.id_proforma = prf.id ";
-            consulta += " 	where prf.anio > " + anio;                      // Anios posteriores a la proforma actual
+            consulta += " 	where prf.anio > " + anio; // Anios posteriores a la proforma actual
             consulta += " 	and prf.centro_costo_id = " + idCenCos;
             consulta += " 	and prf.modelo_negocio_id = " + idModNeg;
             consulta += " 	and prf.tipo_captura_id = " + idTipoCaptura;
             consulta += " 	and prf.tipo_proforma_id = " + idTipoProforma;
             consulta += " 	and prf.activo = 'true' ";
-            consulta += " 	group by prf.centro_costo_id, prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, det.rubro_id ";
+            consulta +=
+                " 	group by prf.centro_costo_id, prf.modelo_negocio_id, prf.tipo_captura_id, prf.tipo_proforma_id, prf.anio, det.rubro_id ";
 
-            try
+
+            List<ProformaDetalle> lstProfDetalleAniosPost = new List<ProformaDetalle>();
+            DataTable dataTable = _queryExecuter.ExecuteQuery(consulta.Trim());
+            foreach (DataRow rdr in dataTable.Rows)
             {
-                List<ProformaDetalle> lstProfDetalleAniosPost = new List<ProformaDetalle>();
-                if (con.State == System.Data.ConnectionState.Closed)
-                {
-                    con.Open();
-                }
-                
-
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    ProformaDetalle proforma_detalle_anios_post = new ProformaDetalle();
-                    proforma_detalle_anios_post.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
-                    proforma_detalle_anios_post.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
-                    proforma_detalle_anios_post.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                    proforma_detalle_anios_post.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
-                    proforma_detalle_anios_post.anio = Convert.ToInt32(rdr["anio"]);
-                    proforma_detalle_anios_post.anios_posteriores_resultado = Convert.ToDouble(rdr["anios_posteriores_resultado"]);
-                    proforma_detalle_anios_post.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
-                    lstProfDetalleAniosPost.Add(proforma_detalle_anios_post);
-                }
-
-                return lstProfDetalleAniosPost;
-
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                {
-                    con.Close();
-                }
-               
+                ProformaDetalle proforma_detalle_anios_post = new ProformaDetalle();
+                proforma_detalle_anios_post.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
+                proforma_detalle_anios_post.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"]);
+                proforma_detalle_anios_post.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
+                proforma_detalle_anios_post.tipo_proforma_id = Convert.ToInt64(rdr["tipo_proforma_id"]);
+                proforma_detalle_anios_post.anio = Convert.ToInt32(rdr["anio"]);
+                proforma_detalle_anios_post.anios_posteriores_resultado = Convert.ToDouble(rdr["anios_posteriores_resultado"]);
+                proforma_detalle_anios_post.rubro_id = Convert.ToInt64(rdr["rubro_id"]);
+                lstProfDetalleAniosPost.Add(proforma_detalle_anios_post);
             }
 
+
+            return lstProfDetalleAniosPost;
         }
     }
 }
