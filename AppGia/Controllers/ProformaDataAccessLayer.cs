@@ -250,7 +250,7 @@ namespace AppGia.Controllers
                 detalle.tipo_captura_id = idTipoCaptura;
                 detalle.modelo_negocio_id = idModeloNeg;
             });
-
+            listDetProformaCalc.ForEach(detalle => { detalle.mes_inicio = mesInicio;});
             return lstProformaCompleta;
         }
 

@@ -175,11 +175,11 @@ namespace AppGia.Controllers
             List<Rubros> rubrosesreoder = reorderConceptos(rubroses);
             List<ProformaDetalle> detalles = new List<ProformaDetalle>();
 
-
+            Int32 mesInicio= getMesInicio(idTipoProforma);
             rubrosesreoder.ForEach(actual =>
             {
                 ProformaDetalle detalle = new ProformaDetalle();
-                detalle.mes_inicio = getMesInicio(idTipoProforma);
+                detalle.mes_inicio = mesInicio;
                 detalle.modelo_negocio_id = actual.id_modelo_neg;
                 detalle.anio = anio;
                 detalle.centro_costo_id = idCC;
