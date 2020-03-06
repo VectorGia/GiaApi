@@ -18,6 +18,7 @@ namespace AppGia.Controllers
     [ApiController]
     public class ProformaExcelController : ControllerBase
     {
+        private QueryExecuter _queryExecuter=new QueryExecuter();
         // GET: api/ProformaExcel
         [HttpGet]
         public IEnumerable<string> Get()
@@ -35,9 +36,8 @@ namespace AppGia.Controllers
         public IActionResult ImportExcel(Int64 idProforma)
 
         {
-            ProformaExcelDataAccessLayer dat = new ProformaExcelDataAccessLayer();
             String consulta = "SELECT * FROM proforma_detalle WHERE id_proforma = " + idProforma;
-            List<ProformaDetalle> detalles = transformDtToDetalles(dat.Detalle(consulta));
+            List<ProformaDetalle> detalles = transformDtToDetalles(_queryExecuter.ExecuteQuery(consulta));
             return buildProformaToExcel(detalles);
         }
         
@@ -101,7 +101,6 @@ namespace AppGia.Controllers
 
         public IActionResult buildProformaToExcel(List<ProformaDetalle> detalles)
         {
-            ProformaExcelDataAccessLayer dat = new ProformaExcelDataAccessLayer();
             byte[] fileContents;
             using (var package = new ExcelPackage())
             {
@@ -196,7 +195,7 @@ namespace AppGia.Controllers
                 foreach (ProformaDetalle detalle in detalles)
 
                 {
-                    DataTable dt2 = dat.Detalle( "SELECT * FROM rubro WHERE id = " + detalle.rubro_id);
+                    DataTable dt2 = _queryExecuter.ExecuteQuery( "SELECT * FROM rubro WHERE id = " + detalle.rubro_id);
                     
 
                     foreach (DataRow d in dt2.Rows)
