@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using AppGia.Models;
-using AppGia.Util;
 using static System.Convert;
 using static AppGia.Util.Constantes;
 
@@ -17,36 +15,24 @@ namespace AppGia.Controllers
 
         public Dictionary<string, double> getTiposCambio(Int64 idCC, int anio, Int64 idTipoCaptura)
         {
-            if (idTipoCaptura == Constantes.TipoCapturaContable)
+            if (idTipoCaptura == TipoCapturaContable)
             {
                 return getTiposCambioContable(idCC, anio);
             }
 
-            if (idTipoCaptura == Constantes.TipoCapturaFlujo)//TODO: TOMAR para flujo
+            if (idTipoCaptura == TipoCapturaFlujo)
             {
-                return getTiposCambioContable(idCC, anio);
+                return getTiposCambioFlujo(idCC, anio);
             }
 
             return null;
         }
 
+       
         public Dictionary<string, double> getTiposCambioContable(Int64 idCC, int anio)
         {
-            string query =
-                "select cc.id as idcc,cc.empresa_id as idempresa,m.id  as idmoneda " +
-                " from centro_costo cc join empresa e on cc.empresa_id = e.id " +
-                " join moneda m on e.moneda_id = m.id " +
-                " where cc.activo=true and e.activo=true and m.activo=true and cc.id=" + idCC;
-            DataRow res = _queryExecuter.ExecuteQueryUniqueresult(query);
-            if (res == null)
-            {
-                throw new DataException("No se encontro una moneda asociado a la empresa del centro de costro '" +
-                                        idCC + "'");
-            }
-
-            Int64 idMoneda = ToInt64(res["idmoneda"]);
-
-            query = "select anio,mes,tipo,monedarporte,monedainforme from tipo_cambio_gia" +
+            Int64 idMoneda = findIdMonedaByCentroCosto(idCC);
+            string query = "select anio,mes,tipo,monedarporte,monedainforme from tipo_cambio_gia" +
                     " where monedaid=" + idMoneda +
                     " and anio= " + anio +
                     " and mes=" + DateTime.Now.Month;
@@ -72,6 +58,44 @@ namespace AppGia.Controllers
             }
 
             return tipoCambio;
+        }
+
+        public Dictionary<string, double> getTiposCambioFlujo(Int64 idCC, int anio)
+        {
+            
+            Int64 idMoneda = findIdMonedaByCentroCosto(idCC);
+            string query="select fecharegistro,monedareporte,monedainforme " +
+                         " from tipo_cambio_flujo_gia " +
+                         " where monedaid= " +idMoneda+
+                         " and fecharegistro = (select max(fecharegistro) from tipo_cambio_gia where fecharegistro > DATEADD(day, -7, '"+DateTime.Now.ToString("yyyy-MM-dd")+"'))";
+ 
+            DataTable dataTable = _queryExecuterSql.ExecuteQuerySQL(query);
+            Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
+            tipoCambio.Add("LOCAL", 1.0);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Double factorDll = 1 / ToDouble(row["monedareporte"]);
+                Double factorPesos = ToDouble(row["monedainforme"]) * factorDll;
+                tipoCambio.Add("USD", factorDll);
+                tipoCambio.Add("MXN", factorPesos);
+            }
+            return tipoCambio;
+        }
+        private Int64 findIdMonedaByCentroCosto(Int64 idCC)
+        {
+            string query =
+                "select cc.id as idcc,cc.empresa_id as idempresa,m.id  as idmoneda " +
+                " from centro_costo cc join empresa e on cc.empresa_id = e.id " +
+                " join moneda m on e.moneda_id = m.id " +
+                " where cc.activo=true and e.activo=true and m.activo=true and cc.id=" + idCC;
+            DataRow res = _queryExecuter.ExecuteQueryUniqueresult(query);
+            if (res == null)
+            {
+                throw new DataException("No se encontro una moneda asociado a la empresa del centro de costro '" +
+                                        idCC + "'");
+            }
+
+            return ToInt64(res["idmoneda"]);
         }
     }
 }
