@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using static System.Convert;
+using static System.DateTime;
 using static AppGia.Util.Constantes;
 
 namespace AppGia.Controllers
@@ -35,7 +36,7 @@ namespace AppGia.Controllers
             string query = "select anio,mes,tipo,monedarporte,monedainforme from tipo_cambio_gia" +
                     " where monedaid=" + idMoneda +
                     " and anio= " + anio +
-                    " and mes=" + DateTime.Now.Month;
+                    " and mes=" + Now.Month;
             DataTable dataTable = _queryExecuterSql.ExecuteQuerySQL(query);
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             tipoCambio.Add("LOCAL", 1.0);
@@ -67,7 +68,10 @@ namespace AppGia.Controllers
             string query="select fecharegistro,monedareporte,monedainforme " +
                          " from tipo_cambio_flujo_gia " +
                          " where monedaid= " +idMoneda+
-                         " and fecharegistro = (select max(fecharegistro) from tipo_cambio_gia where fecharegistro > DATEADD(day, -7, '"+DateTime.Now.ToString("yyyy-MM-dd")+"'))";
+                         " and fecharegistro = " +
+                         " (select max(fecharegistro) from tipo_cambio_flujo_gia " +
+                         "   where monedaid= " +idMoneda+" and fecharegistro > DATEADD(day, -7, '"+Now.ToString("yyyy-MM-dd")+"')" +
+                         " )";
  
             DataTable dataTable = _queryExecuterSql.ExecuteQuerySQL(query);
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
