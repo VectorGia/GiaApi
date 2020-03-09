@@ -98,5 +98,11 @@ namespace AppGia.Util
         public const string ProyeccionShadow = "SHADOW";
 
         public const string ClaveProforma012 = "12";
+        
+        public const string TIPODETPROFORM = "proform";
+        public const string TIPODETPROREAL = "real";
+        public const string ESTILODETHIJO = "hijo";
+        public const string ESTILODETPADRE = "padre";
+        
     }
 }

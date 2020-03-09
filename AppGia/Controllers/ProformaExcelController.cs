@@ -282,9 +282,9 @@ namespace AppGia.Controllers
             }
             if (fileContents == null || fileContents.Length == 0)
             {
-                return NotFound();
+                return new NotFoundResult();
             }
-            return File(fileContents: fileContents, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileDownloadName: "Proforma.xlsx");
+            return new FileContentResult(fileContents,  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") { FileDownloadName = "Proforma.xlsx" };
         }
 
         public List<ProformaDetalle> convierte(ProformaDetalle detalle)

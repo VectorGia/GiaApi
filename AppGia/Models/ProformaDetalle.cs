@@ -70,6 +70,10 @@ namespace AppGia.Models
         public Boolean editable { get; set; }
         //HNA: no persistible pero usada para renderear la empresa asociada en pantalla
         public Int64 empresa_id { get; set; }
+        //HNA: no persistible pero usada identificar si en la pantalla se identifico como real o proform
+        public string tipo { get; set; }
+        //HNA: no idetifica si es un detalle hijo o padre
+        public string estilo { get; set; }
         
         private string idInternoInternal;
         public String idInterno
