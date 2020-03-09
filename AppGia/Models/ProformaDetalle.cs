@@ -38,7 +38,7 @@ namespace AppGia.Models
         public double total_resultado { get; set; }
 
         // //HNA: no persistible  Campos de tabla "proforma"
-        public int anio { get; set; }
+        public Int32 anio { get; set; }
         //HNA: no persistible
         public Int64 modelo_negocio_id { get; set; }
         //HNA: no persistible
@@ -63,7 +63,7 @@ namespace AppGia.Models
         public double anios_posteriores_resultado { get; set; }
         
         //HNA: no persistible nos permitira saber desde que mes es proforma y que es real
-        public int mes_inicio { get; set; }
+        public Int32 mes_inicio { get; set; }
         //HNA: no persistible, sirve para saber que campo de ajuste tomat cuando aplique 
         public String tipo_cuenta { get; set; }
         //HNA: no persistible, sirve para identificar detalles antes de que sean guardados
