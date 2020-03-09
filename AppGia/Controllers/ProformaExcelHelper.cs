@@ -33,7 +33,7 @@ namespace AppGia.Controllers
         private ProformaDataAccessLayer _proformaDataAccessLayer = new ProformaDataAccessLayer();
         private ProformaDetalleDataAccessLayer _proformaDetalleDataAccessLayer = new ProformaDetalleDataAccessLayer();
 
-        public IActionResult export(List<ProformaDetalle> lstGuardaProforma)
+        public byte[] export(List<ProformaDetalle> lstGuardaProforma)
         {
             return buildProformaToExcel(lstGuardaProforma);
         }
@@ -163,7 +163,7 @@ namespace AppGia.Controllers
             }
         }
         
-        private IActionResult buildProformaToExcel(List<ProformaDetalle> detalles)
+        private byte[] buildProformaToExcel(List<ProformaDetalle> detalles)
         {
             int mesInicio=detalles[0].mes_inicio;
             byte[] fileContents;
@@ -208,12 +208,13 @@ namespace AppGia.Controllers
 
             if (fileContents == null || fileContents.Length == 0)
             {
-                return new NotFoundResult();
+                throw new ApplicationException("No fue posible exportar a excel");
             }
 
-            return new FileContentResult(fileContents,
+            return fileContents;
+            /*return new FileContentResult(fileContents,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                {FileDownloadName = "Proforma.xlsx"};
+                {FileDownloadName = "Proforma.xlsx"};*/
         }
         
         private void renderDetallePadre(ExcelRange cells, int pos, ProformaDetalle det,Dictionary<string,Dictionary<string,int>> paresProformaReal)

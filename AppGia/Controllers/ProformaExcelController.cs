@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using AppGia.Models;
 using Microsoft.AspNetCore.Mvc;
+using static System.Convert;
 
 namespace AppGia.Controllers
 {
@@ -13,17 +13,17 @@ namespace AppGia.Controllers
         private ProformaExcelHelper _proformaExcelHelper=new ProformaExcelHelper();
         
         [HttpPost("import")]
-        public List<ProformaDetalle> import(String excelFileB64)
+        public List<ProformaDetalle> import([FromBody]String excelFileB64)
         {
-            return _proformaExcelHelper.import(Convert.FromBase64String(excelFileB64));
+            return _proformaExcelHelper.import(FromBase64String(excelFileB64));
         }
         
         // POST: api/ProformaExcel
         [HttpPost("export")]
-        public Boolean export([FromBody]List<ProformaDetalle> lstGuardaProforma)
+
+        public string export([FromBody]List<ProformaDetalle> detallesProfToRender)
         {
-            //return _proformaExcelHelper.export(lstGuardaProforma);
-            return true;
+            return  ToBase64String(_proformaExcelHelper.export(detallesProfToRender));
         }
         
 
