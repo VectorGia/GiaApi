@@ -20,9 +20,10 @@ namespace AppGia.Controllers
         
         // POST: api/ProformaExcel
         [HttpPost("export")]
-        public IActionResult export([FromBody]List<ProformaDetalle> lstGuardaProforma)
+        public Boolean export([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
-            return _proformaExcelHelper.export(lstGuardaProforma);
+            //return _proformaExcelHelper.export(lstGuardaProforma);
+            return true;
         }
         
 
