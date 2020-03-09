@@ -221,10 +221,10 @@ namespace AppGia.Controllers
             Dictionary<string,int> par=paresProformaReal[det.clave_rubro];
             par.Add(TIPODETPROREAL,pos);
             
-            makeCellMonto(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
-            makeCellMonto(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address).Style.Font.Bold=true;
-            makeCellMonto(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
-            makeCellMonto(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
+            makeCellValue(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
+            makeCellValue(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address).Style.Font.Bold=true;
+            makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
+            makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
            
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
             {
@@ -234,11 +234,11 @@ namespace AppGia.Controllers
                 {
                     //Object valorCelda = det[entry.Key];
                     Object valorCelda = 0;
-                    makeCellMonto(cells, pos, posicionCelda, valorCelda).Style.Font.Bold=true;
+                    makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Font.Bold=true;
                 }
             }
 
-            makeCellMonto(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado).Style.Font.Bold=true;
+            makeCellValue(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado).Style.Font.Bold=true;
             renderDatosOcultos(cells,pos,det);
         }
         
@@ -248,18 +248,18 @@ namespace AppGia.Controllers
             if (det.tipo.Equals(TIPODETPROFORM))
             {
                 par.Add(TIPODETPROFORM,pos);
-                makeCellMonto(cells, pos, 1, 0);
-                makeCellMonto(cells, pos, 2, 0);
-                makeCellMonto(cells, pos, 3, 0);
-                makeCellMonto(cells, pos, pos_ejercicio, 0);
+                makeCellValue(cells, pos, 1, 0);
+                makeCellValue(cells, pos, 2, 0);
+                makeCellValue(cells, pos, 3, 0);
+                makeCellValue(cells, pos, pos_ejercicio, 0);
             }
             else if (det.tipo.Equals(TIPODETPROREAL))
             {
                 par.Add(TIPODETPROREAL,pos);
-                makeCellMonto(cells, pos, 1, det.nombre_rubro);
-                makeCellMonto(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address);
-                makeCellMonto(cells, pos, 3, det.acumulado_resultado);
-                makeCellMonto(cells, pos, pos_ejercicio, 0);
+                makeCellValue(cells, pos, 1, det.nombre_rubro);
+                makeCellValue(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address);
+                makeCellValue(cells, pos, 3, det.acumulado_resultado);
+                makeCellValue(cells, pos, pos_ejercicio, 0);
             }
             
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
@@ -273,28 +273,28 @@ namespace AppGia.Controllers
                     {
                         if (ponderacion <= mesInicio)
                         {
-                            makeCellMonto(cells, pos, posicionCelda, 0.0);
+                            makeCellValue(cells, pos, posicionCelda, 0.0);
                         }
                         else
                         {
-                            makeCellMonto(cells, pos, posicionCelda, valorCelda).Style.Locked = false;
+                            makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Locked = false;
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
                     {
                         if (ponderacion > mesInicio)
                         {
-                            makeCellMonto(cells, pos, posicionCelda, 0.0);
+                            makeCellValue(cells, pos, posicionCelda, 0.0);
                         }
                         else
                         {
-                            makeCellMonto(cells, pos, posicionCelda, valorCelda);
+                            makeCellValue(cells, pos, posicionCelda, valorCelda);
                         }
                     }
                 }
             }
 
-            makeCellMonto(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado);
+            makeCellValue(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado);
             renderDatosOcultos(cells,pos,det);
         }
 
@@ -354,7 +354,7 @@ namespace AppGia.Controllers
                 
             }
         }
-        private ExcelRangeBase makeCellMonto(ExcelRange excelRange,int posY,int posX,object value)
+        private ExcelRangeBase makeCellValue(ExcelRange excelRange,int posY,int posX,object value)
         {
             ExcelRangeBase excelCell = excelRange[posY, posX];
             ExcelStyle style = excelCell.Style;
@@ -362,18 +362,37 @@ namespace AppGia.Controllers
             {
                 excelCell.Formula = value.ToString().Substring(1);//no incluimos el =
             }
-            else
+            if(value is String)
+            {
+                excelCell.Value = value.ToString();
+            }
+            else if (value is Int64 )
+            {
+                excelCell.Value = ToInt64(value);
+            }else if (value is Int32 )
+            {
+                excelCell.Value = ToInt32(value);
+            }else if (value is Boolean )
+            {
+                excelCell.Value = ToBoolean(value);
+            }else
             {
                 excelCell.Value = ToDouble(value);
                 style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             }
+            return applyStyle(excelCell);
+        }
+
+        private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
+        {
+            ExcelStyle style = excelCell.Style;
             style.Font.Size = 12;
             style.Border.Top.Style = ExcelBorderStyle.Hair;
             style.ShrinkToFit=true;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             style.Locked = true;
             return excelCell;
-        }
+        } 
         private void makeEncabezado(ExcelRange cells, string[] nombresColumnas)
         {
             for (int i = 0; i < nombresColumnas.Length; i++)
@@ -388,18 +407,18 @@ namespace AppGia.Controllers
 
         private void renderDatosOcultos(ExcelRange cells, int posY, ProformaDetalle det)
         {
-            makeCellMonto(cells, posY, pos_id_proforma, det.id_proforma).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_mes_inicio, det.mes_inicio).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_centro_costo_id, det.centro_costo_id).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_anio, det.anio).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_tipo_proforma_id, det.tipo_proforma_id).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_tipo_captura_id, det.tipo_captura_id).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_idInterno, det.idInterno).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_clave_rubro, det.clave_rubro).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_rubro_id, det.rubro_id).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_tipo, det.tipo).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_estilo,  det.estilo).Style.Hidden = true;
-            makeCellMonto(cells, posY, pos_aritmetica,  det.aritmetica).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_id_proforma, det.id_proforma).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_mes_inicio, det.mes_inicio).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_centro_costo_id, det.centro_costo_id).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_anio, det.anio).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_tipo_proforma_id, det.tipo_proforma_id).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_tipo_captura_id, det.tipo_captura_id).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_idInterno, det.idInterno).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_rubro_id, det.rubro_id).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_tipo, det.tipo).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_estilo,  det.estilo).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica).Style.Hidden = true;
            
         }
         private static Dictionary<string, Int32> getPonderacionCampos()
