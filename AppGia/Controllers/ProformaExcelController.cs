@@ -20,10 +20,12 @@ namespace AppGia.Controllers
         
         // POST: api/ProformaExcel
         [HttpPost("export")]
-        public string export([FromBody]List<ProformaDetalle> detallesProfToRender)
+        public Dictionary<string,string> export([FromBody]List<ProformaDetalle> detallesProfToRender)
         {
             string resB64=  ToBase64String(_proformaExcelHelper.export(detallesProfToRender));
-            return resB64;
+            Dictionary<string, string> dic=new Dictionary<string, string>();
+            dic.Add("resB64",resB64);
+            return  dic;
         }
         
 
