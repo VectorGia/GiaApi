@@ -287,8 +287,9 @@ namespace AppGia.Controllers
                             makeCellValue(cells, pos, posicionCelda, valorCelda);
                             style.Font.Color.SetColor(Color.White);
                             style.Locked = false;
-                            style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
-                            style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                            
+                            cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
+                            cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
