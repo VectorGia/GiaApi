@@ -330,27 +330,20 @@ namespace AppGia.Controllers
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle detalleCalculado in detallesCalculados)
             {
-                if (detallesAniosAnteriores.Count > 0)
+                detalleCalculado.total_resultado = detalleCalculado.ejercicio_resultado;
+                foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
                 {
-                    foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
+                    // Compara elementos para completar la lista
+                    if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
                     {
-                        // Compara elementos para completar la lista
-                        if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
-                        {
-                            // Si coincide el rubro se guardan los acumulados anteriores
-                            detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
-                            // Se actualiza el total como la suma del ejercicio + el acumulado
-                            detalleCalculado.total_resultado =
-                                detalleAnioAnt.acumulado_resultado + detalleCalculado.ejercicio_resultado;
-                            break;
-                        }
+                        // Si coincide el rubro se guardan los acumulados anteriores
+                        detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
+                        // Se actualiza el total como la suma del ejercicio + el acumulado
+                        detalleCalculado.total_resultado += detalleAnioAnt.acumulado_resultado;
+                        break;
                     }
                 }
-                else
-                {
-                    detalleCalculado.total_resultado = detalleCalculado.ejercicio_resultado;
-                }
-
+                
                 foreach (ProformaDetalle detalleAnioPost in detalleAniosPosteriores)
                 {
                     if (detalleCalculado.rubro_id == detalleAnioPost.rubro_id)
