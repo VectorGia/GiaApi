@@ -204,14 +204,14 @@ namespace AppGia.Controllers
                     }
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
-                cells.Calculate();
-                for (int i = 2; i < workSheet.Dimension.End.Row; i++)
+                //cells.Calculate();
+                /*for (int i = 2; i < workSheet.Dimension.End.Row; i++)
                 {
                     cells[i,pos_ejercicio].Calculate();
-                }
+                }*/
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                cells.Calculate();
-                workSheet.Calculate();
+                /*cells.Calculate();
+                workSheet.Calculate();*/
                 workSheet.Workbook.Calculate();
              
                 for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
