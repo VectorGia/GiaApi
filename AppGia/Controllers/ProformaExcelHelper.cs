@@ -58,7 +58,7 @@ namespace AppGia.Controllers
                     String idInterno = cells[i, pos_idInterno].Value.ToString();
                     if (idInterno!=null&&idInterno.Length > 0)
                     {
-                     detalles.Add(transform(cells,2));
+                     detalles.Add(transform(cells,i));
                     }
                 }
             }
@@ -105,7 +105,8 @@ namespace AppGia.Controllers
 
         private List<ProformaDetalle> manageDetalles(List<ProformaDetalle> detallesFromExcel)
         {
-            ProformaDetalle datosProforma = detallesFromExcel[0];
+            return detallesFromExcel;
+          /*  ProformaDetalle datosProforma = detallesFromExcel[0];
             List<ProformaDetalle> detallesProformados = detallesFromExcel.FindAll(detalle =>
             {
                 return detalle.tipo.Equals(TIPODETPROFORM);
@@ -134,7 +135,7 @@ namespace AppGia.Controllers
                 applyValuesFrom(detallesProformados, detallesProforma, datosProforma.mes_inicio);
             }
 
-            return recalculate(detallesProforma);
+            return recalculate(detallesProforma);*/
         }
 
         private List<ProformaDetalle> recalculate(List<ProformaDetalle> proformaDetalles)
