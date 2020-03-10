@@ -420,7 +420,7 @@ namespace AppGia.Controllers
             makeCellValue(cells, posY, pos_rubro_id, det.rubro_id).Style.Hidden = true;
             makeCellValue(cells, posY, pos_tipo, det.tipo).Style.Hidden = true;
             makeCellValue(cells, posY, pos_estilo,  det.estilo).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica).Style.Hidden = true;
+            makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica).Style.Hidden = true;
            
         }
         private static Dictionary<string, Int32> getPonderacionCampos()
