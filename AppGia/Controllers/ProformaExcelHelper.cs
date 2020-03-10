@@ -204,9 +204,16 @@ namespace AppGia.Controllers
                     }
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
+                cells.Calculate();
+                for (int i = 2; i < workSheet.Dimension.End.Row; i++)
+                {
+                    cells[i,pos_ejercicio].Calculate();
+                }
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                package.Workbook.Calculate();
-               // workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                cells.Calculate();
+                workSheet.Calculate();
+                workSheet.Workbook.Calculate();
+             
                 for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
                     workSheet.Column(i).Width=20;
@@ -228,8 +235,8 @@ namespace AppGia.Controllers
             par.Add(TIPODETPROREAL,pos);
             
             makeCellValue(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
-            string formula = String.Format("SUMA({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-            makeCellValue(cells, pos, 2, "=" + formula).Style.Font.Bold=true;
+            string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
+            makeCellFormula(cells, pos, 2,  formula).Style.Font.Bold=true;
             makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
             makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
            
@@ -264,8 +271,8 @@ namespace AppGia.Controllers
             {
                 par.Add(TIPODETPROREAL,pos);
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
-                string formula = String.Format("SUMA({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-                makeCellValue(cells, pos, 2, "=" + formula);
+                string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
+                makeCellFormula(cells, pos, 2,  formula).Style.Font.Bold=true;
                 makeCellValue(cells, pos, 3, det.acumulado_resultado);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
@@ -399,6 +406,11 @@ namespace AppGia.Controllers
                 style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             }
             return applyStyle(excelCell);
+        }
+        private ExcelRangeBase makeCellFormula(ExcelRange excelRange,int posY,int posX,string formula)
+        {
+            excelRange[posY, posX].Formula = formula;
+            return applyStyle(excelRange[posY, posX]);
         }
         
         private void makeEncabezado(ExcelRange cells, string[] nombresColumnas)
