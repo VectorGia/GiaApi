@@ -105,8 +105,8 @@ namespace AppGia.Controllers
 
         private List<ProformaDetalle> manageDetalles(List<ProformaDetalle> detallesFromExcel)
         {
-            return detallesFromExcel;
-          /*  ProformaDetalle datosProforma = detallesFromExcel[0];
+           // return detallesFromExcel;
+            ProformaDetalle datosProforma = detallesFromExcel[0];
             List<ProformaDetalle> detallesProformados = detallesFromExcel.FindAll(detalle =>
             {
                 return detalle.tipo.Equals(TIPODETPROFORM);
@@ -135,7 +135,7 @@ namespace AppGia.Controllers
                 applyValuesFrom(detallesProformados, detallesProforma, datosProforma.mes_inicio);
             }
 
-            return recalculate(detallesProforma);*/
+            return recalculate(detallesProforma);
         }
 
         private List<ProformaDetalle> recalculate(List<ProformaDetalle> proformaDetalles)
