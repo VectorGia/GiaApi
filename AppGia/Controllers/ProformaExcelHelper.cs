@@ -135,14 +135,10 @@ namespace AppGia.Controllers
                 applyValuesFrom(detallesProformados, detallesProforma, datosProforma.mes_inicio);
             }
 
-            return recalculate(detallesProforma);
+            return detallesProforma;
         }
 
-        private List<ProformaDetalle> recalculate(List<ProformaDetalle> proformaDetalles)
-        {
-            //TODO: HNA recalcular proforma
-            return proformaDetalles;
-        }
+      
 
 
         private void applyValuesFrom(List<ProformaDetalle> source, List<ProformaDetalle> target, int mesInicio)
@@ -203,20 +199,18 @@ namespace AppGia.Controllers
                     }
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
-                //cells.Calculate();
-                /*for (int i = 2; i < workSheet.Dimension.End.Row; i++)
-                {
-                    cells[i,pos_ejercicio].Calculate();
-                }*/
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                /*cells.Calculate();
-                workSheet.Calculate();*/
                 workSheet.Workbook.Calculate();
-             
-                for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                setBordersInworkSheet(workSheet);
+                /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
+                {
+                    workSheet.Column(i).AutoFit();
+                }*/
+                /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
                     workSheet.Column(i).Width=20;
-                }
+                }*/
                 fileContents = package.GetAsByteArray();
             }
 
@@ -234,9 +228,8 @@ namespace AppGia.Controllers
             par.Add(TIPODETPROREAL,pos);
             
             makeCellValue(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
-            cells[pos, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            cells[pos, 1].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FAFAD2"));
-            cells[pos, 1].Style.Font.Color.SetColor(Color.Black);
+            setCellColor(cells[pos, 1].Style,Color.Black,ColorTranslator.FromHtml("#FAFAD2"));
+       
 
             string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
             makeCellFormula(cells, pos, 2,  formula).Style.Font.Bold=true;
@@ -249,7 +242,6 @@ namespace AppGia.Controllers
                 int posicionCelda = ponderacion + pos_ejercicio;
                 if (ponderacion > 0)
                 {
-                    //Object valorCelda = det[entry.Key];
                     Object valorCelda = 0;
                     makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Font.Bold=true;
                 }
@@ -295,15 +287,7 @@ namespace AppGia.Controllers
                         }
                         else
                         {
-                            ExcelStyle style = makeCellValue(cells, pos, posicionCelda, valorCelda).Style;
-                            makeCellValue(cells, pos, posicionCelda, valorCelda);
-                            style.Font.Color.SetColor(Color.Black);
-                            style.Locked = false;
-                            style.Fill.PatternType = ExcelFillStyle.Solid;
-                            style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#ffffff"));
-
-                            //cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
-                            //cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                            applyStyleEditable(makeCellValue(cells, pos, posicionCelda, valorCelda));
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
@@ -334,7 +318,6 @@ namespace AppGia.Controllers
                     string aritmetica = cells[posRow, pos_aritmetica].Value.ToString();
                     foreach (var entry in paresProformaRealProfor)
                     {
-                        //cells[posDetReal, 16].Address
                         string claveRubro = entry.Key;
                         if (aritmetica.Contains(claveRubro))
                         {
@@ -354,8 +337,6 @@ namespace AppGia.Controllers
                     }
                     string formula = aritmetica;
                     makeCellFormula(cells, posRow, i, formula);
-                    //cells[posRow, i].Formula = formula;
-                    //cells[posRow, i].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
                     cells[posRow, i].Calculate();
                 }
             });
@@ -374,13 +355,6 @@ namespace AppGia.Controllers
                         cells[posDetProform, 16].Address);
                     cells[posDetReal, pos_ejercicio].Formula = formula;
                 }
-               /* else
-                {
-                    int posDetProform = entry.Value[TIPODETPROREAL];
-                    string formula = String.Format("SUMA({0}:{1})",
-                        cells[posDetProform, 5].Address, cells[posDetProform, 16].Address);
-                    cells[posDetProform, pos_ejercicio].Formula = formula;
-                }*/
                 cells[posDetReal, pos_ejercicio].Calculate();
             }
 
@@ -390,10 +364,6 @@ namespace AppGia.Controllers
         {
             ExcelRangeBase excelCell = excelRange[posY, posX];
             ExcelStyle style = excelCell.Style;
-            if(value is String && value.ToString().StartsWith("="))
-            {
-                excelCell.Formula = value.ToString().Substring(1);//no incluimos el =
-            }
             if(value is String)
             {
                 excelCell.Value = value.ToString();
@@ -412,13 +382,14 @@ namespace AppGia.Controllers
                 excelCell.Value = ToDouble(value);
                 style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             }
-            return applyStyle(excelCell);
+            return applyStyleDefault(excelCell);
         }
         private ExcelRangeBase makeCellFormula(ExcelRange excelRange,int posY,int posX,string formula)
         {
             excelRange[posY, posX].Formula = formula;
             excelRange[posY, posX].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
-            return applyStyle(excelRange[posY, posX]);
+            excelRange[posY, posX].Style.Hidden = true;    //Hide the formula
+            return applyStyleDefault(excelRange[posY, posX]);
         }
         
         private void makeEncabezado(ExcelRange cells, string[] nombresColumnas)
@@ -427,60 +398,76 @@ namespace AppGia.Controllers
             {
                 int posicion = i + 1;
                 cells[1, posicion].Value = nombresColumnas[i];
-                cells[1, posicion].Style.Font.Size = 12;
-                cells[1, posicion].Style.Font.Bold = true;
-                cells[1, posicion].Style.Border.Top.Style = ExcelBorderStyle.Hair;
-                cells[1, posicion].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                cells[1, posicion].Style.Fill.BackgroundColor.SetColor(Color.Blue);
-                cells[1, posicion].Style.Font.Color.SetColor(Color.Azure);
+                applyStyleDefault(cells[1, posicion]).Style.Font.Bold = true;
+                setCellColor(cells[1, posicion].Style, Color.Azure, Color.Blue);
             }
-
-            //Color DeepBlueHexCode = ColorTranslator.FromHtml("#254061");
-            
         }
 
         private void renderDatosOcultos(ExcelRange cells, int posY, ProformaDetalle det)
         {
-            applyStyleLocked(makeCellValue(cells, posY, pos_id_proforma, det.id_proforma));
-            applyStyleLocked(makeCellValue(cells, posY, pos_mes_inicio, det.mes_inicio));
-            applyStyleLocked(makeCellValue(cells, posY, pos_centro_costo_id, det.centro_costo_id));
-            applyStyleLocked(makeCellValue(cells, posY, pos_anio, det.anio));
-            applyStyleLocked(makeCellValue(cells, posY, pos_tipo_proforma_id, det.tipo_proforma_id));
-            applyStyleLocked(makeCellValue(cells, posY, pos_tipo_captura_id, det.tipo_captura_id));
-            applyStyleLocked(makeCellValue(cells, posY, pos_idInterno, det.idInterno));
-            applyStyleLocked(makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro));
-            applyStyleLocked(makeCellValue(cells, posY, pos_rubro_id, det.rubro_id));
-            applyStyleLocked(makeCellValue(cells, posY, pos_tipo, det.tipo==null?"":det.tipo));
-            applyStyleLocked(makeCellValue(cells, posY, pos_estilo,  det.estilo));
-            applyStyleLocked(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
+            applyStyleOculto(makeCellValue(cells, posY, pos_id_proforma, det.id_proforma));
+            applyStyleOculto(makeCellValue(cells, posY, pos_mes_inicio, det.mes_inicio));
+            applyStyleOculto(makeCellValue(cells, posY, pos_centro_costo_id, det.centro_costo_id));
+            applyStyleOculto(makeCellValue(cells, posY, pos_anio, det.anio));
+            applyStyleOculto(makeCellValue(cells, posY, pos_tipo_proforma_id, det.tipo_proforma_id));
+            applyStyleOculto(makeCellValue(cells, posY, pos_tipo_captura_id, det.tipo_captura_id));
+            applyStyleOculto(makeCellValue(cells, posY, pos_idInterno, det.idInterno));
+            applyStyleOculto(makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro));
+            applyStyleOculto(makeCellValue(cells, posY, pos_rubro_id, det.rubro_id));
+            applyStyleOculto(makeCellValue(cells, posY, pos_tipo, det.tipo==null?"":det.tipo));
+            applyStyleOculto(makeCellValue(cells, posY, pos_estilo,  det.estilo));
+            applyStyleOculto(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
             cells.Worksheet.Protection.SetPassword("TXu6Wm.Bt.^M)?Je");
 
         }
 
-        private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
+        private ExcelRangeBase applyStyleDefault(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
-            style.Locked = true;
-            style.Font.Size = 12;
-      
+            style.Locked = true;//por defecto todas la columnas bloqueadas a edicion
+            style.Font.Size = 11;
             style.Border.Top.Style = ExcelBorderStyle.Hair;
-            style.ShrinkToFit=false;
+            //style.ShrinkToFit=false;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            //style.Fill.BackgroundColor.SetColor(Color.White);
-            style.Fill.PatternType = ExcelFillStyle.Solid;
-            style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#eaeded"));
-            style.Font.Color.SetColor(Color.Black);
+            setCellColor(style, Color.Black, ColorTranslator.FromHtml("#eaeded"));
             return excelCell;
         } 
-        private void applyStyleLocked(ExcelRangeBase excelCell)
+        private void applyStyleOculto(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
-            style.Locked = true;
-            style.Fill.PatternType = ExcelFillStyle.Solid;
-            style.Fill.BackgroundColor.SetColor(Color.White);
-            style.Font.Color.SetColor(Color.White);
-            style.Hidden = true;    //Hide the formula
+            setCellColor(style, Color.White, Color.White);
         }
+        private void applyStyleEditable(ExcelRangeBase excelCell)
+        {
+            ExcelStyle style = excelCell.Style;
+            style.Locked = false;
+            setCellColor(style, Color.Black, ColorTranslator.FromHtml("#ffffff"));
+        }
+        private void setCellColor(ExcelStyle style,Color fontColor,Color backColor)
+        {
+            style.Font.Color.SetColor(fontColor);
+            style.Fill.PatternType = ExcelFillStyle.Solid;
+            style.Fill.BackgroundColor.SetColor(backColor);
+        }
+
+        private void setBordersInworkSheet(ExcelWorksheet ws)
+        {
+            int numRows=ws.Dimension.End.Row;
+            setBorderColor(ws.Cells[2, 2,numRows, 2]);
+            setBorderColor(ws.Cells[2, 3,numRows, 3]);
+            setBorderColor(ws.Cells[2, pos_anios_posteriores,numRows, pos_anios_posteriores]);
+        }
+        private void setBorderColor(ExcelRange Rng)
+        {
+            //ExcelRange Rng = cells[2, 2, cells.Worksheet.Dimension.End.Row, 2];
+            Rng.Merge = true;
+            Rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            Rng.Style.Border.Left.Color.SetColor(Color.Black);
+            Rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            Rng.Style.Border.Right.Color.SetColor(Color.Black);
+        }
+        
+ 
         private static Dictionary<string, Int32> getPonderacionCampos()
         {
             Dictionary<string, Int32> ponderacionCampos = new Dictionary<string, Int32>();
