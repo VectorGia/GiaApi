@@ -16,18 +16,18 @@ namespace AppGia.Controllers
         private static string sheetName="proforma";
         private static int pos_ejercicio = 4;
         private static int pos_anios_posteriores = 17;
-        private static int pos_id_proforma = 18;
-        private static int pos_mes_inicio = 19;
-        private static int pos_centro_costo_id = 20;
-        private static int pos_anio = 21;
-        private static int pos_tipo_proforma_id = 22;
-        private static int pos_tipo_captura_id = 23;
-        private static int pos_idInterno = 24;
-        private static int pos_rubro_id = 25;
-        private static int pos_clave_rubro = 26;
-        private static int pos_tipo = 27;
-        private static int pos_estilo = 28;
-        private static int pos_aritmetica = 29;
+        private static int pos_id_proforma = 118;
+        private static int pos_mes_inicio = 119;
+        private static int pos_centro_costo_id = 120;
+        private static int pos_anio = 121;
+        private static int pos_tipo_proforma_id = 122;
+        private static int pos_tipo_captura_id = 123;
+        private static int pos_idInterno = 124;
+        private static int pos_rubro_id = 125;
+        private static int pos_clave_rubro = 126;
+        private static int pos_tipo = 127;
+        private static int pos_estilo = 128;
+        private static int pos_aritmetica = 129;
         
         
         
@@ -415,7 +415,7 @@ namespace AppGia.Controllers
             applyStyleLocked(makeCellValue(cells, posY, pos_idInterno, det.idInterno));
             applyStyleLocked(makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro));
             applyStyleLocked(makeCellValue(cells, posY, pos_rubro_id, det.rubro_id));
-            applyStyleLocked(makeCellValue(cells, posY, pos_tipo, det.tipo));
+            applyStyleLocked(makeCellValue(cells, posY, pos_tipo, det.tipo==null?"":det.tipo));
             applyStyleLocked(makeCellValue(cells, posY, pos_estilo,  det.estilo));
             applyStyleLocked(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
             cells.Worksheet.Protection.SetPassword("TXu6Wm.Bt.^M)?Je");
@@ -427,11 +427,11 @@ namespace AppGia.Controllers
             ExcelStyle style = excelCell.Style;
             style.Locked = false;
             style.Font.Size = 12;
-            //style.Font.Color.SetColor(Color.White);
+            style.Font.Color.SetColor(Color.Gray);
             style.Border.Top.Style = ExcelBorderStyle.Hair;
             style.ShrinkToFit=false;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            //style.Fill.BackgroundColor.SetColor(Color.DarkGray);
+            //style.Fill.BackgroundColor.SetColor(Color.White);
             return excelCell;
         } 
         private void applyStyleLocked(ExcelRangeBase excelCell)
@@ -440,7 +440,7 @@ namespace AppGia.Controllers
             style.Locked = true;
             style.Fill.PatternType = ExcelFillStyle.Solid;
             style.Fill.BackgroundColor.SetColor(Color.White);
-            style.Font.Color.SetColor(Color.SlateGray);
+            style.Font.Color.SetColor(Color.White);
             style.Hidden = true;    //Hide the formula
         }
         private static Dictionary<string, Int32> getPonderacionCampos()
