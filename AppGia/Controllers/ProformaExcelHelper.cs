@@ -349,20 +349,21 @@ namespace AppGia.Controllers
             foreach (var entry in paresProformaReal)
             {
                 int posDetReal = entry.Value[TIPODETPROREAL];
-                if (entry.Value.ContainsKey(TIPODETPROFORM))
+                if (entry.Value.ContainsKey(TIPODETPROREAL))
                 {
-                    int posDetProform = entry.Value[TIPODETPROFORM];
+                    int posDetProform = entry.Value[TIPODETPROREAL];
                     string formula = String.Format("SUMA({0}:{1})+SUMA({2}:{3})",
                         cells[posDetReal, 5].Address, cells[posDetReal, 16].Address, cells[posDetProform, 5].Address,
                         cells[posDetProform, 16].Address);
                     cells[posDetReal, pos_ejercicio].Formula = formula;
                 }
-                else
+               /* else
                 {
+                    int posDetProform = entry.Value[TIPODETPROREAL];
                     string formula = String.Format("SUMA({0}:{1})",
-                        cells[posDetReal, 5].Address, cells[posDetReal, 16].Address);
-                    cells[posDetReal, pos_ejercicio].Formula = formula;
-                }
+                        cells[posDetProform, 5].Address, cells[posDetProform, 16].Address);
+                    cells[posDetProform, pos_ejercicio].Formula = formula;
+                }*/
                 cells[posDetReal, pos_ejercicio].Calculate();
             }
 
