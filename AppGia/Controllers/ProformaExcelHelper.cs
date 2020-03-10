@@ -13,6 +13,7 @@ namespace AppGia.Controllers
     public class ProformaExcelHelper
     {
         private static string sheetName="proforma";
+        private static int pos_total = 2;
         private static int pos_ejercicio = 4;
         private static int pos_anios_posteriores = 17;
         private static int pos_id_proforma = 118;
@@ -200,7 +201,11 @@ namespace AppGia.Controllers
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                //workSheet.Workbook.Calculate();
+                cells.Calculate();
+                /*for (int i = 2; i < workSheet.Dimension.End.Row; i++)
+                {
+                    cells[i, pos_total].Calculate();
+                }*/
                 workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                //setBordersInworkSheet(workSheet);
                 /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
@@ -232,7 +237,7 @@ namespace AppGia.Controllers
        
 
             string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-            makeCellFormula(cells, pos, 2,  formula).Style.Font.Bold=true;
+            makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
             makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
             makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
            
@@ -258,7 +263,7 @@ namespace AppGia.Controllers
             {
                 par.Add(TIPODETPROFORM,pos);
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " proform" );
-                makeCellValue(cells, pos, 2, 0.0);
+                makeCellValue(cells, pos, pos_total, 0.0);
                 makeCellValue(cells, pos, 3, 0.0);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
@@ -267,7 +272,7 @@ namespace AppGia.Controllers
                 par.Add(TIPODETPROREAL,pos);
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
                 string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-                makeCellFormula(cells, pos, 2,  formula).Style.Font.Bold=true;
+                makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
                 makeCellValue(cells, pos, 3, det.acumulado_resultado);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
