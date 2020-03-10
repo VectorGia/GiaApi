@@ -248,7 +248,7 @@ namespace AppGia.Controllers
             if (det.tipo.Equals(TIPODETPROFORM))
             {
                 par.Add(TIPODETPROFORM,pos);
-                makeCellValue(cells, pos, 1, 0);
+                makeCellValue(cells, pos, 1, det.nombre_rubro + " proform" );
                 makeCellValue(cells, pos, 2, 0);
                 makeCellValue(cells, pos, 3, 0);
                 makeCellValue(cells, pos, pos_ejercicio, 0);
@@ -256,7 +256,7 @@ namespace AppGia.Controllers
             else if (det.tipo.Equals(TIPODETPROREAL))
             {
                 par.Add(TIPODETPROREAL,pos);
-                makeCellValue(cells, pos, 1, det.nombre_rubro);
+                makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
                 makeCellValue(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address);
                 makeCellValue(cells, pos, 3, det.acumulado_resultado);
                 makeCellValue(cells, pos, pos_ejercicio, 0);
