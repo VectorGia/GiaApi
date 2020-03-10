@@ -228,7 +228,8 @@ namespace AppGia.Controllers
             par.Add(TIPODETPROREAL,pos);
             
             makeCellValue(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
-            makeCellValue(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address).Style.Font.Bold=true;
+            string formula = String.Format("SUMA({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
+            makeCellValue(cells, pos, 2, "=" + formula).Style.Font.Bold=true;
             makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
             makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
            
@@ -263,7 +264,8 @@ namespace AppGia.Controllers
             {
                 par.Add(TIPODETPROREAL,pos);
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
-                makeCellValue(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address);
+                string formula = String.Format("SUMA({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
+                makeCellValue(cells, pos, 2, "=" + formula);
                 makeCellValue(cells, pos, 3, det.acumulado_resultado);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
