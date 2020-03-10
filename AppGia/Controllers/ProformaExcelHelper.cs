@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using AppGia.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -369,7 +368,7 @@ namespace AppGia.Controllers
                 int posDetReal = entry.Value[TIPODETPROREAL];
                 if (entry.Value.ContainsKey(TIPODETPROREAL))
                 {
-                    int posDetProform = entry.Value[TIPODETPROREAL];
+                    int posDetProform = entry.Value[TIPODETPROFORM];
                     string formula = String.Format("SUM({0}:{1})+SUM({2}:{3})",
                         cells[posDetReal, 5].Address, cells[posDetReal, 16].Address, cells[posDetProform, 5].Address,
                         cells[posDetProform, 16].Address);
