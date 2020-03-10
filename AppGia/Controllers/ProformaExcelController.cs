@@ -13,8 +13,9 @@ namespace AppGia.Controllers
         private ProformaExcelHelper _proformaExcelHelper=new ProformaExcelHelper();
         
         [HttpPost("import")]
-        public List<ProformaDetalle> import([FromBody]String excelFileB64)
+        public List<ProformaDetalle> import([FromBody] Dictionary<string,string> data)
         {
+            String excelFileB64 = data["b64Data"];
             return _proformaExcelHelper.import(FromBase64String(excelFileB64));
         }
         
