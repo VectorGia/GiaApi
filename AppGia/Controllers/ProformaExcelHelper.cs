@@ -285,11 +285,11 @@ namespace AppGia.Controllers
                         {
                             ExcelStyle style = makeCellValue(cells, pos, posicionCelda, valorCelda).Style;
                             makeCellValue(cells, pos, posicionCelda, valorCelda);
-                            style.Font.Color.SetColor(Color.White);
+                            style.Font.Color.SetColor(Color.Black);
                             style.Locked = false;
                             
-                            cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
-                            cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                            //cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
+                            //cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
@@ -353,7 +353,7 @@ namespace AppGia.Controllers
                 if (entry.Value.ContainsKey(TIPODETPROREAL))
                 {
                     int posDetProform = entry.Value[TIPODETPROREAL];
-                    string formula = String.Format("SUMA({0}:{1})+SUMA({2}:{3})",
+                    string formula = String.Format("SUM({0}:{1})+SUM({2}:{3})",
                         cells[posDetReal, 5].Address, cells[posDetReal, 16].Address, cells[posDetProform, 5].Address,
                         cells[posDetProform, 16].Address);
                     cells[posDetReal, pos_ejercicio].Formula = formula;
