@@ -330,18 +330,25 @@ namespace AppGia.Controllers
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle detalleCalculado in detallesCalculados)
             {
-                foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
+                if (detallesAniosAnteriores.Count > 0)
                 {
-                    // Compara elementos para completar la lista
-                    if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
+                    foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
                     {
-                        // Si coincide el rubro se guardan los acumulados anteriores
-                        detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
-                        // Se actualiza el total como la suma del ejercicio + el acumulado
-                        detalleCalculado.total_resultado =
-                            detalleAnioAnt.acumulado_resultado + detalleCalculado.ejercicio_resultado;
-                        break;
+                        // Compara elementos para completar la lista
+                        if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
+                        {
+                            // Si coincide el rubro se guardan los acumulados anteriores
+                            detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
+                            // Se actualiza el total como la suma del ejercicio + el acumulado
+                            detalleCalculado.total_resultado =
+                                detalleAnioAnt.acumulado_resultado + detalleCalculado.ejercicio_resultado;
+                            break;
+                        }
                     }
+                }
+                else
+                {
+                    detalleCalculado.total_resultado = detalleCalculado.ejercicio_resultado;
                 }
 
                 foreach (ProformaDetalle detalleAnioPost in detalleAniosPosteriores)
