@@ -283,7 +283,7 @@ namespace AppGia.Controllers
                         }
                         else
                         {
-                            makeCellValue(cells, pos, posicionCelda, valorCelda);//esta parte debe estar editable
+                            makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Locked = false ;
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
@@ -425,6 +425,7 @@ namespace AppGia.Controllers
         private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
+            style.Locked = true;
             style.Font.Size = 12;
             style.Font.Color.SetColor(Color.White);
             style.Border.Top.Style = ExcelBorderStyle.Hair;
@@ -436,7 +437,7 @@ namespace AppGia.Controllers
         private void applyStyleLocked(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
-            style.Locked = false;
+            style.Locked = true;
             style.Fill.PatternType = ExcelFillStyle.Solid;
             style.Fill.BackgroundColor.SetColor(Color.White);
             style.Font.Color.SetColor(Color.SlateGray);
