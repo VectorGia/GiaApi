@@ -235,6 +235,10 @@ namespace AppGia.Controllers
             par.Add(TIPODETPROREAL,pos);
             
             makeCellValue(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
+            cells[pos, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            cells[pos, 1].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#FAFAD2"));
+            cells[pos, 1].Style.Font.Color.SetColor(Color.Black);
+
             string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
             makeCellFormula(cells, pos, 2,  formula).Style.Font.Bold=true;
             makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
@@ -296,7 +300,9 @@ namespace AppGia.Controllers
                             makeCellValue(cells, pos, posicionCelda, valorCelda);
                             style.Font.Color.SetColor(Color.Black);
                             style.Locked = false;
-                            
+                            style.Fill.PatternType = ExcelFillStyle.Solid;
+                            style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#ffffff"));
+
                             //cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
                             //cells.Worksheet.Cells[pos,posicionCelda].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
                         }
@@ -348,7 +354,9 @@ namespace AppGia.Controllers
                         }
                     }
                     string formula = aritmetica;
-                    cells[posRow, i].Formula = formula;
+                    makeCellFormula(cells, posRow, i, formula);
+                    //cells[posRow, i].Formula = formula;
+                    //cells[posRow, i].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
                     cells[posRow, i].Calculate();
                 }
             });
@@ -410,6 +418,7 @@ namespace AppGia.Controllers
         private ExcelRangeBase makeCellFormula(ExcelRange excelRange,int posY,int posX,string formula)
         {
             excelRange[posY, posX].Formula = formula;
+            excelRange[posY, posX].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             return applyStyle(excelRange[posY, posX]);
         }
         
@@ -422,11 +431,13 @@ namespace AppGia.Controllers
                 cells[1, posicion].Style.Font.Size = 12;
                 cells[1, posicion].Style.Font.Bold = true;
                 cells[1, posicion].Style.Border.Top.Style = ExcelBorderStyle.Hair;
+                cells[1, posicion].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                cells[1, posicion].Style.Fill.BackgroundColor.SetColor(Color.Blue);
+                cells[1, posicion].Style.Font.Color.SetColor(Color.Azure);
             }
 
             //Color DeepBlueHexCode = ColorTranslator.FromHtml("#254061");
-            cells.Style.Fill.BackgroundColor.SetColor(Color.Blue);
-            cells.Style.Font.Color.SetColor(Color.Azure);
+            
         }
 
         private void renderDatosOcultos(ExcelRange cells, int posY, ProformaDetalle det)
@@ -450,13 +461,16 @@ namespace AppGia.Controllers
         private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
-            style.Locked = false;
+            style.Locked = true;
             style.Font.Size = 12;
-            style.Font.Color.SetColor(Color.Gray);
+      
             style.Border.Top.Style = ExcelBorderStyle.Hair;
             style.ShrinkToFit=false;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             //style.Fill.BackgroundColor.SetColor(Color.White);
+            style.Fill.PatternType = ExcelFillStyle.Solid;
+            style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#eaeded"));
+            style.Font.Color.SetColor(Color.Black);
             return excelCell;
         } 
         private void applyStyleLocked(ExcelRangeBase excelCell)
