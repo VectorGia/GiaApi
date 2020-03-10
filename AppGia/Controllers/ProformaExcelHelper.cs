@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using AppGia.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -51,7 +52,8 @@ namespace AppGia.Controllers
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[sheetName];
                 worksheet.Calculate();
                 ExcelRange cells = worksheet.Cells;
-                for (int i = 2; i < 1000; i++)
+                
+                for (int i = 2; i < worksheet.Dimension.End.Row; i++)
                 {
                     String idInterno = cells[i, pos_idInterno].Value.ToString();
                     if (idInterno!=null&&idInterno.Length > 0)
