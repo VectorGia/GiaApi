@@ -207,7 +207,7 @@ namespace AppGia.Controllers
                     cells[i, pos_total].Calculate();
                 }*/
                 workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
-               //setBordersInworkSheet(workSheet);
+               setBordersInworkSheet(workSheet);
                 /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
                     workSheet.Column(i).AutoFit();
@@ -464,8 +464,6 @@ namespace AppGia.Controllers
         }
         private void setBorderColor(ExcelRange Rng)
         {
-            //ExcelRange Rng = cells[2, 2, cells.Worksheet.Dimension.End.Row, 2];
-            Rng.Merge = true;
             Rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
             Rng.Style.Border.Left.Color.SetColor(Color.Black);
             Rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
