@@ -206,11 +206,11 @@ namespace AppGia.Controllers
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
                 package.Workbook.Calculate();
-                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
-                /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
+               // workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
-                    workSheet.Column(i).AutoFit();
-                }*/
+                    workSheet.Column(i).Width=60;
+                }
                 fileContents = package.GetAsByteArray();
             }
 
@@ -426,9 +426,11 @@ namespace AppGia.Controllers
         {
             ExcelStyle style = excelCell.Style;
             style.Font.Size = 12;
+            style.Font.Color.SetColor(Color.White);
             style.Border.Top.Style = ExcelBorderStyle.Hair;
-            style.ShrinkToFit=true;
+            style.ShrinkToFit=false;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            style.Fill.BackgroundColor.SetColor(Color.DarkGray);
             return excelCell;
         } 
         private void applyStyleLocked(ExcelRangeBase excelCell)
@@ -437,6 +439,7 @@ namespace AppGia.Controllers
             style.Locked = false;
             style.Fill.PatternType = ExcelFillStyle.Solid;
             style.Fill.BackgroundColor.SetColor(Color.White);
+            style.Font.Color.SetColor(Color.SlateGray);
             style.Hidden = true;    //Hide the formula
         }
         private static Dictionary<string, Int32> getPonderacionCampos()
