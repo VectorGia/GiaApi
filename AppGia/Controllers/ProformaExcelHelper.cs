@@ -425,7 +425,7 @@ namespace AppGia.Controllers
         private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
-            style.Locked = true;
+            style.Locked = false;
             style.Font.Size = 12;
             style.Font.Color.SetColor(Color.White);
             style.Border.Top.Style = ExcelBorderStyle.Hair;
