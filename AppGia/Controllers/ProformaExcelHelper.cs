@@ -209,7 +209,7 @@ namespace AppGia.Controllers
                // workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                 for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
-                    workSheet.Column(i).Width=60;
+                    workSheet.Column(i).Width=20;
                 }
                 fileContents = package.GetAsByteArray();
             }
@@ -427,11 +427,11 @@ namespace AppGia.Controllers
             ExcelStyle style = excelCell.Style;
             style.Locked = false;
             style.Font.Size = 12;
-            style.Font.Color.SetColor(Color.White);
+            //style.Font.Color.SetColor(Color.White);
             style.Border.Top.Style = ExcelBorderStyle.Hair;
             style.ShrinkToFit=false;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            style.Fill.BackgroundColor.SetColor(Color.DarkGray);
+            //style.Fill.BackgroundColor.SetColor(Color.DarkGray);
             return excelCell;
         } 
         private void applyStyleLocked(ExcelRangeBase excelCell)
