@@ -423,6 +423,18 @@ namespace AppGia.Controllers
                 cells[1, posicion].Style.Font.Bold = true;
                 cells[1, posicion].Style.Border.Top.Style = ExcelBorderStyle.Hair;
             }
+
+            Color DeepBlueHexCode = ColorTranslator.FromHtml("#254061");
+            cells.Value = "Thin";
+            cells.Merge = true;
+            cells.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            cells.Style.Border.Top.Color.SetColor(Color.Red);
+            cells.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            cells.Style.Border.Left.Color.SetColor(Color.Green);
+            cells.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            cells.Style.Border.Right.Color.SetColor(Color.Green);
+            cells.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            cells.Style.Border.Bottom.Color.SetColor(DeepBlueHexCode);
         }
 
         private void renderDatosOcultos(ExcelRange cells, int posY, ProformaDetalle det)
