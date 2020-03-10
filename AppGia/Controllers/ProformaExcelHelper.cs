@@ -171,7 +171,7 @@ namespace AppGia.Controllers
                 ExcelRange cells = workSheet.Cells;
                 makeEncabezado(cells, new[]
                 {
-                    "Rubro", "Total", "Años Anteriores", "Ejercicio", "Enero", "Febrero",
+                    "Rubro", "  Total  ", "Años Anteriores", "Ejercicio", "Enero", "Febrero",
                     "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre",
                     "Diciembre", "Años Posteriores"
                 });
@@ -200,9 +200,9 @@ namespace AppGia.Controllers
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                workSheet.Workbook.Calculate();
+                //workSheet.Workbook.Calculate();
                 workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
-                setBordersInworkSheet(workSheet);
+               //setBordersInworkSheet(workSheet);
                 /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
                     workSheet.Column(i).AutoFit();
@@ -427,7 +427,7 @@ namespace AppGia.Controllers
             style.Locked = true;//por defecto todas la columnas bloqueadas a edicion
             style.Font.Size = 11;
             style.Border.Top.Style = ExcelBorderStyle.Hair;
-            //style.ShrinkToFit=false;
+            style.ShrinkToFit=true;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             setCellColor(style, Color.Black, ColorTranslator.FromHtml("#eaeded"));
             return excelCell;
