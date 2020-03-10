@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using AppGia.Models;
@@ -50,7 +51,7 @@ namespace AppGia.Controllers
             {
                 ExcelPackage package = new ExcelPackage(memStream);
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[sheetName];
-                worksheet.Calculate();
+                package.Workbook.Calculate();
                 ExcelRange cells = worksheet.Cells;
                 
                 for (int i = 2; i < worksheet.Dimension.End.Row; i++)
@@ -204,7 +205,12 @@ namespace AppGia.Controllers
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                workSheet.Calculate();
+                package.Workbook.Calculate();
+                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
+                {
+                    workSheet.Column(i).AutoFit();
+                }*/
                 fileContents = package.GetAsByteArray();
             }
 
@@ -214,9 +220,6 @@ namespace AppGia.Controllers
             }
 
             return fileContents;
-            /*return new FileContentResult(fileContents,
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                {FileDownloadName = "Proforma.xlsx"};*/
         }
         
         private void renderDetallePadre(ExcelRange cells, int pos, ProformaDetalle det,Dictionary<string,Dictionary<string,int>> paresProformaReal)
@@ -280,7 +283,7 @@ namespace AppGia.Controllers
                         }
                         else
                         {
-                            makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Locked = false;
+                            makeCellValue(cells, pos, posicionCelda, valorCelda);//esta parte debe estar editable
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
@@ -329,8 +332,9 @@ namespace AppGia.Controllers
                             aritmetica=aritmetica.Replace(claveRubro, replacement);
                         }
                     }
-                    string formula = "="+aritmetica;
+                    string formula = aritmetica;
                     cells[posRow, i].Formula = formula;
+                    cells[posRow, i].Calculate();
                 }
             });
         }
@@ -354,8 +358,10 @@ namespace AppGia.Controllers
                         cells[posDetReal, 5].Address, cells[posDetReal, 16].Address);
                     cells[posDetReal, pos_ejercicio].Formula = formula;
                 }
-                
+                cells[posDetReal, pos_ejercicio].Calculate();
             }
+
+            cells.Worksheet.Calculate();
         }
         private ExcelRangeBase makeCellValue(ExcelRange excelRange,int posY,int posX,object value)
         {
@@ -385,17 +391,7 @@ namespace AppGia.Controllers
             }
             return applyStyle(excelCell);
         }
-
-        private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
-        {
-            ExcelStyle style = excelCell.Style;
-            style.Font.Size = 12;
-            style.Border.Top.Style = ExcelBorderStyle.Hair;
-            style.ShrinkToFit=true;
-            style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            style.Locked = true;
-            return excelCell;
-        } 
+        
         private void makeEncabezado(ExcelRange cells, string[] nombresColumnas)
         {
             for (int i = 0; i < nombresColumnas.Length; i++)
@@ -410,19 +406,38 @@ namespace AppGia.Controllers
 
         private void renderDatosOcultos(ExcelRange cells, int posY, ProformaDetalle det)
         {
-            makeCellValue(cells, posY, pos_id_proforma, det.id_proforma).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_mes_inicio, det.mes_inicio).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_centro_costo_id, det.centro_costo_id).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_anio, det.anio).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_tipo_proforma_id, det.tipo_proforma_id).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_tipo_captura_id, det.tipo_captura_id).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_idInterno, det.idInterno).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_rubro_id, det.rubro_id).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_tipo, det.tipo).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_estilo,  det.estilo).Style.Hidden = true;
-            makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica).Style.Hidden = true;
-           
+            applyStyleLocked(makeCellValue(cells, posY, pos_id_proforma, det.id_proforma));
+            applyStyleLocked(makeCellValue(cells, posY, pos_mes_inicio, det.mes_inicio));
+            applyStyleLocked(makeCellValue(cells, posY, pos_centro_costo_id, det.centro_costo_id));
+            applyStyleLocked(makeCellValue(cells, posY, pos_anio, det.anio));
+            applyStyleLocked(makeCellValue(cells, posY, pos_tipo_proforma_id, det.tipo_proforma_id));
+            applyStyleLocked(makeCellValue(cells, posY, pos_tipo_captura_id, det.tipo_captura_id));
+            applyStyleLocked(makeCellValue(cells, posY, pos_idInterno, det.idInterno));
+            applyStyleLocked(makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro));
+            applyStyleLocked(makeCellValue(cells, posY, pos_rubro_id, det.rubro_id));
+            applyStyleLocked(makeCellValue(cells, posY, pos_tipo, det.tipo));
+            applyStyleLocked(makeCellValue(cells, posY, pos_estilo,  det.estilo));
+            applyStyleLocked(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
+            cells.Worksheet.Protection.SetPassword("TXu6Wm.Bt.^M)?Je");
+
+        }
+
+        private ExcelRangeBase applyStyle(ExcelRangeBase excelCell)
+        {
+            ExcelStyle style = excelCell.Style;
+            style.Font.Size = 12;
+            style.Border.Top.Style = ExcelBorderStyle.Hair;
+            style.ShrinkToFit=true;
+            style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            return excelCell;
+        } 
+        private void applyStyleLocked(ExcelRangeBase excelCell)
+        {
+            ExcelStyle style = excelCell.Style;
+            style.Locked = false;
+            style.Fill.PatternType = ExcelFillStyle.Solid;
+            style.Fill.BackgroundColor.SetColor(Color.White);
+            style.Hidden = true;    //Hide the formula
         }
         private static Dictionary<string, Int32> getPonderacionCampos()
         {
