@@ -255,9 +255,9 @@ namespace AppGia.Controllers
             {
                 par.Add(TIPODETPROFORM,pos);
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " proform" );
-                makeCellValue(cells, pos, 2, 0);
-                makeCellValue(cells, pos, 3, 0);
-                makeCellValue(cells, pos, pos_ejercicio, 0);
+                makeCellValue(cells, pos, 2, 0.0);
+                makeCellValue(cells, pos, 3, 0.0);
+                makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
             else if (det.tipo.Equals(TIPODETPROREAL))
             {
@@ -265,7 +265,7 @@ namespace AppGia.Controllers
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
                 makeCellValue(cells, pos, 2, "=" + cells[pos, pos_ejercicio].Address + "+" + cells[pos, 3].Address);
                 makeCellValue(cells, pos, 3, det.acumulado_resultado);
-                makeCellValue(cells, pos, pos_ejercicio, 0);
+                makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
             
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
@@ -283,7 +283,12 @@ namespace AppGia.Controllers
                         }
                         else
                         {
-                            makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Locked = false ;
+                            ExcelStyle style = makeCellValue(cells, pos, posicionCelda, valorCelda).Style;
+                            makeCellValue(cells, pos, posicionCelda, valorCelda);
+                            style.Font.Color.SetColor(Color.White);
+                            style.Locked = false;
+                            style.Border.Bottom.Color.SetColor(Color.RoyalBlue);
+                            style.Border.Bottom.Style = ExcelBorderStyle.Thick;
                         }
                     }
                     else if (det.tipo.Equals(TIPODETPROREAL))
