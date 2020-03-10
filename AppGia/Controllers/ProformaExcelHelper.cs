@@ -347,7 +347,7 @@ namespace AppGia.Controllers
             foreach (var entry in paresProformaReal)
             {
                 int posDetReal = entry.Value[TIPODETPROREAL];
-                if (entry.Value.ContainsKey(TIPODETPROREAL))
+                if (entry.Value.ContainsKey(TIPODETPROREAL)&&entry.Value.ContainsKey(TIPODETPROFORM))
                 {
                     int posDetProform = entry.Value[TIPODETPROFORM];
                     string formula = String.Format("SUM({0}:{1})+SUM({2}:{3})",
