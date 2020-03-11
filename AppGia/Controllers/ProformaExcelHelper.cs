@@ -12,8 +12,11 @@ namespace AppGia.Controllers
 {
     public class ProformaExcelHelper
     {
+      
         private static string sheetName="proforma";
+        private static int pos_nrubro = 1;
         private static int pos_total = 2;
+        private static int pos_aant = 3;
         private static int pos_ejercicio = 4;
         private static int pos_anios_posteriores = 17;
         private static int pos_id_proforma = 118;
@@ -28,7 +31,8 @@ namespace AppGia.Controllers
         private static int pos_tipo = 127;
         private static int pos_estilo = 128;
         private static int pos_aritmetica = 129;
-        
+        private static int posrow_encabezado = 1;
+        private static int posrow_inicio_data = 2;
         
         
         private ProformaDataAccessLayer _proformaDataAccessLayer = new ProformaDataAccessLayer();
@@ -54,7 +58,7 @@ namespace AppGia.Controllers
                 package.Workbook.Calculate();
                 ExcelRange cells = worksheet.Cells;
                 
-                for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
+                for (int i = posrow_inicio_data; i <= worksheet.Dimension.End.Row; i++)
                 {
                     String idInterno = cells[i, pos_idInterno].Value.ToString();
                     if (idInterno!=null&&idInterno.Length > 0)
@@ -71,10 +75,10 @@ namespace AppGia.Controllers
         private ProformaDetalle transform(ExcelRange cells,int posRow)
         {
             ProformaDetalle det = new ProformaDetalle();
-            det.nombre_rubro = cells[posRow, 1].Value.ToString();
-            cells[posRow, 2].Calculate();
-            det.total_resultado = ToDouble(cells[posRow, 2].Value);
-            det.acumulado_resultado = ToDouble(cells[posRow, 3].Value);
+            det.nombre_rubro = cells[posRow, pos_nrubro].Value.ToString();
+            cells[posRow, pos_total].Calculate();
+            det.total_resultado = ToDouble(cells[posRow, pos_total].Value);
+            det.acumulado_resultado = ToDouble(cells[posRow, pos_aant].Value);
             det.ejercicio_resultado =ToDouble(cells[posRow, pos_ejercicio].Value);
             
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
@@ -183,7 +187,7 @@ namespace AppGia.Controllers
                 */
                 Dictionary<string,Dictionary<string,int>> paresProformaRealProfor=new Dictionary<string, Dictionary<string, int>>();
                 List<int> positionsTotales=new List<int>();
-                int position = 2;
+                int position = posrow_inicio_data;
                 foreach (ProformaDetalle detalle in detalles)
                 {
                     int posRow = position++;
@@ -203,7 +207,7 @@ namespace AppGia.Controllers
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
               //  cells.Calculate();
-                for (int i = 2; i < workSheet.Dimension.End.Row; i++)
+                for (int i = posrow_inicio_data; i < workSheet.Dimension.End.Row; i++)
                 {
                     cells[i, pos_total].Calculate();
                 }
@@ -235,14 +239,11 @@ namespace AppGia.Controllers
             Dictionary<string,int> par=paresProformaReal[det.clave_rubro];
             par.Add(TIPODETPROREAL,pos);
             
-            makeCellValue(cells, pos, 1, det.nombre_rubro).Style.Font.Bold=true;
-            setCellColor(cells[pos, 1].Style,Color.Black,ColorTranslator.FromHtml("#FAFAD2"));
-       
-
-            /*string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-            makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;*/
+            makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro).Style.Font.Bold=true;
+            setCellColor(cells[pos,pos_nrubro].Style,Color.Black,ColorTranslator.FromHtml("#FAFAD2"));
+            
             makeCellValue(cells, pos, pos_total, 0).Style.Font.Bold=true;
-            makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
+            makeCellValue(cells, pos, pos_aant, det.acumulado_resultado).Style.Font.Bold=true;
             makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
            
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
@@ -266,20 +267,20 @@ namespace AppGia.Controllers
             if (det.tipo.Equals(TIPODETPROFORM))
             {
                 par.Add(TIPODETPROFORM,pos);
-                makeCellValue(cells, pos, 1, det.nombre_rubro + " proform" );
+                makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro + " proform" );
                 makeCellValue(cells, pos, pos_total, 0.0);
-                makeCellValue(cells, pos, 3, 0.0);
+                makeCellValue(cells, pos, pos_aant, 0.0);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
             else if (det.tipo.Equals(TIPODETPROREAL))
             {
                 par.Add(TIPODETPROREAL,pos);
-                makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
+                makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro + " real");
                 /*string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
                 makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;*/
                 makeCellValue(cells, pos, pos_total, 0.0);
                 
-                makeCellValue(cells, pos, 3, det.acumulado_resultado);
+                makeCellValue(cells, pos, pos_aant, det.acumulado_resultado);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
             
@@ -372,7 +373,7 @@ namespace AppGia.Controllers
                         cells[posDetReal, 3].Address);*/
                     //cells[posDetReal, 3].Address
 
-                    formula=formula+"+"+cells[posDetReal, 3].Address;
+                    formula=formula+"+"+cells[posDetReal, pos_aant].Address;
                     cells[posDetReal, pos_total].Formula = formula;
                     cells[posDetReal, pos_total].Calculate();
                 }
@@ -419,10 +420,10 @@ namespace AppGia.Controllers
         {
             for (int i = 0; i < nombresColumnas.Length; i++)
             {
-                int posicion = i + 1;
-                cells[1, posicion].Value = nombresColumnas[i];
-                applyStyleDefault(cells[1, posicion]).Style.Font.Bold = true;
-                setCellColor(cells[1, posicion].Style, Color.Azure, Color.Blue);
+                int posicion = i + posrow_encabezado;
+                cells[posrow_encabezado, posicion].Value = nombresColumnas[i];
+                applyStyleDefault(cells[posrow_encabezado, posicion]).Style.Font.Bold = true;
+                setCellColor(cells[posrow_encabezado, posicion].Style, Color.Azure, Color.Blue);
             }
         }
 
@@ -476,10 +477,10 @@ namespace AppGia.Controllers
         private void setBordersInworkSheet(ExcelWorksheet ws)
         {
             int numRows=ws.Dimension.End.Row;
-            setBorderColor(ws.Cells[2, 2,numRows, 2]);
-            setBorderColor(ws.Cells[2, 3,numRows, 3]);
-            setBorderColor(ws.Cells[2, 4, numRows, 4]);
-            setBorderColor(ws.Cells[2, pos_anios_posteriores,numRows, pos_anios_posteriores]);
+            setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data,numRows, posrow_inicio_data]);
+            setBorderColor(ws.Cells[posrow_inicio_data, pos_aant,numRows, pos_aant]);
+            setBorderColor(ws.Cells[posrow_inicio_data, pos_ejercicio, numRows, pos_ejercicio]);
+            setBorderColor(ws.Cells[posrow_inicio_data, pos_anios_posteriores,numRows, pos_anios_posteriores]);
         }
         private void setBorderColor(ExcelRange Rng)
         {
