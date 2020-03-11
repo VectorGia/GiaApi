@@ -72,6 +72,7 @@ namespace AppGia.Controllers
         {
             ProformaDetalle det = new ProformaDetalle();
             det.nombre_rubro = cells[posRow, 1].Value.ToString();
+            cells[posRow, 2].Calculate();
             det.total_resultado = ToDouble(cells[posRow, 2].Value);
             det.acumulado_resultado = ToDouble(cells[posRow, 3].Value);
             det.ejercicio_resultado =ToDouble(cells[posRow, pos_ejercicio].Value);
@@ -106,8 +107,8 @@ namespace AppGia.Controllers
 
         private List<ProformaDetalle> manageDetalles(List<ProformaDetalle> detallesFromExcel)
         {
-           // return detallesFromExcel;
-            ProformaDetalle datosProforma = detallesFromExcel[0];
+           return detallesFromExcel;
+            /*ProformaDetalle datosProforma = detallesFromExcel[0];
             List<ProformaDetalle> detallesProformados = detallesFromExcel.FindAll(detalle =>
             {
                 return detalle.tipo.Equals(TIPODETPROFORM);
@@ -136,7 +137,7 @@ namespace AppGia.Controllers
                 applyValuesFrom(detallesProformados, detallesProforma, datosProforma.mes_inicio);
             }
 
-            return detallesProforma;
+            return detallesProforma;*/
         }
 
       
@@ -201,21 +202,23 @@ namespace AppGia.Controllers
                 }
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-                cells.Calculate();
-                /*for (int i = 2; i < workSheet.Dimension.End.Row; i++)
+              //  cells.Calculate();
+                for (int i = 2; i < workSheet.Dimension.End.Row; i++)
                 {
                     cells[i, pos_total].Calculate();
-                }*/
+                }
                 workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                setBordersInworkSheet(workSheet);
                 /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
                     workSheet.Column(i).AutoFit();
                 }*/
-                /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
+                for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
                     workSheet.Column(i).Width=20;
-                }*/
+                }
+                cells.Worksheet.Protection.SetPassword("TXu6Wm.Bt.^M)?Je");
+                //workSheet.Protection.IsProtected = false;
                 fileContents = package.GetAsByteArray();
             }
 
@@ -393,7 +396,7 @@ namespace AppGia.Controllers
         {
             excelRange[posY, posX].Formula = formula;
             excelRange[posY, posX].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
-            excelRange[posY, posX].Style.Hidden = true;    //Hide the formula
+            //excelRange[posY, posX].Style.Hidden = true;    //Hide the formula
             return applyStyleDefault(excelRange[posY, posX]);
         }
         
@@ -422,7 +425,7 @@ namespace AppGia.Controllers
             applyStyleOculto(makeCellValue(cells, posY, pos_tipo, det.tipo==null?"":det.tipo));
             applyStyleOculto(makeCellValue(cells, posY, pos_estilo,  det.estilo));
             applyStyleOculto(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
-            cells.Worksheet.Protection.SetPassword("TXu6Wm.Bt.^M)?Je");
+          
 
         }
 
@@ -460,6 +463,7 @@ namespace AppGia.Controllers
             int numRows=ws.Dimension.End.Row;
             setBorderColor(ws.Cells[2, 2,numRows, 2]);
             setBorderColor(ws.Cells[2, 3,numRows, 3]);
+            setBorderColor(ws.Cells[2, 4, numRows, 4]);
             setBorderColor(ws.Cells[2, pos_anios_posteriores,numRows, pos_anios_posteriores]);
         }
         private void setBorderColor(ExcelRange Rng)
