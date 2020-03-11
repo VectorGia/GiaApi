@@ -239,8 +239,9 @@ namespace AppGia.Controllers
             setCellColor(cells[pos, 1].Style,Color.Black,ColorTranslator.FromHtml("#FAFAD2"));
        
 
-            string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-            makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
+            /*string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
+            makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;*/
+            makeCellValue(cells, pos, pos_total, 0).Style.Font.Bold=true;
             makeCellValue(cells, pos, 3, det.acumulado_resultado).Style.Font.Bold=true;
             makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
            
@@ -274,8 +275,10 @@ namespace AppGia.Controllers
             {
                 par.Add(TIPODETPROREAL,pos);
                 makeCellValue(cells, pos, 1, det.nombre_rubro + " real");
-                string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-                makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
+                /*string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
+                makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;*/
+                makeCellValue(cells, pos, pos_total, 0.0);
+                
                 makeCellValue(cells, pos, 3, det.acumulado_resultado);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
             }
@@ -364,6 +367,11 @@ namespace AppGia.Controllers
                     cells[posDetReal, pos_ejercicio].Formula = formula;
                 }
                 cells[posDetReal, pos_ejercicio].Calculate();
+                
+                cells[posDetReal, pos_total].Formula = String.Format("SUM({0}:{1})", cells[posDetReal, pos_ejercicio].Address, cells[posDetReal, 3].Address);
+                cells[posDetReal, pos_total].Calculate();
+                //makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
+                
             }
 
             cells.Worksheet.Calculate();
