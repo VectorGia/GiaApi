@@ -26,10 +26,11 @@ namespace AppGia.Controllers
             var package = new ExcelPackage();
             var workSheet = package.Workbook.Worksheets.Add("Reporte");
             workSheet.Cells["A1"].LoadFromDataTable(dataTable, true);
-            workSheet.Row(1).Style.Font.Color.SetColor(Color.White);
-            workSheet.Row(1).Style.Font.Bold = true;
-            workSheet.Row(1).Style.Fill.PatternType = ExcelFillStyle.Solid;
-            workSheet.Row(1).Style.Fill.BackgroundColor.SetColor(Color.Blue);
+            ExcelRange rowEncabezado=workSheet.Cells[1, workSheet.Dimension.End.Column];
+            rowEncabezado.Style.Font.Color.SetColor(Color.White);
+            rowEncabezado.Style.Font.Bold = true;
+            rowEncabezado.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            rowEncabezado.Style.Fill.BackgroundColor.SetColor(Color.Blue);
             workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
             return package.GetAsByteArray();
         }
