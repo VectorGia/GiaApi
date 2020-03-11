@@ -28,6 +28,7 @@ namespace AppGia.Controllers
             workSheet.Column(1).Style.Font.Bold = true;
             workSheet.Column(1).Style.Fill.PatternType = ExcelFillStyle.Solid;
             workSheet.Column(1).Style.Fill.BackgroundColor.SetColor(Color.Blue);
+            workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
             return package.GetAsByteArray();
         }
     }
