@@ -394,6 +394,7 @@ namespace AppGia.Controllers
         }
         private ExcelRangeBase makeCellFormula(ExcelRange excelRange,int posY,int posX,string formula)
         {
+            excelRange[posY, posX].Value = 0;
             excelRange[posY, posX].Formula = formula;
             excelRange[posY, posX].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             //excelRange[posY, posX].Style.Hidden = true;    //Hide the formula
