@@ -420,7 +420,7 @@ namespace AppGia.Controllers
         {
             for (int i = 0; i < nombresColumnas.Length; i++)
             {
-                int posicion = i + posrow_encabezado;
+                int posicion = i + posrow_encabezadoºº;
                 cells[posrow_encabezado, posicion].Value = nombresColumnas[i];
                 applyStyleDefault(cells[posrow_encabezado, posicion]).Style.Font.Bold = true;
                 setCellColor(cells[posrow_encabezado, posicion].Style, Color.Azure, Color.Blue);
