@@ -54,7 +54,7 @@ namespace AppGia.Controllers
                 package.Workbook.Calculate();
                 ExcelRange cells = worksheet.Cells;
                 
-                for (int i = 2; i < worksheet.Dimension.End.Row; i++)
+                for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                 {
                     String idInterno = cells[i, pos_idInterno].Value.ToString();
                     if (idInterno!=null&&idInterno.Length > 0)
