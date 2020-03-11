@@ -11,7 +11,7 @@ namespace AppGia.Controllers
 
         public byte[] buildReport(ReportesRequest request)
         {
-            string queryReporte=_queryExecuter.ExecuteQueryUniqueresult("select contenido from reportes where id=" + request.idReporte).ToString();
+            string queryReporte=_queryExecuter.ExecuteQueryUniqueresult("select contenido from reportes where id=" + request.idReporte)["contenido"].ToString();
             foreach (var parametro in request.parametros)
             {
                 string claveReporte = parametro.Key;
@@ -24,10 +24,10 @@ namespace AppGia.Controllers
             var package = new ExcelPackage();
             var workSheet = package.Workbook.Worksheets.Add("Reporte");
             workSheet.Cells["A1"].LoadFromDataTable(dataTable, true);
-            workSheet.Column(1).Style.Font.Color.SetColor(Color.White);
-            workSheet.Column(1).Style.Font.Bold = true;
-            workSheet.Column(1).Style.Fill.PatternType = ExcelFillStyle.Solid;
-            workSheet.Column(1).Style.Fill.BackgroundColor.SetColor(Color.Blue);
+            workSheet.Row(1).Style.Font.Color.SetColor(Color.White);
+            workSheet.Row(1).Style.Font.Bold = true;
+            workSheet.Row(1).Style.Fill.PatternType = ExcelFillStyle.Solid;
+            workSheet.Row(1).Style.Fill.BackgroundColor.SetColor(Color.Blue);
             workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
             return package.GetAsByteArray();
         }

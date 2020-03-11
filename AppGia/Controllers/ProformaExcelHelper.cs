@@ -107,7 +107,7 @@ namespace AppGia.Controllers
             det.estilo =cells[posRow, pos_estilo].Value.ToString();
             det.aritmetica =cells[posRow, pos_aritmetica].Value.ToString();
             det.id =ToInt64(cells[posRow, pos_id_detalle].Value);
-            
+           
             
             return det;
         }
