@@ -31,6 +31,8 @@ namespace AppGia.Controllers
         private static int pos_tipo = 127;
         private static int pos_estilo = 128;
         private static int pos_aritmetica = 129;
+        private static int pos_id_detalle = 130;
+        
         private static int posrow_encabezado = 1;
         private static int posrow_inicio_data = 2;
         
@@ -104,6 +106,7 @@ namespace AppGia.Controllers
             det.tipo =cells[posRow, pos_tipo].Value.ToString();
             det.estilo =cells[posRow, pos_estilo].Value.ToString();
             det.aritmetica =cells[posRow, pos_aritmetica].Value.ToString();
+            det.id =ToInt64(cells[posRow, pos_id_detalle].Value);
             
             
             return det;
@@ -111,8 +114,8 @@ namespace AppGia.Controllers
 
         private List<ProformaDetalle> manageDetalles(List<ProformaDetalle> detallesFromExcel)
         {
-           return detallesFromExcel;
-            /*ProformaDetalle datosProforma = detallesFromExcel[0];
+           //return detallesFromExcel;
+            ProformaDetalle datosProforma = detallesFromExcel[0];
             List<ProformaDetalle> detallesProformados = detallesFromExcel.FindAll(detalle =>
             {
                 return detalle.tipo.Equals(TIPODETPROFORM);
@@ -141,7 +144,7 @@ namespace AppGia.Controllers
                 applyValuesFrom(detallesProformados, detallesProforma, datosProforma.mes_inicio);
             }
 
-            return detallesProforma;*/
+            return detallesProforma;
         }
 
       
@@ -441,6 +444,7 @@ namespace AppGia.Controllers
             applyStyleOculto(makeCellValue(cells, posY, pos_tipo, det.tipo==null?"":det.tipo));
             applyStyleOculto(makeCellValue(cells, posY, pos_estilo,  det.estilo));
             applyStyleOculto(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
+            applyStyleOculto(makeCellValue(cells, posY, pos_id_detalle, det.id));
           
 
         }
