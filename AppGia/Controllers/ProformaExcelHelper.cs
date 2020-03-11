@@ -371,7 +371,9 @@ namespace AppGia.Controllers
                     /*formula = String.Format("SUM({0}:{1})", cells[posDetReal, pos_ejercicio].Address,
                         cells[posDetReal, 3].Address);*/
                     //cells[posDetReal, 3].Address
-                    cells[posDetReal, pos_total].Formula = formula + cells[posDetReal, 3].Address;
+
+                    formula=formula+"+"+cells[posDetReal, 3].Address;
+                    cells[posDetReal, pos_total].Formula = formula;
                     cells[posDetReal, pos_total].Calculate();
                 }
                 //makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
