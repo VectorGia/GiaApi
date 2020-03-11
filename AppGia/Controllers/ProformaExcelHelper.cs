@@ -361,15 +361,18 @@ namespace AppGia.Controllers
                 if (entry.Value.ContainsKey(TIPODETPROREAL)&&entry.Value.ContainsKey(TIPODETPROFORM))
                 {
                     int posDetProform = entry.Value[TIPODETPROFORM];
+                    
                     string formula = String.Format("SUM({0}:{1})+SUM({2}:{3})",
                         cells[posDetReal, 5].Address, cells[posDetReal, 16].Address, cells[posDetProform, 5].Address,
                         cells[posDetProform, 16].Address);
                     cells[posDetReal, pos_ejercicio].Formula = formula;
+                    cells[posDetReal, pos_ejercicio].Calculate();
+                    
+                    formula = String.Format("SUM({0}:{1})", cells[posDetReal, pos_ejercicio].Address,
+                        cells[posDetReal, 3].Address);
+                    cells[posDetReal, pos_total].Formula = formula;
+                    cells[posDetReal, pos_total].Calculate();
                 }
-                cells[posDetReal, pos_ejercicio].Calculate();
-                
-                cells[posDetReal, pos_total].Formula = String.Format("SUM({0}:{1})", cells[posDetReal, pos_ejercicio].Address, cells[posDetReal, 3].Address);
-                cells[posDetReal, pos_total].Calculate();
                 //makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
                 
             }
