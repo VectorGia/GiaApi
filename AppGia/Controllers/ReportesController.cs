@@ -20,7 +20,18 @@ namespace AppGia.Controllers
             dic.Add("resB64",resB64);
             return  dic;
         }
-        
 
+        [HttpGet("reportes")]
+        public List<Dictionary<string, object>> getReportes()
+        {
+            return _reportesHelper.getReportesActivos();
+        }
+        
+        [HttpGet("parametros/{idReport}")]
+        public List<Dictionary<string, object>> getParametros(int idReport)
+        {
+            return _reportesHelper.getParametrosOf(idReport);
+        }
+        
     }
 }
