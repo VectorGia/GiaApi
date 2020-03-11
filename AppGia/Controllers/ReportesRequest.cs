@@ -10,6 +10,7 @@ namespace AppGia.Controllers
     public class ReportesRequest
     {
         public Int64 idReporte { get; set; }
+        public string nombreReporte { get; set; }
         public Dictionary<string, string> parametros { get; set; }
     }
 }
