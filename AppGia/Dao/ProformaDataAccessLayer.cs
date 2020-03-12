@@ -145,7 +145,7 @@ namespace AppGia.Dao
         {
             string consulta = "";
             consulta += " update proforma set activo = '" + proforma.activo + "', ";
-            consulta += " 	usuario = " + proforma.usuario + ", fecha_captura = current_timestamp ";
+            consulta += " 	usuario = " + proforma.usuario + ", fecha_actualizacion = @fecha_actualizacion ";
             consulta += " 	where id = " + proforma.id;
 
             try
@@ -153,7 +153,7 @@ namespace AppGia.Dao
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-
+                    cmd.Parameters.AddWithValue("@fecha_actualizacion", new DateTime());
                     int regActual = cmd.ExecuteNonQuery();
                     return regActual;
                 }
