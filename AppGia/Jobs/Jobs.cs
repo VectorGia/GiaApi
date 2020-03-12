@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AppGia.Controllers;
+using AppGia.Dao;
 using Quartz;
 using Quartz.Impl;
 

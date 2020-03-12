@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using AppGia.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AppGia.Controllers
+namespace AppGia.Util
 {
     [Route("api/[controller]")]
     [ApiController]
