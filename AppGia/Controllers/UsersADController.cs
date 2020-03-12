@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
 using System.DirectoryServices;
+using AppGia.Dao;
+
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]

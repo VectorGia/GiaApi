@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
 using System.DirectoryServices;
+using AppGia.Dao;
 using Npgsql;
 
 namespace AppGia.Controllers

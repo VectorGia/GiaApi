@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AppGia.Dao;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
 
