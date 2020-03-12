@@ -21,8 +21,12 @@ namespace AppGia.Controllers
             con = conex.ConnexionDB();
         }
 
-
         public int MontosConsolidados()
+        {
+            return MontosConsolidados(true, true);
+        }
+
+        public int MontosConsolidados(Boolean contable,Boolean flujo)
         {
             DataTable centrosCostoDt = GetCentrosCostro();
             DateTime fechaactual = DateTime.Today;
@@ -39,8 +43,15 @@ namespace AppGia.Controllers
 
                 try
                 {
-                    numInserts += manageModeloContable(centroCostos, fechaactual);
-                    numInserts += manageModeloFlujo(centroCostos, fechaactual);
+                    if (contable)
+                    {
+                        numInserts += manageModeloContable(centroCostos, fechaactual);
+                    }
+
+                    if (flujo)
+                    {
+                        numInserts += manageModeloFlujo(centroCostos, fechaactual);
+                    }
                 }
                 finally
                 {
