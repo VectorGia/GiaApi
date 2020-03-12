@@ -11,7 +11,7 @@ namespace AppGia.Util
     {
         private ReportesHelper _reportesHelper=new ReportesHelper();
         
-        // POST: api/ProformaExcel
+     
         [HttpPost("generar")]
         public Dictionary<string,string> export([FromBody] ReportesRequest request)
 
@@ -29,7 +29,7 @@ namespace AppGia.Util
         }
         
         [HttpGet("parametros/{idReport}")]
-        public List<Dictionary<string, object>> getParametros(int idReport)
+        public List<Dictionary<string, object>> getParametros(Int64 idReport)
         {
             return _reportesHelper.getParametrosOf(idReport);
         }

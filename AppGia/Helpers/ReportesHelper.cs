@@ -45,6 +45,7 @@ namespace AppGia.Helpers
                 Dictionary<string, object> reporte=new Dictionary<string, object>();
                 reporte.Add("id",Convert.ToInt64(modeloIdRow["id"]));
                 reporte.Add("nombre",modeloIdRow["nombre"].ToString());
+                reportes.Add(reporte);
             }
 
             return reportes;
@@ -53,12 +54,15 @@ namespace AppGia.Helpers
         public List<Dictionary<string, object>> getParametrosOf(Int64 idReport)
         {
             List<Dictionary<string, object>> parametros=new List<Dictionary<string, object>>();
-            DataTable dataTable = _queryExecuter.ExecuteQuery("select id,nombre from reportes_parametros where id_reporte="+idReport);
+            DataTable dataTable = _queryExecuter.ExecuteQuery("select id, nombre, clave, tipo from reportes_parametros where id_reporte="+idReport);
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
                 Dictionary<string, object> parametro=new Dictionary<string, object>();
                 parametro.Add("id",Convert.ToInt64(modeloIdRow["id"]));
                 parametro.Add("nombre",modeloIdRow["nombre"].ToString());
+                parametro.Add("clave", modeloIdRow["clave"].ToString());
+                parametro.Add("tipo", modeloIdRow["tipo"].ToString());
+                parametros.Add(parametro);
             }
 
             return parametros;
