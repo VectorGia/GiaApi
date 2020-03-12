@@ -28,7 +28,7 @@ namespace AppGia.Helpers
             var package = new ExcelPackage();
             var workSheet = package.Workbook.Worksheets.Add("Reporte");
             workSheet.Cells["A1"].LoadFromDataTable(dataTable, true);
-            ExcelRange rowEncabezado=workSheet.Cells[1, workSheet.Dimension.End.Column];
+            ExcelRange rowEncabezado=workSheet.Cells[1,1,1, workSheet.Dimension.End.Column];
             rowEncabezado.Style.Font.Color.SetColor(Color.White);
             rowEncabezado.Style.Font.Bold = true;
             rowEncabezado.Style.Fill.PatternType = ExcelFillStyle.Solid;
