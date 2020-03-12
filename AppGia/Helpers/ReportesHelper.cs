@@ -63,7 +63,7 @@ namespace AppGia.Helpers
                 parametro.Add("nombre",modeloIdRow["nombre"].ToString());
                 parametro.Add("clave", modeloIdRow["clave"].ToString());
                 parametro.Add("tipo", modeloIdRow["tipo"].ToString());
-                parametro.Add("requerido", ToBoolean(modeloIdRow["requerido"]));
+                parametro.Add("requerido", ToBoolean(modeloIdRow["requerido"]==null?false:modeloIdRow["requerido"]));
                 parametros.Add(parametro);
             }
 
