@@ -5,6 +5,7 @@ using System.Drawing;
 using AppGia.Controllers;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using static System.Convert;
 
 namespace AppGia.Helpers
 {
@@ -39,11 +40,11 @@ namespace AppGia.Helpers
         public List<Dictionary<string, object>> getReportesActivos()
         {
             List<Dictionary<string, object>> reportes=new List<Dictionary<string, object>>();
-            DataTable dataTable = _queryExecuter.ExecuteQuery("select id,nombre from reportes where activo=true");
+            DataTable dataTable = _queryExecuter.ExecuteQuery("select id,nombre from reportes where activo=true order by orden");
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
                 Dictionary<string, object> reporte=new Dictionary<string, object>();
-                reporte.Add("id",Convert.ToInt64(modeloIdRow["id"]));
+                reporte.Add("id",ToInt64(modeloIdRow["id"]));
                 reporte.Add("nombre",modeloIdRow["nombre"].ToString());
                 reportes.Add(reporte);
             }
@@ -54,14 +55,15 @@ namespace AppGia.Helpers
         public List<Dictionary<string, object>> getParametrosOf(Int64 idReport)
         {
             List<Dictionary<string, object>> parametros=new List<Dictionary<string, object>>();
-            DataTable dataTable = _queryExecuter.ExecuteQuery("select id, nombre, clave, tipo from reportes_parametros where id_reporte="+idReport);
+            DataTable dataTable = _queryExecuter.ExecuteQuery("select id, nombre, clave, tipo,requerido from reportes_parametros where id_reporte="+idReport);
             foreach (DataRow modeloIdRow in dataTable.Rows)
             {
                 Dictionary<string, object> parametro=new Dictionary<string, object>();
-                parametro.Add("id",Convert.ToInt64(modeloIdRow["id"]));
+                parametro.Add("id",ToInt64(modeloIdRow["id"]));
                 parametro.Add("nombre",modeloIdRow["nombre"].ToString());
                 parametro.Add("clave", modeloIdRow["clave"].ToString());
                 parametro.Add("tipo", modeloIdRow["tipo"].ToString());
+                parametro.Add("requerido", ToBoolean(modeloIdRow["requerido"]));
                 parametros.Add(parametro);
             }
 
