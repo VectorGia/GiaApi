@@ -390,6 +390,7 @@ namespace AppGia.Dao
             proforma.activo = true;
             proforma.usuario = profDetalle[0].usuario;
             proforma.fecha_captura = fechaProc;
+            proforma.id = profDetalle[0].id_proforma;
             UpdateProforma(proforma);
             profDetalle.ForEach(detalle =>
             {
