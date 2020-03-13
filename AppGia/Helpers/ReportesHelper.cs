@@ -16,12 +16,38 @@ namespace AppGia.Helpers
         public byte[] buildReport(ReportesRequest request)
         {
             string queryReporte=_queryExecuter.ExecuteQueryUniqueresult("select contenido from reportes where id=" + request.idReporte)["contenido"].ToString();
+            DataTable dataTableParams = _queryExecuter.ExecuteQuery("select * from reportes_parametros where id_reporte="+request.idReporte);
+            Dictionary<string,string> claveTipoParam=new Dictionary<string, string>();
+            foreach (DataRow parametroRow in dataTableParams.Rows)
+            {
+                claveTipoParam.Add(parametroRow["clave"].ToString(),parametroRow["tipo"].ToString());
+            }
             foreach (var parametro in request.parametros)
             {
-                string claveReporte = parametro.Key;
-                string valorReporte = parametro.Value;
+                string claveParametro = parametro.Key;
+                string valorParametro = parametro.Value;
+            
+                if (claveTipoParam[claveParametro].Equals("text"))
+                {
+                    if (valorParametro.Trim().Length == 0)
+                    {
+                        valorParametro = null;
+                    }
+                    else
+                    {
+                        valorParametro = $"'${valorParametro}'";
+                    }
+                }
+                else
+                {
+                    if (valorParametro.Trim().Length == 0)
+                    {
+                        valorParametro = null;
+                    }
+                }
+              
 
-                queryReporte=queryReporte.Replace($"${claveReporte}",$"{valorReporte}");
+                queryReporte=queryReporte.Replace($"${claveParametro}",$"{valorParametro}");
             }
             
             DataTable dataTable = _queryExecuter.ExecuteQuery(queryReporte);
