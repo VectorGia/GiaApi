@@ -27,11 +27,11 @@ namespace AppGia.Helpers
                 string claveParametro = parametro.Key;
                 string valorParametro = parametro.Value;
             
-                if (claveTipoParam[claveParametro].Equals("text"))
+                if (claveTipoParam[claveParametro].Equals("text") || claveTipoParam[claveParametro].Equals("date"))
                 {
                     if (valorParametro.Trim().Length == 0)
                     {
-                        valorParametro = null;
+                        valorParametro = "null";
                     }
                     else
                     {
@@ -42,7 +42,7 @@ namespace AppGia.Helpers
                 {
                     if (valorParametro.Trim().Length == 0)
                     {
-                        valorParametro = null;
+                        valorParametro = "null";
                     }
                 }
               
