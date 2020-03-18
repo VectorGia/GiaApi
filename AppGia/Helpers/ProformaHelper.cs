@@ -451,5 +451,52 @@ namespace AppGia.Helpers
             }
             return default;
         }
+
+
+        public void setMotoRealesAndProform(List<ProformaDetalle> detalles)
+        {
+            if (detalles.Count > 0)
+            {
+                int mesInicio = getMesInicio(detalles[0].tipo_proforma_id);
+                detalles.ForEach(detalle => { setMotoRealesAndProform(detalle,mesInicio);});
+            }
+
+        }
+        private void setMotoRealesAndProform(ProformaDetalle detalle, int mesInicio)
+        {
+            double montoReales = 0;
+            double montoProformados = 0;
+            foreach (var entry in getPonderacionMeses())
+            {
+                if (entry.Value <= mesInicio)
+                {
+                    montoReales+=ToDouble(detalle[entry.Key]);
+                }
+                else
+                {
+                    montoProformados+=ToDouble(detalle[entry.Key]);
+                }
+            }
+
+            detalle.total_real_resultado = montoReales;
+            detalle.total_proformado_resultado = montoProformados;
+        }
+        private static Dictionary<string, Int32> getPonderacionMeses()
+        {
+            Dictionary<string, Int32> ponderacionCampos = new Dictionary<string, Int32>();
+            ponderacionCampos.Add("enero_monto_resultado", 1);
+            ponderacionCampos.Add("febrero_monto_resultado", 2);
+            ponderacionCampos.Add("marzo_monto_resultado", 3);
+            ponderacionCampos.Add("abril_monto_resultado", 4);
+            ponderacionCampos.Add("mayo_monto_resultado", 5);
+            ponderacionCampos.Add("junio_monto_resultado", 6);
+            ponderacionCampos.Add("julio_monto_resultado", 7);
+            ponderacionCampos.Add("agosto_monto_resultado", 8);
+            ponderacionCampos.Add("septiembre_monto_resultado", 9);
+            ponderacionCampos.Add("octubre_monto_resultado", 10);
+            ponderacionCampos.Add("noviembre_monto_resultado", 11);
+            ponderacionCampos.Add("diciembre_monto_resultado", 12);
+            return ponderacionCampos;
+        }
     }
 }

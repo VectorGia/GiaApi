@@ -36,6 +36,9 @@ namespace AppGia.Models
         public bool activo { get; set; }
         public double ejercicio_resultado { get; set; }
         public double total_resultado { get; set; }
+        public double total_real_resultado { get; set; }
+        public double total_proformado_resultado { get; set; }
+
 
         // //HNA: no persistible  Campos de tabla "proforma"
         public Int32 anio { get; set; }
