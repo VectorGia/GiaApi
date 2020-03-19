@@ -406,5 +406,33 @@ namespace AppGia.Dao
             DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult("select id from tipo_proforma where clave='"+claveProforma+"'");
             return Convert.ToInt64(dataRow["id"]);
         }
+
+        public int Delete(string id)
+        {
+            bool status = false;
+            string delete = " update proforma set activo = '" + status + "' "
+                          + " where id ='" + id + "'";
+            try
+            {
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
+                    con.Open();
+                    int cantFilAfec = cmd.ExecuteNonQuery();
+                    con.Close();
+                    return cantFilAfec;
+                }
+            }
+            catch
+            {
+                con.Close();
+                throw;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
     }
+
+    
 }
