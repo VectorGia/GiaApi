@@ -372,6 +372,7 @@ namespace AppGia.Dao
             proforma.tipo_captura_id = detalles[0].tipo_captura_id;
             proforma.centro_costo_id = detalles[0].centro_costo_id;
             proforma.fecha_captura = fechaProc;
+            _profHelper.setMotoRealesAndProform(detalles);
             AddProforma(proforma);
             detalles.ForEach(detalle =>
             {
@@ -383,16 +384,17 @@ namespace AppGia.Dao
             return 0;
         }
 
-        public int ActualizaProforma(List<ProformaDetalle> profDetalle)
+        public int ActualizaProforma(List<ProformaDetalle> detalles)
         {
             Proforma proforma = new Proforma();
             DateTime fechaProc = DateTime.Now;
             proforma.activo = true;
-            proforma.usuario = profDetalle[0].usuario;
+            proforma.usuario = detalles[0].usuario;
             proforma.fecha_captura = fechaProc;
-            proforma.id = profDetalle[0].id_proforma;
+            proforma.id = detalles[0].id_proforma;
+            _profHelper.setMotoRealesAndProform(detalles);
             UpdateProforma(proforma);
-            profDetalle.ForEach(detalle =>
+            detalles.ForEach(detalle =>
             {
                 detalle.id_proforma = proforma.id;
                 detalle.activo = true;

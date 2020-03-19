@@ -128,7 +128,7 @@ namespace AppGia.Dao
             consulta += "	 septiembre_monto_resultado, octubre_monto_resultado, ";
             consulta += "	 noviembre_monto_resultado, diciembre_monto_resultado, ";
             consulta += "	 total_resultado, acumulado_resultado, ";
-            consulta += "	 valor_tipo_cambio_resultado ";
+            consulta += "	 valor_tipo_cambio_resultado,total_real,total_proformado ";
             consulta += " ) values ( ";
             consulta += "	 nextval('seq_proforma_detalle'), @id_proforma, @rubro_id, @activo, @ejercicio_resultado, ";
             consulta += "	  @enero_monto_resultado, @febrero_monto_resultado, ";
@@ -138,7 +138,7 @@ namespace AppGia.Dao
             consulta += "	  @septiembre_monto_resultado, @octubre_monto_resultado, ";
             consulta += "	  @noviembre_monto_resultado, @diciembre_monto_resultado, ";
             consulta += "	  @total_resultado, @acumulado_resultado, ";
-            consulta += "	  @valor_tipo_cambio_resultado ";
+            consulta += "	  @valor_tipo_cambio_resultado,@total_real,@total_proformado ";
             consulta += " ) ";
 
             try
@@ -163,8 +163,9 @@ namespace AppGia.Dao
                 cmd.Parameters.AddWithValue("@diciembre_monto_resultado", proforma_detalle.diciembre_monto_resultado);
                 cmd.Parameters.AddWithValue("@total_resultado", proforma_detalle.total_resultado);
                 cmd.Parameters.AddWithValue("@acumulado_resultado", proforma_detalle.acumulado_resultado);
-                cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado",
-                    proforma_detalle.valor_tipo_cambio_resultado);
+                cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado", proforma_detalle.valor_tipo_cambio_resultado);
+                cmd.Parameters.AddWithValue("@total_real", proforma_detalle.total_real_resultado);
+                cmd.Parameters.AddWithValue("@total_proformado", proforma_detalle.total_proformado_resultado);
 
                 int regInsert = cmd.ExecuteNonQuery();
 
@@ -217,6 +218,8 @@ namespace AppGia.Dao
             consulta += "    diciembre_monto_resultado = @diciembre_monto_resultado, ";
             consulta += "    acumulado_resultado = @acumulado_resultado, ";
             consulta += "    ejercicio_resultado = @ejercicio_resultado, ";
+            consulta += "    total_real_resultado = @total_real_resultado, ";
+            consulta += "    total_proformado_resultado = @total_proformado_resultado, ";
             consulta += "    total_resultado = @total_resultado ";
             consulta += " where id = @id ";
 
@@ -244,6 +247,8 @@ namespace AppGia.Dao
                     cmd.Parameters.AddWithValue("@acumulado_resultado", proformaDetalle.acumulado_resultado);
                     cmd.Parameters.AddWithValue("@ejercicio_resultado", proformaDetalle.ejercicio_resultado);
                     cmd.Parameters.AddWithValue("@total_resultado", proformaDetalle.total_resultado);
+                    cmd.Parameters.AddWithValue("@total_real_resultado", proformaDetalle.total_real_resultado);
+                    cmd.Parameters.AddWithValue("@total_proformado_resultado", proformaDetalle.total_proformado_resultado);
                     cmd.Parameters.AddWithValue("@activo", proformaDetalle.activo);
 
                     int regActual = cmd.ExecuteNonQuery();
