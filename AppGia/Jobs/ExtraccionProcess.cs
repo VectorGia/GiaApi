@@ -1,45 +1,44 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AppGia.Controllers;
-using AppGia.Dao;
+using AppGia.Helpers;
 using Quartz;
 using Quartz.Impl;
 
 namespace AppGia.Jobs
 {
-    public class MontosConsolidadosProcess
+    public class ExtraccionProcess
     {
-        public static async void MontosContableSchedule(String cronExp)
+        public static async void ExtraccionContableSchedule(String cronExp)
         {
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             IScheduler scheduler = await schedulerFactory.GetScheduler();
 
-            IJobDetail jobDetail = JobBuilder.Create<MontosContableJob>()
-                .WithIdentity("MontosContableJob")
+            IJobDetail jobDetail = JobBuilder.Create<ExtraccionContableJob>()
+                .WithIdentity("ExtraccionContableJob")
                 .Build();
 
             ITrigger trigger = TriggerBuilder.Create()
                 .ForJob(jobDetail)
                 .WithCronSchedule(cronExp)
-                .WithIdentity("MontosContableTrigger")
+                .WithIdentity("ExtraccionContableTrigger")
                 .StartNow()
                 .Build();
             scheduler.ScheduleJob(jobDetail, trigger);
             scheduler.Start();
         }
-        public static async void MontosFlujoSchedule(String cronExp)
+        public static async void ExtraccionFlujoSchedule(String cronExp)
         {
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             IScheduler scheduler = await schedulerFactory.GetScheduler();
 
-            IJobDetail jobDetail = JobBuilder.Create<MontosFlujoJob>()
-                .WithIdentity("MontosFlujoJob")
+            IJobDetail jobDetail = JobBuilder.Create<ExtraccionFlujoJob>()
+                .WithIdentity("ExtraccionFlujoJob")
                 .Build();
 
             ITrigger trigger = TriggerBuilder.Create()
                 .ForJob(jobDetail)
                 .WithCronSchedule(cronExp)
-                .WithIdentity("MontosFlujoTrigger")
+                .WithIdentity("ExtraccionFlujoTrigger")
                 .StartNow()
                 .Build();
             scheduler.ScheduleJob(jobDetail, trigger);
@@ -47,35 +46,35 @@ namespace AppGia.Jobs
         }
     }
 
-    internal class MontosContableJob : IJob
+    internal class ExtraccionContableJob : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.Out.WriteLineAsync(".... MontosContableJob start!");
-                new PreProformaDataAccessLayer().MontosConsolidados(true,false);
-                Console.Out.WriteLineAsync(".... MontosContableJob end!");
+                Console.Out.WriteLineAsync(".... ExtraccionContableJob start!");
+                new ETLHelper().extraeBalanzaAuto();
+                Console.Out.WriteLineAsync(".... ExtraccionContableJob end!");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLineAsync("#### Error en MontosContableJob: " + e.Message + ", " + e.StackTrace);
+                Console.Error.WriteLineAsync("#### Error en ExtraccionContableJob: " + e.Message + ", " + e.StackTrace);
             }
         }
     }
-    internal class MontosFlujoJob : IJob
+    internal class ExtraccionFlujoJob : IJob
     {
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.Out.WriteLineAsync(".... MontosFlujoJob start!");
-                new PreProformaDataAccessLayer().MontosConsolidados(false,true);
-                Console.Out.WriteLineAsync(".... MontosFlujoJob end!");
+                Console.Out.WriteLineAsync(".... ExtraccionFlujoJob start!");
+                new ETLHelper().extraeFlujoAuto();
+                Console.Out.WriteLineAsync(".... ExtraccionFlujoJob end!");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLineAsync("#### Error en MontosFlujoJob: " + e.Message + ", " + e.StackTrace);
+                Console.Error.WriteLineAsync("#### Error en ExtraccionFlujoJob: " + e.Message + ", " + e.StackTrace);
             }
         }
     }

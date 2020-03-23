@@ -15,8 +15,12 @@ namespace AppGia
     {
         public static void Main(string[] args)
         {
+            ExtraccionProcess.ExtraccionContableSchedule("0 0 0 1 * ?");//0 am de cada mes 1 de mes
+            ExtraccionProcess.ExtraccionFlujoSchedule(   "0 0 0 ? * MON");//cada lunes a las 0 am
+            
             MontosConsolidadosProcess.MontosContableSchedule("0 0 5 1 * ?");//5 am de cada mes 1 de mes
             MontosConsolidadosProcess.MontosFlujoSchedule(   "0 0 5 ? * MON");//cada lunes a las 5 am
+            
             CreateWebHostBuilder(args).Build().Run();
         }
 
