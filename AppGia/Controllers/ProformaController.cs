@@ -72,5 +72,11 @@ namespace AppGia.Controllers
             return objProforma.ActualizaProforma(proformaDetalles);
         }
 
+        [HttpDelete("{id}")]
+        public int Delete(string id)
+        {
+            return objProforma.Delete(id);
+        }
+
     }
 }
