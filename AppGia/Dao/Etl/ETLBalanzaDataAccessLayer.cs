@@ -13,7 +13,6 @@
         Conexion.Conexion conex = new Conexion.Conexion();
 
         NpgsqlConnection conP = new NpgsqlConnection();
-        NpgsqlCommand comP = new NpgsqlCommand();
 
         DSNConfig dsnConfig = new DSNConfig();
         OdbcConnection odbcCon;
@@ -25,14 +24,14 @@
 
        
 
-        public string generaCSV(Int64 idEmpresa, string ruta)
+        public string generaCSV(Int64 idEmpresa, int anioInicio,int anioFin, string ruta)
         {
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             nombreArchivo = Constantes.NOMBRE_ARCHIVO_BALANZA + "_" + idEmpresa + DateTime.Now.ToString("ddMMyyyy") +
                             DateTime.Now.ToString("HHmmSS") + ".csv";
             StreamWriter layout;
-            layout = File.AppendText(ruta + nombreArchivo);
+            layout = File.CreateText(ruta + nombreArchivo);
 
             try
             {
@@ -83,17 +82,10 @@
                                           + "cc"
                                           + " FROM sc_salcont_cc";
 
-                        /*if (anioInicio > 0 && anioFin > 0) {
-                            consulta = consulta + "  where year between " + anioInicio + " and " + anioFin;
-                                    
+                        if (anioInicio > 0 && anioFin > 0) {
+                            consulta += "  where year between " + anioInicio + " and " + anioFin;
                         }
-
-                        if (anioInicio>0 && anioFin ==0 ) {
-                            consulta = consulta + "  where year = " + anioInicio;
-
-                        }*/
-
-
+                        
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
 
                         OdbcDataReader rdr = cmd.ExecuteReader();
@@ -148,12 +140,6 @@
                         layout.Close();
                         odbcCon.Close();
                         return nombreArchivo;
-                    }
-                    catch (Exception ex)
-                    {
-                        layout.Close();
-                        odbcCon.Close();
-                        throw;
                     }
                     finally
                     {

@@ -17,7 +17,20 @@ namespace AppGia.Controllers
         {
             con = conex.ConnexionDB();
         }
-        
+        public int execute(String query)
+        {
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(query, con);
+                int cantFilAfec = cmd.ExecuteNonQuery();
+                return cantFilAfec;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
         public DataTable ExecuteQuery(String qry)
         {
             string consulta = qry;

@@ -46,14 +46,14 @@
         }
 
 
-        public string generaCSV(Int64 idEmpresa, string ruta, String anio)
+        public string generaCSV(Int64 idEmpresa, string ruta, int anioInicio,int anioFin,int mes)
         {
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             nombreArchivo = Constantes.NOMBRE_ARCHIVO_POL_SEM + "_" + idEmpresa + DateTime.Now.ToString("ddMMyyyy") +
                             DateTime.Now.ToString("HHmmSS") + ".csv";
             StreamWriter layout;
-            layout = File.AppendText(ruta + nombreArchivo);
+            layout = File.CreateText(ruta + nombreArchivo);
 
 
             try
@@ -92,10 +92,26 @@
                                           + "  FROM sc_movpol a "
                                           + " INNER join sc_polizas b "
                                           + " on a.year = b.year"
-                                          + " and a.year = " + anio
                                           + " and a.mes = b.mes"
                                           + " and a.tp = b.tp"
                                           + " and a.poliza = b.poliza WHERE a.year >0 And Status = 'A'";
+                       
+                        if (anioInicio > 0 && anioFin > 0) {
+                            consulta += "  where b.year between " + anioInicio + " and " + anioFin;
+                        }
+
+                        if (mes > 0)
+                        {
+                            if (consulta.Contains("where"))
+                            {
+                                consulta += "  and b.mes = " + mes;
+                            }
+                            else
+                            {
+                                consulta += "  where b.mes = " + mes;
+                            }
+                            
+                        }
 
                         OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                         odbcCon.Open();
@@ -137,9 +153,6 @@
                                                                      + "'" + DateTime.Now.ToString("h:mm tt") + "'";
                             layout.WriteLine(registros, Environment.NewLine);
                         }
-
-                        layout.Close();
-                        odbcCon.Close();
                         return nombreArchivo;
                     }
                     finally

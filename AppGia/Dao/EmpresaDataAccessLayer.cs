@@ -16,7 +16,7 @@ namespace AppGia.Dao
         {
             con = conex.ConnexionDB();
         }
-        public IEnumerable<Empresa> GetAllEmpresas()
+        public List<Empresa> GetAllEmpresas()
         {
             //string cadena = "select *from empresa where  activo = " + true;
             string cadena = "select id,activo,nombre,abrev,bd_name," +
