@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using AppGia.Models;
-using AppGia.Util;
+using System.Data.Common;
 using Npgsql;
-using NpgsqlTypes;
 
 namespace AppGia.Controllers
 {
@@ -17,29 +14,61 @@ namespace AppGia.Controllers
         {
             con = conex.ConnexionDB();
         }
-        public int execute(String query)
+
+        public int execute(String query, params object[] parametros)
         {
+            DbTransaction transaction = null;
             try
             {
                 con.Open();
+                transaction = con.BeginTransaction();
                 NpgsqlCommand cmd = new NpgsqlCommand(query, con);
+                foreach (var parametro in parametros)
+                {
+                    cmd.Parameters.Add(parametro);
+                }
+
                 int cantFilAfec = cmd.ExecuteNonQuery();
+                transaction.Commit();
                 return cantFilAfec;
+            }
+            catch (Exception e)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+
+                throw;
             }
             finally
             {
-                con.Close();
+                closeConection(con);
             }
         }
-        public DataTable ExecuteQuery(String qry)
+        
+        public static void closeConection( NpgsqlConnection con)
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+            }   
+        }
+
+        public DataTable ExecuteQuery(String qry, params object[] parametros)
         {
             string consulta = qry;
 
             try
             {
                 con.Open();
-                NpgsqlCommand comP = new NpgsqlCommand(consulta, con);
-                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(comP);
+                NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
+                foreach (var parametro in parametros)
+                {
+                    cmd.Parameters.Add(parametro);
+                }
+
+                NpgsqlDataAdapter daP = new NpgsqlDataAdapter(cmd);
 
                 DataTable dt = new DataTable();
                 daP.Fill(dt);
@@ -47,22 +76,24 @@ namespace AppGia.Controllers
             }
             finally
             {
-                con.Close();
+                closeConection(con);
             }
         }
 
-        public DataRow ExecuteQueryUniqueresult(String qry)
+        public DataRow ExecuteQueryUniqueresult(String qry, params object[] parametros)
         {
-            DataTable dataTable = ExecuteQuery(qry);
+            DataTable dataTable = ExecuteQuery(qry, parametros);
             if (dataTable.Rows.Count == 1)
             {
                 return dataTable.Rows[0];
             }
+
             if (dataTable.Rows.Count == 0)
             {
                 return null;
             }
-            throw new DataException("Se esperaba un resultado pero se obtuvieron "+dataTable.Rows.Count);
+
+            throw new DataException("Se esperaba un resultado pero se obtuvieron " + dataTable.Rows.Count);
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AppGia.Dao;
 using AppGia.Helpers;
+using AppGia.Models;
 using Quartz;
 using Quartz.Impl;
 
@@ -12,8 +14,11 @@ namespace AppGia.Jobs
         private static int timeOut = 3000;
         private static IScheduler _extraccionContableScheduler;
         private static IScheduler _extraccionFlujoScheduler;
+        private static readonly string ClaveExtraccionContable = "EXTR_CONTABLE";
+        private static readonly string ClaveExtraccionFlujo = "EXTR_FLUJO";
 
-        public static void rescheduleContable(string cronExp)
+
+        public static void rescheduleContable(string cronExp,Int64 idUsuario)
         {
             Boolean finished = false;
             if (_extraccionContableScheduler != null && _extraccionContableScheduler.IsStarted)
@@ -23,10 +28,10 @@ namespace AppGia.Jobs
 
             if (finished)
             {
-                ExtraccionContableSchedule(cronExp);
+                ExtraccionContableSchedule(cronExp, idUsuario);
             }
         }
-        public static void rescheduleFlujo(string cronExp)
+        public static void rescheduleFlujo(string cronExp,Int64 idUsuario)
         {
             Boolean finished = false;
             if (_extraccionFlujoScheduler != null && _extraccionFlujoScheduler.IsStarted)
@@ -36,11 +41,23 @@ namespace AppGia.Jobs
 
             if (finished)
             {
-                ExtraccionFlujoSchedule(cronExp);
+                ExtraccionFlujoSchedule(cronExp, idUsuario);
             }
         }
-        public static async void ExtraccionContableSchedule(String cronExp)
+
+        public static  void ExtraccionContableSchedule()
         {
+           ProgramacionProceso programacionProceso= new ProgramacionProcesoDataAccessLayer().GetByClave(ClaveExtraccionContable);
+           if (programacionProceso != null)
+           {
+               ExtraccionContableSchedule(programacionProceso.cronExpresion, 0);
+           }
+        }
+        private static async void ExtraccionContableSchedule(String cronExp,Int64 idUsuario)
+        {
+            new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
+                new ProgramacionProceso(ClaveExtraccionContable, null, cronExp, idUsuario));
+            
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             _extraccionContableScheduler = await schedulerFactory.GetScheduler();
 
@@ -58,8 +75,20 @@ namespace AppGia.Jobs
             await _extraccionContableScheduler.Start();
 
         }
-        public static async void ExtraccionFlujoSchedule(String cronExp)
+
+        public static  void ExtraccionFlujoSchedule()
         {
+            ProgramacionProceso programacionProceso= new ProgramacionProcesoDataAccessLayer().GetByClave(ClaveExtraccionFlujo);
+            if (programacionProceso != null)
+            {
+                ExtraccionFlujoSchedule(programacionProceso.cronExpresion, 0);
+            }
+        }
+        private static async void ExtraccionFlujoSchedule(String cronExp,Int64 idUsuario)
+        {
+            new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
+                new ProgramacionProceso(ClaveExtraccionFlujo, null, cronExp, idUsuario));
+
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory(); 
             _extraccionFlujoScheduler = await schedulerFactory.GetScheduler();
 

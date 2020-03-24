@@ -24,7 +24,7 @@ namespace AppGia.Controllers
         [HttpPost("rescheduleContable")]
         public Dictionary<string, object> rescheduleContable([FromBody] string cronExpr)
         {
-            ExtraccionProcess.rescheduleContable(cronExpr);
+            ExtraccionProcess.rescheduleContable(cronExpr,0);
             Dictionary<string, Object> res = new Dictionary<string, Object>();
             res.Add("resultado", Boolean.TrueString);
             return res;
@@ -42,7 +42,7 @@ namespace AppGia.Controllers
         [HttpPost("rescheduleFlujo")]
         public Dictionary<string, object> rescheduleFlujo([FromBody] string cronExpr)
         {
-            ExtraccionProcess.rescheduleFlujo(cronExpr);
+            ExtraccionProcess.rescheduleFlujo(cronExpr,0);
             Dictionary<string, Object> res = new Dictionary<string, Object>();
             res.Add("resultado", Boolean.TrueString);
             return res;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AppGia.Dao;
+using AppGia.Models;
 using Quartz;
 using Quartz.Impl;
 
@@ -11,8 +12,10 @@ namespace AppGia.Jobs
         private static int timeOut = 3000;
         private static IScheduler _schedulerMontosContable;
         private static IScheduler _schedulerMontosFlujo;
+        private static readonly string ClaveMontosContable = "MONTOS_CONTABLE";
+        private static readonly string ClaveMontosFlujo = "MONTOS_FLUJO";
         
-        public static void rescheduleContable(string cronExp)
+        public static void rescheduleContable(string cronExp,Int64 idUsuario)
         {
             Boolean finished = false;
             if (_schedulerMontosContable != null && _schedulerMontosContable.IsStarted)
@@ -22,10 +25,10 @@ namespace AppGia.Jobs
 
             if (finished)
             {
-                MontosContableSchedule(cronExp);
+                MontosContableSchedule(cronExp,idUsuario);
             }
         }
-        public static void rescheduleFlujo(string cronExp)
+        public static void rescheduleFlujo(string cronExp,Int64 idUsuario)
         {
             Boolean finished = false;
             if (_schedulerMontosFlujo != null && _schedulerMontosFlujo.IsStarted)
@@ -35,12 +38,23 @@ namespace AppGia.Jobs
 
             if (finished)
             {
-                MontosFlujoSchedule(cronExp);
+                MontosFlujoSchedule(cronExp,idUsuario);
             }
         }
 
-        public static async void MontosContableSchedule(String cronExp)
+        public static  void MontosContableSchedule()
         {
+            ProgramacionProceso programacionProceso= new ProgramacionProcesoDataAccessLayer().GetByClave(ClaveMontosContable);
+            if (programacionProceso != null)
+            {
+                MontosContableSchedule(programacionProceso.cronExpresion, 0);
+            }
+        }
+        private static async void MontosContableSchedule(String cronExp,Int64 idUsuario)
+        {
+            new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
+                new ProgramacionProceso(ClaveMontosContable, null, cronExp, idUsuario));
+
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             _schedulerMontosContable = await schedulerFactory.GetScheduler();
 
@@ -57,8 +71,19 @@ namespace AppGia.Jobs
             await _schedulerMontosContable.ScheduleJob(jobDetail, trigger);
             await _schedulerMontosContable.Start();
         }
-        public static async void MontosFlujoSchedule(String cronExp)
+        public static  void MontosFlujoSchedule()
         {
+            ProgramacionProceso programacionProceso= new ProgramacionProcesoDataAccessLayer().GetByClave(ClaveMontosFlujo);
+            if (programacionProceso != null)
+            {
+                MontosFlujoSchedule(programacionProceso.cronExpresion, 0);
+            }
+        }
+        private static async void MontosFlujoSchedule(String cronExp,Int64 idUsuario)
+        {
+            new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
+                new ProgramacionProceso(ClaveMontosFlujo, null, cronExp, idUsuario));
+
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             _schedulerMontosFlujo = await schedulerFactory.GetScheduler();
 
