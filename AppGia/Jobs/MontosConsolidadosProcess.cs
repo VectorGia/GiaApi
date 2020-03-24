@@ -8,10 +8,41 @@ namespace AppGia.Jobs
 {
     public class MontosConsolidadosProcess
     {
+        private static int timeOut = 3000;
+        private static IScheduler _schedulerMontosContable;
+        private static IScheduler _schedulerMontosFlujo;
+        
+        public static void rescheduleContable(string cronExp)
+        {
+            Boolean finished = false;
+            if (_schedulerMontosContable != null && _schedulerMontosContable.IsStarted)
+            {
+                finished= _schedulerMontosContable.Shutdown().Wait(timeOut, default);
+            }
+
+            if (finished)
+            {
+                MontosContableSchedule(cronExp);
+            }
+        }
+        public static void rescheduleFlujo(string cronExp)
+        {
+            Boolean finished = false;
+            if (_schedulerMontosFlujo != null && _schedulerMontosFlujo.IsStarted)
+            {
+                finished= _schedulerMontosFlujo.Shutdown().Wait(timeOut, default);
+            }
+
+            if (finished)
+            {
+                MontosFlujoSchedule(cronExp);
+            }
+        }
+
         public static async void MontosContableSchedule(String cronExp)
         {
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            IScheduler scheduler = await schedulerFactory.GetScheduler();
+            _schedulerMontosContable = await schedulerFactory.GetScheduler();
 
             IJobDetail jobDetail = JobBuilder.Create<MontosContableJob>()
                 .WithIdentity("MontosContableJob")
@@ -23,13 +54,13 @@ namespace AppGia.Jobs
                 .WithIdentity("MontosContableTrigger")
                 .StartNow()
                 .Build();
-            scheduler.ScheduleJob(jobDetail, trigger);
-            scheduler.Start();
+            await _schedulerMontosContable.ScheduleJob(jobDetail, trigger);
+            await _schedulerMontosContable.Start();
         }
         public static async void MontosFlujoSchedule(String cronExp)
         {
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            IScheduler scheduler = await schedulerFactory.GetScheduler();
+            _schedulerMontosFlujo = await schedulerFactory.GetScheduler();
 
             IJobDetail jobDetail = JobBuilder.Create<MontosFlujoJob>()
                 .WithIdentity("MontosFlujoJob")
@@ -41,8 +72,8 @@ namespace AppGia.Jobs
                 .WithIdentity("MontosFlujoTrigger")
                 .StartNow()
                 .Build();
-            scheduler.ScheduleJob(jobDetail, trigger);
-            scheduler.Start();
+            await _schedulerMontosFlujo.ScheduleJob(jobDetail, trigger);
+            await _schedulerMontosFlujo.Start();
         }
     }
 

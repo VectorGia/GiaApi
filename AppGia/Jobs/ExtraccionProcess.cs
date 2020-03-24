@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AppGia.Helpers;
 using Quartz;
@@ -8,10 +9,40 @@ namespace AppGia.Jobs
 {
     public class ExtraccionProcess
     {
+        private static int timeOut = 3000;
+        private static IScheduler _extraccionContableScheduler;
+        private static IScheduler _extraccionFlujoScheduler;
+
+        public static void rescheduleContable(string cronExp)
+        {
+            Boolean finished = false;
+            if (_extraccionContableScheduler != null && _extraccionContableScheduler.IsStarted)
+            {
+                finished= _extraccionContableScheduler.Shutdown().Wait(timeOut, default);
+            }
+
+            if (finished)
+            {
+                ExtraccionContableSchedule(cronExp);
+            }
+        }
+        public static void rescheduleFlujo(string cronExp)
+        {
+            Boolean finished = false;
+            if (_extraccionFlujoScheduler != null && _extraccionFlujoScheduler.IsStarted)
+            {
+                finished= _extraccionFlujoScheduler.Shutdown().Wait(timeOut, default);
+            }
+
+            if (finished)
+            {
+                ExtraccionFlujoSchedule(cronExp);
+            }
+        }
         public static async void ExtraccionContableSchedule(String cronExp)
         {
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            IScheduler scheduler = await schedulerFactory.GetScheduler();
+            _extraccionContableScheduler = await schedulerFactory.GetScheduler();
 
             IJobDetail jobDetail = JobBuilder.Create<ExtraccionContableJob>()
                 .WithIdentity("ExtraccionContableJob")
@@ -23,13 +54,14 @@ namespace AppGia.Jobs
                 .WithIdentity("ExtraccionContableTrigger")
                 .StartNow()
                 .Build();
-            scheduler.ScheduleJob(jobDetail, trigger);
-            scheduler.Start();
+            await _extraccionContableScheduler.ScheduleJob(jobDetail, trigger);
+            await _extraccionContableScheduler.Start();
+
         }
         public static async void ExtraccionFlujoSchedule(String cronExp)
         {
-            ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            IScheduler scheduler = await schedulerFactory.GetScheduler();
+            ISchedulerFactory schedulerFactory = new StdSchedulerFactory(); 
+            _extraccionFlujoScheduler = await schedulerFactory.GetScheduler();
 
             IJobDetail jobDetail = JobBuilder.Create<ExtraccionFlujoJob>()
                 .WithIdentity("ExtraccionFlujoJob")
@@ -41,8 +73,8 @@ namespace AppGia.Jobs
                 .WithIdentity("ExtraccionFlujoTrigger")
                 .StartNow()
                 .Build();
-            scheduler.ScheduleJob(jobDetail, trigger);
-            scheduler.Start();
+            await _extraccionFlujoScheduler.ScheduleJob(jobDetail, trigger);
+            await _extraccionFlujoScheduler.Start();
         }
     }
 
