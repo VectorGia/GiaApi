@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AppGia.Dao;
-using Microsoft.AspNetCore.Http;
+using AppGia.Jobs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppGia.Controllers
@@ -13,36 +11,31 @@ namespace AppGia.Controllers
     public class PreProformaController : ControllerBase
     {
         PreProformaDataAccessLayer prepro = new PreProformaDataAccessLayer();
-        // GET: api/PreProforma
-       /* [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }*/
-
-        // GET: api/PreProforma/5
+        
         [HttpGet]
         public int GetPreProforma()
         {
             return prepro.MontosConsolidados();
         }
+        
 
-        // POST: api/PreProforma
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("montosRescheduleContable")]
+        public Dictionary<string, object> montosRescheduleContable([FromBody] string cronExpr)
         {
+            MontosConsolidadosProcess.rescheduleContable(cronExpr);
+            Dictionary<string, Object> res = new Dictionary<string, Object>();
+            res.Add("resultado", Boolean.TrueString);
+            return res;
         }
+        
 
-        // PUT: api/PreProforma/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("montosRescheduleFlujo")]
+        public Dictionary<string, object> montosRescheduleFlujo([FromBody] string cronExpr)
         {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            MontosConsolidadosProcess.rescheduleFlujo(cronExpr);
+            Dictionary<string, Object> res = new Dictionary<string, Object>();
+            res.Add("resultado", Boolean.TrueString);
+            return res;
         }
     }
 }
