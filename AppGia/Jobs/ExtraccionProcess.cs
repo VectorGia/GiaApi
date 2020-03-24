@@ -17,7 +17,30 @@ namespace AppGia.Jobs
         private static readonly string ClaveExtraccionContable = "EXTR_CONTABLE";
         private static readonly string ClaveExtraccionFlujo = "EXTR_FLUJO";
 
+        public static string getEstatusContable()
+        {
+            return getEstatus(_extraccionContableScheduler);
+        }
+        public static string getEstatusFlujo()
+        {
+            return getEstatus(_extraccionFlujoScheduler);
+        }
 
+        private static string getEstatus(IScheduler scheduler)
+        {
+            if (scheduler != null)
+            {
+                if (scheduler.IsStarted)
+                {
+                    return "GREEN";
+                } 
+                if (scheduler.InStandbyMode)
+                {
+                    return "YELLOW";
+                }
+            }
+            return "RED";
+        }
         public static void rescheduleContable(string cronExp,Int64 idUsuario)
         {
             Boolean finished = false;

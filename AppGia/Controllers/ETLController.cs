@@ -48,5 +48,22 @@ namespace AppGia.Controllers
             return res;
         }
         
+        
+        [HttpGet("estatusContable")]
+        public Dictionary<string, object> estatusContable()
+        {
+            Dictionary<string, Object> res = new Dictionary<string, Object>();
+            res.Add("resultado",ExtraccionProcess.getEstatusContable());
+            return res;
+        }
+        
+        [HttpGet("estatusFlujo")]
+        public Dictionary<string, object> estatusFlujo()
+        {
+            Dictionary<string, Object> res = new Dictionary<string, Object>();
+            res.Add("resultado",ExtraccionProcess.getEstatusFlujo());
+            return res;
+        }
+        
     }
 }
