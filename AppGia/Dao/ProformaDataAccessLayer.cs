@@ -248,6 +248,7 @@ namespace AppGia.Dao
             {
                 detalle.centro_costo_id = idCC;
                 detalle.anio = anio;
+                detalle.empresa_id = cc.empresa_id;
                 detalle.tipo_proforma_id = idTipoProforma;
                 detalle.tipo_captura_id = idTipoCaptura;
                 detalle.modelo_negocio_id = idModeloNeg;

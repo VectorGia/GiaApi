@@ -88,13 +88,13 @@ namespace AppGia.Jobs
                 .WithIdentity("ExtraccionContableJob")
                 .Build();
 
-            ITrigger trigger = TriggerBuilder.Create()
+           /* ITrigger trigger = TriggerBuilder.Create()
                 .ForJob(jobDetail)
                 .WithCronSchedule(cronExp)
                 .WithIdentity("ExtraccionContableTrigger")
                 .StartNow()
-                .Build();
-            await _extraccionContableScheduler.ScheduleJob(jobDetail, trigger);
+                .Build();*/
+       //     await _extraccionContableScheduler.ScheduleJob(jobDetail, trigger);
             await _extraccionContableScheduler.Start();
 
         }
