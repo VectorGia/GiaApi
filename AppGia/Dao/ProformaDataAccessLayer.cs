@@ -60,12 +60,13 @@ namespace AppGia.Dao
             consulta += " select ";
             consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
             consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
-            consulta += " 		upper(concat(py.nombre, ' - ' , mm.nombre, ' - ', tip.nombre)) as nombre_proforma ";
+            consulta += " 		upper(concat(pr.nombre, ' - ' , mn.nombre, ' - ', tp.nombre,' - ', tc.clave)) as nombre_proforma ";
             consulta += " from proforma pf ";
-            consulta += " inner join modelo_negocio mm on mm.id = pf.modelo_negocio_id ";
+            consulta += " inner join modelo_negocio mn on mn.id = pf.modelo_negocio_id ";
             consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
-            consulta += " inner join proyecto py on py.id = cc.proyecto_id ";
-            consulta += " inner join tipo_proforma tip on pf.tipo_proforma_id = tip.id ";
+            consulta += " inner join proyecto pr on pr.id = cc.proyecto_id ";
+            consulta += " inner join tipo_proforma tp on pf.tipo_proforma_id = tp.id "; 
+            consulta += " join tipo_captura tc  on tc.id=pf.tipo_captura_id";
             consulta += " where pf.activo = 'true' ";
 
             try
