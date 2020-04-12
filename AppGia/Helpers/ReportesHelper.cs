@@ -35,7 +35,7 @@ namespace AppGia.Helpers
                     }
                     else
                     {
-                        valorParametro = $"'${valorParametro}'";
+                        valorParametro = $"'{valorParametro}'";
                     }
                 }
                 else
