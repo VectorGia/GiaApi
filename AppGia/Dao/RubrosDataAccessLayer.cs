@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AppGia.Models;
+using NLog;
 using Npgsql;
 
 namespace AppGia.Dao
@@ -11,6 +12,8 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
 
@@ -181,14 +184,41 @@ namespace AppGia.Dao
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = rubro.nombre.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica", Value = rubro.aritmetica.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_cuenta });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = rubro.nombre.Trim()
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica",
+                    Value = rubro.aritmetica.Trim()
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim()
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas",
+                    Value = rubro.rango_cuentas_excluidas.Trim()
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas",
+                    Value = rubro.rangos_cuentas_incluidas.Trim()
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta",
+                    Value = rubro.tipo_cuenta
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                {
+                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador",
+                    Value = rubro.tipo_cuenta
+                });
+                cmd.Parameters.Add(new NpgsqlParameter()
+                    {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id});
 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
@@ -196,10 +226,14 @@ namespace AppGia.Dao
 
                 return cantFilAfec;
             }
-            catch
+            catch (Exception ex)
             {
-                con.Close();
+                logger.Error(ex, "Error en ejecucion de UpdateRubro");
                 throw;
+            }
+            finally
+            {
+                con.Close();   
             }
 
         }
