@@ -128,7 +128,7 @@ namespace AppGia.Dao
             consulta += "	 septiembre_monto_resultado, octubre_monto_resultado, ";
             consulta += "	 noviembre_monto_resultado, diciembre_monto_resultado, ";
             consulta += "	 total_resultado, acumulado_resultado, ";
-            consulta += "	 valor_tipo_cambio_resultado,total_real,total_proformado ";
+            consulta += "	 valor_tipo_cambio_resultado,total_real_resultado,total_proformado_resultado ";
             consulta += " ) values ( ";
             consulta += "	 nextval('seq_proforma_detalle'), @id_proforma, @rubro_id, @activo, @ejercicio_resultado, ";
             consulta += "	  @enero_monto_resultado, @febrero_monto_resultado, ";
@@ -138,7 +138,7 @@ namespace AppGia.Dao
             consulta += "	  @septiembre_monto_resultado, @octubre_monto_resultado, ";
             consulta += "	  @noviembre_monto_resultado, @diciembre_monto_resultado, ";
             consulta += "	  @total_resultado, @acumulado_resultado, ";
-            consulta += "	  @valor_tipo_cambio_resultado,@total_real,@total_proformado ";
+            consulta += "	  @valor_tipo_cambio_resultado,@total_real_resultado,@total_proformado_resultado ";
             consulta += " ) ";
 
             try
@@ -164,8 +164,8 @@ namespace AppGia.Dao
                 cmd.Parameters.AddWithValue("@total_resultado", proforma_detalle.total_resultado);
                 cmd.Parameters.AddWithValue("@acumulado_resultado", proforma_detalle.acumulado_resultado);
                 cmd.Parameters.AddWithValue("@valor_tipo_cambio_resultado", proforma_detalle.valor_tipo_cambio_resultado);
-                cmd.Parameters.AddWithValue("@total_real", proforma_detalle.total_real_resultado);
-                cmd.Parameters.AddWithValue("@total_proformado", proforma_detalle.total_proformado_resultado);
+                cmd.Parameters.AddWithValue("@total_real_resultado", proforma_detalle.total_real_resultado);
+                cmd.Parameters.AddWithValue("@total_proformado_resultado", proforma_detalle.total_proformado_resultado);
 
                 int regInsert = cmd.ExecuteNonQuery();
 
@@ -401,6 +401,7 @@ namespace AppGia.Dao
                         proforma_detalle.id_proforma = ToInt64(rdr["id"]);
                         proforma_detalle.anio = ToInt32(rdr["anio"]);
                         proforma_detalle.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
+                        proforma_detalle.empresa_id = ToInt64(rdr["empresa_id"]);
                         proforma_detalle.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
                         proforma_detalle.activo = ToBoolean(rdr["activo"]);
                         proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
