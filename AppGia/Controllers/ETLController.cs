@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using AppGia.Helpers;
 using AppGia.Jobs;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,8 @@ namespace AppGia.Controllers
     [ApiController]
     public class ETLController : ControllerBase
     {
-        private ETLHelper _helper;
+        private ETLHelper _helper=new ETLHelper();
+        private QueryExecuter _queryExecuter=new QueryExecuter();
 
         [HttpPost("contable")]
         public Dictionary<string, object> contable([FromBody] ETLRequest request)
@@ -65,5 +67,18 @@ namespace AppGia.Controllers
             return res;
         }
         
+        [HttpGet("configCrons")]
+        public Dictionary<string, string> configCrons()
+        {
+            DataTable dataTable = _queryExecuter.ExecuteQuery("select clave,cron_expresion from programacion_proceso");
+            Dictionary<string,string> res=new Dictionary<string, string>();
+            foreach (DataRow rdr in dataTable.Rows)
+            {
+                res.Add("clave",rdr["clave"].ToString());
+                res.Add("cron_expresion",rdr["cron_expresion"].ToString());
+            }
+
+            return res;
+        }
     }
 }
