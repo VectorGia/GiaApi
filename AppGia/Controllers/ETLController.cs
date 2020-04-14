@@ -74,8 +74,8 @@ namespace AppGia.Controllers
             Dictionary<string,string> res=new Dictionary<string, string>();
             foreach (DataRow rdr in dataTable.Rows)
             {
-                res.Add("clave",rdr["clave"].ToString());
-                res.Add("cron_expresion",rdr["cron_expresion"].ToString());
+                res.Add(rdr["clave"].ToString(), rdr["cron_expresion"].ToString());
+               
             }
 
             return res;
