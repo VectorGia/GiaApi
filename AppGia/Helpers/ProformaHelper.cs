@@ -357,6 +357,14 @@ namespace AppGia.Helpers
                 }
             }
 
+            List<T> conceptosCloned = new List<T>();
+            conceptos.ForEach(concepto =>
+            {
+                conceptosCloned.Add(concepto);
+            });
+            rubrosReorder.ForEach(rrconcepto => { conceptosCloned.Remove(rrconcepto); });
+            rubrosReorder.AddRange(conceptosCloned);
+            
             return rubrosReorder;
         }
         /*
