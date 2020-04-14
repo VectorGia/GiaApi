@@ -20,9 +20,9 @@ namespace AppGia.Controllers
         
 
         [HttpPost("montosRescheduleContable")]
-        public Dictionary<string, object> montosRescheduleContable([FromBody] string cronExpr)
+        public Dictionary<string, object> montosRescheduleContable([FromBody] Dictionary<string, string> cronExpr)
         {
-            MontosConsolidadosProcess.rescheduleContable(cronExpr,0);
+            MontosConsolidadosProcess.rescheduleContable(cronExpr["valor"],0);
             Dictionary<string, Object> res = new Dictionary<string, Object>();
             res.Add("resultado", Boolean.TrueString);
             return res;
@@ -30,9 +30,9 @@ namespace AppGia.Controllers
         
 
         [HttpPost("montosRescheduleFlujo")]
-        public Dictionary<string, object> montosRescheduleFlujo([FromBody] string cronExpr)
+        public Dictionary<string, object> montosRescheduleFlujo([FromBody] Dictionary<string, string> cronExpr)
         {
-            MontosConsolidadosProcess.rescheduleFlujo(cronExpr,0);
+            MontosConsolidadosProcess.rescheduleFlujo(cronExpr["valor"],0);
             Dictionary<string, Object> res = new Dictionary<string, Object>();
             res.Add("resultado", Boolean.TrueString);
             return res;
