@@ -6,6 +6,7 @@ using AppGia.Dao;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AppGia.Controllers
 {
@@ -13,11 +14,19 @@ namespace AppGia.Controllers
     [ApiController]
     public class UnidadNegocioController : ControllerBase
     {
+        private readonly ILogger<UnidadNegocioController> _logger;
+
+        public UnidadNegocioController(ILogger<UnidadNegocioController> logger)
+        {
+            _logger = logger;
+        }
         UnidadNegocioDataAccessLayer objUnidadNeg = new UnidadNegocioDataAccessLayer();
         // GET: api/UnidadNegocio
         [HttpGet]
         public List<UnidadNegocio> Get()
         {
+            
+            _logger.LogInformation("prueba de logger");
             return objUnidadNeg.GetAllUnidadNegocio();
         }
 
