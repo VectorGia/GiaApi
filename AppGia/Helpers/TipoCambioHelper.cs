@@ -37,7 +37,7 @@ namespace AppGia.Helpers
         {
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             Moneda moneda = findIdMonedaByCentroCosto(idCC);
-            if (esMonedaExtrangera(moneda))
+            if (!esMonedaExtrangera(moneda))
             {
                 return tipoCambio;
             }
@@ -73,7 +73,7 @@ namespace AppGia.Helpers
         {
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             Moneda moneda = findIdMonedaByCentroCosto(idCC);
-            if (esMonedaExtrangera(moneda))
+            if (!esMonedaExtrangera(moneda))
             {
                 return tipoCambio;
             }
@@ -117,7 +117,7 @@ namespace AppGia.Helpers
 
         private bool esMonedaExtrangera(Moneda moneda)
         {
-            return !moneda.clave.Equals(Constantes.claveMonedaMex);
+            return !moneda.clave.Equals(claveMonedaMex);
         }
     }
 }
