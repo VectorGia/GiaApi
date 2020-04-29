@@ -175,9 +175,9 @@ namespace AppGia.Dao
                 "aritmetica = @aritmetica, " +
                 "clave = @clave, " +
                 "rango_cuentas_excluidas = @rango_cuentas_excluidas," +
-                "rangos_cuentas_incluidas = @rangos_cuentas_incluidas " +
+                "rangos_cuentas_incluidas = @rangos_cuentas_incluidas, " +
                 "tipo_cuenta = @tipo_cuenta " +
-                "tipo_agrupador = @tipo_agrupador " +
+                //"tipo_agrupador = @tipo_agrupador " +
                 "where id = " + id;
 
             try
@@ -191,7 +191,7 @@ namespace AppGia.Dao
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_agrupador });
+                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_agrupador });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
 
                 cmd.Parameters.Add(new NpgsqlParameter()
@@ -222,11 +222,11 @@ namespace AppGia.Dao
                     NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta",
                     Value = rubro.tipo_cuenta
                 });
-                cmd.Parameters.Add(new NpgsqlParameter()
+                /*cmd.Parameters.Add(new NpgsqlParameter()
                 {
                     NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador",
-                    Value = rubro.tipo_cuenta
-                });
+                    Value = rubro.tipo_agrupador
+                });*/
                 cmd.Parameters.Add(new NpgsqlParameter()
                     {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id});
 
