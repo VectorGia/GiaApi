@@ -366,7 +366,7 @@ namespace AppGia.Dao
             
             Dictionary<string, string> meses = ProformaHelper.getPonderacionMeses();
             StringBuilder stringBuilder = new StringBuilder();
-            int sizeMeses = meses.Count;
+         
             foreach (var entry in meses)
             {
                 int mesValor = ToInt16(entry.Key);
@@ -375,17 +375,12 @@ namespace AppGia.Dao
                 if (mesValor <= mesInicio)
                 {
                     string attrTotal = montoAtributo.Replace("monto", "total");
-                    
-                    stringBuilder.Append(attrTotal);
-                    --sizeMeses;
-                    if (sizeMeses > 0)
-                    {
-                        stringBuilder.Append(" + ");
-                    }
+                    stringBuilder.Append(attrTotal).Append(" + ");
                 }
             }
+            
 
-            return stringBuilder.Insert(0,"coalesce(").Append(", 0) as ejercicio_resultado, \n").ToString();
+            return stringBuilder.Insert(0,"coalesce(").Append(", 0) as ejercicio_resultado, \n").ToString().Replace(" + ,"," ,");
         }
         
 
