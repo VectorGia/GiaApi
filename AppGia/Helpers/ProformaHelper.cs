@@ -15,11 +15,11 @@ namespace AppGia.Helpers
         private QueryExecuter _queryExecuter = new QueryExecuter();
         private QueryExecuterSQL _queryExecuterSql=new QueryExecuterSQL();
 
-        public List<ProformaDetalle> BuildProformaFromModeloAsTemplate(Int64 idCC, int anio, Int64 idTipoProforma,
+        public List<ProformaDetalle> BuildProformaFromModeloAsTemplate(CentroCostos cc, int anio, Int64 idTipoProforma,
             Int64 idTipoCaptura)
         {
             DataRow dataRow = _queryExecuter.ExecuteQueryUniqueresult(
-                "select modelo_negocio_id,modelo_negocio_flujo_id from centro_costo where id=" + idCC);
+                "select modelo_negocio_id,modelo_negocio_flujo_id from centro_costo where id=" + cc.id);
             Int64 idModeloAproformar = -1;
             Int64 tipoCaptura = idTipoCaptura;
             if (tipoCaptura == TipoCapturaContable)
@@ -40,12 +40,25 @@ namespace AppGia.Helpers
 
             List<Rubros> rubroses = GetRubrosFromModeloId(idModeloAproformar, false);
 
+            List<ProformaDetalle> detallesAniosAnteriores=new List<ProformaDetalle>();
+           //--> se calculan anios anteriores solo cuando exista en balanza o polizas en caso de shadow y metodo esto no aplica
+            if (cc.proyeccion.Equals(ProyeccionBase))
+            {
+                ProformaDetalleDataAccessLayer detalleAccesLayer = new ProformaDetalleDataAccessLayer();
+                detallesAniosAnteriores = 
+                    detalleAccesLayer.GetAcumuladoAnteriores(cc.id, cc.empresa_id, idModeloAproformar, cc.proyecto_id, anio, idTipoCaptura);
+ 
+            }
+          
             List<ProformaDetalle> detallesAniosPosteriores =
-                new ProformaDetalleDataAccessLayer().GetEjercicioPosterior(anio, idCC, idModeloAproformar,
+                new ProformaDetalleDataAccessLayer().GetEjercicioPosterior(anio, cc.id, idModeloAproformar,
                     idTipoCaptura, idTipoProforma);
 
             List<ProformaDetalle> proformaDetalles =
-                buildProformaFromTemplate(rubroses, idCC, anio, idTipoProforma, idTipoCaptura);
+                buildProformaFromTemplate(rubroses, cc.id, anio, idTipoProforma, idTipoCaptura);
+            //--> se colocan los anios posteriores
+            manageAniosAnteriores(proformaDetalles,detallesAniosAnteriores);
+
             foreach (ProformaDetalle detalle in proformaDetalles)
             {
                 foreach (ProformaDetalle posterior in detallesAniosPosteriores)
@@ -216,19 +229,7 @@ namespace AppGia.Helpers
             List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
             if (idTipoCaptura == TipoCapturaContable)//Los ajustes solo son para contable
             {
-                Dictionary<string, string> mesValor = new Dictionary<string, string>();
-                mesValor.Add("1", "enero_monto_resultado");
-                mesValor.Add("2", "febrero_monto_resultado");
-                mesValor.Add("3", "marzo_monto_resultado");
-                mesValor.Add("4", "abril_monto_resultado");
-                mesValor.Add("5", "mayo_monto_resultado");
-                mesValor.Add("6", "junio_monto_resultado");
-                mesValor.Add("7", "julio_monto_resultado");
-                mesValor.Add("8", "agosto_monto_resultado");
-                mesValor.Add("9", "septiembre_monto_resultado");
-                mesValor.Add("10", "octubre_monto_resultado");
-                mesValor.Add("11", "noviembre_monto_resultado");
-                mesValor.Add("12", "diciembre_monto_resultado");
+                Dictionary<string, string> mesValor = getPonderacionMeses();
                 Object empresaId =
                     _queryExecuter.ExecuteQueryUniqueresult("select empresa_id from centro_costo where id=" + idCC)[
                         "empresa_id"];
@@ -476,35 +477,53 @@ namespace AppGia.Helpers
             double montoProformados = 0;
             foreach (var entry in getPonderacionMeses())
             {
-                if (entry.Value <= mesInicio)
+                int mes=ToInt16(entry.Key);
+                if (mes <= mesInicio)
                 {
-                    montoReales+=ToDouble(detalle[entry.Key]);
+                    montoReales+=ToDouble(detalle[entry.Value]);
                 }
                 else
                 {
-                    montoProformados+=ToDouble(detalle[entry.Key]);
+                    montoProformados+=ToDouble(detalle[entry.Value]);
                 }
             }
 
             detalle.total_real_resultado = montoReales;
             detalle.total_proformado_resultado = montoProformados;
         }
-        private static Dictionary<string, Int32> getPonderacionMeses()
+        public static Dictionary<string, string> getPonderacionMeses()
         {
-            Dictionary<string, Int32> ponderacionCampos = new Dictionary<string, Int32>();
-            ponderacionCampos.Add("enero_monto_resultado", 1);
-            ponderacionCampos.Add("febrero_monto_resultado", 2);
-            ponderacionCampos.Add("marzo_monto_resultado", 3);
-            ponderacionCampos.Add("abril_monto_resultado", 4);
-            ponderacionCampos.Add("mayo_monto_resultado", 5);
-            ponderacionCampos.Add("junio_monto_resultado", 6);
-            ponderacionCampos.Add("julio_monto_resultado", 7);
-            ponderacionCampos.Add("agosto_monto_resultado", 8);
-            ponderacionCampos.Add("septiembre_monto_resultado", 9);
-            ponderacionCampos.Add("octubre_monto_resultado", 10);
-            ponderacionCampos.Add("noviembre_monto_resultado", 11);
-            ponderacionCampos.Add("diciembre_monto_resultado", 12);
-            return ponderacionCampos;
+            Dictionary<string, string> mesValor = new Dictionary<string, string>();
+            mesValor.Add("1", "enero_monto_resultado");
+            mesValor.Add("2", "febrero_monto_resultado");
+            mesValor.Add("3", "marzo_monto_resultado");
+            mesValor.Add("4", "abril_monto_resultado");
+            mesValor.Add("5", "mayo_monto_resultado");
+            mesValor.Add("6", "junio_monto_resultado");
+            mesValor.Add("7", "julio_monto_resultado");
+            mesValor.Add("8", "agosto_monto_resultado");
+            mesValor.Add("9", "septiembre_monto_resultado");
+            mesValor.Add("10", "octubre_monto_resultado");
+            mesValor.Add("11", "noviembre_monto_resultado");
+            mesValor.Add("12", "diciembre_monto_resultado");
+            return mesValor;
+        }
+        
+        public void manageAniosAnteriores(List<ProformaDetalle> allDetalles,List<ProformaDetalle> detallesAniosAnteriores)
+        {
+            foreach (ProformaDetalle detalleCalculado in allDetalles)
+            {
+                detalleCalculado.total_resultado = detalleCalculado.ejercicio_resultado;
+                foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
+                {
+                    if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
+                    {
+                        detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
+                        detalleCalculado.total_resultado += detalleAnioAnt.acumulado_resultado;
+                        break;
+                    }
+                }
+            }
         }
     }
 }

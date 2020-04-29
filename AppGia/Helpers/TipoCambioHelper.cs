@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using AppGia.Controllers;
+using AppGia.Models;
 using AppGia.Util;
 using static System.Convert;
 using static System.DateTime;
@@ -34,13 +35,18 @@ namespace AppGia.Helpers
        
         public Dictionary<string, double> getTiposCambioContable(Int64 idCC, int anio)
         {
-            Int64 idMoneda = findIdMonedaByCentroCosto(idCC);
+            Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
+            Moneda moneda = findIdMonedaByCentroCosto(idCC);
+            if (!esMonedaExtrangera(moneda))
+            {
+                return tipoCambio;
+            }
             string query = "select anio,mes,tipo,monedarporte,monedainforme from tipo_cambio_gia" +
-                    " where monedaid=" + idMoneda +
+                    " where monedaid=" + moneda.id +
                     " and anio= " + anio +
                     " and mes=" + Now.Month;
             DataTable dataTable = _queryExecuterSql.ExecuteQuerySQL(query);
-            Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
+           
             tipoCambio.Add("LOCAL", 1.0);
             foreach (DataRow row in dataTable.Rows)
             {
@@ -65,18 +71,21 @@ namespace AppGia.Helpers
 
         public Dictionary<string, double> getTiposCambioFlujo(Int64 idCC, int anio)
         {
-            
-            Int64 idMoneda = findIdMonedaByCentroCosto(idCC);
+            Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
+            Moneda moneda = findIdMonedaByCentroCosto(idCC);
+            if (!esMonedaExtrangera(moneda))
+            {
+                return tipoCambio;
+            }
             string query="select fecharegistro,monedareporte,monedainforme " +
                          " from tipo_cambio_flujo_gia " +
-                         " where monedaid= " +idMoneda+
+                         " where monedaid= " +moneda.id+
                          " and fecharegistro = " +
                          " (select max(fecharegistro) from tipo_cambio_flujo_gia " +
-                         "   where monedaid= " +idMoneda+" and fecharegistro > DATEADD(day, -7, '"+Now.ToString("yyyy-MM-dd")+"')" +
+                         "   where monedaid= " +moneda.id+" and fecharegistro > DATEADD(day, -7, '"+Now.ToString("yyyy-MM-dd")+"')" +
                          " )";
  
             DataTable dataTable = _queryExecuterSql.ExecuteQuerySQL(query);
-            Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             tipoCambio.Add("LOCAL", 1.0);
             foreach (DataRow row in dataTable.Rows)
             {
@@ -87,10 +96,10 @@ namespace AppGia.Helpers
             }
             return tipoCambio;
         }
-        private Int64 findIdMonedaByCentroCosto(Int64 idCC)
+        private Moneda findIdMonedaByCentroCosto(Int64 idCC)
         {
             string query =
-                "select cc.id as idcc,cc.empresa_id as idempresa,m.id  as idmoneda " +
+                "select cc.id as idcc,cc.empresa_id as idempresa,m.id  as idmoneda, m.clave  as claveMoneda  " +
                 " from centro_costo cc join empresa e on cc.empresa_id = e.id " +
                 " join moneda m on e.moneda_id = m.id " +
                 " where cc.activo=true and e.activo=true and m.activo=true and cc.id=" + idCC;
@@ -100,8 +109,15 @@ namespace AppGia.Helpers
                 throw new DataException("No se encontro una moneda asociado a la empresa del centro de costro '" +
                                         idCC + "'");
             }
+            Moneda moneda=new Moneda();
+            moneda.id=ToInt64(res["idmoneda"]);
+            moneda.clave = res["claveMoneda"].ToString();
+            return moneda;
+        }
 
-            return ToInt64(res["idmoneda"]);
+        private bool esMonedaExtrangera(Moneda moneda)
+        {
+            return !moneda.clave.Equals(claveMonedaMex);
         }
     }
 }

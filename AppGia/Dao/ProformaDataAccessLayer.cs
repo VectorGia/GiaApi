@@ -168,7 +168,8 @@ namespace AppGia.Dao
         public List<ProformaDetalle> manageBuildProforma(Int64 idCC, int anio, Int64 idTipoProforma,
             Int64 idTipoCaptura)
         {
-            string proyeccion = ObtenerDatosCC(idCC).proyeccion;
+            CentroCostos cc = ObtenerDatosCC(idCC);
+            string proyeccion = cc.proyeccion;
             List<ProformaDetalle> detalles = null;
             if (proyeccion.Equals(ProyeccionBase))
             {
@@ -178,13 +179,13 @@ namespace AppGia.Dao
 
             if (proyeccion.Equals(ProyeccionMetodo))
             {
-                detalles = _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma, idTipoCaptura);
+                detalles = _profHelper.BuildProformaFromModeloAsTemplate(cc, anio, idTipoProforma, idTipoCaptura);
             }
 
             if (proyeccion.Equals(ProyeccionShadow))
             {
                 Int64 idTipoProforma012 = getIdTipoProformaByClave(ClaveProforma012);
-                detalles = _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, idTipoProforma012, idTipoCaptura);
+                detalles = _profHelper.BuildProformaFromModeloAsTemplate(cc, anio, idTipoProforma012, idTipoCaptura);
             }
 
             Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( anio,  idTipoProforma,  idTipoCaptura);
@@ -199,18 +200,19 @@ namespace AppGia.Dao
             throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
         }
         
+        
         // Metodo a invocar para crear la proforma (cambiar por lista)
         // Parametros de entrada: centro de costos, anio y tipo de proforma
         private List<ProformaDetalle> GeneraProforma(Int64 idCC, int anio, Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             
-            if (anio >  DateTime.Now.Year)
-            {
-                return _profHelper.BuildProformaFromModeloAsTemplate(idCC, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
-            }
-            
             // Del centro de costos se obtienen empresa y proyecto
             CentroCostos cc = ObtenerDatosCC(idCC);
+            if (anio >  DateTime.Now.Year)
+            {
+                return _profHelper.BuildProformaFromModeloAsTemplate(cc, anio, getIdTipoProformaByClave(ClaveProforma012), idTipoCaptura);
+            }
+            
 
             if (cc == null)
             {
@@ -313,7 +315,7 @@ namespace AppGia.Dao
         }
 
 
-      
+  
         public List<ProformaDetalle> CalculaDetalleProforma(Int64 idCenCos, int mesInicio, Int64 idEmpresa,
             Int64 idModeloNeg, Int64 idProyecto, int anio, Int64 idTipoCaptura, Int64 idTipoProforma)
         {
@@ -330,24 +332,12 @@ namespace AppGia.Dao
             List<ProformaDetalle> detalleAniosPosteriores =
                 detalleAccesLayer.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 
-         
+            //--> se colocan los anios anteriores
+            _profHelper.manageAniosAnteriores(detallesCalculados,detallesAniosAnteriores);
+            
             // Genera una lista para almacenar la informacion consultada
             foreach (ProformaDetalle detalleCalculado in detallesCalculados)
             {
-                detalleCalculado.total_resultado = detalleCalculado.ejercicio_resultado;
-                foreach (ProformaDetalle detalleAnioAnt in detallesAniosAnteriores)
-                {
-                    // Compara elementos para completar la lista
-                    if (detalleCalculado.rubro_id == detalleAnioAnt.rubro_id)
-                    {
-                        // Si coincide el rubro se guardan los acumulados anteriores
-                        detalleCalculado.acumulado_resultado = detalleAnioAnt.acumulado_resultado;
-                        // Se actualiza el total como la suma del ejercicio + el acumulado
-                        detalleCalculado.total_resultado += detalleAnioAnt.acumulado_resultado;
-                        break;
-                    }
-                }
-                
                 foreach (ProformaDetalle detalleAnioPost in detalleAniosPosteriores)
                 {
                     if (detalleCalculado.rubro_id == detalleAnioPost.rubro_id)

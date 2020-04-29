@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using AppGia.Controllers;
 using AppGia.Helpers;
 using AppGia.Models;
@@ -277,161 +278,116 @@ namespace AppGia.Dao
         public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, Int64 idEmpresa,
             Int64 idModeloNegocio, Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
-            DateTime fechaCarga = _profHelper.getLastFechaMontosConsol( anio, idEmpresa, idModeloNegocio, idProyecto, idCenCos, idTipoCaptura);
+            DateTime fechaCarga = _profHelper.getLastFechaMontosConsol(anio, idEmpresa, idModeloNegocio, idProyecto,
+                idCenCos, idTipoCaptura);
             string consulta = "";
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
             consulta += "	 mon.centro_costo_id, mon.activo, ";
             consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, rub.hijos as hijos,";
-            if (mesInicio == 0)
-            {
-                // Para el 0+12 Enero, Febrero y Marzo se capturan
-                consulta += "	 0 as enero_monto_resultado, ";
-                consulta += "	 0 as febrero_monto_resultado, ";
-                consulta += "	 0 as marzo_monto_resultado, ";
-            }
-            else
-            {
-                // Para las demas proformas Enero, Febrero y Marzo se calculan
-                consulta += "	 coalesce(enero_total_resultado, 0) as enero_monto_resultado, ";
-                consulta += "	 coalesce(febrero_total_resultado, 0) as febrero_monto_resultado, ";
-                consulta += "	 coalesce(marzo_total_resultado, 0) as marzo_monto_resultado, ";
-            }
 
-            if (mesInicio == 0 || mesInicio == 3)
-            {
-                // Para el 0+12 y el 3+9 Abril, Mayo y Junio se capturan
-                consulta += "	 0 as abril_monto_resultado, ";
-                consulta += "	 0 as mayo_monto_resultado, ";
-                consulta += "	 0 as junio_monto_resultado, ";
-            }
-            else
-            {
-                // Para las demas proformas Abril, Mayo y Junio se calculan
-                consulta += "	 coalesce(abril_total_resultado, 0) as abril_monto_resultado, ";
-                consulta += "	 coalesce(mayo_total_resultado, 0) as mayo_monto_resultado, ";
-                consulta += "	 coalesce(junio_total_resultado, 0) as junio_monto_resultado, ";
-            }
-
-            if (mesInicio == 0 || mesInicio == 3 || mesInicio == 6)
-            {
-                // Para el 0+12, el 3+9 y el 6+6 Julio, Agosto y Septiembre se capturan
-                consulta += "	 0 as julio_monto_resultado, ";
-                consulta += "	 0 as agosto_monto_resultado, ";
-                consulta += "	 0 as septiembre_monto_resultado, ";
-            }
-            else
-            {
-                // Para el 9+3 Julio, Agosto y Septiembre se calculan
-                consulta += "	 coalesce(julio_total_resultado, 0) as julio_monto_resultado, ";
-                consulta += "	 coalesce(agosto_total_resultado, 0) as agosto_monto_resultado, ";
-                consulta += "	 coalesce(septiembre_total_resultado, 0) as septiembre_monto_resultado, ";
-            }
-
-            if (mesInicio == 0 || mesInicio == 3 || mesInicio == 6 || mesInicio == 9)
-            {
-                // Para 0+12, 3+9, 6+6 y 9+3 el resto de los meses se capturan
-                consulta += "	 0 as octubre_monto_resultado, ";
-                consulta += "	 0 as noviembre_monto_resultado, ";
-                consulta += "	 0 as diciembre_monto_resultado, ";
-            }
-            else
-            {
-                // Apartado para un 12+0 en que se calcularia todo el año
-                consulta += "	 coalesce(octubre_total_resultado, 0) as octubre_monto_resultado, ";
-                consulta += "	 coalesce(noviembre_total_resultado, 0) as noviembre_monto_resultado, ";
-                consulta += "	 coalesce(diciembre_total_resultado, 0) as diciembre_monto_resultado, ";
-            }
-
-            switch (mesInicio)
-            {
-                case 0:
-                    consulta += "	 0 as ejercicio_resultado, ";
-                    break;
-                case 3:
-                    consulta +=
-                        "	 coalesce(enero_total_resultado + febrero_total_resultado + marzo_total_resultado, 0) as ejercicio_resultado, ";
-                    break;
-                case 6:
-                    consulta += "	 coalesce(enero_total_resultado + febrero_total_resultado + marzo_total_resultado + ";
-                    consulta +=
-                        "	  abril_total_resultado + mayo_total_resultado + junio_total_resultado, 0) as ejercicio_resultado, ";
-                    break;
-                case 9:
-                    consulta += "	 coalesce(enero_total_resultado + febrero_total_resultado + marzo_total_resultado + ";
-                    consulta += "	  abril_total_resultado + mayo_total_resultado + junio_total_resultado + ";
-                    consulta +=
-                        "	  julio_total_resultado + agosto_total_resultado + septiembre_total_resultado, 0) as ejercicio_resultado, ";
-                    break;
-                default:
-                    consulta += "	 coalesce(enero_total_resultado + febrero_total_resultado + marzo_total_resultado + ";
-                    consulta += "	  abril_total_resultado + mayo_total_resultado + junio_total_resultado + ";
-                    consulta += "	  julio_total_resultado + agosto_total_resultado + septiembre_total_resultado + ";
-                    consulta +=
-                        "	  octubre_total_resultado + noviembre_total_resultado + diciembre_total_resultado, 0) as ejercicio_resultado, ";
-                    break;
-            }
+            consulta += BuildMontosFieldsQuery(mesInicio);
+            consulta += BuildEjercicioFieldQuery(mesInicio);
 
             consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
             consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + fechaCarga.ToString("dd/MM/yyyy") + "'::date) ";
-            consulta += "	 and anio = " + anio; 
-            consulta += "	 and empresa_id = " + idEmpresa; 
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio; 
+            consulta += "	 and anio = " + anio;
+            consulta += "	 and empresa_id = " + idEmpresa;
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;
             consulta += "	 and proyecto_id = " + idProyecto;
-            consulta += "	 and centro_costo_id = " + idCenCos; 
-            consulta += "	 and tipo_captura_id = " + idTipoCaptura; 
+            consulta += "	 and centro_costo_id = " + idCenCos;
+            consulta += "	 and tipo_captura_id = " + idTipoCaptura;
             consulta += "	 and mon.activo = 'true' ";
             consulta += "	 order by rub.id ";
 
-            try
+
+            DataTable dataTable = _queryExecuter.ExecuteQuery(consulta.Trim());
+            List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
+            foreach (DataRow rdr in dataTable.Rows)
             {
-                con.Open();
-
-                List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
+                ProformaDetalle proforma_detalle = new ProformaDetalle();
+                proforma_detalle.mes_inicio = mesInicio;
+                proforma_detalle.id_proforma = ToInt64(rdr["id"]);
+                proforma_detalle.anio = ToInt32(rdr["anio"]);
+                proforma_detalle.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
+                proforma_detalle.empresa_id = ToInt64(rdr["empresa_id"]);
+                proforma_detalle.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
+                proforma_detalle.activo = ToBoolean(rdr["activo"]);
+                proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
+                proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
+                proforma_detalle.hijos = (rdr["hijos"]).ToString().Trim();
+                
+                foreach (var entry in ProformaHelper.getPonderacionMeses())
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+                    string nombreCampo = entry.Value;
+                    proforma_detalle[nombreCampo] = ToDouble(rdr[nombreCampo]);
+                }
+                
+                proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
 
-                    while (rdr.Read())
+                lstProformaDetalle.Add(proforma_detalle);
+            }
+
+            return lstProformaDetalle;
+        }
+
+        private string BuildMontosFieldsQuery(int mesInicio)
+        {
+            Dictionary<string, string> meses = ProformaHelper.getPonderacionMeses();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (var entry in meses)
+            {
+                int mesValor = ToInt16(entry.Key);
+                string montoAtributo = entry.Value;
+                if (mesValor <= mesInicio)
+                {
+                    string attrTotal = montoAtributo.Replace("monto", "total");
+                    stringBuilder.Append("\n	 coalesce(").Append(attrTotal).Append(", 0) ");
+                }
+                else
+                {
+                    stringBuilder.Append("\n	 0 ");
+                }
+
+                stringBuilder.Append("as ").Append(montoAtributo).Append(", ");
+            }
+
+            return stringBuilder.Append("\n").ToString();
+        }
+        private string BuildEjercicioFieldQuery(int mesInicio)
+        {
+            if (mesInicio == 0)
+            {
+                return "	 0 as ejercicio_resultado, ";
+            }
+            
+            Dictionary<string, string> meses = ProformaHelper.getPonderacionMeses();
+            StringBuilder stringBuilder = new StringBuilder();
+            int sizeMeses = meses.Count;
+            foreach (var entry in meses)
+            {
+                int mesValor = ToInt16(entry.Key);
+                string montoAtributo = entry.Value;
+                
+                if (mesValor <= mesInicio)
+                {
+                    string attrTotal = montoAtributo.Replace("monto", "total");
+                    
+                    stringBuilder.Append(attrTotal);
+                    --sizeMeses;
+                    if (sizeMeses > 0)
                     {
-                        ProformaDetalle proforma_detalle = new ProformaDetalle();
-                        proforma_detalle.mes_inicio = mesInicio;
-                        proforma_detalle.id_proforma = ToInt64(rdr["id"]);
-                        proforma_detalle.anio = ToInt32(rdr["anio"]);
-                        proforma_detalle.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
-                        proforma_detalle.empresa_id = ToInt64(rdr["empresa_id"]);
-                        proforma_detalle.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
-                        proforma_detalle.activo = ToBoolean(rdr["activo"]);
-                        proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
-                        proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
-                        proforma_detalle.hijos = (rdr["hijos"]).ToString().Trim();
-                        proforma_detalle.enero_monto_resultado = ToDouble(rdr["enero_monto_resultado"]);
-                        proforma_detalle.febrero_monto_resultado = ToDouble(rdr["febrero_monto_resultado"]);
-                        proforma_detalle.marzo_monto_resultado = ToDouble(rdr["marzo_monto_resultado"]);
-                        proforma_detalle.abril_monto_resultado = ToDouble(rdr["abril_monto_resultado"]);
-                        proforma_detalle.mayo_monto_resultado = ToDouble(rdr["mayo_monto_resultado"]);
-                        proforma_detalle.junio_monto_resultado = ToDouble(rdr["junio_monto_resultado"]);
-                        proforma_detalle.julio_monto_resultado = ToDouble(rdr["julio_monto_resultado"]);
-                        proforma_detalle.agosto_monto_resultado = ToDouble(rdr["agosto_monto_resultado"]);
-                        proforma_detalle.septiembre_monto_resultado =
-                            ToDouble(rdr["septiembre_monto_resultado"]);
-                        proforma_detalle.octubre_monto_resultado = ToDouble(rdr["octubre_monto_resultado"]);
-                        proforma_detalle.noviembre_monto_resultado = ToDouble(rdr["noviembre_monto_resultado"]);
-                        proforma_detalle.diciembre_monto_resultado = ToDouble(rdr["diciembre_monto_resultado"]);
-                        proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
-
-                        lstProformaDetalle.Add(proforma_detalle);
+                        stringBuilder.Append(" + ");
                     }
                 }
-                return lstProformaDetalle;
             }
-            finally
-            {
-                con.Close();
-            }
+
+            return stringBuilder.Insert(0,"coalesce(").Append(", 0) as ejercicio_resultado, \n").ToString();
         }
+        
 
         // Calculo del ejercicio anterior
         public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos, Int64 idEmpresa, Int64 idModeloNegocio,
