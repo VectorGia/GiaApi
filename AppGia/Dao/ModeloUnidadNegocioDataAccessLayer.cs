@@ -63,10 +63,10 @@ namespace AppGia.Dao
         public List<ModeloUnidadNegocio> findByIdModelo(Int64 idModelo)
         {
             DataTable dataTable =
-                _queryExecuter.ExecuteQuery("select mu.id_unidad, mu.id_modelo, mu.activo,un.descripcion " +
+                _queryExecuter.ExecuteQuery("select mu.id_unidad, mu.id_modelo, mu.activo, un.descripcion " +
                                             "from modelo_unidad mu join unidad_negocio un on mu.id_unidad = un.id" +
-                                            "where mu.activo = true" +
-                                            "and mu.id_modelo =@id_modelo",
+                                            " where mu.activo = true" +
+                                            " and mu.id_modelo =@id_modelo",
                     new NpgsqlParameter("@id_modelo", idModelo));
             List<ModeloUnidadNegocio> modeloUnidadNegocios=new List<ModeloUnidadNegocio>();
             foreach (DataRow rdr in dataTable.Rows)

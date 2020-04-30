@@ -287,6 +287,8 @@ namespace AppGia.Dao
                     datosCenCos.modelo_negocio_flujo_id = Convert.ToInt64(rdr["modelo_negocio_flujo_id"]);
                     datosCenCos.proyecto_id = Convert.ToInt64(rdr["proyecto_id"]);
                     datosCenCos.proyeccion = rdr["proyeccion"].ToString();
+                    datosCenCos.id = idCenCos;
+
 
                     Object porcentajeFromDb = rdr["porcentaje"];
                     if (porcentajeFromDb != null)

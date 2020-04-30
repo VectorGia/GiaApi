@@ -12,6 +12,7 @@ namespace AppGia.Controllers
     {
         private ModeloUnidadNegocioDataAccessLayer objModelo = new ModeloUnidadNegocioDataAccessLayer();
 
+        // GET: api/ModeloUnidad
         [HttpGet]
         public IEnumerable<ModeloUnidadNegocio> Get()
         {
@@ -24,12 +25,14 @@ namespace AppGia.Controllers
             return objModelo.findByIdModeloAndIdUnidad(idModelo, idUnidad);
         }
 
+        // GET: api/ModeloUnidad/5
         [HttpGet("{idModelo}")]
         public List<ModeloUnidadNegocio> GetModelo(Int64 idModelo)
         {
             return objModelo.findByIdModelo(idModelo);
         }
 
+        // POST: api/ModeloUnidad
         [HttpPost]
         public int Create([FromBody] ModeloUnidadNegocio modeloUnidadNegocio)
         {
