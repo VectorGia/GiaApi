@@ -14,6 +14,8 @@ namespace AppGia.Dao
 
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter _queryExecuter=new QueryExecuter();
+        private ModeloUnidadNegocioDataAccessLayer _modeloUnidadNegocioDataAccessLayer = new ModeloUnidadNegocioDataAccessLayer();
         public ModeloNegocioDataAccessLayer()
         {
             con = conex.ConnexionDB();
@@ -63,7 +65,7 @@ namespace AppGia.Dao
             {
                 Modelo_Negocio modeloNegocio = new Modelo_Negocio();
                 {
-                    string consulta = "select id, activo, nombre, tipo_captura_id, unidad_negocio_id from modelo_negocio  where id = " + id;
+                    string consulta = "select id, activo, nombre, tipo_captura_id from modelo_negocio  where id = " + id;
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                     con.Open();
                     NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -74,7 +76,6 @@ namespace AppGia.Dao
                         modeloNegocio.nombre = rdr["nombre"].ToString().Trim();
                         modeloNegocio.activo = Convert.ToBoolean(rdr["activo"]);
                         modeloNegocio.tipo_captura_id = Convert.ToInt64(rdr["tipo_captura_id"]);
-                        modeloNegocio.unidad_negocio_id = Convert.ToInt64(rdr["unidad_negocio_id"]);
                     }
                     con.Close();
                 }
@@ -120,71 +121,73 @@ namespace AppGia.Dao
                 "select 1 as res from modelo_negocio where activo=true and trim(upper(nombre))=trim(upper('"+nombreModelo+"')) and tipo_captura_id="+tipoCaptura);
             return dt.Rows.Count > 0;
         }
+
         public int addModeloNegocio(Modelo_Negocio modeloNegocio)
         {
+            var idModelo=_queryExecuter.ExecuteQueryUniqueresult("select nextval('seq_modelo_neg') as idModelo")["idModelo"];
+            modeloNegocio.id = Convert.ToInt64(idModelo);
 
             string addModelo = "insert into " + "modelo_negocio"
-                + "("
-                + "id" + ","
-                + "nombre"+"," 
-                + "tipo_captura_id, "
-                + "unidad_negocio_id, "
-                + "activo," 
-                + "agrupador" +
-                ") " +
-                "values " +
-                "(nextval('seq_modelo_neg'),@nombre," 
-                + "@tipo_captura_id,"
-                + "@unidad_negocio_id,"
-                + "@activo,@agrupador)";
+                                              + "("
+                                              + "id" + ","
+                                              + "nombre" + ","
+                                              + "tipo_captura_id, "
+                                              + "activo,"
+                                              + "agrupador" +
+                                              ") " +
+                                              "values " +
+                                              "(" +
+                                              " @id," +
+                                              " @nombre,"
+                                              + "@tipo_captura_id,"
+                                              + "@activo,"
+                                              + " @agrupador" +
+                                              ")";
 
-            try
-            {
-    
-                NpgsqlCommand cmd = new NpgsqlCommand(addModelo, con);
-                cmd.Parameters.AddWithValue("@id", modeloNegocio.id);
-                cmd.Parameters.AddWithValue("@nombre", modeloNegocio.nombre.Trim());
-                cmd.Parameters.AddWithValue("@tipo_captura_id", modeloNegocio.tipo_captura_id);
-                cmd.Parameters.AddWithValue("@unidad_negocio_id", modeloNegocio.unidad_negocio_id);
-                cmd.Parameters.AddWithValue("@activo", modeloNegocio.activo);
-                cmd.Parameters.AddWithValue("@agrupador", modeloNegocio.agrupador);
-                //cmd.Parameters.AddWithValue("@FEC_MODIF_MODELONEGOCIO", DateTime.Now);
 
-                con.Open();
-                int cantFilas = cmd.ExecuteNonQuery();
-                con.Close();
-                return cantFilas;
+            int cantFilas = _queryExecuter.execute(addModelo,
+                new NpgsqlParameter("@id", modeloNegocio.id),
+                new NpgsqlParameter("@nombre", modeloNegocio.nombre.Trim()),
+                new NpgsqlParameter("@tipo_captura_id", modeloNegocio.tipo_captura_id),
+                new NpgsqlParameter("@activo", modeloNegocio.activo),
+                new NpgsqlParameter("@agrupador", modeloNegocio.agrupador));
 
-            }
-            catch
+            foreach (var idUnidad in modeloNegocio.unidades_negocio_ids)
             {
-                con.Close();
-                throw;
+                ModeloUnidadNegocio modeloUnidadNegocio = new ModeloUnidadNegocio();
+                modeloUnidadNegocio.idModelo = modeloNegocio.id;
+                modeloUnidadNegocio.idUnidad = idUnidad;
+                _modeloUnidadNegocioDataAccessLayer.Add(modeloUnidadNegocio);
             }
-            finally
-            {
-                con.Close();
-            }
+
+            return cantFilas;
+
         }
         public int Update(string id, Modelo_Negocio modeloNegocio)
         {
-
+            modeloNegocio.id = Convert.ToInt64(id);
             string add = "update modelo_negocio set "
-                 + "nombre = @nombre ,"
-                 + "unidad_negocio_id = @unidad_negocio_id "
-                 + " where id  = " + id;
+                 + "nombre = @nombre "
+                 + " where id  = " + modeloNegocio.id;
+            
             try
             {
 
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = modeloNegocio.nombre.Trim() });
-                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@activo", Value = modeloNegocio.activo });
-                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@tipo_captura_id", Value = modeloNegocio.tipo_captura_id });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@unidad_negocio_id", Value = modeloNegocio.unidad_negocio_id });
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();
+
+                _modeloUnidadNegocioDataAccessLayer.deleteAllModelo(modeloNegocio.id);
+                foreach (var idUnidad in modeloNegocio.unidades_negocio_ids)
+                {
+                    ModeloUnidadNegocio modeloUnidadNegocio = new ModeloUnidadNegocio();
+                    modeloUnidadNegocio.idModelo = modeloNegocio.id;
+                    modeloUnidadNegocio.idUnidad = idUnidad;
+                    _modeloUnidadNegocioDataAccessLayer.Add(modeloUnidadNegocio);
+                }
                 return cantFilas;
             }
             catch (Exception ex)

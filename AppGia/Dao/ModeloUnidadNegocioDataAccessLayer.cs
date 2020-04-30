@@ -34,6 +34,16 @@ namespace AppGia.Dao
                 new NpgsqlParameter("@id_modelo", modeloUnidadNegocio.idModelo),
                 new NpgsqlParameter("@id_unidad", modeloUnidadNegocio.idUnidad));
         }
+        public int deleteAllModelo(Int64 idModelo)
+        {
+            
+            string ddl =
+                "update modelo_unidad set activo=false " +
+                " where id_modelo=@id_modelo ";
+            
+            return _queryExecuter.execute(ddl,
+                new NpgsqlParameter("@id_modelo", idModelo));
+        }
         public List<ModeloUnidadNegocio> findAll()
         {
             DataTable dataTable = 
