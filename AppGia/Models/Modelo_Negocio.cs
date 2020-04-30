@@ -12,7 +12,7 @@ namespace AppGia.Models
         public string nombre { get; set; }
         public Int64 tipo_captura_id { get; set; }
         public string nombre_tipo_captura { get; set; }
-        public Int64 unidad_negocio_id { get; set; }
+        public List<Int64> unidades_negocio_ids { get; set; }
         
         //permite saber que dos modelos de negocio son parte de uno mismo solo que contable y flujo cada uno
         public string agrupador { get; set; }
