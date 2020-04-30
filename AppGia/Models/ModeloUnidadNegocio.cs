@@ -7,6 +7,7 @@ namespace AppGia.Models
         public Int64 idModelo { get; set; }
         public Int64 idUnidad { get; set; }
         public string descripcionUnidad { get; set; }
+        public string descripcionModelo { get; set; }
         public Boolean activo { get; set; }
         
     }
