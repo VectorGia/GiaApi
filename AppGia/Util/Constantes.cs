@@ -104,7 +104,7 @@ namespace AppGia.Util
         public const string ESTILODETHIJO = "hijo";
         public const string ESTILODETPADRE = "padre";
 
-        public const string claveMonedaMex = "MXN";
+        public const string claveMonedaMex = "MX";
 
     }
 }
