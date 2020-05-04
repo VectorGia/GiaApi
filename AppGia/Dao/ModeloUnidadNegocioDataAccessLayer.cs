@@ -63,6 +63,7 @@ namespace AppGia.Dao
         public List<ModeloUnidadNegocio> findByIdModelo(Int64 idModelo)
         {
             DataTable dataTable =
+
                 _queryExecuter.ExecuteQuery("select mu.id_unidad, mu.id_modelo, mu.activo,un.descripcion,mn.nombre"+
             " from modelo_unidad mu join unidad_negocio un on mu.id_unidad = un.id"+
             " join modelo_negocio mn on mu.id_modelo = mn.id"+
