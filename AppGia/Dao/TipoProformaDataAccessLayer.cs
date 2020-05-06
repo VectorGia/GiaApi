@@ -20,7 +20,7 @@ namespace AppGia.Dao
 
         public IEnumerable<Tipo_Proforma> GetAllTipoProformas()
         {
-            string cadena = "select * from tipo_proforma where activo = true";
+            string cadena = "select * from tipo_proforma where activo = true order by mes_inicio asc";
 
             try
             {
