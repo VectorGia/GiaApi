@@ -204,6 +204,7 @@ namespace AppGia.Helpers
                 detalle.activo = true;
                 detalle.rubro_id = actual.id;
                 detalle.nombre_rubro = actual.nombre;
+                detalle.clave_rubro = actual.clave;
                 detalle.hijos = actual.hijos;
                 detalle.enero_monto_resultado = 0;
                 detalle.febrero_monto_resultado = 0;
