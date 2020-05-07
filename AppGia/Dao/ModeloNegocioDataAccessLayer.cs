@@ -168,7 +168,7 @@ namespace AppGia.Dao
         {
             Object agrupador =
                 _queryExecuter.ExecuteQueryUniqueresult("select agrupador from modelo_negocio where id=@id",
-                    new NpgsqlParameter("@id", id))["agrupador"];
+                    new NpgsqlParameter("@id", Convert.ToInt64(id)))["agrupador"];
 
             DataTable dataTable = _queryExecuter.ExecuteQuery(
                 "select mn.id from modelo_negocio mn" +
