@@ -163,9 +163,30 @@ namespace AppGia.Dao
             return cantFilas;
 
         }
+
         public int Update(string id, Modelo_Negocio modeloNegocio)
         {
-            modeloNegocio.id = Convert.ToInt64(id);
+            Object agrupador =
+                _queryExecuter.ExecuteQueryUniqueresult("select agrupador from modelo_negocio where id=@id",
+                    new NpgsqlParameter("@id", id))["agrupador"];
+
+            DataTable dataTable = _queryExecuter.ExecuteQuery(
+                "select mn.id from modelo_negocio mn" +
+                " where mn.activo=true and mn.agrupador=@agrupador",
+                new NpgsqlParameter("@agrupador", agrupador.ToString()));
+
+            int co = 0;
+            foreach (DataRow modeloIdRow in dataTable.Rows)
+            {
+                Int64 modeloId = Convert.ToInt64(modeloIdRow["id"]);
+                co+=UpdateModelo(modeloId, modeloNegocio);
+            }
+
+            return co;
+        }
+        private int UpdateModelo(Int64 id, Modelo_Negocio modeloNegocio)
+        {
+            modeloNegocio.id = id;
             string add = "update modelo_negocio set "
                  + "nombre = @nombre "
                  + " where id  = " + modeloNegocio.id;
