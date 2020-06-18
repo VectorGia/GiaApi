@@ -5,12 +5,14 @@ using System.Net.Mail;
 using System.Text;
 using AppGia.Models.Etl;
 using Npgsql;
+using NLog;
 
 namespace AppGia.Dao.Etl
 {
     public class ConfiguracionCorreoDataAccessLayer
 
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
        
@@ -22,40 +24,43 @@ namespace AppGia.Dao.Etl
 
         public void EnviarCorreo(string cuerpoMensaje, string tituloMensaje)
         {
-
-            string listaDestinatarios = ListaCorreosDestinatarios().TrimEnd(',');
-            List<ConfigCorreo> listaConfiguracionCorreo = new List<ConfigCorreo>();
-            listaConfiguracionCorreo = GetAllConfigCorreo();
-
-            MailMessage mmsg = new MailMessage();
-            mmsg.To.Add(listaDestinatarios.ToString());
-            mmsg.Subject = tituloMensaje;//"Correo ejemplo GIA";
-            mmsg.SubjectEncoding = Encoding.UTF8;
-            mmsg.Body = cuerpoMensaje;//"Prueba de correo GIA";
-            mmsg.BodyEncoding = Encoding.UTF8;
-            mmsg.IsBodyHtml = false;
-            mmsg.From = new MailAddress(listaConfiguracionCorreo[0].remitente);
-
-            SmtpClient cliente = new SmtpClient();
-
-            cliente.Host = listaConfiguracionCorreo[0].host;
-            cliente.Port = listaConfiguracionCorreo[0].puerto;
-            cliente.EnableSsl = true;
-            cliente.DeliveryMethod = SmtpDeliveryMethod.Network;
-            cliente.UseDefaultCredentials = false;
-            cliente.Credentials = new NetworkCredential(listaConfiguracionCorreo[0].remitente, listaConfiguracionCorreo[0].password);
-           
-       
-
-
-            string output = null;
             try
             {
+                string listaDestinatarios = ListaCorreosDestinatarios().TrimEnd(',');
+                if (listaDestinatarios.Length == 0)
+                {
+                    logger.Info("########### No hay usuarios destinatarios configurados, NO SE ENVIARA CORREO");
+                    return;
+                }
+                List<ConfigCorreo> listaConfiguracionCorreo = GetAllConfigCorreo();
+
+                MailMessage mmsg = new MailMessage();
+                mmsg.To.Add(listaDestinatarios);
+                mmsg.Subject = tituloMensaje; //"Correo ejemplo GIA";
+                mmsg.SubjectEncoding = Encoding.UTF8;
+                mmsg.Body = cuerpoMensaje; //"Prueba de correo GIA";
+                mmsg.BodyEncoding = Encoding.UTF8;
+                mmsg.IsBodyHtml = false;
+                mmsg.From = new MailAddress(listaConfiguracionCorreo[0].remitente);
+
+                SmtpClient cliente = new SmtpClient();
+
+                cliente.Host = listaConfiguracionCorreo[0].host;
+                cliente.Port = listaConfiguracionCorreo[0].puerto;
+                cliente.EnableSsl = true;
+                cliente.DeliveryMethod = SmtpDeliveryMethod.Network;
+                cliente.UseDefaultCredentials = false;
+                cliente.Credentials = new NetworkCredential(listaConfiguracionCorreo[0].remitente,
+                    listaConfiguracionCorreo[0].password);
+
+
+                string output = null;
+
                 cliente.Send(mmsg);
             }
-            catch (SmtpException ex)
+            catch (Exception ex)
             {
-                output = "Error enviando correo electrónico: " + ex.Message;
+                logger.Error(ex, "Error en EnviarCorreo");
             }
 
         }
@@ -69,7 +74,7 @@ namespace AppGia.Dao.Etl
             lista = GetDestinatariosCorreo();
             foreach (Usuario usuario in lista)
             {
-                correos += usuario.email.ToString() + ",";
+                correos += usuario.email + ",";
             }
             return correos;
 

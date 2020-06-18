@@ -6,6 +6,7 @@ using AppGia.Dao.Etl;
 using AppGia.Models;
 using AppGia.Util;
 using static System.Convert;
+using NLog;
 using Proceso = AppGia.Models.Etl.Proceso;
 using ProcesoDataAccessLayer = AppGia.Dao.Etl.ProcesoDataAccessLayer;
 
@@ -13,6 +14,7 @@ namespace AppGia.Helpers
 {
     public class ETLHelper
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private ConfiguracionCorreoDataAccessLayer _configCorreo = new ConfiguracionCorreoDataAccessLayer();
         private ProcesoDataAccessLayer _procesoDataAccessLayer = new ProcesoDataAccessLayer();
         private EmpresaDataAccessLayer _empresaDataAccessLayer = new EmpresaDataAccessLayer();
@@ -46,6 +48,7 @@ namespace AppGia.Helpers
                 }
                 catch (Exception ex)
                 {
+                    logger.Error(ex, "Error en ejecucion de extraeBalanza");
                     _configCorreo.EnviarCorreo(
                         "Estimado Usuario : \n\n  La extracción(balanza) correspondiente a la compania " + idEmpresa +
                         "." +
@@ -87,6 +90,7 @@ namespace AppGia.Helpers
                 }
                 catch (Exception ex)
                 {
+                    logger.Error(ex, "Error en ejecucion de extraeFlujo");
                     _configCorreo.EnviarCorreo(
                         "Estimado Usuario : \n\n  La extracción(Flujo) correspondiente a la compania " + idEmpresa +
                         "." +
@@ -150,6 +154,7 @@ namespace AppGia.Helpers
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Error en ejecucion de cargaBalanzaEmpresa");
                 DateTime fechaFinalProceso = DateTime.Now;
                 _configCorreo.EnviarCorreo("Ha ocurrido un error en la extracción de Balanza"
                                            + "\nFecha Inicio : " + fechaInicioProceso + "\nFecha Final: " +
@@ -227,6 +232,8 @@ namespace AppGia.Helpers
 
             catch (Exception ex)
             {
+                logger.Error(ex, "Error en ejecucion de cargaFlujoEmpresa");
+
                 DateTime fechaFinalProceso = DateTime.Now;
                 _configCorreo.EnviarCorreo("Ha ocurrido un error en la extracción de Movimientos de Polizas Semanal"
                                            + "\nFecha Inicio : " + fechaInicioProceso + "\nFecha Final: " +
