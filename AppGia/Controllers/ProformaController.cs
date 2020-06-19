@@ -4,6 +4,7 @@ using AppGia.Dao;
 using AppGia.Helpers;
 using AppGia.Models;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace AppGia.Controllers
 {
@@ -11,6 +12,8 @@ namespace AppGia.Controllers
     [ApiController]
     public class ProformaController : ControllerBase
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         ProformaDataAccessLayer objProforma = new ProformaDataAccessLayer();
         ProformaDetalleDataAccessLayer objProformaDetalle = new ProformaDetalleDataAccessLayer();
         // GET: api/Proforma
@@ -30,17 +33,44 @@ namespace AppGia.Controllers
         [HttpPost]
         public List<ProformaDetalle> Post([FromBody] Proforma proforma)
         {
-            return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio, proforma.tipo_proforma_id, proforma.tipo_captura_id);
+            try
+            {
+                return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio,
+                    proforma.tipo_proforma_id, proforma.tipo_captura_id);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e,"Error en proformado");
+                throw e;
+            }
         }
         [HttpPost("ajustes")]
         public List<ProformaDetalle> GetProforma([FromBody] Proforma proforma)
         {
-            return new ProformaHelper().getAjustes(proforma.centro_costo_id, proforma.anio,proforma.tipo_captura_id);
+            try
+            {
+                return new ProformaHelper().getAjustes(proforma.centro_costo_id, proforma.anio,
+                    proforma.tipo_captura_id);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e,"error en ajustes");
+                throw e;
+            }
         }
         [HttpPost("tipoCambio")]
         public Dictionary<string, double> getFactoresTipoCambioGia([FromBody] Proforma proforma)
         {
-            return new TipoCambioHelper().getTiposCambio(proforma.centro_costo_id, proforma.anio,proforma.tipo_captura_id);
+            try
+            {
+                return new TipoCambioHelper().getTiposCambio(proforma.centro_costo_id, proforma.anio,
+                    proforma.tipo_captura_id);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e,"error en tipoCambio");
+                throw e;
+            }
         }
         [HttpGet("anios")]
         public List<int> getAnios()
@@ -60,7 +90,15 @@ namespace AppGia.Controllers
         [HttpPost("save")]
         public int GuardaProforma([FromBody]List<ProformaDetalle> lstGuardaProforma)
         {
-            return objProforma.GuardaProforma(lstGuardaProforma);
+            try
+            {
+                return objProforma.GuardaProforma(lstGuardaProforma);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e,"error en gusradar proforma");
+                throw e;
+            }
         }
         
         
@@ -69,7 +107,16 @@ namespace AppGia.Controllers
         [HttpPut("{id}")]
         public int Put(int id, [FromBody] List<ProformaDetalle> proformaDetalles)
         {
-            return objProforma.ActualizaProforma(proformaDetalles);
+            try
+            {
+                return objProforma.ActualizaProforma(proformaDetalles);
+
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "error en actualizar proforma");
+                throw e;
+            }
         }
 
         [HttpDelete("{id}")]

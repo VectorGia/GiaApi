@@ -5,6 +5,7 @@ using System.IO;
 using AppGia.Controllers;
 using AppGia.Helpers;
 using AppGia.Models;
+using NLog;
 using Npgsql;
 using static AppGia.Util.Constantes;
 
@@ -12,6 +13,8 @@ namespace AppGia.Dao
 {
     public class ProformaDataAccessLayer
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         private ProformaHelper _profHelper = new ProformaHelper();

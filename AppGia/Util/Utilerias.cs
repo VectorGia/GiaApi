@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.IO;
+using NLog;
 using Npgsql;
 
 namespace AppGia.Util
 {
     public class Utilerias
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         NpgsqlCommand comP = new NpgsqlCommand();
@@ -113,7 +112,7 @@ namespace AppGia.Util
             using (Rijndael rijAlg = Rijndael.Create())
             {
                 rijAlg.Key = Key;
-                Console.WriteLine("Error: {0}" + Key);
+                logger.Error("Error: {0}" + Key);
                 rijAlg.IV = IV;
 
                 //Cree un encriptador para realizar la transformación de flujo

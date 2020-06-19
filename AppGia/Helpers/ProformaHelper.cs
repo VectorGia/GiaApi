@@ -5,6 +5,7 @@ using AppGia.Controllers;
 using AppGia.Dao;
 using AppGia.Models;
 using AppGia.Util;
+using NLog;
 using static System.Convert;
 using static AppGia.Util.Constantes;
 
@@ -12,6 +13,7 @@ namespace AppGia.Helpers
 {
     public class ProformaHelper
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private QueryExecuter _queryExecuter = new QueryExecuter();
         private QueryExecuterSQL _queryExecuterSql=new QueryExecuterSQL();
 
@@ -95,7 +97,7 @@ namespace AppGia.Helpers
                 catch (EvaluateException ee)
                 {
                     
-                    Console.WriteLine("WARN: No pudo evaluarse la expresion '"+rubTot.aritmetica+"' ERROR: "+ee.Message);
+                    logger.Warn("No pudo evaluarse la expresion '"+rubTot.aritmetica+"' ERROR: "+ee.Message);
                     rubrosTotNoEvaluados.Add(rubTot);
                 }
             }
@@ -108,7 +110,7 @@ namespace AppGia.Helpers
                 }
                 catch (EvaluateException ee)
                 {
-                    Console.WriteLine("ERROR: No pudo evaluarse la expresion '"+rubrosTotNoEvaluado.aritmetica+"' ERROR: "+ee);
+                    logger.Error("No pudo evaluarse la expresion '"+rubrosTotNoEvaluado.aritmetica+"' ERROR: "+ee);
                     
                 }
             }
