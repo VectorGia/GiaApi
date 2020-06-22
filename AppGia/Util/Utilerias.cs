@@ -112,7 +112,7 @@ namespace AppGia.Util
             using (Rijndael rijAlg = Rijndael.Create())
             {
                 rijAlg.Key = Key;
-                logger.Error("Error: {0}" + Key);
+                logger.Error("Error: {0}" , Key);
                 rijAlg.IV = IV;
 
                 //Cree un encriptador para realizar la transformación de flujo

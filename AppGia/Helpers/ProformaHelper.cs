@@ -97,7 +97,7 @@ namespace AppGia.Helpers
                 catch (EvaluateException ee)
                 {
                     
-                    logger.Warn("No pudo evaluarse la expresion '"+rubTot.aritmetica+"' ERROR: "+ee.Message);
+                    logger.Warn("No pudo evaluarse la expresion '{0}' ERROR: '{1}'",rubTot.aritmetica,ee.Message);
                     rubrosTotNoEvaluados.Add(rubTot);
                 }
             }
@@ -110,7 +110,7 @@ namespace AppGia.Helpers
                 }
                 catch (EvaluateException ee)
                 {
-                    logger.Error("No pudo evaluarse la expresion '"+rubrosTotNoEvaluado.aritmetica+"' ERROR: "+ee);
+                    logger.Error(ee,"No pudo evaluarse la expresion '{0}' ",rubrosTotNoEvaluado.aritmetica);
                     
                 }
             }

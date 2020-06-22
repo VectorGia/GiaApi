@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AppGia.Controllers;
 using AppGia.Dao;
 using AppGia.Dao.Etl;
 using AppGia.Models;
 using AppGia.Util;
-using static System.Convert;
 using NLog;
+using static System.Convert;
 using Proceso = AppGia.Models.Etl.Proceso;
 using ProcesoDataAccessLayer = AppGia.Dao.Etl.ProcesoDataAccessLayer;
 
@@ -40,7 +39,7 @@ namespace AppGia.Helpers
         }
         public void extraeBalanza(int anioInicio, int anioFin)
         {
-            logger.Info(string.Format("incio extraeBalanza (anioInicio={0}, anioFin={1}))",anioInicio,anioFin));
+            logger.Info("incio extraeBalanza (anioInicio={0}, anioFin={1}))",anioInicio,anioFin);
             StopWatch sw=new StopWatch(String.Format("extraeBalanza (anioInicio={0}, anioFin={1})",anioInicio,anioFin));
             sw.start("GetAllEmpresas ");
             List<Empresa> empresas = _empresaDataAccessLayer.GetAllEmpresas();
@@ -50,7 +49,7 @@ namespace AppGia.Helpers
                 Int64 idEmpresa = empresa.id;
                 try
                 {    
-                    logger.Info(string.Format("cargaBalanzaEmpresa(idEmpresa={0}, anioInicio={1}, anioFin={2})",idEmpresa,anioInicio,anioFin));
+                    logger.Info("cargaBalanzaEmpresa(idEmpresa={0}, anioInicio={1}, anioFin={2})",idEmpresa,anioInicio,anioFin);
                     sw.start("cargaBalanzaEmpresa "+idEmpresa);
                     cargaBalanzaEmpresa(idEmpresa, anioInicio, anioFin);
                     sw.stop();
@@ -87,7 +86,7 @@ namespace AppGia.Helpers
         }
         public void extraeFlujo(int anioInicio, int anioFin, int mes)
         {
-            logger.Info(String.Format("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio,  anioFin,  mes));
+            logger.Info("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio,  anioFin,  mes);
             StopWatch sw=new StopWatch(String.Format("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio,  anioFin,  mes));
             List<Empresa> empresas = _empresaDataAccessLayer.GetAllEmpresas();
 
@@ -229,7 +228,7 @@ namespace AppGia.Helpers
         private void cargaFlujoEmpresa(Int64 idEmpresa, int anioInicio, int anioFin, int mes)
         {
             StopWatch sw=new StopWatch(String.Format("cargaFlujoEmpresa (idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})", idEmpresa,  anioInicio,  anioFin,  mes));
-            logger.Info(String.Format("cargaFlujoEmpresa( idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})",idEmpresa, anioInicio, anioFin, mes));
+            logger.Info("cargaFlujoEmpresa( idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})",idEmpresa, anioInicio, anioFin, mes);
             ETLMovPolizaSemanalDataAccessLayer etlMovSemanal = new ETLMovPolizaSemanalDataAccessLayer();
             string ruta = Constantes.CSV_PATH_SEMANAL;
 
@@ -238,17 +237,17 @@ namespace AppGia.Helpers
 
             try
             {
-                logger.Info(String.Format("etlMovSemanal.generaCSV(idEmpresa={0}, ruta={1}, anioInicio={2}, anioFin={3}, mes={4})",idEmpresa, ruta, anioInicio, anioFin, mes));
+                logger.Info("etlMovSemanal.generaCSV(idEmpresa={0}, ruta={1}, anioInicio={2}, anioFin={3}, mes={4})",idEmpresa, ruta, anioInicio, anioFin, mes);
                 sw.start("generaCSV");
                 string archivo = etlMovSemanal.generaCSV(idEmpresa, ruta, anioInicio, anioFin, mes);
                 sw.stop();
                 
-                logger.Info(String.Format("deleteSemanalIfApply(idEmpresa={0}, anioInicio={1}, anioFin={2},mes={3})",idEmpresa, anioInicio, anioFin,mes));
+                logger.Info("deleteSemanalIfApply(idEmpresa={0}, anioInicio={1}, anioFin={2},mes={3})",idEmpresa, anioInicio, anioFin,mes);
                 sw.start("deleteSemanalIfApply");
                 deleteSemanalIfApply(idEmpresa, anioInicio, anioFin,mes);
                 sw.stop();
                 
-                logger.Info(String.Format("importFile(archivo={0}, ruta={1})",archivo, ruta));
+                logger.Info("importFile(archivo={0}, ruta={1})",archivo, ruta);
                 sw.start("importFile");
                 etlMovSemanal.importFile(archivo, ruta);
                 sw.stop();

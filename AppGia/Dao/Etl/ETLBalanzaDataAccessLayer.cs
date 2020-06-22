@@ -4,12 +4,14 @@
  using WindowsService1.Util;
  using AppGia.Models.Etl;
  using AppGia.Util;
+ using NLog;
  using Npgsql;
 
  namespace AppGia.Dao.Etl
 {
     public class ETLBalanzaDataAccessLayer
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         Conexion.Conexion conex = new Conexion.Conexion();
 
         NpgsqlConnection conP = new NpgsqlConnection();
@@ -22,81 +24,47 @@
             conP = conex.ConnexionDB();
         }
 
-       
 
-        public string generaCSV(Int64 idEmpresa, int anioInicio,int anioFin, string ruta)
+        public string generaCSV(Int64 idEmpresa, int anioInicio, int anioFin, string ruta)
         {
             string nombreArchivo = string.Empty;
             string registros = string.Empty;
             nombreArchivo = Constantes.NOMBRE_ARCHIVO_BALANZA + "_" + idEmpresa + DateTime.Now.ToString("ddMMyyyy") +
                             DateTime.Now.ToString("HHmmSS") + ".csv";
-            StreamWriter layout;
-            layout = File.CreateText(ruta + nombreArchivo);
+            StreamWriter layout = File.CreateText(ruta + nombreArchivo);
 
             try
             {
-                DSN dsn = new DSN();
-                dsn = dsnConfig.crearDSN(idEmpresa);
-                if (dsn.creado)
+                DSN dsn = dsnConfig.crearDSN(idEmpresa);
+                logger.Debug("generando conexion odbc {0}",dsn.nombreDSN);
+                odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
+                odbcCon.Open();
+                layout.WriteLine(Constantes.HEADER_BALANZA_CSV);
+                string consulta = " SELECT " + "year," + "cta," + "scta," + "sscta,"
+                                  + "salini," + "enecargos," + "eneabonos,"
+                                  + "febcargos," + "febabonos," + "marcargos,"
+                                  + "marabonos," + "abrcargos," + "abrabonos,"
+                                  + "maycargos," + "mayabonos," + "juncargos," + "junabonos,"
+                                  + "julcargos," + "julabonos," + "agocargos,"
+                                  + "agoabonos," + "sepcargos," + "sepabonos," + "octcargos,"
+                                  + "octabonos," + "novcargos," + "novabonos,"
+                                  + "diccargos," + "dicabonos," + "cierreabonos,"
+                                  + "cierrecargos," + "acta," + "cc"
+                                  + " FROM sc_salcont_cc";
+
+                if (anioInicio > 0 && anioFin > 0)
                 {
-                    odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
+                    consulta += "  where year between " + anioInicio + " and " + anioFin;
+                }
+                logger.Debug("Consultando sybase {0}",dsn.nombreDSN);
+                OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
+                OdbcDataReader rdr = cmd.ExecuteReader();
 
-                    try
-                    {
-                        odbcCon.Open();
-                        layout.WriteLine(Constantes.HEADER_BALANZA_CSV);
-
-                        string consulta = " SELECT "
-                                          + "year,"
-                                          + "cta,"
-                                          + "scta,"
-                                          + "sscta,"
-                                          + "salini,"
-                                          + "enecargos,"
-                                          + "eneabonos,"
-                                          + "febcargos,"
-                                          + "febabonos,"
-                                          + "marcargos,"
-                                          + "marabonos,"
-                                          + "abrcargos,"
-                                          + "abrabonos,"
-                                          + "maycargos,"
-                                          + "mayabonos,"
-                                          + "juncargos,"
-                                          + "junabonos,"
-                                          + "julcargos,"
-                                          + "julabonos,"
-                                          + "agocargos,"
-                                          + "agoabonos,"
-                                          + "sepcargos,"
-                                          + "sepabonos,"
-                                          + "octcargos,"
-                                          + "octabonos,"
-                                          + "novcargos,"
-                                          + "novabonos,"
-                                          + "diccargos,"
-                                          + "dicabonos,"
-                                          + "cierreabonos,"
-                                          + "cierrecargos,"
-                                          + "acta,"
-                                          + "cc"
-                                          + " FROM sc_salcont_cc";
-
-                        if (anioInicio > 0 && anioFin > 0) {
-                            consulta += "  where year between " + anioInicio + " and " + anioFin;
-                        }
-                        
-                        OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
-
-                        OdbcDataReader rdr = cmd.ExecuteReader();
-
-                        while (rdr.Read())
-                        {
-                            registros =
-                                Convert.ToString(rdr["cta"].ToString()) + ","
-                                                                        + Convert.ToString(rdr["scta"].ToString()) + ","
-                                                                        + Convert.ToString(rdr["sscta"].ToString()) +
-                                                                        ","
+                while (rdr.Read())
+                {
+                    registros = Convert.ToString(rdr["cta"].ToString()) + ","
+                                                                        + Convert.ToString(rdr["scta"]) + ","
+                                                                        + Convert.ToString(rdr["sscta"]) + ","
                                                                         + Convert.ToInt32(rdr["year"]) + ","
                                                                         + Convert.ToDouble(rdr["salini"]) + ","
                                                                         + Convert.ToDouble(rdr["enecargos"]) + ","
@@ -122,40 +90,28 @@
                                                                         + Convert.ToDouble(rdr["novcargos"]) + ","
                                                                         + Convert.ToDouble(rdr["novabonos"]) + ","
                                                                         + Convert.ToDouble(rdr["diccargos"]) + ","
-                                                                        + Convert.ToDouble(rdr["dicabonos"]) + ","
-                                                                        + " 0,"
-                                                                        + Constantes.EXTRACCION_MANUAL + ","
-                                                                        + idEmpresa + ","
+                                                                        + Convert.ToDouble(rdr["dicabonos"]) + "," +
+                                                                        " 0,"
+                                                                        + Constantes.EXTRACCION_MANUAL + "," +
+                                                                        idEmpresa + ","
                                                                         + Convert.ToDouble(rdr["cierrecargos"]) + ","
                                                                         + Convert.ToDouble(rdr["cierreabonos"]) + ","
                                                                         + Convert.ToInt32(rdr["acta"]) + ","
                                                                         + Convert.ToString(rdr["cc"]) + ","
-                                                                        + "'" + DateTime.Now.ToString("HH:mm:ss") + "'"
-                                                                        + "'" + DateTime.Now.ToString("dd/MM/yyy") +
-                                                                        "',";
-
-                            layout.WriteLine(registros, Environment.NewLine);
-                        }
-
-                        layout.Close();
-                        odbcCon.Close();
-                        return nombreArchivo;
-                    }
-                    finally
-                    {
-                        layout.Close();
-                        odbcCon.Close();
-                    }
+                                                                        + "'" + DateTime.Now.ToString("HH:mm:ss") +
+                                                                        "'" + "'" + DateTime.Now.ToString("dd/MM/yyy");
+                    layout.WriteLine(registros, Environment.NewLine);
                 }
-                else
-                {
-                    return null;
-                }
+                
+                return nombreArchivo;
             }
             finally
             {
                 layout.Close();
-                odbcCon.Close();
+                if (odbcCon != null)
+                {
+                    odbcCon.Close();
+                }
             }
         }
 
