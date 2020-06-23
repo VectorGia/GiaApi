@@ -1,5 +1,6 @@
 ﻿﻿using System;
  using System.Collections.Generic;
+ using System.Text;
  using AppGia.Dao.Etl;
  using AppGia.Models.Etl;
  using AppGia.Util;
@@ -56,11 +57,21 @@
                 dsnKey.SetValue("Driver", DireccionDriver);
                 dsnKey.SetValue("User", empresa.usuario_etl);
                 dsnKey.SetValue("Host", empresa.host + ":" + empresa.puerto_compania);
-                dsnKey.SetValue("Server", empresa.host);
+                //dsnKey.SetValue("Server", empresa.host);
+                dsnKey.SetValue("Server", "");
                 dsnKey.SetValue("Database", empresa.bd_name);
-                dsnKey.SetValue("username", empresa.usuario_etl);
-                dsnKey.SetValue("password", empresa.contrasenia_etl);
+                dsnKey.SetValue("Username", empresa.usuario_etl);
+                dsnKey.SetValue("Password", empresa.contrasenia_etl);
                 dsnKey.SetValue("Trusted_Connection", trustedConnection ? "Yes" : "No");
+
+                StringBuilder sb=new StringBuilder("{");
+                foreach (var key in dsnKey.GetValueNames())
+                {
+                    sb.Append(key).Append(":'").Append(dsnKey.GetValue(key)).Append("',");
+                }
+                logger.Debug("%%%% dsnValues='{0}'",sb.Append("}").ToString().Replace(",}","}"));
+                
+                
 
                 DSN dsn = new DSN();
                 dsn.creado = true;
@@ -75,4 +86,5 @@
             }
         }
     }
+    
 }

@@ -35,14 +35,12 @@ namespace AppGia.Conexion
             return con;
         }
 
-        public AseConnection ConexionSybase()
+        public AseConnection ConexionSybase(string conectionParams)
 
         {
             try
             {
-                var configuration = GetConfiguration();
-
-                sysCon = new AseConnection(configuration.GetSection("DataSybase").GetSection("ConnectionString").Value);
+                sysCon = new AseConnection(conectionParams);
 
                 return sysCon;
             }

@@ -36,7 +36,7 @@
                          + " bd_name ,"
                          + " contra_bytes ,"
                          + " llave ,"
-                         + " apuntador "
+                         + " apuntador, contrasenia_etl "
                          + " FROM empresa"
                          + " WHERE  id  = " + idEmpresa;
             try

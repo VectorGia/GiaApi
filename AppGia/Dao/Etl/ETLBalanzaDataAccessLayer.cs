@@ -1,7 +1,10 @@
 ﻿﻿using System;
+ using System.Collections.Generic;
+ using System.Data.Common;
  using System.Data.Odbc;
  using System.IO;
  using WindowsService1.Util;
+ using AdoNetCore.AseClient;
  using AppGia.Models.Etl;
  using AppGia.Util;
  using NLog;
@@ -59,7 +62,7 @@
                 logger.Debug("Consultando sybase {0}",dsn.nombreDSN);
                 OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                 OdbcDataReader rdr = cmd.ExecuteReader();
-
+                
                 while (rdr.Read())
                 {
                     registros = Convert.ToString(rdr["cta"].ToString()) + ","
@@ -111,7 +114,7 @@
                 if (odbcCon != null)
                 {
                     odbcCon.Close();
-                }
+                  }   
             }
         }
 
