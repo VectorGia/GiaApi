@@ -17,7 +17,8 @@
             logger.Debug("Obteniendo datos empresa");
             List<Empresa> lstCia = new EmpresaConexionDataAccessLayer().EmpresaConexionETL_List(idEmpresa);
             Empresa empresa = lstCia[0];
-            empresa.contrasenia_etl = Utilerias.DecryptStringFromBytes(empresa.contra_bytes, empresa.llave, empresa.apuntador);
+            //se deshabilita el cifrado de contrasenia
+            //empresa.contrasenia_etl = Utilerias.DecryptStringFromBytes(empresa.contra_bytes, empresa.llave, empresa.apuntador);
             logger.Debug("Contrasenia descifada '{0}'",empresa.contrasenia_etl);
 
             bool trustedConnection = false;

@@ -78,6 +78,7 @@
                     cia.contra_bytes = r["contra_bytes"] as byte[];
                     cia.llave = r["llave"] as byte[];
                     cia.apuntador = r["apuntador"] as byte[];
+                    cia.contrasenia_etl = Convert.ToString(r["contrasenia_etl"]);
                     lst.Add(cia);
                 }
 

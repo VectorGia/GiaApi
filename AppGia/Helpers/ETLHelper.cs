@@ -47,12 +47,11 @@ namespace AppGia.Helpers
             foreach (Empresa empresa in empresas)
             {
                 Int64 idEmpresa = empresa.id;
+                sw.start("cargaBalanzaEmpresa "+idEmpresa);
                 try
                 {    
                     logger.Info("cargaBalanzaEmpresa(idEmpresa={0}, anioInicio={1}, anioFin={2})",idEmpresa,anioInicio,anioFin);
-                    sw.start("cargaBalanzaEmpresa "+idEmpresa);
                     cargaBalanzaEmpresa(idEmpresa, anioInicio, anioFin);
-                    sw.stop();
                 }
                 catch (Exception ex)
                 {
@@ -63,6 +62,7 @@ namespace AppGia.Helpers
                         empresa.nombre + " se genero incorrectamente \n\n Mensaje de Error: \n " + ex,
                         "ETL Extracción Balanza");
                 }
+                sw.stop();
 
                 logger.Info(sw.prettyPrint());
             }
