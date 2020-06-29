@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -51,32 +52,42 @@ namespace AppGia.Controllers
             return objCompania.GetEmpresaData(id);
         }
 
+        public static string Base64Encode(string plainText) {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
         // POST: api/Empresa
         [HttpPost]
-        public long Create([FromBody]Empresa empresa)
+        public long Create([FromBody] Empresa empresa)
         {
-            long idEmpresaCurrent = objCompania.Add(empresa);
-            empresa.id = idEmpresaCurrent;
-            
-            /// encriptandoContraseña 
             if (empresa.contrasenia_etl.Length > 0)
             {
-                objCompania.UpdateContrasenia(empresa);
+                empresa.contrasenia_etl=Base64Encode(empresa.contrasenia_etl);
             }
-              return idEmpresaCurrent;
-           // return objCompania.Add(compania);
+            long idEmpresaCurrent = objCompania.Add(empresa);
+            //empresa.id = idEmpresaCurrent;
+ 
+            /*if (empresa.contrasenia_etl.Length > 0)
+            {
+                objCompania.UpdateContrasenia(empresa);
+            }*/
+            return idEmpresaCurrent;
         }
 
         // PUT: api/Empresa/5
         [HttpPut("{id}")]
         public int Put(string id, [FromBody] Empresa empresa)
         {
-            int cantPut = objCompania.Update(id, empresa); 
             if (empresa.contrasenia_etl.Length > 0)
+            {
+                empresa.contrasenia_etl=Base64Encode(empresa.contrasenia_etl);
+            }
+            int cantPut = objCompania.Update(id, empresa); 
+            /*if (empresa.contrasenia_etl.Length > 0)
             {
                 empresa.id = Convert.ToInt64(id);
                 objCompania.UpdateContrasenia(empresa);
-            }
+            }*/
             return cantPut;
 
             // return objCompania.Update(id, comp);

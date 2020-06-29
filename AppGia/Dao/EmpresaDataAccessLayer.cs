@@ -120,7 +120,7 @@ namespace AppGia.Dao
                 "," + "moneda_id" +
                 "," + "desc_id" +
                 "," + "usuario_etl" +
-                //"," + "contrasenia_etl" +
+                "," + "contrasenia_etl" +
                 "," + "puerto_compania" +
                 "," + "bd_name" +
                 "," + "fec_modif" +
@@ -134,7 +134,7 @@ namespace AppGia.Dao
                 "@moneda_id ," +
                 "@desc_id," +
                 "@usuario_etl," +
-                //"@contrasenia_etl," +
+                "@contrasenia_etl," +
                 "@puerto_compania," +
                 "@bd_name," +
                 "@fec_modif," +
@@ -153,7 +153,7 @@ namespace AppGia.Dao
                     cmd.Parameters.AddWithValue("@host", empresa.host);
                     cmd.Parameters.AddWithValue("@moneda_id", empresa.moneda_id);
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl);
-                  //  cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
+                    cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
                     cmd.Parameters.AddWithValue("@puerto_compania", empresa.puerto_compania);
                     cmd.Parameters.AddWithValue("@bd_name", empresa.bd_name);
                     cmd.Parameters.AddWithValue("@fec_modif", DateTime.Now);
@@ -186,7 +186,7 @@ namespace AppGia.Dao
                  + "host = @host ,"
                  + "moneda_id = @moneda_id ,"
                  + "usuario_etl = @usuario_etl ,"
-                 //+ "contrasenia_etl = @contrasenia_etl ,"
+                 + "contrasenia_etl = @contrasenia_etl ,"
                  + "puerto_compania = @puerto_compania ,"
                  + "activo = @activo ,"
                  + "fec_modif = @fec_modif ,"
@@ -205,7 +205,7 @@ namespace AppGia.Dao
                     cmd.Parameters.AddWithValue("@etl", empresa.etl);
                     cmd.Parameters.AddWithValue("@host", empresa.host);
                     cmd.Parameters.AddWithValue("@usuario_etl", empresa.usuario_etl);
-                   // cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
+                    cmd.Parameters.AddWithValue("@contrasenia_etl", empresa.contrasenia_etl);
                     cmd.Parameters.AddWithValue("@puerto_compania", empresa.puerto_compania);
                     cmd.Parameters.AddWithValue("@bd_name", empresa.bd_name);
                     cmd.Parameters.AddWithValue("@activo", empresa.activo);
