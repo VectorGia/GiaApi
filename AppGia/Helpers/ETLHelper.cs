@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Transactions;
 using AppGia.Controllers;
 using AppGia.Dao;
 using AppGia.Dao.Etl;
 using AppGia.Models;
 using AppGia.Util;
+using Microsoft.Extensions.Configuration;
 using NLog;
+using NLog.Fluent;
 using static System.Convert;
 using Proceso = AppGia.Models.Etl.Proceso;
 using ProcesoDataAccessLayer = AppGia.Dao.Etl.ProcesoDataAccessLayer;
@@ -24,8 +29,8 @@ namespace AppGia.Helpers
         public void extraeBalanzaAuto()
         {
             logger.Info("inicio de extraeBalanzaAuto");
-            String consultaExistenRegs = "select count(1) as numRegs from balanza" ;
-            bool existenRegs= ToInt64(_queryExecuter.ExecuteQueryUniqueresult(consultaExistenRegs)["numRegs"]) > 0;
+            String consultaExistenRegs = "select count(1) as numRegs from balanza";
+            bool existenRegs = ToInt64(_queryExecuter.ExecuteQueryUniqueresult(consultaExistenRegs)["numRegs"]) > 0;
             if (!existenRegs)
             {
                 extraeBalanza(-1, -1);
@@ -33,24 +38,26 @@ namespace AppGia.Helpers
             else
             {
                 int anioActual = new DateTime().Year;
-                extraeBalanza(anioActual,anioActual);
+                extraeBalanza(anioActual, anioActual);
             }
-            
         }
+
         public void extraeBalanza(int anioInicio, int anioFin)
         {
-            logger.Info("incio extraeBalanza (anioInicio={0}, anioFin={1}))",anioInicio,anioFin);
-            StopWatch sw=new StopWatch(String.Format("extraeBalanza (anioInicio={0}, anioFin={1})",anioInicio,anioFin));
+            logger.Info("incio extraeBalanza (anioInicio={0}, anioFin={1}))", anioInicio, anioFin);
+            StopWatch sw =
+                new StopWatch(String.Format("extraeBalanza (anioInicio={0}, anioFin={1})", anioInicio, anioFin));
             sw.start("GetAllEmpresas ");
             List<Empresa> empresas = _empresaDataAccessLayer.GetAllEmpresas();
             sw.stop();
             foreach (Empresa empresa in empresas)
             {
                 Int64 idEmpresa = empresa.id;
-                sw.start("cargaBalanzaEmpresa "+idEmpresa);
+                sw.start("cargaBalanzaEmpresa " + idEmpresa);
                 try
-                {    
-                    logger.Info("cargaBalanzaEmpresa(idEmpresa={0}, anioInicio={1}, anioFin={2})",idEmpresa,anioInicio,anioFin);
+                {
+                    logger.Info("cargaBalanzaEmpresa(idEmpresa={0}, anioInicio={1}, anioFin={2})", idEmpresa,
+                        anioInicio, anioFin);
                     cargaBalanzaEmpresa(idEmpresa, anioInicio, anioFin);
                 }
                 catch (Exception ex)
@@ -62,6 +69,7 @@ namespace AppGia.Helpers
                         empresa.nombre + " se genero incorrectamente \n\n Mensaje de Error: \n " + ex,
                         "ETL Extracción Balanza");
                 }
+
                 sw.stop();
 
                 logger.Info(sw.prettyPrint());
@@ -71,23 +79,25 @@ namespace AppGia.Helpers
         public void extraeFlujoAuto()
         {
             logger.Info("inicio de extraeFlujoAuto");
-            String consultaExistenRegs = "select count(1) as numRegs from semanal" ;
-            bool existenRegs= ToInt64(_queryExecuter.ExecuteQueryUniqueresult(consultaExistenRegs)["numRegs"]) > 0;
+            String consultaExistenRegs = "select count(1) as numRegs from semanal";
+            bool existenRegs = ToInt64(_queryExecuter.ExecuteQueryUniqueresult(consultaExistenRegs)["numRegs"]) > 0;
             if (!existenRegs)
             {
-                extraeFlujo(-1, -1,-1);
+                extraeFlujo(-1, -1, -1);
             }
             else
             {
                 int anioActual = new DateTime().Year;
                 int mes = new DateTime().Month;
-                extraeFlujo(anioActual,anioActual,mes);
+                extraeFlujo(anioActual, anioActual, mes);
             }
         }
+
         public void extraeFlujo(int anioInicio, int anioFin, int mes)
         {
-            logger.Info("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio,  anioFin,  mes);
-            StopWatch sw=new StopWatch(String.Format("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio,  anioFin,  mes));
+            logger.Info("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio, anioFin, mes);
+            StopWatch sw = new StopWatch(String.Format("extraeFlujo(anioInicio={0}, anioFin={1}, mes={2})", anioInicio,
+                anioFin, mes));
             List<Empresa> empresas = _empresaDataAccessLayer.GetAllEmpresas();
 
 
@@ -96,10 +106,10 @@ namespace AppGia.Helpers
             foreach (Empresa empresa in empresas)
             {
                 idEmpresa = empresa.id;
-                
+
                 try
                 {
-                    sw.start("cargaFlujoEmpresa "+idEmpresa);
+                    sw.start("cargaFlujoEmpresa " + idEmpresa);
                     cargaFlujoEmpresa(idEmpresa, anioInicio, anioFin, mes);
                     sw.stop();
                 }
@@ -113,47 +123,19 @@ namespace AppGia.Helpers
                         "ETL Extracción Balanza");
                 }
             }
+
             logger.Info(sw.prettyPrint());
-        }
-        
-        private void deleteBalanzaIfApply(Int64 idEmpresa, int anioInicio, int anioFin)
-        {
-            String consultaExistenRegs = "select count(1) as numRegs from balanza where id_empresa=" + idEmpresa;
-            String deleteRegs = "delete from balanza where id_empresa=" + idEmpresa;
-
-            if (anioInicio > 0 && anioFin > 0)
-            {
-                consultaExistenRegs += "  and  year between " + anioInicio + " and " + anioFin;
-                deleteRegs += "  and  year between " + anioInicio + " and " + anioFin;
-            }
-
-            bool existenRegistros =
-                ToInt64(_queryExecuter.ExecuteQueryUniqueresult(consultaExistenRegs)["numRegs"]) > 0;
-            if (existenRegistros)
-            {
-                _queryExecuter.execute(deleteRegs);
-            }
         }
 
         private void cargaBalanzaEmpresa(Int64 idEmpresa, int anioInicio, int anioFin)
         {
-            StopWatch sw=new StopWatch("cargaBalanzaEmpresa "+idEmpresa);
-            ETLBalanzaDataAccessLayer etlBalanza = new ETLBalanzaDataAccessLayer();
-            string archivo = string.Empty;
-            string ruta = Constantes.CSV_PATH_BALANZA;
+            StopWatch sw = new StopWatch("cargaBalanzaEmpresa " + idEmpresa);
             DateTime fechaInicioProceso = DateTime.Now;
             Proceso proceso = new Proceso();
             try
             {
-                sw.start("generaCSV "+idEmpresa);
-                archivo = etlBalanza.generaCSV(idEmpresa, anioInicio, anioFin, ruta);
-                sw.stop();
-                sw.start("deleteBalanzaIfApply");
-                deleteBalanzaIfApply(idEmpresa, anioInicio, anioFin);
-                sw.stop();
-                sw.start("importFile");
-                etlBalanza.importFile(archivo, ruta);
-                sw.stop();
+                executeExtraccion(String.Format("{0} {1} {2}", idEmpresa, anioInicio, anioFin));
+
                 sw.start("envio correo");
                 DateTime fechaFinalProceso = DateTime.Now;
 
@@ -174,10 +156,6 @@ namespace AppGia.Helpers
                 sw.start("AddProceso");
 
                 _procesoDataAccessLayer.AddProceso(proceso);
-                sw.start("UpdateCuentaUnificada");
-
-                etlBalanza.UpdateCuentaUnificada(idEmpresa);
-                sw.stop();
             }
             catch (Exception ex)
             {
@@ -199,36 +177,18 @@ namespace AppGia.Helpers
                 _procesoDataAccessLayer.AddProceso(proceso);
                 throw;
             }
+
             logger.Info(sw.prettyPrint());
         }
 
 
-        private void deleteSemanalIfApply(Int64 idEmpresa, int anioInicio, int anioFin,int mes)
-        {
-            String consultaExistenRegs = "select count(1) as numRegs from semanal where id_empresa=" + idEmpresa;
-            String deleteRegs = "delete from semanal where id_empresa=" + idEmpresa;
-
-            if (anioInicio > 0 && anioFin > 0)
-            {
-                consultaExistenRegs += "  and  year between " + anioInicio + " and " + anioFin;
-                deleteRegs += "  and  year between " + anioInicio + " and " + anioFin;
-            }
-            if (mes > 0)
-            {
-                consultaExistenRegs += "  and b.mes = " + mes;
-            }
-            bool existenRegistros =
-                ToInt64(_queryExecuter.ExecuteQueryUniqueresult(consultaExistenRegs)["numRegs"]) > 0;
-            if (existenRegistros)
-            {
-                _queryExecuter.execute(deleteRegs);
-            }
-        }
-
         private void cargaFlujoEmpresa(Int64 idEmpresa, int anioInicio, int anioFin, int mes)
         {
-            StopWatch sw=new StopWatch(String.Format("cargaFlujoEmpresa (idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})", idEmpresa,  anioInicio,  anioFin,  mes));
-            logger.Info("cargaFlujoEmpresa( idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})",idEmpresa, anioInicio, anioFin, mes);
+            StopWatch sw = new StopWatch(String.Format(
+                "cargaFlujoEmpresa (idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})", idEmpresa, anioInicio,
+                anioFin, mes));
+            logger.Info("cargaFlujoEmpresa( idEmpresa={0},  anioInicio={1},  anioFin={2},  mes={3})", idEmpresa,
+                anioInicio, anioFin, mes);
             ETLMovPolizaSemanalDataAccessLayer etlMovSemanal = new ETLMovPolizaSemanalDataAccessLayer();
             string ruta = Constantes.CSV_PATH_SEMANAL;
 
@@ -237,21 +197,7 @@ namespace AppGia.Helpers
 
             try
             {
-                logger.Info("etlMovSemanal.generaCSV(idEmpresa={0}, ruta={1}, anioInicio={2}, anioFin={3}, mes={4})",idEmpresa, ruta, anioInicio, anioFin, mes);
-                sw.start("generaCSV");
-                string archivo = etlMovSemanal.generaCSV(idEmpresa, ruta, anioInicio, anioFin, mes);
-                sw.stop();
-                
-                logger.Info("deleteSemanalIfApply(idEmpresa={0}, anioInicio={1}, anioFin={2},mes={3})",idEmpresa, anioInicio, anioFin,mes);
-                sw.start("deleteSemanalIfApply");
-                deleteSemanalIfApply(idEmpresa, anioInicio, anioFin,mes);
-                sw.stop();
-                
-                logger.Info("importFile(archivo={0}, ruta={1})",archivo, ruta);
-                sw.start("importFile");
-                etlMovSemanal.importFile(archivo, ruta);
-                sw.stop();
-
+                executeExtraccion(String.Format("{0} {1} {2} {3}", idEmpresa, anioInicio, anioFin, mes));
                 DateTime fechaFinalProceso = DateTime.Now;
                 _configCorreo.EnviarCorreo("La extracción de Movimientos de Polizas Semanal se genero correctamente"
                                            + "\nFecha Inicio : " + fechaInicioProceso + " \n Fecha Final: " +
@@ -295,7 +241,55 @@ namespace AppGia.Helpers
                 _procesoDataAccessLayer.AddProceso(proceso);
                 throw;
             }
+
             logger.Info(sw.prettyPrint());
+        }
+
+        private int executeExtraccion(string arguments)
+        {
+            var configuration = GetConfiguration();
+
+            //.\jre\bin\java.exe -jar .\extraccion-1.0.jar all -1 -1 -1
+            string extraccionPath = configuration.GetSection("Data").GetSection("extraccionPath").Value;
+            string javapath = extraccionPath + "\\jre\\bin\\java.exe";
+           // string jarPath = extraccionPath + "extraccion-1.0.jar";
+            string allArgs = " -jar extraccion-1.0.jar " + arguments;
+            string cmd=javapath+ allArgs;
+            logger.Info("executing.. '{0}'",cmd);
+            var processInfo = new ProcessStartInfo(javapath, allArgs)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                WorkingDirectory = extraccionPath
+            };
+            Process proc;
+
+            if ((proc = Process.Start(processInfo)) == null)
+            {
+                throw new InvalidOperationException("No pudo inicializarce el proceso de extraccion");
+            }
+            using (StreamReader reader = proc.StandardOutput)
+            {
+                string result = reader.ReadToEnd();
+                logger.Info("OUT EXTR: {0}",result);
+            }
+
+            proc.WaitForExit();
+            int exitCode = proc.ExitCode;
+            proc.Close();
+            if (exitCode != 0)
+            {
+                throw new Exception("El proceso de extraccion termino con error exitCode='"+exitCode+"' ");
+            }
+            return exitCode;
+        }
+
+        private IConfigurationRoot GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            return builder.Build();
         }
     }
 }
