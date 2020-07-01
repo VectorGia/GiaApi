@@ -204,11 +204,16 @@ namespace AppGia.Util
 			sb.Append("-----------------------------------------\n");
 			foreach (TaskInfo task in getTaskInfo()) {
 				sb.Append(task.getTimeMillis()).Append("  ");
-				sb.Append(task.getTimeSeconds() / getTotalTimeSeconds()).Append("  ");
+				sb.Append(formatPercentage(task.getTimeSeconds() / getTotalTimeSeconds())).Append("  ");
 				sb.Append(task.getTaskName()).Append("\n");
 			}
 		}
 		return sb.ToString();
+	}
+
+	private string formatPercentage(double val)
+	{
+		return "%"+(Math.Round(val, 3)*100);
 	}
 
 	/**
