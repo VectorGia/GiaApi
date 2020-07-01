@@ -35,7 +35,7 @@ namespace AppGia.Helpers
 
         public void extraeBalanza(int anioInicio, int anioFin)
         {
-            logger.Info("incio extraeBalanza (anioInicio={0}, anioFin={1}))", anioInicio, anioFin);
+            logger.Info("inicio extraeBalanza (anioInicio={0}, anioFin={1}))", anioInicio, anioFin);
             StopWatch sw =
                 new StopWatch(String.Format("extraeBalanza (anioInicio={0}, anioFin={1})", anioInicio, anioFin));
             sw.start();
@@ -103,7 +103,7 @@ namespace AppGia.Helpers
             string javapath = extraccionPath + "jre\\bin\\java.exe";
             string allArgs = " -jar extraccion-1.0.jar " + arguments;
             string cmd = javapath + allArgs;
-            logger.Info("executing.. '{0}'", cmd);
+            logger.Trace("executing.. '{0}'", cmd);
             var processInfo = new ProcessStartInfo(javapath, allArgs)
             {
                 CreateNoWindow = true,
