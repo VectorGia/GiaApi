@@ -18,7 +18,7 @@ namespace AppGia.Dao
 
         public IEnumerable<TipoCaptura> GetAllTipoCaptura()
         {
-            string cadena = "SELECT id, activo, clave, descripcion, fec_modif, idusuario FROM public.tipo_captura WHERE activo = true;";
+            string cadena = "SELECT id, activo, clave, descripcion, fec_modif, idusuario FROM tipo_captura WHERE activo = true;";
             try
             {
                 List<TipoCaptura> lsttipocaptura = new List<TipoCaptura>();
@@ -92,7 +92,7 @@ namespace AppGia.Dao
 
         public int AddTipoCaptura(TipoCaptura tipocaptura)
         {
-            string add = "INSERT INTO public.tipo_captura(id, activo, clave, descripcion, fec_modif, idusuario)"
+            string add = "INSERT INTO tipo_captura(id, activo, clave, descripcion, fec_modif, idusuario)"
                 + "VALUES "
                 + "("
                 + "@id,"

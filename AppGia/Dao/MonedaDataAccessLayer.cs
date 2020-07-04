@@ -24,7 +24,7 @@ namespace AppGia.Dao
         public IEnumerable<Moneda> GetAllMoneda()
         {
             //string cadena = "SELECT * FROM" + cod + "CAT_MONEDA" + cod + "WHERE " + cod + "BOOL_ESTATUS_LOGICO_MONEDA" + cod + "=" + true;
-            string cadena = "select id,activo,clave,descripcion,pais,simbolo FROM public.moneda WHERE activo = true";
+            string cadena = "select id,activo,clave,descripcion,pais,simbolo FROM moneda WHERE activo = true";
             try
             {
                 List<Moneda> lstNoneda = new List<Moneda>();
@@ -65,7 +65,7 @@ namespace AppGia.Dao
             try
             {
                 Moneda moneda = new Moneda();
-                string consulta = "select id,activo,clave,descripcion,pais,simbolo FROM public.moneda WHERE id = " + id;
+                string consulta = "select id,activo,clave,descripcion,pais,simbolo FROM moneda WHERE id = " + id;
                 NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
                 con.Open();
                 NpgsqlDataReader rdr = cmd.ExecuteReader();
@@ -94,7 +94,7 @@ namespace AppGia.Dao
         }
         public int insert(Moneda moneda)
         {
-            string add = "INSERT INTO public.moneda ( "
+            string add = "INSERT INTO moneda ( "
                         + "id,"
                         + "activo,"
                         + "clave,"
