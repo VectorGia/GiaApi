@@ -61,6 +61,7 @@ namespace AppGia.Dao
                         centroCostos.modelo_negocio_id = Convert.ToInt64(rdr["modelo_negocio_id"].ToString());
                         centroCostos.porcentaje = Convert.ToDouble(rdr["porcentaje"]);
                         centroCostos.proyeccion = rdr["proyeccion"].ToString().Trim();
+                        centroCostos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
 
                         lstcentros.Add(centroCostos);
                     }

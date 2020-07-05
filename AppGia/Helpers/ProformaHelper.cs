@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using AppGia.Controllers;
 using AppGia.Dao;
 using AppGia.Models;
@@ -122,11 +123,13 @@ namespace AppGia.Helpers
             double porcentaje)
         {
             string aritmetica = rubroTotal.aritmetica;
+            NumberFormatInfo nfi = new NumberFormatInfo();
+            nfi.NumberDecimalSeparator = ".";
             if (porcentaje != 1.0)
             {
                 aritmetica = "(" + aritmetica + ") * " + porcentaje;
             }
-
+            logger.Debug(" -> rubro='{0}',aritmetica='{1}'",rubroTotal.nombre,aritmetica);
             var aritmeticas = new Dictionary<string, string>();
             aritmeticas.Add("enero_monto", aritmetica);
             aritmeticas.Add("febrero_monto", aritmetica);
@@ -158,7 +161,7 @@ namespace AppGia.Helpers
                     foreach(var key in keys)
                     {
                         aritmeticas[key] = aritmeticas[key]
-                            .Replace(claveRubro, detalle[key+"_resultado"].ToString());
+                            .Replace(claveRubro, ((Double)detalle[key+"_resultado"]).ToString(nfi));
                     }
                 }
             });
@@ -172,6 +175,7 @@ namespace AppGia.Helpers
             DataTable dt = new DataTable();
             foreach(var key in keys)
             {
+                logger.Info("Evaluando expresion='{0}'",aritmeticas[key]);
                 detalleTotal[key+"_resultado"] = ToDouble(dt.Compute(aritmeticas[key], ""));
             }
             return detalleTotal;

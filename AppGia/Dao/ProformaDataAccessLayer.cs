@@ -13,7 +13,7 @@ namespace AppGia.Dao
 {
     public class ProformaDataAccessLayer
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Logger log = LogManager.GetCurrentClassLogger();
 
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
@@ -242,7 +242,7 @@ namespace AppGia.Dao
             {
                 DateTime fechaProf = DateTime.Today;
                 string nombreTipoCaptura = idTipoCaptura == TipoCapturaContable ? "contable" : "de flujo";
-                throw new InvalidDataException("No existe información con fecha '" + fechaProf + "' para proforma " +
+                throw new InvalidDataException("No existe informacion con fecha '" + fechaProf + "' para proforma " +
                                                nombreTipoCaptura + " de la empresa '" + cc.empresa_id +
                                                "' y modelo de negocio '" + idModeloNeg + "'");
             }
@@ -328,6 +328,7 @@ namespace AppGia.Dao
             ProformaDetalleDataAccessLayer detalleAccesLayer = new ProformaDetalleDataAccessLayer();
 
             // Obtiene lista de montos consolidados para ejercicio
+            log.Info("Calculando proforma ....");
             List<ProformaDetalle> detallesCalculados = detalleAccesLayer.GetProformaCalculada(idCenCos, mesInicio, idEmpresa,
                 idModeloNeg, idProyecto, anio, idTipoCaptura);
             // Obtiene lista de sumatorias para el acumulado

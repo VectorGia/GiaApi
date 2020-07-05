@@ -5,6 +5,7 @@ using System.Text;
 using AppGia.Controllers;
 using AppGia.Helpers;
 using AppGia.Models;
+using NLog;
 using Npgsql;
 using static System.Convert;
 
@@ -12,6 +13,7 @@ namespace AppGia.Dao
 {
     public class ProformaDetalleDataAccessLayer
     {
+        private static Logger log = LogManager.GetCurrentClassLogger();
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
         private ProformaHelper _profHelper = new ProformaHelper();
@@ -292,7 +294,7 @@ namespace AppGia.Dao
             consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + fechaCarga.ToString("dd/MM/yyyy") + "'::date) ";
+            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + fechaCarga.ToString("yyyy-MM-dd") + "'::date) ";
             consulta += "	 and anio = " + anio;
             consulta += "	 and empresa_id = " + idEmpresa;
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio;
@@ -301,6 +303,8 @@ namespace AppGia.Dao
             consulta += "	 and tipo_captura_id = " + idTipoCaptura;
             consulta += "	 and mon.activo = 'true' ";
             consulta += "	 order by rub.id ";
+            
+            log.Info("ejecutando query:'{0}'",consulta);
 
 
             DataTable dataTable = _queryExecuter.ExecuteQuery(consulta.Trim());
