@@ -63,7 +63,7 @@ namespace AppGia.Dao
             consulta += " select ";
             consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
             consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
-            consulta += " 		upper(concat(pr.nombre, ' - ' , mn.nombre, ' - ', tp.nombre,' - ', tc.clave)) as nombre_proforma ";
+            consulta += " 		upper(concat(pr.nombre, ' - ' , mn.nombre, ' - ',pf.anio,' - ', tp.nombre,' - ', tc.clave)) as nombre_proforma ";
             consulta += " from proforma pf ";
             consulta += " inner join modelo_negocio mn on mn.id = pf.modelo_negocio_id ";
             consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
