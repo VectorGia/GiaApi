@@ -4,6 +4,7 @@ using System.Data;
 using AppGia.Controllers;
 using AppGia.Models;
 using AppGia.Util;
+using NLog;
 using static System.Convert;
 using static System.DateTime;
 using static AppGia.Util.Constantes;
@@ -12,6 +13,8 @@ namespace AppGia.Helpers
 {
     public class TipoCambioHelper
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private QueryExecuter _queryExecuter = new QueryExecuter();
         private QueryExecuterSQL _queryExecuterSql = new QueryExecuterSQL();
         private const string RESULTADO = "ER";
@@ -35,13 +38,14 @@ namespace AppGia.Helpers
        
         public Dictionary<string, double> getTiposCambioContable(Int64 idCC, int anio)
         {
+            logger.Debug("tipos cambio contables <-- start");
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             Moneda moneda = findIdMonedaByCentroCosto(idCC);
             if (!esMonedaExtrangera(moneda))
             {
                 return tipoCambio;
             }
-            string query = "select anio,mes,tipo,monedarporte,monedainforme from tipo_cambio_gia" +
+            string query = "select anio,mes,tipo,monedareporte,monedainforme from tiposcambio" +
                     " where monedaid=" + moneda.id +
                     " and anio= " + anio +
                     " and mes=" + Now.Month;
@@ -50,7 +54,7 @@ namespace AppGia.Helpers
             tipoCambio.Add("LOCAL", 1.0);
             foreach (DataRow row in dataTable.Rows)
             {
-                Double factorDll = 1 / ToDouble(row["monedarporte"]);
+                Double factorDll = 1 / ToDouble(row["monedareporte"]);
                 Double factorPesos = ToDouble(row["monedainforme"]) * factorDll;
                 ;
                 if (RESULTADO.Equals(row["tipo"].ToString().Trim()))
@@ -65,12 +69,13 @@ namespace AppGia.Helpers
                     tipoCambio.Add("MXN FINAN", factorPesos);
                 }
             }
-
+            logger.Debug("'{0}' tipos de cambio encontrados",tipoCambio.Count);
             return tipoCambio;
         }
 
         public Dictionary<string, double> getTiposCambioFlujo(Int64 idCC, int anio)
         {
+            logger.Debug("tipos cambio flujo <-- start");
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             Moneda moneda = findIdMonedaByCentroCosto(idCC);
             if (!esMonedaExtrangera(moneda))
@@ -78,10 +83,10 @@ namespace AppGia.Helpers
                 return tipoCambio;
             }
             string query="select fecharegistro,monedareporte,monedainforme " +
-                         " from tipo_cambio_flujo_gia " +
+                         " from tiposcambio_f " +
                          " where monedaid= " +moneda.id+
                          " and fecharegistro = " +
-                         " (select max(fecharegistro) from tipo_cambio_flujo_gia " +
+                         " (select max(fecharegistro) from tiposcambio_f " +
                          "   where monedaid= " +moneda.id+" and fecharegistro > DATEADD(day, -7, '"+Now.ToString("yyyy-MM-dd")+"')" +
                          " )";
  
@@ -94,6 +99,7 @@ namespace AppGia.Helpers
                 tipoCambio.Add("USD", factorDll);
                 tipoCambio.Add("MXN", factorPesos);
             }
+            logger.Debug("'{0}' tipos de cambio encontrados",tipoCambio.Count);
             return tipoCambio;
         }
         private Moneda findIdMonedaByCentroCosto(Int64 idCC)

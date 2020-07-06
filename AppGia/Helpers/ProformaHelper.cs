@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using AppGia.Controllers;
 using AppGia.Dao;
 using AppGia.Models;
 using AppGia.Util;
 using NLog;
+using Npgsql;
 using static System.Convert;
 using static AppGia.Util.Constantes;
 
@@ -16,7 +18,7 @@ namespace AppGia.Helpers
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private QueryExecuter _queryExecuter = new QueryExecuter();
-        private QueryExecuterSQL _queryExecuterSql=new QueryExecuterSQL();
+        private QueryExecuterSQL _queryExecuterSql = new QueryExecuterSQL();
 
         public List<ProformaDetalle> BuildProformaFromModeloAsTemplate(CentroCostos cc, int anio, Int64 idTipoProforma,
             Int64 idTipoCaptura)
@@ -43,16 +45,16 @@ namespace AppGia.Helpers
 
             List<Rubros> rubroses = GetRubrosFromModeloId(idModeloAproformar, false);
 
-            List<ProformaDetalle> detallesAniosAnteriores=new List<ProformaDetalle>();
-           //--> se calculan anios anteriores solo cuando exista en balanza o polizas en caso de shadow y metodo esto no aplica
+            List<ProformaDetalle> detallesAniosAnteriores = new List<ProformaDetalle>();
+            //--> se calculan anios anteriores solo cuando exista en balanza o polizas en caso de shadow y metodo esto no aplica
             if (cc.proyeccion.Equals(ProyeccionBase))
             {
                 ProformaDetalleDataAccessLayer detalleAccesLayer = new ProformaDetalleDataAccessLayer();
-                detallesAniosAnteriores = 
-                    detalleAccesLayer.GetAcumuladoAnteriores(cc.id, cc.empresa_id, idModeloAproformar, cc.proyecto_id, anio, idTipoCaptura);
- 
+                detallesAniosAnteriores =
+                    detalleAccesLayer.GetAcumuladoAnteriores(cc.id, cc.empresa_id, idModeloAproformar, cc.proyecto_id,
+                        anio, idTipoCaptura);
             }
-          
+
             List<ProformaDetalle> detallesAniosPosteriores =
                 new ProformaDetalleDataAccessLayer().GetEjercicioPosterior(anio, cc.id, idModeloAproformar,
                     idTipoCaptura, idTipoProforma);
@@ -60,7 +62,7 @@ namespace AppGia.Helpers
             List<ProformaDetalle> proformaDetalles =
                 buildProformaFromTemplate(rubroses, cc.id, anio, idTipoProforma, idTipoCaptura);
             //--> se colocan los anios posteriores
-            manageAniosAnteriores(proformaDetalles,detallesAniosAnteriores);
+            manageAniosAnteriores(proformaDetalles, detallesAniosAnteriores);
 
             foreach (ProformaDetalle detalle in proformaDetalles)
             {
@@ -97,11 +99,11 @@ namespace AppGia.Helpers
                 }
                 catch (EvaluateException ee)
                 {
-                    
-                    logger.Warn("No pudo evaluarse la expresion '{0}' ERROR: '{1}'",rubTot.aritmetica,ee.Message);
+                    logger.Warn("No pudo evaluarse la expresion '{0}' ERROR: '{1}'", rubTot.aritmetica, ee.Message);
                     rubrosTotNoEvaluados.Add(rubTot);
                 }
             }
+
             detCtas.AddRange(detallesConstruidos);
             foreach (Rubros rubrosTotNoEvaluado in rubrosTotNoEvaluados)
             {
@@ -111,8 +113,7 @@ namespace AppGia.Helpers
                 }
                 catch (EvaluateException ee)
                 {
-                    logger.Error(ee,"No pudo evaluarse la expresion '{0}' ",rubrosTotNoEvaluado.aritmetica);
-                    
+                    logger.Error(ee, "No pudo evaluarse la expresion '{0}' ", rubrosTotNoEvaluado.aritmetica);
                 }
             }
 
@@ -129,7 +130,8 @@ namespace AppGia.Helpers
             {
                 aritmetica = "(" + aritmetica + ") * " + porcentaje;
             }
-            logger.Debug(" -> rubro='{0}',aritmetica='{1}'",rubroTotal.nombre,aritmetica);
+
+            logger.Debug(" -> rubro='{0}',aritmetica='{1}'", rubroTotal.nombre, aritmetica);
             var aritmeticas = new Dictionary<string, string>();
             aritmeticas.Add("enero_monto", aritmetica);
             aritmeticas.Add("febrero_monto", aritmetica);
@@ -152,16 +154,16 @@ namespace AppGia.Helpers
             {
                 keys.Add(key);
             }
-                
+
             detalles.ForEach(detalle =>
             {
                 var claveRubro = detalle.clave_rubro;
                 if (aritmetica.Contains(claveRubro))
                 {
-                    foreach(var key in keys)
+                    foreach (var key in keys)
                     {
                         aritmeticas[key] = aritmeticas[key]
-                            .Replace(claveRubro, ((Double)detalle[key+"_resultado"]).ToString(nfi));
+                            .Replace(claveRubro, ((Double) detalle[key + "_resultado"]).ToString(nfi));
                     }
                 }
             });
@@ -173,11 +175,12 @@ namespace AppGia.Helpers
             detalleTotal.hijos = rubroTotal.hijos;
 
             DataTable dt = new DataTable();
-            foreach(var key in keys)
+            foreach (var key in keys)
             {
-                logger.Info("Evaluando expresion='{0}'",aritmeticas[key]);
-                detalleTotal[key+"_resultado"] = ToDouble(dt.Compute(aritmeticas[key], ""));
+                logger.Info("Evaluando expresion='{0}'", aritmeticas[key]);
+                detalleTotal[key + "_resultado"] = ToDouble(dt.Compute(aritmeticas[key], ""));
             }
+
             return detalleTotal;
         }
 
@@ -196,7 +199,7 @@ namespace AppGia.Helpers
             List<Rubros> rubrosesreoder = reorderConceptos(rubroses);
             List<ProformaDetalle> detalles = new List<ProformaDetalle>();
 
-            Int32 mesInicio= getMesInicio(idTipoProforma);
+            Int32 mesInicio = getMesInicio(idTipoProforma);
             rubrosesreoder.ForEach(actual =>
             {
                 ProformaDetalle detalle = new ProformaDetalle();
@@ -230,26 +233,34 @@ namespace AppGia.Helpers
             });
             return detalles;
         }
-        
-        public List<ProformaDetalle> getAjustes(Int64 idCC,int anio,Int64 idTipoCaptura)
+
+        public List<ProformaDetalle> getAjustes(Int64 idCC, int anio, Int64 idTipoCaptura)
         {
-            List<ProformaDetalle> proformaDetalles=new List<ProformaDetalle>();
-            if (idTipoCaptura == TipoCapturaContable)//Los ajustes solo son para contable
+            logger.Debug("getAjustes <-- start");
+            List<ProformaDetalle> proformaDetalles = new List<ProformaDetalle>();
+            if (idTipoCaptura == TipoCapturaContable) //Los ajustes solo son para contable
             {
                 Dictionary<string, string> mesValor = getPonderacionMeses();
-                Object empresaId =
-                    _queryExecuter.ExecuteQueryUniqueresult("select empresa_id from centro_costo where id=" + idCC)[
-                        "empresa_id"];
+                DataRow dr = _queryExecuter.ExecuteQueryUniqueresult(
+                    "select cc.desc_id  as idcc,em.desc_id as idem from centro_costo cc  join empresa em on  em.id=cc.empresa_id where cc.id =@idCC",
+                    new NpgsqlParameter("@idCC", idCC));
+
+                Object empresaId = dr["idem"];
+                Object centroId = dr["idcc"];
 
                 DataTable ajustesDt = _queryExecuterSql.ExecuteQuerySQL("select ingreso, directo, indirecto, mes " +
-                                                                        " from ajuste" +
-                                                                        " where empresa = " + empresaId +
-                                                                        " and centrocosto =" + idCC +
-                                                                        " and anio =" + anio);
+                                                                        " from Tb_Ajustes_registro " +
+                                                                        " where empresa = @empresaId" +
+                                                                        " and centrocosto = @centroId" +
+                                                                        " and anio =@anio",
+                    new SqlParameter("@empresaId", empresaId),
+                    new SqlParameter("@centroId", centroId),
+                    new SqlParameter("@anio", empresaId)
+                );
                 DataRow dataRow =
-                    _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=" +
-                                                            idCC);
-                List<Rubros> rubroses = GetRubrosFromModeloId(Convert.ToInt64(dataRow["modelo_negocio_id"]), false);
+                    _queryExecuter.ExecuteQueryUniqueresult("select modelo_negocio_id from centro_costo where id=@idCC"
+                        , new NpgsqlParameter("@idCC", idCC));
+                List<Rubros> rubroses = GetRubrosFromModeloId(ToInt64(dataRow["modelo_negocio_id"]), false);
                 rubroses.ForEach(rubro =>
                 {
                     ProformaDetalle detalle = new ProformaDetalle();
@@ -264,7 +275,7 @@ namespace AppGia.Helpers
                         Object mesData = ajusteRow["mes"];
                         if (mesData != null)
                         {
-                            if (detalle.tipo_cuenta!=null&&detalle.tipo_cuenta.Trim().Length>0)
+                            if (detalle.tipo_cuenta != null && detalle.tipo_cuenta.Trim().Length > 0)
                             {
                                 detalle[mesValor[mesData.ToString()]] = ToDouble(ajusteRow[detalle.tipo_cuenta]);
                             }
@@ -272,7 +283,7 @@ namespace AppGia.Helpers
                     }
                 });
             }
-
+            logger.Debug("ajustes encotrados='{0}'",proformaDetalles.Count);
             return proformaDetalles;
         }
 
@@ -280,8 +291,8 @@ namespace AppGia.Helpers
         {
             foreach (var detalle in detalles)
             {
-                string uid=Guid.NewGuid().ToString();
-                uid=uid.Substring(uid.Length-12);
+                string uid = Guid.NewGuid().ToString();
+                uid = uid.Substring(uid.Length - 12);
                 detalle.idInterno = uid;
             }
 
@@ -295,10 +306,9 @@ namespace AppGia.Helpers
                            "select distinct anio_periodo from periodo where activo = true and estatus = 'true' and tipo_captura_id = " +
                            idTipoCaptura + " and tipo_proforma_id = " + idTipoProforma + " and anio_periodo=" + anio)
                        .Rows.Count > 0;
-
         }
-        
-        
+
+
         public Rubros BuscaRubroPorId(Int64 rubro_id)
         {
             string consulta = "";
@@ -350,7 +360,7 @@ namespace AppGia.Helpers
             return ru;
         }
 
-        public List<T> reorderConceptos<T>(List<T> conceptos) where  T :IConceptoProforma
+        public List<T> reorderConceptos<T>(List<T> conceptos) where T : IConceptoProforma
         {
             var rubrosReorder = new List<T>();
             var padres = getConceptosPadresFromList(conceptos);
@@ -372,59 +382,60 @@ namespace AppGia.Helpers
             });
             rubrosReorder.ForEach(rrconcepto => { conceptosCloned.Remove(rrconcepto); });
             rubrosReorder.AddRange(conceptosCloned);*/
-            
+
             return rubrosReorder;
         }
+
         /*
          * Permite obtener la fecha de generacion de montos consolidados ya se mensual o semanal segun sea flujo o contable
          */
-        public DateTime getLastFechaMontosConsol(int anio,Int64 idEmpresa,Int64 idModeloNegocio,Int64 idProyecto,Int64 idCenCos,Int64 idTipoCaptura)
+        public DateTime getLastFechaMontosConsol(int anio, Int64 idEmpresa, Int64 idModeloNegocio, Int64 idProyecto,
+            Int64 idCenCos, Int64 idTipoCaptura)
         {
-            string fechaHoy=DateTime.Today.ToString("dd/MM/yyyy");
-            String consulta="";
+            string fechaHoy = DateTime.Today.ToString("dd/MM/yyyy");
+            String consulta = "";
             if (idTipoCaptura == Constantes.TipoCapturaContable)
             {
                 consulta = "select max(fecha) as fecha from montos_consolidados where activo=true " +
-                           " and fecha >=date_trunc('MONTH',to_date('"+fechaHoy+"','DD/MM/YYYY')) " +
-                           " and fecha <= to_date('"+fechaHoy+"','DD/MM/YYYY') ";
+                           " and fecha >=date_trunc('MONTH',to_date('" + fechaHoy + "','DD/MM/YYYY')) " +
+                           " and fecha <= to_date('" + fechaHoy + "','DD/MM/YYYY') ";
             }
-            else if(idTipoCaptura==TipoCapturaFlujo)
+            else if (idTipoCaptura == TipoCapturaFlujo)
             {
                 consulta = "select max(fecha) as fecha from montos_consolidados where activo=true " +
-                           " and fecha >to_date('"+fechaHoy+"','DD/MM/YYYY')-7 " +
-                           " and fecha <= to_date('"+fechaHoy+"','DD/MM/YYYY') ";
+                           " and fecha >to_date('" + fechaHoy + "','DD/MM/YYYY')-7 " +
+                           " and fecha <= to_date('" + fechaHoy + "','DD/MM/YYYY') ";
             }
             else
             {
-                throw new DataException("El tipo de captura "+idTipoCaptura+" no esta soportado");
+                throw new DataException("El tipo de captura " + idTipoCaptura + " no esta soportado");
             }
 
-            consulta += "	 and anio = " + anio; 
-            consulta += "	 and empresa_id = " + idEmpresa; 
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio; 
+            consulta += "	 and anio = " + anio;
+            consulta += "	 and empresa_id = " + idEmpresa;
+            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;
             consulta += "	 and proyecto_id = " + idProyecto;
-            consulta += "	 and centro_costo_id = " + idCenCos; 
+            consulta += "	 and centro_costo_id = " + idCenCos;
             consulta += "	 and tipo_captura_id = " + idTipoCaptura;
-           Object objfecha= _queryExecuter.ExecuteQueryUniqueresult(consulta)["fecha"];
-           if (objfecha != null)
-           {
-               return ToDateTime(objfecha);
-           }
+            Object objfecha = _queryExecuter.ExecuteQueryUniqueresult(consulta)["fecha"];
+            if (objfecha != null)
+            {
+                return ToDateTime(objfecha);
+            }
 
-           throw new ApplicationException(String.Format(
-               "No se encontraron registros para montos consolidados, con los datos de consulta: " +
-               " anio='{0}',empresa_id='{1}',modelo_negocio_id='{2}',proyecto_id='{3}',centro_costo_id='{4}',tipo_captura_id='{5}'",
-               anio, idEmpresa, idModeloNegocio, idProyecto, idCenCos, idTipoCaptura));
-           
-
+            throw new ApplicationException(String.Format(
+                "No se encontraron registros para montos consolidados, con los datos de consulta: " +
+                " anio='{0}',empresa_id='{1}',modelo_negocio_id='{2}',proyecto_id='{3}',centro_costo_id='{4}',tipo_captura_id='{5}'",
+                anio, idEmpresa, idModeloNegocio, idProyecto, idCenCos, idTipoCaptura));
         }
 
-        private List<T> getConceptosPadresFromList<T> (List<T> conceptos) where  T :IConceptoProforma
+        private List<T> getConceptosPadresFromList<T>(List<T> conceptos) where T : IConceptoProforma
         {
             List<T> padres = new List<T>();
             conceptos.ForEach(rubros =>
             {
-                if ((rubros.GetHijos() != null && rubros.GetHijos().Trim().Length > 0 ) || (rubros.GetAritmetica() != null && rubros.GetAritmetica().Trim().Length > 0))
+                if ((rubros.GetHijos() != null && rubros.GetHijos().Trim().Length > 0) ||
+                    (rubros.GetAritmetica() != null && rubros.GetAritmetica().Trim().Length > 0))
                 {
                     padres.Add(rubros);
                 }
@@ -432,7 +443,7 @@ namespace AppGia.Helpers
             return padres;
         }
 
-        private List<T> getConceptosHijosFromList<T>(T conceptoPadre, List<T> conceptos)where  T :IConceptoProforma
+        private List<T> getConceptosHijosFromList<T>(T conceptoPadre, List<T> conceptos) where T : IConceptoProforma
         {
             var hijos = new List<T>();
             if (conceptoPadre.GetHijos() != null)
@@ -447,7 +458,6 @@ namespace AppGia.Helpers
                         {
                             hijos.Add(found);
                         }
-
                     }
                 }
             }
@@ -455,16 +465,17 @@ namespace AppGia.Helpers
             return hijos;
         }
 
-        private T findConceptoByIdInList<T>(List<T> conceptos, Int64 idConcepto)where  T :IConceptoProforma
+        private T findConceptoByIdInList<T>(List<T> conceptos, Int64 idConcepto) where T : IConceptoProforma
         {
             for (var i = 0; i < conceptos.Count; i++)
             {
                 var actual = conceptos[i];
-                if (actual.GetIdConcepto()==idConcepto)
+                if (actual.GetIdConcepto() == idConcepto)
                 {
                     return actual;
                 }
             }
+
             return default;
         }
 
@@ -474,30 +485,31 @@ namespace AppGia.Helpers
             if (detalles.Count > 0)
             {
                 int mesInicio = getMesInicio(detalles[0].tipo_proforma_id);
-                detalles.ForEach(detalle => { setMotoRealesAndProform(detalle,mesInicio);});
+                detalles.ForEach(detalle => { setMotoRealesAndProform(detalle, mesInicio); });
             }
-
         }
+
         private void setMotoRealesAndProform(ProformaDetalle detalle, int mesInicio)
         {
             double montoReales = 0;
             double montoProformados = 0;
             foreach (var entry in getPonderacionMeses())
             {
-                int mes=ToInt16(entry.Key);
+                int mes = ToInt16(entry.Key);
                 if (mes <= mesInicio)
                 {
-                    montoReales+=ToDouble(detalle[entry.Value]);
+                    montoReales += ToDouble(detalle[entry.Value]);
                 }
                 else
                 {
-                    montoProformados+=ToDouble(detalle[entry.Value]);
+                    montoProformados += ToDouble(detalle[entry.Value]);
                 }
             }
 
             detalle.total_real_resultado = montoReales;
             detalle.total_proformado_resultado = montoProformados;
         }
+
         public static Dictionary<string, string> getPonderacionMeses()
         {
             Dictionary<string, string> mesValor = new Dictionary<string, string>();
@@ -515,8 +527,9 @@ namespace AppGia.Helpers
             mesValor.Add("12", "diciembre_monto_resultado");
             return mesValor;
         }
-        
-        public void manageAniosAnteriores(List<ProformaDetalle> allDetalles,List<ProformaDetalle> detallesAniosAnteriores)
+
+        public void manageAniosAnteriores(List<ProformaDetalle> allDetalles,
+            List<ProformaDetalle> detallesAniosAnteriores)
         {
             foreach (ProformaDetalle detalleCalculado in allDetalles)
             {

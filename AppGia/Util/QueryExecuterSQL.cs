@@ -18,15 +18,20 @@ namespace AppGia.Util
             con = conex.ConexionSQL();
         }
 
-        public DataTable ExecuteQuerySQL(String qry)
+        public DataTable ExecuteQuerySQL(String qry, params object[] parametros)
         {
             string consulta = qry;
 
             try
             {
                 con.Open();
-                SqlCommand comP = new SqlCommand(consulta, con);
-                SqlDataAdapter daP = new SqlDataAdapter(comP);
+                SqlCommand cmd = new SqlCommand(consulta, con);
+                foreach (var parametro in parametros)
+                {
+                    cmd.Parameters.Add(parametro);
+                }
+
+                SqlDataAdapter daP = new SqlDataAdapter(cmd);
 
                 DataTable dt = new DataTable();
                 daP.Fill(dt);
@@ -34,22 +39,32 @@ namespace AppGia.Util
             }
             finally
             {
-                con.Close();
+                closeConection(con);
             }
         }
-
-        public DataRow ExecuteQueryUniqueresultSQL(String qry)
+        
+        public DataRow ExecuteQueryUniqueresultSQL(String qry, params object[] parametros)
         {
-            DataTable dataTable = ExecuteQuerySQL(qry);
+            DataTable dataTable = ExecuteQuerySQL(qry, parametros);
             if (dataTable.Rows.Count == 1)
             {
                 return dataTable.Rows[0];
             }
+
             if (dataTable.Rows.Count == 0)
             {
                 return null;
             }
+
             throw new DataException("Se esperaba un resultado pero se obtuvieron " + dataTable.Rows.Count);
+        }
+        
+        public static void closeConection(SqlConnection con)
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+            }
         }
     }
 }
