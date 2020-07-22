@@ -417,8 +417,11 @@ namespace AppGia.Helpers
             consulta += "	 and proyecto_id = " + idProyecto;
             consulta += "	 and centro_costo_id = " + idCenCos;
             consulta += "	 and tipo_captura_id = " + idTipoCaptura;
+            
+            logger.Debug("executing.... '{0}'",consulta);
             Object objfecha = _queryExecuter.ExecuteQueryUniqueresult(consulta)["fecha"];
-            if (objfecha != null)
+           
+            if (objfecha != null && objfecha.ToString().Length>0)
             {
                 return ToDateTime(objfecha);
             }
