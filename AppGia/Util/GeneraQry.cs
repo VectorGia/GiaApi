@@ -12,6 +12,7 @@ namespace AppGia.Util
         private String nombreTablaBalanza;
         private String nombreColumCta;
         private int lengthColumCta;
+        private static  string ctasFlujo = "'1006'";
 
 
         public GeneraQry(string nombreTablaBalanza, string nombreColumCta, int lengthColumCta)
@@ -150,18 +151,19 @@ namespace AppGia.Util
             }
             if (cuentas.Count > 0)
             {
+                String filtroCtaFlujo = getFiltroCtaFlujos(nombreTablaBalanza);
                 String query;
                 if(numRegistrosExistentes == 0)
                 {
                     query = String.Format("( select * " +
                         " from " + nombreTablaBalanza +
-                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}')", sb, idEmpresaExternal,idCCExternal);
+                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}' {3})", sb, idEmpresaExternal,idCCExternal,filtroCtaFlujo);
                 }
                 else
                 {
                     query = String.Format("( select * " +
                         " from " + nombreTablaBalanza +
-                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}' and year = {3})", sb, idEmpresaExternal,idCCExternal,fechaactual.Year);
+                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}' {3} and year = {4})", sb, idEmpresaExternal,idCCExternal,filtroCtaFlujo,fechaactual.Year);
                 }
                 return query;
             }
@@ -169,6 +171,16 @@ namespace AppGia.Util
             return "";
         }
 
+        private String getFiltroCtaFlujos(string nombreTabla)
+        {
+            String filtroCtaFlujo = "";
+            if (nombreTabla.ToLower().Equals("semanal"))
+            {
+                filtroCtaFlujo = String.Format(" and cta in ({0}) ",ctasFlujo);
+            }
+
+            return filtroCtaFlujo;
+        }
         public String getQueryRangos(List<String> rangos, string idEmpresaExternal,String idCCExternal, Int64 numRegistrosExistentes)
         {
             StringBuilder query = new StringBuilder();
@@ -196,23 +208,24 @@ namespace AppGia.Util
             String rangoInferior = rangoData[0].Trim();
             String rangoSuperior = rangoData[1].Trim();
             DateTime fechaactual = DateTime.Today;
-
+            
+            String filtroCtaFlujo = getFiltroCtaFlujos(nombreTablaBalanza);
             String query;
             if (numRegistrosExistentes == 0)
             {
                 query = String.Format("(select *" +
                             " from " + nombreTablaBalanza +
                             " where " + nombreColumCta + "::numeric >= replace(RPAD('{0}', " + lengthColumCta + ", '0'), '*', '0')::numeric " +
-                            "   and " + nombreColumCta + "::numeric <= replace(RPAD('{1}', " + lengthColumCta + ", '9'), '*', '9')::numeric and id_empresa = {2} and cc='{3}')\n", 
-                    rangoInferior, rangoSuperior,idEmpresaExternal,idCCExternal);
+                            "   and " + nombreColumCta + "::numeric <= replace(RPAD('{1}', " + lengthColumCta + ", '9'), '*', '9')::numeric and id_empresa = {2} and cc='{3}' {4})\n", 
+                    rangoInferior, rangoSuperior,idEmpresaExternal,idCCExternal,filtroCtaFlujo);
             }
             else
             {
                 query = String.Format("(select *" +
                             " from " + nombreTablaBalanza +
                             " where " + nombreColumCta + "::numeric >= replace(RPAD('{0}', " + lengthColumCta + ", '0'), '*', '0')::numeric " +
-                            "   and " + nombreColumCta + "::numeric <= replace(RPAD('{1}', " + lengthColumCta + ", '9'), '*', '9')::numeric and id_empresa = {2}  and cc='{3}' and year = {4})\n", 
-                    rangoInferior, rangoSuperior,idEmpresaExternal,idCCExternal,fechaactual.Year);
+                            "   and " + nombreColumCta + "::numeric <= replace(RPAD('{1}', " + lengthColumCta + ", '9'), '*', '9')::numeric and id_empresa = {2}  and cc='{3}' {4} and year = {5})\n", 
+                    rangoInferior, rangoSuperior,idEmpresaExternal,idCCExternal,filtroCtaFlujo,fechaactual.Year);
             }
 
             return query;
