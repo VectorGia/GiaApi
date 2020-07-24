@@ -22,11 +22,11 @@ namespace AppGia.Util
         }
 
      
-        public String getQuerySums(Rubros rubro, CentroCostos cc,  Int64 existenRegistros)
+        public String getQuerySums(Rubros rubro, CentroCostos cc, Empresa empresa, Int64 existenRegistros)
         {
             String includes = rubro.rangos_cuentas_incluidas;
             String excludes = rubro.rango_cuentas_excluidas;
-            Int64 empresa_id = cc.empresa_id;
+            String idEmpresaExternal = empresa.desc_id;
             String idCCExternal = cc.desc_id;
             String query = "select id_empresa,\n" +
                     "       year,\n" +
@@ -67,36 +67,36 @@ namespace AppGia.Util
                     "       sum(diccargos) as diccargos,\n" +
                     "       (sum(dicabonos) + sum(diccargos)) as dictotal\n" +
                     "from (\n" +
-                    getQueryIncludesExcludes(includes, excludes, empresa_id, idCCExternal,existenRegistros) +
+                    getQueryIncludesExcludes(includes, excludes, idEmpresaExternal, idCCExternal,existenRegistros) +
                     "     ) balanza_ctas\n" +
                     "group by id_empresa, year";
             return query;
         }
 
-        public String getQuerySemanalSums(Rubros rubro, CentroCostos cc,  Int64 numRegistrosExistentes)
+        public String getQuerySemanalSums(Rubros rubro, CentroCostos cc,Empresa empresa,  Int64 numRegistrosExistentes)
         {
             String includes=rubro.rangos_cuentas_incluidas; 
             String excludes=rubro.rango_cuentas_excluidas;
-            Int64 empresa_id = cc.empresa_id;
+            String idEmpresaExternal = empresa.desc_id;
             String idCCExternal = cc.desc_id;
             String query = "select id_empresa, year, mes,   \n" +
                            "       sum(monto::numeric) as saldo\n" +
                            "from (\n" +
-                           getQueryIncludesExcludes(includes, excludes, empresa_id, idCCExternal,numRegistrosExistentes) +
+                           getQueryIncludesExcludes(includes, excludes, idEmpresaExternal, idCCExternal,numRegistrosExistentes) +
                            "     ) semanal_itms\n" +
                            "group by id_empresa, year, mes";
             return query;
         }
-        public String getQueryIncludesExcludes(String includes, String excludes, Int64 empresa_id, String idCCExternal,Int64 numRegistrosExistentes)
+        public String getQueryIncludesExcludes(String includes, String excludes, String idEmpresaExternal, String idCCExternal,Int64 numRegistrosExistentes)
         {
-            String query = getQuery(includes, empresa_id,  idCCExternal,numRegistrosExistentes);
+            String query = getQuery(includes, idEmpresaExternal,  idCCExternal,numRegistrosExistentes);
             if (excludes != null && excludes.Length > 0)
             {
-                query += " EXCEPT " + getQuery(excludes, empresa_id,idCCExternal,numRegistrosExistentes);
+                query += " EXCEPT " + getQuery(excludes, idEmpresaExternal,idCCExternal,numRegistrosExistentes);
             }
             return query;
         }
-        public String getQuery(String rangesAndCtas, Int64 empresa_id,String idCCExternal, Int64 numRegistrosExistentes)
+        public String getQuery(String rangesAndCtas, String idEmpresaExternal,String idCCExternal, Int64 numRegistrosExistentes)
         {
             //String[] arrIncludes = rangesAndCtas.split(",");
             String[] arrIncludes = rangesAndCtas.Split(',');
@@ -119,21 +119,21 @@ namespace AppGia.Util
             }
             if (rangos.Count > 0 && cuentas.Count > 0)
             {
-                return "(" + getQueryCuentas(cuentas, empresa_id,idCCExternal,numRegistrosExistentes) + " union " + getQueryRangos(rangos, empresa_id,idCCExternal,numRegistrosExistentes) + ")";
+                return "(" + getQueryCuentas(cuentas, idEmpresaExternal,idCCExternal,numRegistrosExistentes) + " union " + getQueryRangos(rangos, idEmpresaExternal,idCCExternal,numRegistrosExistentes) + ")";
             }
             else if (rangos.Count > 0)
             {
-                return "(" + getQueryRangos(rangos, empresa_id, idCCExternal,numRegistrosExistentes) + ")";
+                return "(" + getQueryRangos(rangos, idEmpresaExternal, idCCExternal,numRegistrosExistentes) + ")";
             }
             else if (cuentas.Count > 0)
             {
-                return "(" + getQueryCuentas(cuentas, empresa_id,idCCExternal,numRegistrosExistentes) + ")";
+                return "(" + getQueryCuentas(cuentas, idEmpresaExternal,idCCExternal,numRegistrosExistentes) + ")";
             }
             return "";
         }
 
 
-        public String getQueryCuentas(List<String> cuentas, Int64 empresa_id,String idCCExternal, Int64 numRegistrosExistentes)
+        public String getQueryCuentas(List<String> cuentas, String idEmpresaExternal,String idCCExternal, Int64 numRegistrosExistentes)
         {
             StringBuilder sb = new StringBuilder();
             DateTime fechaactual = DateTime.Today;
@@ -155,13 +155,13 @@ namespace AppGia.Util
                 {
                     query = String.Format("( select * " +
                         " from " + nombreTablaBalanza +
-                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}')", sb, empresa_id,idCCExternal);
+                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}')", sb, idEmpresaExternal,idCCExternal);
                 }
                 else
                 {
                     query = String.Format("( select * " +
                         " from " + nombreTablaBalanza +
-                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}' and year = {3})", sb, empresa_id,idCCExternal,fechaactual.Year);
+                        " where " + nombreColumCta + " in ({0}) and id_empresa = {1} and cc='{2}' and year = {3})", sb, idEmpresaExternal,idCCExternal,fechaactual.Year);
                 }
                 return query;
             }
@@ -169,18 +169,18 @@ namespace AppGia.Util
             return "";
         }
 
-        public String getQueryRangos(List<String> rangos, Int64 empresa_id,String idCCExternal, Int64 numRegistrosExistentes)
+        public String getQueryRangos(List<String> rangos, string idEmpresaExternal,String idCCExternal, Int64 numRegistrosExistentes)
         {
             StringBuilder query = new StringBuilder();
             for (int i = 0; i < rangos.Count; i++)
             {
                 if (i + 1 == rangos.Count)
                 {
-                    query.Append(getQueryRango(rangos[i], empresa_id, idCCExternal,numRegistrosExistentes));
+                    query.Append(getQueryRango(rangos[i], idEmpresaExternal, idCCExternal,numRegistrosExistentes));
                 }
                 else
                 {
-                    query.Append(getQueryRango(rangos[i], empresa_id,idCCExternal, numRegistrosExistentes)).Append(" union ");
+                    query.Append(getQueryRango(rangos[i], idEmpresaExternal,idCCExternal, numRegistrosExistentes)).Append(" union ");
                 }
             }
             if (rangos.Count > 0)
@@ -190,7 +190,7 @@ namespace AppGia.Util
             return query.ToString();
         }
 
-        public String getQueryRango(String rango, Int64 empresa_id,String idCCExternal, Int64 numRegistrosExistentes)
+        public String getQueryRango(String rango, String idEmpresaExternal,String idCCExternal, Int64 numRegistrosExistentes)
         {
             String[] rangoData = rango.Split('-');
             String rangoInferior = rangoData[0].Trim();
@@ -204,7 +204,7 @@ namespace AppGia.Util
                             " from " + nombreTablaBalanza +
                             " where " + nombreColumCta + "::numeric >= replace(RPAD('{0}', " + lengthColumCta + ", '0'), '*', '0')::numeric " +
                             "   and " + nombreColumCta + "::numeric <= replace(RPAD('{1}', " + lengthColumCta + ", '9'), '*', '9')::numeric and id_empresa = {2} and cc='{3}')\n", 
-                    rangoInferior, rangoSuperior,empresa_id,idCCExternal);
+                    rangoInferior, rangoSuperior,idEmpresaExternal,idCCExternal);
             }
             else
             {
@@ -212,7 +212,7 @@ namespace AppGia.Util
                             " from " + nombreTablaBalanza +
                             " where " + nombreColumCta + "::numeric >= replace(RPAD('{0}', " + lengthColumCta + ", '0'), '*', '0')::numeric " +
                             "   and " + nombreColumCta + "::numeric <= replace(RPAD('{1}', " + lengthColumCta + ", '9'), '*', '9')::numeric and id_empresa = {2}  and cc='{3}' and year = {4})\n", 
-                    rangoInferior, rangoSuperior,empresa_id,idCCExternal,fechaactual.Year);
+                    rangoInferior, rangoSuperior,idEmpresaExternal,idCCExternal,fechaactual.Year);
             }
 
             return query;

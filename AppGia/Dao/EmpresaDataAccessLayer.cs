@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Security.Cryptography;
+using AppGia.Controllers;
 using AppGia.Models;
 using AppGia.Util;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace AppGia.Dao
 {
@@ -11,6 +14,7 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter _queryExecuter=new QueryExecuter();
 
         public EmpresaDataAccessLayer()
         {
@@ -22,90 +26,53 @@ namespace AppGia.Dao
             string cadena = "select id,activo,nombre,abrev,bd_name," +
                 //"contrasenia_etl," +
                 "desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id from empresa where activo = true order by id desc";
-            try
-            {
-                List<Empresa> lstempresa = new List<Empresa>();
-                {
-                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
-                    con.Open();
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
-                   
-
-                    while (rdr.Read())
-                    {
-                        Empresa empresa = new Empresa();
-                        empresa.id = Convert.ToInt32(rdr["id"]);
-                        empresa.desc_id = rdr["desc_id"].ToString().Trim();
-                        empresa.activo = Convert.ToBoolean(rdr["activo"]);
-                        empresa.nombre = rdr["nombre"].ToString().Trim();
-                        empresa.abrev = rdr["abrev"].ToString().Trim();
-                        empresa.bd_name = rdr["bd_name"].ToString().Trim();
-                        //empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
-                        empresa.etl = Convert.ToBoolean(rdr["etl"]);
-                        empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
-                        empresa.host = rdr["host"].ToString().Trim();
-                        empresa.puerto_compania = Convert.ToInt32(rdr["puerto_compania"]);
-                        empresa.usuario_etl = rdr["usuario_etl"].ToString().Trim();
-                        empresa.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
-                        lstempresa.Add(empresa);
-                    }
-                    con.Close();
-                }
-                return lstempresa;
-            }
-            catch
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-        public Empresa GetEmpresaData(int id)
-        {
-            try
+            DataTable dataTable = _queryExecuter.ExecuteQuery(cadena);
+            List<Empresa> lstempresa = new List<Empresa>();
+            foreach (DataRow rdr in dataTable.Rows)
             {
                 Empresa empresa = new Empresa();
-                {
-
-                    string consulta = " select id , activo , nombre , abrev , bd_name , desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
-                        " from empresa  where  id  = " + id;
-
-                    NpgsqlCommand cmd = new NpgsqlCommand(consulta, con);
-                    con.Open();
-                    NpgsqlDataReader rdr = cmd.ExecuteReader();
-
-                    while (rdr.Read())
-                    {
-                        empresa.id = Convert.ToInt32(rdr["id"]);
-                        empresa.desc_id = rdr["desc_id"].ToString().Trim();
-                        empresa.activo = Convert.ToBoolean(rdr["activo"]);
-                        empresa.nombre = rdr["nombre"].ToString().Trim();
-                        empresa.abrev = rdr["abrev"].ToString().Trim();
-                        empresa.bd_name = rdr["bd_name"].ToString().Trim();
-                        //empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
-                        empresa.etl = Convert.ToBoolean(rdr["etl"]);
-                        empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
-                        empresa.host = rdr["host"].ToString().Trim();
-                        empresa.puerto_compania = Convert.ToInt32(rdr["puerto_compania"]);
-                        empresa.usuario_etl = rdr["usuario_etl"].ToString().Trim();
-                        empresa.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
-                    }
-                    con.Close();
-                }
-                return empresa;
+                empresa.id = Convert.ToInt32(rdr["id"]);
+                empresa.desc_id = rdr["desc_id"].ToString().Trim();
+                empresa.activo = Convert.ToBoolean(rdr["activo"]);
+                empresa.nombre = rdr["nombre"].ToString().Trim();
+                empresa.abrev = rdr["abrev"].ToString().Trim();
+                empresa.bd_name = rdr["bd_name"].ToString().Trim();
+                //empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
+                empresa.etl = Convert.ToBoolean(rdr["etl"]);
+                empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
+                empresa.host = rdr["host"].ToString().Trim();
+                empresa.puerto_compania = Convert.ToInt32(rdr["puerto_compania"]);
+                empresa.usuario_etl = rdr["usuario_etl"].ToString().Trim();
+                empresa.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
+                lstempresa.Add(empresa);
             }
-            catch (Exception ex)
-            {
-                con.Close();
-                throw;
-            }
-            finally
-            {
-                con.Close();
-            }
+            return lstempresa;
+        }
+
+        public Empresa GetEmpresaData(Int64 id)
+        {
+            Empresa empresa = new Empresa();
+
+            string consulta =
+                " select id , activo , nombre , abrev , bd_name , desc_id,etl,fec_modif,host,puerto_compania,usuario_etl,moneda_id" +
+                " from empresa  where  id  = @id";
+            DataRow rdr = _queryExecuter.ExecuteQueryUniqueresult(consulta, new NpgsqlParameter("@id", id));
+
+            empresa.id = Convert.ToInt32(rdr["id"]);
+            empresa.desc_id = rdr["desc_id"].ToString().Trim();
+            empresa.activo = Convert.ToBoolean(rdr["activo"]);
+            empresa.nombre = rdr["nombre"].ToString().Trim();
+            empresa.abrev = rdr["abrev"].ToString().Trim();
+            empresa.bd_name = rdr["bd_name"].ToString().Trim();
+            //empresa.contrasenia_etl = rdr["contrasenia_etl"].ToString().Trim();
+            empresa.etl = Convert.ToBoolean(rdr["etl"]);
+            empresa.fec_modif = Convert.ToDateTime(rdr["fec_modif"]);
+            empresa.host = rdr["host"].ToString().Trim();
+            empresa.puerto_compania = Convert.ToInt32(rdr["puerto_compania"]);
+            empresa.usuario_etl = rdr["usuario_etl"].ToString().Trim();
+            empresa.moneda_id = Convert.ToInt32(rdr["moneda_id"]);
+
+            return empresa;
         }
         public long Add(Empresa empresa)
         {
@@ -263,10 +230,10 @@ namespace AppGia.Dao
 
                     string update = "update empresa set  contra_bytes = @contra_bytes, llave = @llave, apuntador=@apuntador where id = @id";
                     NpgsqlCommand cmd = new NpgsqlCommand(update, con);
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@contra_bytes", Value = encrypted });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@llave", Value = myRijndael.Key });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bytea, ParameterName = "@apuntador", Value = myRijndael.IV });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint, ParameterName = "@id", Value = empresa.id });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Bytea, ParameterName = "@contra_bytes", Value = encrypted });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Bytea, ParameterName = "@llave", Value = myRijndael.Key });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Bytea, ParameterName = "@apuntador", Value = myRijndael.IV });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Bigint, ParameterName = "@id", Value = empresa.id });
 
                     int cantF = cmd.ExecuteNonQuery();  
                     con.Close();

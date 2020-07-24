@@ -46,16 +46,18 @@ namespace AppGia.Dao
                 centroCostos.modelo_negocio_id = Convert.ToInt64(centrosCostoRow["modelo_negocio_id"]);
                 centroCostos.modelo_negocio_flujo_id = Convert.ToInt64(centrosCostoRow["modelo_negocio_flujo_id"]);
 
+                Empresa empresa = new EmpresaDataAccessLayer().GetEmpresaData(centroCostos.empresa_id);
+                    
                 try
                 {
                     if (contable)
                     {
-                        numInserts += manageModeloContable(centroCostos, fechaactual);
+                        numInserts += manageModeloContable(centroCostos, empresa,fechaactual);
                     }
 
                     if (flujo)
                     {
-                        numInserts += manageModeloFlujo(centroCostos, fechaactual);
+                        numInserts += manageModeloFlujo(centroCostos,empresa, fechaactual);
                     }
                 }
                 finally
@@ -67,7 +69,7 @@ namespace AppGia.Dao
             return numInserts;
         }
 
-        private int manageModeloContable(CentroCostos centroCostos, DateTime fechaactual)
+        private int manageModeloContable(CentroCostos centroCostos,Empresa empresa, DateTime fechaactual)
         {
             int numInserts = 0;
             Int64 modeloId = centroCostos.modelo_negocio_id;
@@ -78,7 +80,7 @@ namespace AppGia.Dao
             List<Rubros> rubrosSinMontos = new List<Rubros>();
             foreach (Rubros rubro in rubrosDeModelo)
             {
-                String consulta = qry.getQuerySums(rubro, centroCostos, numRegistrosExistentes);
+                String consulta = qry.getQuerySums(rubro, centroCostos, empresa, numRegistrosExistentes);
                 
                 logger.Debug("consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
                     centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_id, rubro.id,consulta);
@@ -112,7 +114,7 @@ namespace AppGia.Dao
             return numInserts;
         }
 
-        private int manageModeloFlujo(CentroCostos centroCostos, DateTime fechaactual)
+        private int manageModeloFlujo(CentroCostos centroCostos,Empresa empresa, DateTime fechaactual)
         {
             int numInserts = 0;
             Int64 modeloId = centroCostos.modelo_negocio_flujo_id;
@@ -123,7 +125,7 @@ namespace AppGia.Dao
             foreach (Rubros rubro in rubrosDeModelo)
             {
                 GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
-                String consulta = qry.getQuerySemanalSums(rubro, centroCostos, numRegistrosExistentes);
+                String consulta = qry.getQuerySemanalSums(rubro, centroCostos,empresa, numRegistrosExistentes);
                 logger.Debug("consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
                     centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_flujo_id, rubro.id,consulta);
 
