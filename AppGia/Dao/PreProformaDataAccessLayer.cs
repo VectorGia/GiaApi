@@ -40,6 +40,7 @@ namespace AppGia.Dao
             {
                 CentroCostos centroCostos = new CentroCostos();
                 centroCostos.id = Convert.ToInt64(centrosCostoRow["id"]);
+                centroCostos.desc_id = centrosCostoRow["desc_id"].ToString();
                 centroCostos.empresa_id = Convert.ToInt64(centrosCostoRow["empresa_id"]);
                 centroCostos.proyecto_id = Convert.ToInt64(centrosCostoRow["proyecto_id"]);
                 centroCostos.modelo_negocio_id = Convert.ToInt64(centrosCostoRow["modelo_negocio_id"]);
@@ -77,10 +78,8 @@ namespace AppGia.Dao
             List<Rubros> rubrosSinMontos = new List<Rubros>();
             foreach (Rubros rubro in rubrosDeModelo)
             {
-                String consulta = qry.getQuerySums(rubro.rangos_cuentas_incluidas,
-                    rubro.rango_cuentas_excluidas, centroCostos.empresa_id, numRegistrosExistentes);
-
-
+                String consulta = qry.getQuerySums(rubro, centroCostos, numRegistrosExistentes);
+                
                 logger.Debug("consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
                     centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_id, rubro.id,consulta);
                 
@@ -124,8 +123,7 @@ namespace AppGia.Dao
             foreach (Rubros rubro in rubrosDeModelo)
             {
                 GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
-                String consulta = qry.getQuerySemanalSums(rubro.rangos_cuentas_incluidas,
-                    rubro.rango_cuentas_excluidas, centroCostos.empresa_id, numRegistrosExistentes);
+                String consulta = qry.getQuerySemanalSums(rubro, centroCostos, numRegistrosExistentes);
                 logger.Debug("consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
                     centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_flujo_id, rubro.id,consulta);
 
