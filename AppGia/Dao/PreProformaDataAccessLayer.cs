@@ -4,6 +4,7 @@ using System.Data;
 using AppGia.Controllers;
 using AppGia.Models;
 using AppGia.Util;
+using NLog;
 using Npgsql;
 using NpgsqlTypes;
 using static AppGia.Util.Constantes;
@@ -12,6 +13,8 @@ namespace AppGia.Dao
 {
     public class PreProformaDataAccessLayer
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private NpgsqlConnection con;
 
         private Conexion.Conexion conex = new Conexion.Conexion();
@@ -76,8 +79,12 @@ namespace AppGia.Dao
             {
                 String consulta = qry.getQuerySums(rubro.rangos_cuentas_incluidas,
                     rubro.rango_cuentas_excluidas, centroCostos.empresa_id, numRegistrosExistentes);
-                DataTable sumaMontosDt = _queryExecuter.ExecuteQuery(consulta);
 
+
+                logger.Debug("consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
+                    centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_id, rubro.id,consulta);
+                
+                DataTable sumaMontosDt = _queryExecuter.ExecuteQuery(consulta);
 
                 if (sumaMontosDt.Rows.Count > 0)
                 {
@@ -119,6 +126,9 @@ namespace AppGia.Dao
                 GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
                 String consulta = qry.getQuerySemanalSums(rubro.rangos_cuentas_incluidas,
                     rubro.rango_cuentas_excluidas, centroCostos.empresa_id, numRegistrosExistentes);
+                logger.Debug("consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
+                    centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_flujo_id, rubro.id,consulta);
+
                 DataTable sumaMontos = _queryExecuter.ExecuteQuery(consulta);
              
                 if (sumaMontos.Rows.Count>0)
