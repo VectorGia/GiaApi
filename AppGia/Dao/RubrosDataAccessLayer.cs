@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AppGia.Models;
 using AppGia.Util;
 using NLog;
 using Npgsql;
+using NpgsqlTypes;
+using static NpgsqlTypes.NpgsqlDbType;
 
 namespace AppGia.Dao
 {
@@ -98,6 +98,7 @@ namespace AppGia.Dao
                     rubro.hijos = rdr["hijos"].ToString().Trim();   
                     rubro.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
                     rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
+                    rubro.tipo_id= Convert.ToInt64(rdr["tipo_id"]);
                     lstRubros.Add(rubro);
 
                 }
@@ -126,7 +127,7 @@ namespace AppGia.Dao
                  + "aritmetica" + ","
                  + "clave" + ","
                  + "tipo_id" + ","
-                 + "id_modelo_neg," + "hijos" + ")"
+                 + "id_modelo_neg," + "hijos" + ",naturaleza)"
                  + "values (nextval('seq_rubro'),@nombre" + ","
                  + "@rango_cuentas_excluidas" + ","
                  + "@rangos_cuentas_incluidas" + ","
@@ -143,27 +144,27 @@ namespace AppGia.Dao
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = rubro.nombre.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Integer, ParameterName = "@id", Value = rubro.id });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@nombre", Value = rubro.nombre.Trim() });
        
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas!=null?rubro.rango_cuentas_excluidas.Trim():"" });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas !=null?rubro.rangos_cuentas_incluidas.Trim():"" });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta.Trim()});
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_agrupador.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = rubro.activo });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica", Value = rubro.aritmetica !=null?rubro.aritmetica.Trim():"" });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@tipo_id", Value = rubro.tipo_id });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id_modelo_neg", Value = rubro.id_modelo_neg });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@hijos", Value = rubro.hijos.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas!=null?rubro.rango_cuentas_excluidas.Trim():"" });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas !=null?rubro.rangos_cuentas_incluidas.Trim():"" });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta.Trim()});
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_agrupador.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@activo", Value = rubro.activo });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@aritmetica", Value = rubro.aritmetica !=null?rubro.aritmetica.Trim():"" });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Integer, ParameterName = "@tipo_id", Value = rubro.tipo_id });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Integer, ParameterName = "@id_modelo_neg", Value = rubro.id_modelo_neg });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@hijos", Value = rubro.hijos.Trim() });
 
                 if (rubro.tipo_id == Constantes.TipoRubroCuentas)
                 {
-                    cmd.Parameters.Add(new NpgsqlParameter() {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@naturaleza", Value = rubro.naturaleza.Trim()});
+                    cmd.Parameters.Add(new NpgsqlParameter {NpgsqlDbType = Text, ParameterName = "@naturaleza", Value = rubro.naturaleza.Trim()});
                 }
                 else
                 {
-                    cmd.Parameters.Add(new NpgsqlParameter() {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@naturaleza", Value = null});
+                    cmd.Parameters.Add(new NpgsqlParameter {NpgsqlDbType = Text, ParameterName = "@naturaleza", Value = ""});
                 }
 
                 con.Open();
@@ -189,7 +190,8 @@ namespace AppGia.Dao
                 "clave = @clave, " +
                 "rango_cuentas_excluidas = @rango_cuentas_excluidas," +
                 "rangos_cuentas_incluidas = @rangos_cuentas_incluidas, " +
-                "tipo_cuenta = @tipo_cuenta " +
+                "tipo_cuenta = @tipo_cuenta, " +
+                "naturaleza = @naturaleza " +
                 //"tipo_agrupador = @tipo_agrupador " +
                 "where id = " + id;
 
@@ -198,41 +200,42 @@ namespace AppGia.Dao
                 NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
 
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = rubro.nombre.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica", Value = rubro.aritmetica.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@nombre", Value = rubro.nombre.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@aritmetica", Value = rubro.aritmetica.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@clave", Value = rubro.clave.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@rango_cuentas_excluidas", Value = rubro.rango_cuentas_excluidas.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@rangos_cuentas_incluidas", Value = rubro.rangos_cuentas_incluidas.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@tipo_cuenta", Value = rubro.tipo_cuenta });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@naturaleza", Value = rubro.naturaleza });
                 //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador", Value = rubro.tipo_agrupador });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id });
+                cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Integer, ParameterName = "@id", Value = rubro.id });
 
-                cmd.Parameters.Add(new NpgsqlParameter()
+                cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = rubro.nombre.Trim()
+                    NpgsqlDbType = Text, ParameterName = "@nombre", Value = rubro.nombre.Trim()
                 });
-                cmd.Parameters.Add(new NpgsqlParameter()
+                cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@aritmetica",
+                    NpgsqlDbType = Text, ParameterName = "@aritmetica",
                     Value = rubro.aritmetica.Trim()
                 });
-                cmd.Parameters.Add(new NpgsqlParameter()
+                cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@clave", Value = rubro.clave.Trim()
+                    NpgsqlDbType = Text, ParameterName = "@clave", Value = rubro.clave.Trim()
                 });
-                cmd.Parameters.Add(new NpgsqlParameter()
+                cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rango_cuentas_excluidas",
+                    NpgsqlDbType = Text, ParameterName = "@rango_cuentas_excluidas",
                     Value = rubro.rango_cuentas_excluidas.Trim()
                 });
-                cmd.Parameters.Add(new NpgsqlParameter()
+                cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@rangos_cuentas_incluidas",
+                    NpgsqlDbType = Text, ParameterName = "@rangos_cuentas_incluidas",
                     Value = rubro.rangos_cuentas_incluidas.Trim()
                 });
-                cmd.Parameters.Add(new NpgsqlParameter()
+                cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_cuenta",
+                    NpgsqlDbType = Text, ParameterName = "@tipo_cuenta",
                     Value = rubro.tipo_cuenta
                 });
                 /*cmd.Parameters.Add(new NpgsqlParameter()
@@ -240,8 +243,7 @@ namespace AppGia.Dao
                     NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@tipo_agrupador",
                     Value = rubro.tipo_agrupador
                 });*/
-                cmd.Parameters.Add(new NpgsqlParameter()
-                    {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id", Value = rubro.id});
+                cmd.Parameters.Add(new NpgsqlParameter {NpgsqlDbType = Integer, ParameterName = "@id", Value = rubro.id});
 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
