@@ -188,6 +188,7 @@ namespace AppGia.Dao
                 rubro.tipo_id = Convert.ToInt64(rubrosRow["tipo_id"]);
                 rubro.id_modelo_neg = Convert.ToInt64(rubrosRow["id_modelo_neg"]);
                 rubro.hijos = rubrosRow["hijos"].ToString();
+                rubro.naturaleza = rubrosRow["naturaleza"].ToString();
                 listaRubros.Add(rubro);
             }
 

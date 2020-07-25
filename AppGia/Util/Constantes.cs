@@ -105,6 +105,9 @@ namespace AppGia.Util
         public const string ESTILODETPADRE = "padre";
 
         public const string claveMonedaMex = "MX";
+        
+        public const string NATACREEDORA = "ACREEDORA";
+        public const string NATDEUDORA = "DEUDORA";
 
     }
 }

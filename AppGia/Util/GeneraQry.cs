@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using AppGia.Models;
+using static AppGia.Util.Constantes;
 
 namespace AppGia.Util
 {
@@ -29,48 +28,53 @@ namespace AppGia.Util
             String excludes = rubro.rango_cuentas_excluidas;
             String idEmpresaExternal = empresa.desc_id;
             String idCCExternal = cc.desc_id;
-            String query = "select id_empresa,\n" +
+            int multiplicadorSigno = 1;
+            if (rubro.naturaleza != null && rubro.naturaleza == NATACREEDORA)
+            {
+                multiplicadorSigno = -1;
+            }
+            String query = String.Format("select id_empresa,\n" +
                     "       year,\n" +
                     "       sum(eneabonos) as eneabonos,\n" +
                     "       sum(enecargos) as enecargos,\n" +
-                    "       (sum(eneabonos) + sum(enecargos)) as enetotal,\n" +
+                    "       (sum(eneabonos) + sum(enecargos)) * {0} as enetotal,\n" +
                     "       sum(febabonos) as febabonos,\n" +
                     "       sum(febcargos) as febcargos,\n" +
-                    "       (sum(febabonos) + sum(febcargos)) as febtotal,\n" +
+                    "       (sum(febabonos) + sum(febcargos)) * {0} as febtotal,\n" +
                     "       sum(marabonos) as marabonos,\n" +
                     "       sum(marcargos) as marcargos,\n" +
-                    "       (sum(marabonos) + sum(marcargos)) as martotal,\n" +
+                    "       (sum(marabonos) + sum(marcargos)) * {0} as martotal,\n" +
                     "       sum(abrabonos) as abrabonos,\n" +
                     "       sum(abrcargos) as abrcargos,\n" +
-                    "       (sum(abrabonos) + sum(abrcargos)) as abrtotal,\n" +
+                    "       (sum(abrabonos) + sum(abrcargos)) * {0} as abrtotal,\n" +
                     "       sum(mayabonos) as mayabonos,\n" +
                     "       sum(maycargos) as maycargos,\n" +
-                    "       (sum(mayabonos) + sum(maycargos)) as maytotal,\n" +
+                    "       (sum(mayabonos) + sum(maycargos)) * {0} as maytotal,\n" +
                     "       sum(junabonos) as junabonos,\n" +
                     "       sum(juncargos) as juncargos,\n" +
-                    "       (sum(junabonos) + sum(juncargos)) as juntotal,\n" +
+                    "       (sum(junabonos) + sum(juncargos)) * {0} as juntotal,\n" +
                     "       sum(julabonos) as julabonos,\n" +
                     "       sum(julcargos) as julcargos,\n" +
-                    "       (sum(julabonos) + sum(julcargos)) as jultotal,\n" +
+                    "       (sum(julabonos) + sum(julcargos)) * {0} as jultotal,\n" +
                     "       sum(agoabonos) as agoabonos,\n" +
                     "       sum(agocargos) as agocargos,\n" +
-                    "       (sum(agoabonos) + sum(agocargos)) as agototal,\n" +
+                    "       (sum(agoabonos) + sum(agocargos)) * {0} as agototal,\n" +
                     "       sum(sepabonos) as sepabonos,\n" +
                     "       sum(sepcargos) as sepcargos,\n" +
-                    "       (sum(sepabonos) + sum(sepcargos)) as septotal,\n" +
+                    "       (sum(sepabonos) + sum(sepcargos)) * {0} as septotal,\n" +
                     "       sum(octabonos) as octabonos,\n" +
                     "       sum(octcargos) as octcargos,\n" +
-                    "       (sum(octabonos) + sum(octcargos)) as octtotal,\n" +
+                    "       (sum(octabonos) + sum(octcargos)) * {0} as octtotal,\n" +
                     "       sum(novabonos) as novabonos,\n" +
                     "       sum(novcargos) as novcargos,\n" +
-                    "       (sum(novabonos) + sum(novcargos)) as novtotal,\n" +
+                    "       (sum(novabonos) + sum(novcargos)) * {0} as novtotal,\n" +
                     "       sum(dicabonos) as dicabonos,\n" +
                     "       sum(diccargos) as diccargos,\n" +
-                    "       (sum(dicabonos) + sum(diccargos)) as dictotal\n" +
+                    "       (sum(dicabonos) + sum(diccargos)) * {0} as dictotal\n" +
                     "from (\n" +
                     getQueryIncludesExcludes(includes, excludes, idEmpresaExternal, idCCExternal,existenRegistros) +
                     "     ) balanza_ctas\n" +
-                    "group by id_empresa, year";
+                    "group by id_empresa, year",multiplicadorSigno);
             return query;
         }
 
@@ -80,12 +84,17 @@ namespace AppGia.Util
             String excludes=rubro.rango_cuentas_excluidas;
             String idEmpresaExternal = empresa.desc_id;
             String idCCExternal = cc.desc_id;
-            String query = "select id_empresa, year, mes,   \n" +
-                           "       sum(monto::numeric) as saldo\n" +
+            int multiplicadorSigno = 1;
+            if (rubro.naturaleza != null && rubro.naturaleza == NATDEUDORA)
+            {
+                multiplicadorSigno = -1;
+            }
+            String query = String.Format("select id_empresa, year, mes,   \n" +
+                           "       sum(monto::numeric) * {0} as saldo\n" +
                            "from (\n" +
                            getQueryIncludesExcludes(includes, excludes, idEmpresaExternal, idCCExternal,numRegistrosExistentes) +
                            "     ) semanal_itms\n" +
-                           "group by id_empresa, year, mes";
+                           "group by id_empresa, year, mes",multiplicadorSigno);
             return query;
         }
         public String getQueryIncludesExcludes(String includes, String excludes, String idEmpresaExternal, String idCCExternal,Int64 numRegistrosExistentes)

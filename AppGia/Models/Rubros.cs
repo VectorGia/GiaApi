@@ -15,11 +15,14 @@ namespace AppGia.Models
         public string hijos { get; set; }
         public string rango_cuentas_excluidas { get; set; }
         public string rangos_cuentas_incluidas { get; set; }
-        //sirve para saber que columna en tabla de ajustes se debe tomar 
+        //HNA:sirve para saber que columna en tabla de ajustes se debe tomar, esto es para ajuste de balanza: ingreso,directo o indirecto
         public string tipo_cuenta { get; set; }
+        //HNA:cuando se un rubro agrupa mas rubros, este dato indica si es ingreso o egreso, para fines de reporteo
         public string tipo_agrupador { get; set; }
         public Int64 tipo_id { get; set; }
         public Int64 id_modelo_neg { get; set; }
+
+        public string naturaleza { get; set; }
    
   
         

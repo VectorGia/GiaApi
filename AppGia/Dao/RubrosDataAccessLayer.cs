@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AppGia.Models;
+using AppGia.Util;
 using NLog;
 using Npgsql;
 
@@ -25,7 +26,7 @@ namespace AppGia.Dao
         public IEnumerable<Rubros> GetAllRubros()
         {
             string consulta = "select modelo_negocio.id, rubro.clave, rubro.nombre as nombre, rubro.hijos, rubro.rangos_cuentas_incluidas,"
-             + "rubro.rango_cuentas_excluidas, rubro.activo, rubro.tipo_cuenta from rubro " +
+             + "rubro.rango_cuentas_excluidas, rubro.activo, rubro.tipo_cuenta,rubro.naturaleza from rubro " +
                 "inner join modelo_negocio on rubro.id_modelo_neg = modelo_negocio.id";
             try
             {
@@ -47,6 +48,7 @@ namespace AppGia.Dao
                     rubro.tipo_cuenta = rdr["tipo_cuenta"].ToString().Trim();
                     rubro.tipo_cuenta = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.activo = Convert.ToBoolean(rdr["activo"]);
+                    rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
 
                     lstrubro.Add(rubro);
                 }
@@ -95,6 +97,7 @@ namespace AppGia.Dao
                     rubro.tipo_agrupador = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.hijos = rdr["hijos"].ToString().Trim();   
                     rubro.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
+                    rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
                     lstRubros.Add(rubro);
 
                 }
@@ -133,7 +136,9 @@ namespace AppGia.Dao
                  + "@aritmetica" + ","
                  + "@clave" + ","
                  + "@tipo_id" + ","
-                 + "@id_modelo_neg, @hijos )";
+                 + "@id_modelo_neg, " 
+                + " @hijos, " 
+                + " @naturaleza )";
 
             try
             {
@@ -152,6 +157,14 @@ namespace AppGia.Dao
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@id_modelo_neg", Value = rubro.id_modelo_neg });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@hijos", Value = rubro.hijos.Trim() });
 
+                if (rubro.tipo_id == Constantes.TipoRubroCuentas)
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter() {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@naturaleza", Value = rubro.naturaleza.Trim()});
+                }
+                else
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter() {NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@naturaleza", Value = null});
+                }
 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
