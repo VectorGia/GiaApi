@@ -37,40 +37,40 @@ namespace AppGia.Util
                     "       year,\n" +
                     "       sum(eneabonos) as eneabonos,\n" +
                     "       sum(enecargos) as enecargos,\n" +
-                    "       (sum(eneabonos) + sum(enecargos)) * {0} as enetotal,\n" +
+                    "       round((sum(eneabonos) + sum(enecargos))) * {0} as enetotal,\n" +
                     "       sum(febabonos) as febabonos,\n" +
                     "       sum(febcargos) as febcargos,\n" +
-                    "       (sum(febabonos) + sum(febcargos)) * {0} as febtotal,\n" +
+                    "       round((sum(febabonos) + sum(febcargos))) * {0} as febtotal,\n" +
                     "       sum(marabonos) as marabonos,\n" +
                     "       sum(marcargos) as marcargos,\n" +
-                    "       (sum(marabonos) + sum(marcargos)) * {0} as martotal,\n" +
+                    "       round((sum(marabonos) + sum(marcargos))) * {0} as martotal,\n" +
                     "       sum(abrabonos) as abrabonos,\n" +
                     "       sum(abrcargos) as abrcargos,\n" +
-                    "       (sum(abrabonos) + sum(abrcargos)) * {0} as abrtotal,\n" +
+                    "       round((sum(abrabonos) + sum(abrcargos))) * {0} as abrtotal,\n" +
                     "       sum(mayabonos) as mayabonos,\n" +
                     "       sum(maycargos) as maycargos,\n" +
-                    "       (sum(mayabonos) + sum(maycargos)) * {0} as maytotal,\n" +
+                    "       round((sum(mayabonos) + sum(maycargos))) * {0} as maytotal,\n" +
                     "       sum(junabonos) as junabonos,\n" +
                     "       sum(juncargos) as juncargos,\n" +
-                    "       (sum(junabonos) + sum(juncargos)) * {0} as juntotal,\n" +
+                    "       round((sum(junabonos) + sum(juncargos))) * {0} as juntotal,\n" +
                     "       sum(julabonos) as julabonos,\n" +
                     "       sum(julcargos) as julcargos,\n" +
-                    "       (sum(julabonos) + sum(julcargos)) * {0} as jultotal,\n" +
+                    "       round((sum(julabonos) + sum(julcargos))) * {0} as jultotal,\n" +
                     "       sum(agoabonos) as agoabonos,\n" +
                     "       sum(agocargos) as agocargos,\n" +
-                    "       (sum(agoabonos) + sum(agocargos)) * {0} as agototal,\n" +
+                    "       round((sum(agoabonos) + sum(agocargos))) * {0} as agototal,\n" +
                     "       sum(sepabonos) as sepabonos,\n" +
                     "       sum(sepcargos) as sepcargos,\n" +
-                    "       (sum(sepabonos) + sum(sepcargos)) * {0} as septotal,\n" +
+                    "       round((sum(sepabonos) + sum(sepcargos))) * {0} as septotal,\n" +
                     "       sum(octabonos) as octabonos,\n" +
                     "       sum(octcargos) as octcargos,\n" +
-                    "       (sum(octabonos) + sum(octcargos)) * {0} as octtotal,\n" +
+                    "       round((sum(octabonos) + sum(octcargos))) * {0} as octtotal,\n" +
                     "       sum(novabonos) as novabonos,\n" +
                     "       sum(novcargos) as novcargos,\n" +
-                    "       (sum(novabonos) + sum(novcargos)) * {0} as novtotal,\n" +
+                    "       round((sum(novabonos) + sum(novcargos))) * {0} as novtotal,\n" +
                     "       sum(dicabonos) as dicabonos,\n" +
                     "       sum(diccargos) as diccargos,\n" +
-                    "       (sum(dicabonos) + sum(diccargos)) * {0} as dictotal\n" +
+                    "       round((sum(dicabonos) + sum(diccargos))) * {0} as dictotal\n" +
                     "from (\n" +
                     getQueryIncludesExcludes(includes, excludes, idEmpresaExternal, idCCExternal,existenRegistros) +
                     "     ) balanza_ctas\n" +

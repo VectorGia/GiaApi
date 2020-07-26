@@ -73,6 +73,13 @@ namespace AppGia.Dao
         {
             int numInserts = 0;
             Int64 modeloId = centroCostos.modelo_negocio_id;
+            
+            Modelo_Negocio mn=new ModeloNegocioDataAccessLayer().GetModelo(modeloId.ToString());
+            if (!mn.activo)
+            {
+                return 0;
+            }
+            
             List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
             Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaContable);
             GeneraQry qry = new GeneraQry("balanza", "cuenta_unificada", 12);
@@ -118,6 +125,11 @@ namespace AppGia.Dao
         {
             int numInserts = 0;
             Int64 modeloId = centroCostos.modelo_negocio_flujo_id;
+            Modelo_Negocio mn=new ModeloNegocioDataAccessLayer().GetModelo(modeloId.ToString());
+            if (!mn.activo)
+            {
+                return 0;
+            }
             List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
             Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaFlujo);
             List<Rubros> rubrosSinMontos = new List<Rubros>();
@@ -166,7 +178,7 @@ namespace AppGia.Dao
 
         public DataTable findRubrosByIdModelo(Int64 modelo_id)
         {
-            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE tipo_id = " + TipoRubroCuentas +
+            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE activo=true and tipo_id = " + TipoRubroCuentas +
                                                " AND id_modelo_neg = " +
                                                modelo_id);
         }
