@@ -58,20 +58,28 @@ namespace AppGia.Controllers
         }
         // POST: api/Empresa
         [HttpPost]
-        public long Create([FromBody] Empresa empresa)
+        public IActionResult Create([FromBody] Empresa empresa)
         {
             if (empresa.contrasenia_etl.Length > 0)
             {
                 empresa.contrasenia_etl=Base64Encode(empresa.contrasenia_etl);
             }
-            long idEmpresaCurrent = objCompania.Add(empresa);
+
+            try
+            {
+                return Ok(objCompania.Add(empresa));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             //empresa.id = idEmpresaCurrent;
  
             /*if (empresa.contrasenia_etl.Length > 0)
             {
                 objCompania.UpdateContrasenia(empresa);
             }*/
-            return idEmpresaCurrent;
+            
         }
 
         // PUT: api/Empresa/5

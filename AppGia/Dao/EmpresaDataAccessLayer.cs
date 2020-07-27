@@ -76,7 +76,13 @@ namespace AppGia.Dao
         }
         public long Add(Empresa empresa)
         {
-
+            int existentes=Convert.ToInt32(_queryExecuter.ExecuteQueryUniqueresult(
+                "select count(1) as existentes from empresa where desc_id=@desc_id and activo=true",
+                new NpgsqlParameter("@desc_id", empresa.desc_id))["existentes"]);
+            if (existentes > 0)
+            {
+                throw new DataException("Ya existe una empresa registrada con el id="+empresa.desc_id);
+            }
             string add = "insert into " +
                 "empresa" +
                 "(" + "id" +
