@@ -435,14 +435,38 @@ namespace AppGia.Helpers
         private List<T> getConceptosPadresFromList<T>(List<T> conceptos) where T : IConceptoProforma
         {
             List<T> padres = new List<T>();
-            conceptos.ForEach(rubros =>
+            Dictionary<IConceptoProforma, string> conceptoTipoAgr = new Dictionary<IConceptoProforma, string>();
+            conceptos.ForEach(concepto =>
             {
-                if ((rubros.GetHijos() != null && rubros.GetHijos().Trim().Length > 0) ||
-                    (rubros.GetAritmetica() != null && rubros.GetAritmetica().Trim().Length > 0))
+                if ((concepto.GetHijos() != null && concepto.GetHijos().Trim().Length > 0) ||
+                    (concepto.GetAritmetica() != null && concepto.GetAritmetica().Trim().Length > 0))
                 {
-                    padres.Add(rubros);
+                    padres.Add(concepto);
+                    String tipo_agrupador=_queryExecuter.ExecuteQueryUniqueresult("select tipo_agrupador from rubro where id=@id",
+                        new NpgsqlParameter("@id", concepto.GetIdConcepto()))["tipo_agrupador"].ToString();
+                    conceptoTipoAgr.Add(concepto,tipo_agrupador);
                 }
             });
+            Dictionary<string, Int32> ponderacion = new Dictionary<string, Int32>();
+            ponderacion.Add("ingreso", 1);
+            ponderacion.Add("egreso", 0);
+            padres.Sort((a, b) =>
+            {
+                var aValorPonderado = 0;
+                var bValorPonderado = 0;
+                var aTipoAgrupador = conceptoTipoAgr[a];
+                if (aTipoAgrupador.Length > 0) {
+                    aValorPonderado = ponderacion[aTipoAgrupador];
+                }
+                var bTipoAgrupador = conceptoTipoAgr[b];
+                if (bTipoAgrupador.Length > 0) {
+                    bValorPonderado = ponderacion[bTipoAgrupador];
+                }
+                return bValorPonderado - aValorPonderado;
+            });
+
+
+            
             return padres;
         }
 
