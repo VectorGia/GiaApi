@@ -78,7 +78,7 @@ namespace AppGia.Dao
         {
             int existentes=Convert.ToInt32(_queryExecuter.ExecuteQueryUniqueresult(
                 "select count(1) as existentes from empresa where desc_id=@desc_id and activo=true",
-                new NpgsqlParameter("@desc_id", empresa.desc_id))["existentes"]);
+                new NpgsqlParameter("@desc_id", empresa.desc_id.Trim()))["existentes"]);
             if (existentes > 0)
             {
                 throw new DataException("Ya existe una empresa registrada con el id="+empresa.desc_id);

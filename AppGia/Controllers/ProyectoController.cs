@@ -31,10 +31,20 @@ namespace AppGia.Controllers
         // POST: api/Proyecto
         // POST: api/Proyecto
         [HttpPost]
-        public void Create([FromBody]Proyecto proyecto)
+        public IActionResult Create([FromBody]Proyecto proyecto)
         {
-            long id = objProyecto.addProyecto(proyecto);
-            objProyecto.addEmpresa_Proyecto(id, proyecto);
+        
+            
+            try
+            {
+                long id = objProyecto.addProyecto(proyecto);
+                objProyecto.addEmpresa_Proyecto(id, proyecto);
+                return Ok(1);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Proyecto/5

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using AppGia.Controllers;
 using AppGia.Models;
 using Npgsql;
 
@@ -9,6 +11,7 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter _queryExecuter=new QueryExecuter();
 
 
         public ProyectoDataAccessLayer()
@@ -97,6 +100,13 @@ namespace AppGia.Dao
 
         public long addProyecto(Proyecto proyecto)
         {
+            int existentes=Convert.ToInt32(_queryExecuter.ExecuteQueryUniqueresult(
+                "select count(1) as existentes from proyecto where desc_id=@desc_id and activo=true",
+                new NpgsqlParameter("@desc_id", proyecto.desc_id.Trim()))["existentes"]);
+            if (existentes > 0)
+            {
+                throw new DataException("Ya existe un proyecto registrado con el id="+proyecto.desc_id);
+            }
             string add = "insert into "
                 + " proyecto " + "("
                 + "id" + ","
