@@ -151,6 +151,8 @@ namespace AppGia.Dao
                     {
                         
                         centroCostos.id = Convert.ToInt32(rdr["id"]);
+                        centroCostos.empresa_id = Convert.ToInt32(rdr["empresa_id"]);
+                        centroCostos.proyecto_id = Convert.ToInt32(rdr["proyecto_id"]);
                         centroCostos.desc_id = rdr["desc_id"].ToString().Trim();
                         centroCostos.activo = Convert.ToBoolean(rdr["activo"]);
                         centroCostos.estatus = (rdr["estatus"]).ToString().Trim();
@@ -214,19 +216,45 @@ namespace AppGia.Dao
         }
         public int update(string id, CentroCostos centroCostos)
         {
+            String updateSegmentModelo = "";
+            if (centroCostos.modelo_negocio_id > 0)
+            {
+                DataTable dataTable =
+                    _queryExecuter.ExecuteQuery("select agrupador from modelo_negocio where id=" +
+                                                centroCostos.modelo_negocio_id);
+                Object agrupador = dataTable.Rows[0]["agrupador"];
+                dataTable = _queryExecuter.ExecuteQuery(
+                    "select mn.id,mn.tipo_captura_id  from modelo_negocio mn" +
+                    " where mn.activo=true and mn.agrupador='" + agrupador + "'");
+                foreach (DataRow modeloIdRow in dataTable.Rows)
+                {
+                    Int64 modeloId = Convert.ToInt64(modeloIdRow["id"]);
+                    Int64 tipocapturaId = Convert.ToInt64(modeloIdRow["tipo_captura_id"]);
+                    if (tipocapturaId == TipoCapturaContable)
+                    {
+                        updateSegmentModelo+=" modelo_negocio_id=" + modeloId+",";
+                    }
+                    else if (tipocapturaId == TipoCapturaFlujo)
+                    {
+                        updateSegmentModelo+="modelo_negocio_flujo_id="+modeloId+",";
+                    }
+
+                }
+            }
 
             string update = " update  centro_costo set " +
-                " tipo = @tipo  ," +
-                " desc_id = @desc_id ," +
-                " nombre  =  @nombre ," +
-                " categoria =  @categoria ," +
-                " estatus =   @estatus ," +
-                " gerente =  @gerente ," +
-                " empresa_id =  @empresa_id ," +
-                " fecha_modificacion =  @fecha_modificacion ," +
-                " porcentaje =  @porcentaje ," +
-                " proyeccion =  @proyeccion " +
-                " where id = " + id;
+                            updateSegmentModelo +
+                            " tipo = @tipo  ," +
+                            " desc_id = @desc_id ," +
+                            " nombre  =  @nombre ," +
+                            " categoria =  @categoria ," +
+                            " estatus =   @estatus ," +
+                            " gerente =  @gerente ," +
+                            " empresa_id =  @empresa_id ," +
+                            " fecha_modificacion =  @fecha_modificacion ," +
+                            " porcentaje =  @porcentaje ," +
+                            " proyeccion =  @proyeccion " +
+                            " where id = " + id;
 
 
             {
@@ -241,9 +269,7 @@ namespace AppGia.Dao
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@categoria", Value = centroCostos.categoria });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@estatus", Value = centroCostos.estatus });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@gerente", Value = centroCostos.gerente });
-                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@proyecto_id", Value = centroCostos.proyecto_id });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@empresa_id", Value = centroCostos.empresa_id });
-                    //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@activo", Value = centroCostos.activo });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fecha_modificacion", Value = DateTime.Now });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Double, ParameterName = "@porcentaje", Value = centroCostos.porcentaje/ 100 });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@proyeccion", Value = centroCostos.proyeccion });
