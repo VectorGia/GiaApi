@@ -23,6 +23,8 @@ namespace AppGia.Models
         public Int64 id_modelo_neg { get; set; }
 
         public string naturaleza { get; set; }
+
+        public Boolean esTotalIngresos  { get; set; }
    
   
         
@@ -40,6 +42,7 @@ namespace AppGia.Models
         {
             return id;
         }
+        
 
     }
 }

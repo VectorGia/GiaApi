@@ -34,16 +34,28 @@ namespace AppGia.Controllers
         }
         // POST: api/Rubros
         [HttpPost]
-        public int Post([FromBody] Rubros rubro)
+        public IActionResult Post([FromBody] Rubros rubro)
         {
-            return objrubro.InsertRubro(rubro);
+            try
+            {
+                return Ok(objrubro.InsertRubro(rubro));
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Rubros/5
         [HttpPut("{id}")]
-        public int Put(int id, [FromBody] Rubros rubro)
+        public IActionResult Put(int id, [FromBody] Rubros rubro)
         {
-            return objrubro.UpdateRubro(id, rubro);
+            try
+            {
+                return Ok(objrubro.UpdateRubro(id, rubro));
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/ApiWithActions/5

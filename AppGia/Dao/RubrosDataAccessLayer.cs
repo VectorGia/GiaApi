@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using AppGia.Controllers;
 using AppGia.Models;
 using AppGia.Util;
 using NLog;
 using Npgsql;
 using NpgsqlTypes;
+using static System.Convert;
 using static NpgsqlTypes.NpgsqlDbType;
 
 namespace AppGia.Dao
@@ -13,6 +16,7 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        QueryExecuter _queryExecuter=new QueryExecuter();
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -26,7 +30,7 @@ namespace AppGia.Dao
         public IEnumerable<Rubros> GetAllRubros()
         {
             string consulta = "select modelo_negocio.id, rubro.clave, rubro.nombre as nombre, rubro.hijos, rubro.rangos_cuentas_incluidas,"
-             + "rubro.rango_cuentas_excluidas, rubro.activo, rubro.tipo_cuenta,rubro.naturaleza from rubro " +
+             + "rubro.rango_cuentas_excluidas, rubro.activo, rubro.tipo_cuenta,rubro.naturaleza,rubro.es_total_ingresos from rubro " +
                 "inner join modelo_negocio on rubro.id_modelo_neg = modelo_negocio.id";
             try
             {
@@ -39,7 +43,7 @@ namespace AppGia.Dao
                 while (rdr.Read())
                 {
                     Rubros rubro = new Rubros();
-                    rubro.id = Convert.ToInt32(rdr["id"]);
+                    rubro.id = ToInt32(rdr["id"]);
                     rubro.nombre = rdr["nombre"].ToString().Trim();
                     rubro.hijos = rdr["hijos"].ToString().Trim();
                     rubro.clave = rdr["clave"].ToString().Trim();
@@ -47,9 +51,10 @@ namespace AppGia.Dao
                     rubro.rangos_cuentas_incluidas = rdr["rangos_cuentas_incluidas"].ToString().Trim();
                     rubro.tipo_cuenta = rdr["tipo_cuenta"].ToString().Trim();
                     rubro.tipo_cuenta = rdr["tipo_agrupador"].ToString().Trim();
-                    rubro.activo = Convert.ToBoolean(rdr["activo"]);
+                    rubro.activo = ToBoolean(rdr["activo"]);
                     rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
-
+                    rubro.esTotalIngresos = ToBoolean(rdr["es_total_ingresos"]);
+;
                     lstrubro.Add(rubro);
                 }
                 con.Close();
@@ -87,7 +92,7 @@ namespace AppGia.Dao
                 while (rdr.Read())
                 {
                     Rubros rubro = new Rubros();
-                    rubro.id = Convert.ToInt32(rdr["id"]);
+                    rubro.id = ToInt32(rdr["id"]);
                     rubro.nombre = rdr["nombre"].ToString().Trim();
                     rubro.clave = rdr["clave"].ToString().Trim();
                     rubro.aritmetica = rdr["aritmetica"].ToString().Trim();
@@ -96,9 +101,10 @@ namespace AppGia.Dao
                     rubro.tipo_cuenta = rdr["tipo_cuenta"].ToString().Trim();
                     rubro.tipo_agrupador = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.hijos = rdr["hijos"].ToString().Trim();   
-                    rubro.id_modelo_neg = Convert.ToInt32(rdr["id_modelo_neg"]);
+                    rubro.id_modelo_neg = ToInt32(rdr["id_modelo_neg"]);
                     rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
-                    rubro.tipo_id= Convert.ToInt64(rdr["tipo_id"]);
+                    rubro.esTotalIngresos = ToBoolean(rdr["es_total_ingresos"]);
+                    rubro.tipo_id= ToInt64(rdr["tipo_id"]);
                     lstRubros.Add(rubro);
 
                 }
@@ -112,10 +118,28 @@ namespace AppGia.Dao
             }
         }
 
-        public int InsertRubro(Rubros rubro)
-
-            
+        private Boolean existeRubroTotalIngresos(Int64 idModelo,Int64 idRubro)
         {
+            string query = "select count(1) as numRubrosTotIng from rubro " +
+                           " where activo=true " +
+                           " and id_modelo_neg=@id_modelo_neg " +
+                           " and es_total_ingresos=true ";
+            if (idRubro > 0)
+            {
+                query += " and id<>"+idRubro;
+            }
+            
+            Int32 numRubrosTotIng=ToInt32(_queryExecuter.ExecuteQueryUniqueresult(query,
+                new NpgsqlParameter("@id_modelo_neg", idModelo))["numRubrosTotIng"]);
+            return numRubrosTotIng > 0;
+        }
+        public int InsertRubro(Rubros rubro)
+        {
+            if (rubro.esTotalIngresos&&existeRubroTotalIngresos(rubro.id_modelo_neg,0))
+            {
+                throw new DataException("Ya existe un rubro marcado como total de ingresos, favor de revisar");
+            }
+            
             string add = "insert into " + "rubro " + "("
                 + "id" + ","
                  + "nombre" + ","
@@ -127,7 +151,7 @@ namespace AppGia.Dao
                  + "aritmetica" + ","
                  + "clave" + ","
                  + "tipo_id" + ","
-                 + "id_modelo_neg," + "hijos" + ",naturaleza)"
+                 + "id_modelo_neg," + "hijos" + ",naturaleza,es_total_ingresos)"
                  + "values (nextval('seq_rubro'),@nombre" + ","
                  + "@rango_cuentas_excluidas" + ","
                  + "@rangos_cuentas_incluidas" + ","
@@ -139,7 +163,7 @@ namespace AppGia.Dao
                  + "@tipo_id" + ","
                  + "@id_modelo_neg, " 
                 + " @hijos, " 
-                + " @naturaleza )";
+                + " @naturaleza,@es_total_ingresos )";
 
             try
             {
@@ -167,6 +191,9 @@ namespace AppGia.Dao
                     cmd.Parameters.Add(new NpgsqlParameter {NpgsqlDbType = Text, ParameterName = "@naturaleza", Value = ""});
                 }
 
+                cmd.Parameters.Add(new NpgsqlParameter
+                    { ParameterName = "@es_total_ingresos", Value = rubro.esTotalIngresos});
+
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
                 con.Close();
@@ -183,7 +210,13 @@ namespace AppGia.Dao
 
         public int UpdateRubro(int id, Rubros rubro)
         {
-        
+            Int64 idModelo=ToInt64(_queryExecuter.ExecuteQueryUniqueresult("select id_modelo_neg from rubro where id=@id",
+                new NpgsqlParameter("@id", id))["id_modelo_neg"]);
+
+            if (rubro.esTotalIngresos&&existeRubroTotalIngresos(idModelo,id))
+            {
+                throw new DataException("Ya existe un rubro marcado como total de ingresos, favor de revisar");
+            }
             string add = "UPDATE rubro " +
                 "SET " +
                 "nombre = @nombre, " +
@@ -193,7 +226,8 @@ namespace AppGia.Dao
                 "rango_cuentas_excluidas = @rango_cuentas_excluidas," +
                 "rangos_cuentas_incluidas = @rangos_cuentas_incluidas, " +
                 "tipo_cuenta = @tipo_cuenta, " +
-                "naturaleza = @naturaleza " +
+                "naturaleza = @naturaleza, " +
+                "es_total_ingresos = @es_total_ingresos " +
                 //"tipo_agrupador = @tipo_agrupador " +
                 "where id = " + id;
 
@@ -211,6 +245,10 @@ namespace AppGia.Dao
                 cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@naturaleza", Value = rubro.naturaleza });
                 cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Integer, ParameterName = "@id", Value = rubro.id });
                 cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@hijos", Value = rubro.hijos });
+                cmd.Parameters.Add(new NpgsqlParameter
+                {
+                    ParameterName = "@es_total_ingresos", Value = rubro.esTotalIngresos
+                });
                 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
