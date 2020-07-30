@@ -33,6 +33,7 @@ namespace AppGia.Helpers
         private static int pos_estilo = 128;
         private static int pos_aritmetica = 129;
         private static int pos_id_detalle = 130;
+        private static int pos_es_total_ingresos = 131;
         
         private static int posrow_encabezado = 1;
         private static int posrow_inicio_data = 2;
@@ -79,6 +80,7 @@ namespace AppGia.Helpers
         {
             ProformaDetalle det = new ProformaDetalle();
             det.nombre_rubro = cells[posRow, pos_nrubro].Value.ToString();
+            det.es_total_ingresos = ToBoolean(cells[posRow, pos_es_total_ingresos].Value);
             cells[posRow, pos_total].Calculate();
             det.total_resultado = ToDouble(cells[posRow, pos_total].Value);
             det.acumulado_resultado = ToDouble(cells[posRow, pos_aant].Value);
@@ -108,6 +110,7 @@ namespace AppGia.Helpers
             det.estilo =cells[posRow, pos_estilo].Value.ToString();
             det.aritmetica =cells[posRow, pos_aritmetica].Value.ToString();
             det.id =ToInt64(cells[posRow, pos_id_detalle].Value);
+            det.es_total_ingresos =ToBoolean(cells[posRow, pos_es_total_ingresos].Value);
            
             
             return det;
@@ -446,6 +449,7 @@ namespace AppGia.Helpers
             applyStyleOculto(makeCellValue(cells, posY, pos_estilo,  det.estilo));
             applyStyleOculto(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
             applyStyleOculto(makeCellValue(cells, posY, pos_id_detalle, det.id));
+            applyStyleOculto(makeCellValue(cells, posY, pos_es_total_ingresos, det.es_total_ingresos));
           
 
         }

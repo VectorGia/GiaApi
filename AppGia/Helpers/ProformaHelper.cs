@@ -173,6 +173,7 @@ namespace AppGia.Helpers
             detalleTotal.aritmetica = aritmetica;
             detalleTotal.clave_rubro = rubroTotal.clave;
             detalleTotal.hijos = rubroTotal.hijos;
+            detalleTotal.es_total_ingresos = rubroTotal.es_total_ingresos;
 
             DataTable dt = new DataTable();
             foreach (var key in keys)
@@ -229,6 +230,7 @@ namespace AppGia.Helpers
                 detalle.diciembre_monto_resultado = 0;
                 detalle.ejercicio_resultado = 0;
                 detalle.aritmetica = actual.aritmetica;
+                detalle.es_total_ingresos = actual.es_total_ingresos;
                 detalles.Add(detalle);
             });
             return detalles;
@@ -356,6 +358,7 @@ namespace AppGia.Helpers
             ru.id_modelo_neg = ToInt64(rubrosRow["id_modelo_neg"]);
             ru.tipo_id = ToInt64(rubrosRow["tipo_id"]);
             ru.tipo_cuenta = Convert.ToString(rubrosRow["tipo_cuenta"]);
+            ru.es_total_ingresos = ToBoolean(rubrosRow["es_total_ingresos"]);
 
             return ru;
         }

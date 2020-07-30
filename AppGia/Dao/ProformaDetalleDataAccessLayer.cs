@@ -63,6 +63,7 @@ namespace AppGia.Dao
                 proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
                 proforma_detalle.nombre_rubro = Convert.ToString(rdr["nombre_rubro"]);
                 proforma_detalle.aritmetica = Convert.ToString(rdr["aritmetica"]);
+                proforma_detalle.es_total_ingresos = ToBoolean(rdr["es_total_ingresos"]);
                 proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
                 proforma_detalle.enero_monto_resultado = ToDouble(rdr["enero_monto_resultado"]);
                 proforma_detalle.febrero_monto_resultado = ToDouble(rdr["febrero_monto_resultado"]);
@@ -286,7 +287,7 @@ namespace AppGia.Dao
             consulta += " select ";
             consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
             consulta += "	 mon.centro_costo_id, mon.activo, ";
-            consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, rub.hijos as hijos,";
+            consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, rub.hijos as hijos, rub.es_total_ingresos ,";
 
             consulta += BuildMontosFieldsQuery(mesInicio);
             consulta += BuildEjercicioFieldQuery(mesInicio);
@@ -407,7 +408,7 @@ namespace AppGia.Dao
             consulta += "	 sum(cns.octubre_total_resultado) + ";
             consulta += "	 sum(cns.noviembre_total_resultado) + ";
             consulta += "	 sum(cns.diciembre_total_resultado) ";
-            consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro ";
+            consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro, rub.es_total_ingresos ";
             consulta += "	 from montos_consolidados cns ";
             consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
             consulta += "	 where cns.id in ( ";
@@ -427,7 +428,7 @@ namespace AppGia.Dao
             consulta += "    AND  cns.centro_costo_id=" + idCenCos;
             consulta += "    AND  cns.tipo_captura_id=" + idTipoCaptura;
             consulta += "    AND  cns.activo=true";
-            consulta += "	 group by cns.rubro_id, rub.nombre ";
+            consulta += "	 group by cns.rubro_id, rub.nombre, rub.es_total_ingresos ";
             consulta += "	 order by cns.rubro_id ";
 
             try
@@ -445,6 +446,7 @@ namespace AppGia.Dao
                     proforma_detalle_ej_financ.acumulado_resultado = ToDouble(rdr["acumulado_resultado"]);
                     proforma_detalle_ej_financ.rubro_id = ToInt64(rdr["rubro_id"]);
                     proforma_detalle_ej_financ.nombre_rubro = rdr["nombre_rubro"].ToString();
+                    proforma_detalle_ej_financ.es_total_ingresos = ToBoolean(rdr["es_total_ingresos"]);
                     lstProfDetalleEjercicioFinanc.Add(proforma_detalle_ej_financ);
                 }
 
