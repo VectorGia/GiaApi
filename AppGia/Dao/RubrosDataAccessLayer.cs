@@ -53,7 +53,7 @@ namespace AppGia.Dao
                     rubro.tipo_cuenta = rdr["tipo_agrupador"].ToString().Trim();
                     rubro.activo = ToBoolean(rdr["activo"]);
                     rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
-                    rubro.esTotalIngresos = ToBoolean(rdr["es_total_ingresos"]);
+                    rubro.es_total_ingresos = ToBoolean(rdr["es_total_ingresos"]);
 ;
                     lstrubro.Add(rubro);
                 }
@@ -103,7 +103,7 @@ namespace AppGia.Dao
                     rubro.hijos = rdr["hijos"].ToString().Trim();   
                     rubro.id_modelo_neg = ToInt32(rdr["id_modelo_neg"]);
                     rubro.naturaleza = Convert.ToString(rdr["naturaleza"]);
-                    rubro.esTotalIngresos = ToBoolean(rdr["es_total_ingresos"]);
+                    rubro.es_total_ingresos = ToBoolean(rdr["es_total_ingresos"]);
                     rubro.tipo_id= ToInt64(rdr["tipo_id"]);
                     lstRubros.Add(rubro);
 
@@ -135,7 +135,7 @@ namespace AppGia.Dao
         }
         public int InsertRubro(Rubros rubro)
         {
-            if (rubro.esTotalIngresos&&existeRubroTotalIngresos(rubro.id_modelo_neg,0))
+            if (rubro.es_total_ingresos&&existeRubroTotalIngresos(rubro.id_modelo_neg,0))
             {
                 throw new DataException("Ya existe un rubro marcado como total de ingresos, favor de revisar");
             }
@@ -192,7 +192,7 @@ namespace AppGia.Dao
                 }
 
                 cmd.Parameters.Add(new NpgsqlParameter
-                    { ParameterName = "@es_total_ingresos", Value = rubro.esTotalIngresos});
+                    { ParameterName = "@es_total_ingresos", Value = rubro.es_total_ingresos});
 
                 con.Open();
                 int cantFilAfec = cmd.ExecuteNonQuery();
@@ -213,7 +213,7 @@ namespace AppGia.Dao
             Int64 idModelo=ToInt64(_queryExecuter.ExecuteQueryUniqueresult("select id_modelo_neg from rubro where id=@id",
                 new NpgsqlParameter("@id", id))["id_modelo_neg"]);
 
-            if (rubro.esTotalIngresos&&existeRubroTotalIngresos(idModelo,id))
+            if (rubro.es_total_ingresos&&existeRubroTotalIngresos(idModelo,id))
             {
                 throw new DataException("Ya existe un rubro marcado como total de ingresos, favor de revisar");
             }
@@ -247,7 +247,7 @@ namespace AppGia.Dao
                 cmd.Parameters.Add(new NpgsqlParameter { NpgsqlDbType = Text, ParameterName = "@hijos", Value = rubro.hijos });
                 cmd.Parameters.Add(new NpgsqlParameter
                 {
-                    ParameterName = "@es_total_ingresos", Value = rubro.esTotalIngresos
+                    ParameterName = "@es_total_ingresos", Value = rubro.es_total_ingresos
                 });
                 
                 con.Open();

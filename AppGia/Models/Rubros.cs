@@ -24,7 +24,7 @@ namespace AppGia.Models
 
         public string naturaleza { get; set; }
 
-        public Boolean esTotalIngresos  { get; set; }
+        public Boolean es_total_ingresos  { get; set; }
    
   
         

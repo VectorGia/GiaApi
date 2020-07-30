@@ -435,37 +435,41 @@ namespace AppGia.Helpers
         private List<T> getConceptosPadresFromList<T>(List<T> conceptos) where T : IConceptoProforma
         {
             List<T> padres = new List<T>();
-            Dictionary<IConceptoProforma, string> conceptoTipoAgr = new Dictionary<IConceptoProforma, string>();
+            Dictionary<IConceptoProforma, DataRow> conceptoTipoAgr = new Dictionary<IConceptoProforma, DataRow>();
             conceptos.ForEach(concepto =>
             {
                 if ((concepto.GetHijos() != null && concepto.GetHijos().Trim().Length > 0) ||
                     (concepto.GetAritmetica() != null && concepto.GetAritmetica().Trim().Length > 0))
                 {
                     padres.Add(concepto);
-                    String tipo_agrupador=_queryExecuter.ExecuteQueryUniqueresult("select tipo_agrupador from rubro where id=@id",
-                        new NpgsqlParameter("@id", concepto.GetIdConcepto()))["tipo_agrupador"].ToString();
-                    conceptoTipoAgr.Add(concepto,tipo_agrupador);
+                    DataRow dr=_queryExecuter.ExecuteQueryUniqueresult(
+                        "select tipo_agrupador,es_total_ingresos from rubro where id=@id",
+                        new NpgsqlParameter("@id", concepto.GetIdConcepto()));
+                    conceptoTipoAgr.Add(concepto,dr);
                 }
             });
             Dictionary<string, Int32> ponderacion = new Dictionary<string, Int32>();
+            ponderacion.Add("tingreso", 2);
             ponderacion.Add("ingreso", 1);
             ponderacion.Add("egreso", 0);
+            ponderacion.Add("", -1);
             padres.Sort((a, b) =>
             {
-                var aValorPonderado = 0;
-                var bValorPonderado = 0;
-                var aTipoAgrupador = conceptoTipoAgr[a];
-                if (aTipoAgrupador.Length > 0) {
-                    aValorPonderado = ponderacion[aTipoAgrupador];
+                
+                var aValorPonderado = ponderacion[conceptoTipoAgr[a]["tipo_agrupador"].ToString()];
+                var bValorPonderado = ponderacion[conceptoTipoAgr[b]["tipo_agrupador"].ToString()];
+                if (ToBoolean(conceptoTipoAgr[a]["es_total_ingresos"]))
+                {
+                     aValorPonderado = ponderacion["tingreso"];   
                 }
-                var bTipoAgrupador = conceptoTipoAgr[b];
-                if (bTipoAgrupador.Length > 0) {
-                    bValorPonderado = ponderacion[bTipoAgrupador];
+                if (ToBoolean(conceptoTipoAgr[b]["es_total_ingresos"]))
+                {
+                     bValorPonderado = ponderacion["tingreso"];
                 }
+
                 return bValorPonderado - aValorPonderado;
             });
-
-
+            
             
             return padres;
         }

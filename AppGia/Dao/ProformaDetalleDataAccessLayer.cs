@@ -29,7 +29,7 @@ namespace AppGia.Dao
         {
             string consulta = "";
             consulta += " select ";
-            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica, rub.clave,";
+            consulta += "   det.id, det.id_proforma, det.rubro_id, rub.nombre as nombre_rubro,rub.hijos,rub.aritmetica, rub.clave,rub.es_total_ingresos,";
             consulta += "   coalesce(ejercicio_resultado, 0) as ejercicio_resultado, ";
             consulta += "   coalesce(enero_monto_resultado, 0) as enero_monto_resultado, ";
             consulta += "   coalesce(febrero_monto_resultado, 0) as febrero_monto_resultado, ";
