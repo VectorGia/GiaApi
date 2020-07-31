@@ -17,7 +17,7 @@ namespace AppGia.Controllers
         {
             return objcentro.GetAllCentros();
         }
-
+        
         // GET: api/Centro/5
         [HttpGet("{id}", Name = "GetCentro")]
         public List<CentroCostos> GetCentro(int id)

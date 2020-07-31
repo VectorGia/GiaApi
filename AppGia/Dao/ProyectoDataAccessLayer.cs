@@ -22,6 +22,7 @@ namespace AppGia.Dao
         {
             string cadena = " select * from proyecto "
                           + "  where  activo  = true order by id desc" ;
+            
             try
             {
                 List<Proyecto> lstProyecto = new List<Proyecto>();
@@ -42,6 +43,17 @@ namespace AppGia.Dao
                         proyecto.responsable = rdr["responsable"].ToString().Trim();
                         proyecto.estatus = rdr["estatus"].ToString().Trim();
                         proyecto.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
+
+                        DataTable dataTable=_queryExecuter.ExecuteQuery(
+                            "select e.desc_id from empresa_proyecto empr join empresa e on empr.empresa_id = e.id where  empr.proyecto_id=@id",
+                            new NpgsqlParameter("@id", proyecto.id));
+                        String desIdsEmpresas = "";
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            desIdsEmpresas += row["desc_id"]+" ";
+                        }
+
+                        proyecto.idsempresas = desIdsEmpresas;
 
                         lstProyecto.Add(proyecto);
                     }
@@ -175,7 +187,7 @@ namespace AppGia.Dao
                     cmd.Parameters.AddWithValue("@responsable", proyecto.responsable.Trim());
                     cmd.Parameters.AddWithValue("@desc_id", proyecto.desc_id.Trim());
                     cmd.Parameters.AddWithValue("@fecha_modificacion", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@estatus", proyecto.activo);
+                    cmd.Parameters.AddWithValue("@estatus", proyecto.estatus);
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;

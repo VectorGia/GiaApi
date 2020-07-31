@@ -34,7 +34,7 @@ namespace AppGia.Dao
                "FROM centro_costo cc " +
                "INNER JOIN empresa emp on emp.id = cc.empresa_id " +
                "INNER JOIN proyecto pry on pry.id = cc.proyecto_id" + 
-               " where cc.activo = true order by cc.id desc" ; 
+               " where cc.activo = true and pry.activo=true order by cc.id desc" ; 
 
             try
             {

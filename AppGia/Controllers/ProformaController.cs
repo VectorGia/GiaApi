@@ -31,17 +31,17 @@ namespace AppGia.Controllers
         
         // POST: api/Proforma
         [HttpPost]
-        public List<ProformaDetalle> Post([FromBody] Proforma proforma)
+        public IActionResult Post([FromBody] Proforma proforma)
         {
             try
             {
-                return objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio,
-                    proforma.tipo_proforma_id, proforma.tipo_captura_id);
+                return Ok(objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio,
+                    proforma.tipo_proforma_id, proforma.tipo_captura_id));
             }
             catch (Exception e)
             {
                 logger.Error(e,"Error en proformado");
-                throw e;
+                return BadRequest(e.Message);
             }
         }
         [HttpPost("ajustes")]
