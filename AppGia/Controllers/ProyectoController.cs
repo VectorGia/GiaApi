@@ -49,7 +49,7 @@ namespace AppGia.Controllers
 
         // PUT: api/Proyecto/5
         [HttpPut("{id}")]
-        public int Put(string id, [FromBody] Proyecto proyecto)
+        public int Put(Int64 id, [FromBody] Proyecto proyecto)
         {
             return objProyecto.update(id, proyecto);
         }
