@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using AppGia.Controllers;
 using AppGia.Models;
 using Npgsql;
@@ -45,7 +46,8 @@ namespace AppGia.Dao
                         proyecto.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
 
                         DataTable dataTable=_queryExecuter.ExecuteQuery(
-                            "select e.desc_id from empresa_proyecto empr join empresa e on empr.empresa_id = e.id where  empr.proyecto_id=@id",
+                            "select e.desc_id from empresa_proyecto empr join empresa e on empr.empresa_id = e.id " +
+                            " where empr.activo=true and e.activo=true and  empr.proyecto_id=@id",
                             new NpgsqlParameter("@id", proyecto.id));
                         String desIdsEmpresas = "";
                         foreach (DataRow row in dataTable.Rows)
@@ -73,7 +75,7 @@ namespace AppGia.Dao
             }
         }
 
-        public Proyecto GetProyectoData(string id)
+        public Proyecto GetProyectoData(Int64 id)
         {
             try
             {
@@ -95,6 +97,15 @@ namespace AppGia.Dao
                         proyecto.responsable = rdr["responsable"].ToString().Trim();
                         proyecto.estatus = rdr["estatus"].ToString().Trim();
                         proyecto.fecha_modificacion = Convert.ToDateTime(rdr["fecha_modificacion"]);
+                        DataTable dataTable = _queryExecuter.ExecuteQuery(
+                            "select empresa_id from empresa_proyecto where activo=true and proyecto_id=@proyecto_id",
+                            new NpgsqlParameter("@proyecto_id",id));
+                        List<Int64> idsempresas=new List<Int64>();
+                        foreach (DataRow dr in dataTable.Rows)
+                        {
+                            idsempresas.Add(Convert.ToInt64(dr["empresa_id"]));             
+                        }
+                        proyecto.idsempresas =  string.Join(",", idsempresas.ToArray());
                     }
                 }
                 return proyecto;
@@ -185,12 +196,12 @@ namespace AppGia.Dao
                 new NpgsqlParameter("@fecha_modificacion", DateTime.Now),
                 new NpgsqlParameter("@estatus", proyecto.estatus)
                 );
-            /*if (proyecto.idsempresas != null && proyecto.idsempresas.Length > 0)
+            if (proyecto.idsempresas != null && proyecto.idsempresas.Length > 0)
             {
-                _queryExecuter.execute("update empresa_proyecto set activo = false  and proyecto_id=@proyecto_id",
+                _queryExecuter.execute("update empresa_proyecto set activo = false  where proyecto_id=@proyecto_id",
                     new NpgsqlParameter("@proyecto_id", id));
                 addEmpresa_Proyecto(id, proyecto);
-            }*/
+            }
 
             return res;
         }

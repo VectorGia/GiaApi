@@ -20,7 +20,7 @@ namespace AppGia.Dao
         public IEnumerable<Empresa> GetAllEmpresaByProyectoId(Int64 idProyecto)
         {
             string cadena = " select e.id,e.nombre from empresa_proyecto ep join empresa e on ep.empresa_id = e.id" +
-                        " where proyecto_id = " + idProyecto + " --and ep.activo = true and e.activo = true";
+                        " where proyecto_id = " + idProyecto + " and ep.activo = true and e.activo = true";
             try
             {
                 List<Empresa> ltsEmpresa = new List<Empresa>();
@@ -54,8 +54,8 @@ namespace AppGia.Dao
 
         public IEnumerable<Empresa_Proyecto> GetAllEmpresa_Proyecto()
         {
-            string cadena = " select id,activo,empresa_id,proyecto_id from empresa_proyecto " 
-                             + " where activo  = " + true;
+            string cadena = " select id,activo,empresa_id,proyecto_id from empresa_proyecto "
+                            + " where activo  = true ";
             try
             {
                 List<Empresa_Proyecto> ltsEmpresaProyecto = new List<Empresa_Proyecto>();

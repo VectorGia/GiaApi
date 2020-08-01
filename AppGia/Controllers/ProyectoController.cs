@@ -23,7 +23,7 @@ namespace AppGia.Controllers
 
         // GET: api/Proyecto/5
         [HttpGet("{id}", Name = "GetProyecto")]
-        public Proyecto GetProyecto(string id)
+        public Proyecto GetProyecto(Int64 id)
         {
             return objProyecto.GetProyectoData(id);
         }
