@@ -36,6 +36,17 @@ namespace AppGia.Controllers
         {
             return objUnidadNeg.GetUnidadNegocio(idUnidadNegocio);
         }
+        
+        [HttpGet("withModel")]
+        public List<UnidadNegocio> GetUnidadesConModelo()
+        {
+            return objUnidadNeg.GetAllUnidadNegocioWithModelo();
+        }
+        [HttpGet("unidadCC")]
+        public List<Dictionary<string,Int64>> GetUnidadesRelCC()
+        {
+            return objUnidadNeg.GetUnidadCC();
+        }
 
         // POST: api/UnidadNegocio
         [HttpPost]

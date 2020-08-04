@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using AppGia.Controllers;
 using AppGia.Models;
 using Npgsql;
 
@@ -11,12 +13,53 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
+        private QueryExecuter queryExecuter= new QueryExecuter();
 
         public UnidadNegocioDataAccessLayer()
         {
             con = conex.ConnexionDB();
         }
 
+        public List<UnidadNegocio> GetAllUnidadNegocioWithModelo()
+        {
+            List<UnidadNegocio> lstUnidadNegocio = new List<UnidadNegocio>();
+            DataTable dataTable = queryExecuter.ExecuteQuery("select distinct un.* " +
+                                       " from unidad_negocio un " +
+                                       "    join modelo_unidad mu on un.id = mu.id_unidad and mu.activo = true " +
+                                       " join modelo_negocio mn on mu.id_modelo = mn.id and mn.activo = true " +
+                                       " join centro_costo cc on mn.id = cc.modelo_negocio_id and cc.activo=true " +
+                                       " where un.activo = true");
+            foreach (DataRow rdr in dataTable.Rows)
+            {
+                UnidadNegocio unidadNegocio = new UnidadNegocio();
+                unidadNegocio.id = Convert.ToInt64(rdr["id"]);
+                unidadNegocio.descripcion = (rdr["descripcion"]).ToString();
+                lstUnidadNegocio.Add(unidadNegocio);
+            }
+
+            return lstUnidadNegocio;
+        }
+
+        public List<Dictionary<string, Int64>> GetUnidadCC()
+        {
+            List<Dictionary<string, Int64>> relaciones = new List<Dictionary<string, Int64>>();
+            DataTable dataTable = queryExecuter.ExecuteQuery("select un.id as unidadid,cc.id as ccid " +
+                                                             " from unidad_negocio un " +
+                                                             "    join modelo_unidad mu on un.id = mu.id_unidad and mu.activo = true  " +
+                                                             " join modelo_negocio mn on mu.id_modelo = mn.id and mn.activo = true  " +
+                                                             " join centro_costo cc on mn.id = cc.modelo_negocio_id and cc.activo=true  " +
+                                                             " where un.activo = true");
+            foreach (DataRow rdr in dataTable.Rows)
+            {
+                Dictionary<string, Int64> relacion = new Dictionary<string, Int64>();
+                relacion["unidadid"] = Convert.ToInt64(rdr["unidadid"]);
+                relacion["ccid"] = Convert.ToInt64(rdr["ccid"]);
+                relaciones.Add(relacion);
+            }
+
+            return relaciones;
+        }
+        
         public List<UnidadNegocio> GetAllUnidadNegocio()
         {
             string consulta = "";
