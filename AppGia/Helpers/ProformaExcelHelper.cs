@@ -13,13 +13,22 @@ namespace AppGia.Helpers
 {
     public class ProformaExcelHelper
     {
-      
-        private static string sheetName="proforma";
+        private static int NUM_MESES = 12;
+        private static string sheetName = "proforma";
         private static int pos_nrubro = 1;
+
         private static int pos_total = 2;
-        private static int pos_aant = 3;
-        private static int pos_ejercicio = 4;
-        private static int pos_anios_posteriores = 17;
+        private static int pos_porctotal = 3;
+        private static int pos_aant = 4;
+        private static int pos_porcaant = 5;
+        private static int pos_ejercicio = 6;
+        private static int pos_porcejercicio = 7;
+        private static int pos_apost = 20;
+        private static int pos_porcapost = 21;
+        private static int POS_COL_ENERO = pos_apost-NUM_MESES;
+     
+        
+        
         private static int pos_id_proforma = 118;
         private static int pos_mes_inicio = 119;
         private static int pos_centro_costo_id = 120;
@@ -34,14 +43,24 @@ namespace AppGia.Helpers
         private static int pos_aritmetica = 129;
         private static int pos_id_detalle = 130;
         private static int pos_es_total_ingresos = 131;
-        
+
         private static int posrow_encabezado = 1;
         private static int posrow_inicio_data = 2;
-        
-        
+
+
         private ProformaDataAccessLayer _proformaDataAccessLayer = new ProformaDataAccessLayer();
         private ProformaDetalleDataAccessLayer _proformaDetalleDataAccessLayer = new ProformaDetalleDataAccessLayer();
+        List<Int32> listPosColsPorc=new List<int>();
 
+        public ProformaExcelHelper()
+        {
+            listPosColsPorc.Add(pos_porctotal); 
+            listPosColsPorc.Add(pos_porcaant);
+            listPosColsPorc.Add(pos_porcejercicio);
+            listPosColsPorc.Add(pos_porcapost);
+        }
+        
+        
         public byte[] export(List<ProformaDetalle> lstGuardaProforma)
         {
             return buildProformaToExcel(lstGuardaProforma);
@@ -54,29 +73,29 @@ namespace AppGia.Helpers
 
         private List<ProformaDetalle> extractDetallesFromFile(byte[] fileContents)
         {
-            List<ProformaDetalle> detalles=new List<ProformaDetalle>();
+            List<ProformaDetalle> detalles = new List<ProformaDetalle>();
             using (MemoryStream memStream = new MemoryStream(fileContents))
             {
                 ExcelPackage package = new ExcelPackage(memStream);
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[sheetName];
                 package.Workbook.Calculate();
                 ExcelRange cells = worksheet.Cells;
-                
+
                 for (int i = posrow_inicio_data; i <= worksheet.Dimension.End.Row; i++)
                 {
                     String idInterno = cells[i, pos_idInterno].Value.ToString();
-                    if (idInterno!=null&&idInterno.Length > 0)
+                    if (idInterno != null && idInterno.Length > 0)
                     {
-                     detalles.Add(transform(cells,i));
+                        detalles.Add(transform(cells, i));
                     }
                 }
             }
 
-          
+
             return detalles;
         }
 
-        private ProformaDetalle transform(ExcelRange cells,int posRow)
+        private ProformaDetalle transform(ExcelRange cells, int posRow)
         {
             ProformaDetalle det = new ProformaDetalle();
             det.nombre_rubro = cells[posRow, pos_nrubro].Value.ToString();
@@ -84,41 +103,42 @@ namespace AppGia.Helpers
             cells[posRow, pos_total].Calculate();
             det.total_resultado = ToDouble(cells[posRow, pos_total].Value);
             det.acumulado_resultado = ToDouble(cells[posRow, pos_aant].Value);
-            det.ejercicio_resultado =ToDouble(cells[posRow, pos_ejercicio].Value);
-            
+            det.ejercicio_resultado = ToDouble(cells[posRow, pos_ejercicio].Value);
+
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
             {
                 int ponderacion = entry.Value;
-                int posicionCelda = ponderacion + pos_ejercicio;
+                int posicionCelda = ponderacion + (POS_COL_ENERO-1);
                 if (ponderacion > 0)
                 {
                     det[entry.Key] = ToDouble(cells[posRow, posicionCelda].Value);
                 }
             }
-            det.anios_posteriores_resultado =ToDouble(cells[posRow, pos_anios_posteriores].Value);
-            
-            det.id_proforma =ToInt64(cells[posRow, pos_id_proforma].Value);
-            det.mes_inicio =ToInt32(cells[posRow, pos_mes_inicio].Value);
-            det.centro_costo_id =ToInt64(cells[posRow, pos_centro_costo_id].Value);
-            det.anio =ToInt32(cells[posRow, pos_anio].Value);
-            det.tipo_proforma_id =ToInt64(cells[posRow, pos_tipo_proforma_id].Value);
-            det.tipo_captura_id =ToInt64(cells[posRow, pos_tipo_captura_id].Value);
-            det.idInterno =cells[posRow, pos_idInterno].Value.ToString();
-            det.clave_rubro =cells[posRow, pos_clave_rubro].Value.ToString();
-            det.rubro_id =ToInt64(cells[posRow, pos_rubro_id].Value);
-            det.tipo =cells[posRow, pos_tipo].Value.ToString();
-            det.estilo =cells[posRow, pos_estilo].Value.ToString();
-            det.aritmetica =cells[posRow, pos_aritmetica].Value.ToString();
-            det.id =ToInt64(cells[posRow, pos_id_detalle].Value);
-            det.es_total_ingresos =ToBoolean(cells[posRow, pos_es_total_ingresos].Value);
-           
-            
+
+            det.anios_posteriores_resultado = ToDouble(cells[posRow, pos_apost].Value);
+
+            det.id_proforma = ToInt64(cells[posRow, pos_id_proforma].Value);
+            det.mes_inicio = ToInt32(cells[posRow, pos_mes_inicio].Value);
+            det.centro_costo_id = ToInt64(cells[posRow, pos_centro_costo_id].Value);
+            det.anio = ToInt32(cells[posRow, pos_anio].Value);
+            det.tipo_proforma_id = ToInt64(cells[posRow, pos_tipo_proforma_id].Value);
+            det.tipo_captura_id = ToInt64(cells[posRow, pos_tipo_captura_id].Value);
+            det.idInterno = cells[posRow, pos_idInterno].Value.ToString();
+            det.clave_rubro = cells[posRow, pos_clave_rubro].Value.ToString();
+            det.rubro_id = ToInt64(cells[posRow, pos_rubro_id].Value);
+            det.tipo = cells[posRow, pos_tipo].Value.ToString();
+            det.estilo = cells[posRow, pos_estilo].Value.ToString();
+            det.aritmetica = cells[posRow, pos_aritmetica].Value.ToString();
+            det.id = ToInt64(cells[posRow, pos_id_detalle].Value);
+            det.es_total_ingresos = ToBoolean(cells[posRow, pos_es_total_ingresos].Value);
+
+
             return det;
         }
 
         private List<ProformaDetalle> manageDetalles(List<ProformaDetalle> detallesFromExcel)
         {
-           //return detallesFromExcel;
+            //return detallesFromExcel;
             ProformaDetalle datosProforma = detallesFromExcel[0];
             List<ProformaDetalle> detallesProformados = detallesFromExcel.FindAll(detalle =>
             {
@@ -151,8 +171,6 @@ namespace AppGia.Helpers
             return detallesProforma;
         }
 
-      
-
 
         private void applyValuesFrom(List<ProformaDetalle> source, List<ProformaDetalle> target, int mesInicio)
         {
@@ -173,10 +191,10 @@ namespace AppGia.Helpers
                 }
             }
         }
-        
+
         private byte[] buildProformaToExcel(List<ProformaDetalle> detalles)
         {
-            int mesInicio=detalles[0].mes_inicio;
+            int mesInicio = detalles[0].mes_inicio;
             byte[] fileContents;
             using (var package = new ExcelPackage())
             {
@@ -184,52 +202,68 @@ namespace AppGia.Helpers
                 ExcelRange cells = workSheet.Cells;
                 makeEncabezado(cells, new[]
                 {
-                    "Rubro", "  Total  ", "Años Anteriores", "Ejercicio", "Enero", "Febrero",
+                    "Rubro", "  Total  ","%", "Años Anteriores","%", "Ejercicio","%", "Enero", "Febrero",
                     "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre",
-                    "Diciembre", "Años Posteriores"
+                    "Diciembre", "Años Posteriores","%"
                 });
 
+             
+                
                 /*se guarda una relacion de claveRubro->(tipo,posicionY), que permite saber las posiciones reales o proformadas 
                   de undetalles, en el caso de un detalle padre solo tiene real y no proforma
                 */
-                Dictionary<string,Dictionary<string,int>> paresProformaRealProfor=new Dictionary<string, Dictionary<string, int>>();
-                List<int> positionsTotales=new List<int>();
+                Dictionary<string, Dictionary<string, int>> paresProformaRealProfor =
+                    new Dictionary<string, Dictionary<string, int>>();
+                List<int> positionsTotales = new List<int>();
                 int position = posrow_inicio_data;
+                int posRowTotalIngresos = -1;
                 foreach (ProformaDetalle detalle in detalles)
                 {
                     int posRow = position++;
                     if (!paresProformaRealProfor.ContainsKey(detalle.clave_rubro))
                     {
-                        paresProformaRealProfor.Add(detalle.clave_rubro,new Dictionary<string, int>());
+                        paresProformaRealProfor.Add(detalle.clave_rubro, new Dictionary<string, int>());
                     }
+
                     if (detalle.estilo.Equals(ESTILODETHIJO))
                     {
-                        renderDetalleHijo(cells, posRow, detalle,mesInicio,  paresProformaRealProfor);    
-                    }else if(detalle.estilo.Contains(ESTILODETPADRE))
+                        renderDetalleHijo(cells, posRow, detalle, mesInicio, paresProformaRealProfor);
+                    }
+                    else if (detalle.estilo.Contains(ESTILODETPADRE))
                     {
-                        renderDetallePadre(cells,posRow,detalle,paresProformaRealProfor);
+                        renderDetallePadre(cells, posRow, detalle, paresProformaRealProfor);
                         positionsTotales.Add(posRow);
+                        if (detalle.estilo.Equals(ESTILODETPADREINGRESOS))
+                        {
+                            posRowTotalIngresos = posRow;
+                        }
                     }
                 }
+
                 buildFormulasEjercicio(cells, paresProformaRealProfor);
                 buildFormulasAritmetica(cells, positionsTotales, paresProformaRealProfor);
-              //  cells.Calculate();
                 for (int i = posrow_inicio_data; i < workSheet.Dimension.End.Row; i++)
                 {
                     cells[i, pos_total].Calculate();
                 }
-                //workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
-               setBordersInworkSheet(workSheet);
-                /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
-                {
-                    workSheet.Column(i).AutoFit();
-                }*/
+                buildFormulasPorcentajes(cells, paresProformaRealProfor,posRowTotalIngresos,positionsTotales);
+                setBordersInworkSheet(workSheet);
+
                 for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
-                    workSheet.Column(i).Width=20;
+                    if (listPosColsPorc.Contains(i))
+                    {
+                        workSheet.Column(i).Width = 6; 
+                        workSheet.Column(i).Style.Numberformat.Format = "0 %";
+                    }
+                    else
+                    {
+                        workSheet.Column(i).Width = 20; 
+                    }
                 }
+                workSheet.View.FreezePanes(1, POS_COL_ENERO-1);
+               
                 cells.Worksheet.Protection.SetPassword("TXu6Wm.Bt.^M)?Je");
-                //workSheet.Protection.IsProtected = false;
                 fileContents = package.GetAsByteArray();
             }
 
@@ -240,21 +274,28 @@ namespace AppGia.Helpers
 
             return fileContents;
         }
-        
-        private void renderDetallePadre(ExcelRange cells, int pos, ProformaDetalle det,Dictionary<string,Dictionary<string,int>> paresProformaReal)
+
+        private void renderDetallePadre(ExcelRange cells, int pos, ProformaDetalle det,
+            Dictionary<string, Dictionary<string, int>> paresProformaReal)
         {
-            Dictionary<string,int> par=paresProformaReal[det.clave_rubro];
-            par.Add(TIPODETPROREAL,pos);
-            
+            Dictionary<string, int> par = paresProformaReal[det.clave_rubro];
+            par.Add(TIPODETPROREAL, pos);
+
             makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro);
             makeCellValue(cells, pos, pos_total, 0);
+            makeCellValue(cells, pos, pos_porctotal, 0);
             makeCellValue(cells, pos, pos_aant, det.acumulado_resultado);
+            makeCellValue(cells, pos, pos_porcaant, 0);
             makeCellValue(cells, pos, pos_ejercicio, 0);
+            makeCellValue(cells, pos, pos_porcejercicio, 0);
+            makeCellValue(cells, pos, pos_porcapost, 0);
             
+            
+
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
             {
                 int ponderacion = entry.Value;
-                int posicionCelda = ponderacion + pos_ejercicio;
+                int posicionCelda = ponderacion + (POS_COL_ENERO-1);
                 if (ponderacion > 0)
                 {
                     Object valorCelda = 0;
@@ -262,42 +303,49 @@ namespace AppGia.Helpers
                 }
             }
 
-            makeCellValue(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado);
-            for (int i = pos_nrubro; i <= pos_anios_posteriores; i++)
+            makeCellValue(cells, pos, pos_apost, det.anios_posteriores_resultado);
+            for (int i = pos_nrubro; i <= pos_porcapost; i++)
             {
                 cells[pos, i].Style.Font.Bold = true;
-                setCellColor(cells[pos,i].Style,Color.Black,ColorTranslator.FromHtml("#adc6ea"));     
+                setCellColor(cells[pos, i].Style, Color.Black, ColorTranslator.FromHtml("#adc6ea"));
             }
-            renderDatosOcultos(cells,pos,det);
+
+            renderDatosOcultos(cells, pos, det);
         }
-        
-        private void renderDetalleHijo(ExcelRange cells, int pos, ProformaDetalle det, int mesInicio, Dictionary<string,Dictionary<string,int>> paresProformaReal)
+
+        private void renderDetalleHijo(ExcelRange cells, int pos, ProformaDetalle det, int mesInicio,
+            Dictionary<string, Dictionary<string, int>> paresProformaReal)
         {
-            Dictionary<string,int> par=paresProformaReal[det.clave_rubro];
+            Dictionary<string, int> par = paresProformaReal[det.clave_rubro];
             if (det.tipo.Equals(TIPODETPROFORM))
             {
-                par.Add(TIPODETPROFORM,pos);
-                makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro + " proform" );
+                par.Add(TIPODETPROFORM, pos);
+                makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro + " proform");
                 makeCellValue(cells, pos, pos_total, 0.0);
+                makeCellValue(cells, pos, pos_porctotal, 0.0);
                 makeCellValue(cells, pos, pos_aant, 0.0);
+                makeCellValue(cells, pos, pos_porcaant, 0.0);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
+                makeCellValue(cells, pos, pos_porcejercicio, 0.0);
+                makeCellValue(cells, pos, pos_porcapost, 0.0);
             }
             else if (det.tipo.Equals(TIPODETPROREAL))
             {
-                par.Add(TIPODETPROREAL,pos);
+                par.Add(TIPODETPROREAL, pos);
                 makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro + " real");
-                /*string formula = String.Format("SUM({0}:{1})", cells[pos, pos_ejercicio].Address, cells[pos, 3].Address);
-                makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;*/
                 makeCellValue(cells, pos, pos_total, 0.0);
-                
+                makeCellValue(cells, pos, pos_porctotal, 0.0);
                 makeCellValue(cells, pos, pos_aant, det.acumulado_resultado);
+                makeCellValue(cells, pos, pos_porcaant, 0.0);
                 makeCellValue(cells, pos, pos_ejercicio, 0.0);
+                makeCellValue(cells, pos, pos_porcejercicio, 0.0);
+                makeCellValue(cells, pos, pos_porcapost, 0.0);
             }
-            
+
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
             {
                 int ponderacion = entry.Value;
-                int posicionCelda = ponderacion + pos_ejercicio;
+                int posicionCelda = ponderacion + (POS_COL_ENERO-1);
                 if (ponderacion > 0)
                 {
                     Object valorCelda = det[entry.Key];
@@ -326,16 +374,16 @@ namespace AppGia.Helpers
                 }
             }
 
-            makeCellValue(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado);
-            renderDatosOcultos(cells,pos,det);
+            makeCellValue(cells, pos, pos_apost, det.anios_posteriores_resultado);
+            renderDatosOcultos(cells, pos, det);
         }
 
-        private void buildFormulasAritmetica(ExcelRange cells,List<int> positionsTotales,Dictionary<string,Dictionary<string,int>> paresProformaRealProfor)
+        private void buildFormulasAritmetica(ExcelRange cells, List<int> positionsTotales,
+            Dictionary<string, Dictionary<string, int>> paresProformaRealProfor)
         {
             positionsTotales.ForEach(posRow =>
             {
-          
-                for (int i = 2; i < 18; i++)
+                for (int i = 2; i < pos_apost; i++)
                 {
                     string aritmetica = cells[posRow, pos_aritmetica].Value.ToString();
                     foreach (var entry in paresProformaRealProfor)
@@ -343,97 +391,142 @@ namespace AppGia.Helpers
                         string claveRubro = entry.Key;
                         if (aritmetica.Contains(claveRubro))
                         {
-                           
                             int posDetReal = entry.Value[TIPODETPROREAL];
                             string addrReal = cells[posDetReal, i].Address;
-                            string replacement = "("+addrReal;
+                            string replacement = "(" + addrReal;
                             if (entry.Value.ContainsKey(TIPODETPROFORM))
                             {
                                 int posDetProform = entry.Value[TIPODETPROFORM];
                                 string addrProform = cells[posDetProform, i].Address;
-                                replacement+="+"+addrProform;
+                                replacement += "+" + addrProform;
                             }
-                            replacement+=")";
-                            aritmetica=aritmetica.Replace(claveRubro, replacement);
+
+                            replacement += ")";
+                            aritmetica = aritmetica.Replace(claveRubro, replacement);
                         }
                     }
+
                     string formula = aritmetica;
                     makeCellFormula(cells, posRow, i, formula);
                     cells[posRow, i].Calculate();
                 }
             });
         }
-        private void buildFormulasEjercicio(ExcelRange cells,
+
+        private void buildFormulasEjercicio(ExcelRange cells_,
             Dictionary<string, Dictionary<string, int>> paresProformaReal)
         {
+            ExcelRange c = cells_;
+            int posColIni = POS_COL_ENERO;
+            int posColFin = pos_apost - 1;
             foreach (var entry in paresProformaReal)
             {
-                int posDetReal = entry.Value[TIPODETPROREAL];
-                if (entry.Value.ContainsKey(TIPODETPROREAL)&&entry.Value.ContainsKey(TIPODETPROFORM))
+                int posReal = entry.Value[TIPODETPROREAL];
+                if (entry.Value.ContainsKey(TIPODETPROREAL) && entry.Value.ContainsKey(TIPODETPROFORM))
                 {
-                    int posDetProform = entry.Value[TIPODETPROFORM];
-                    
-                    string formulaR = String.Format("SUM({0}:{1})",
-                        cells[posDetReal, 5].Address, cells[posDetReal, 16].Address);
-                    cells[posDetReal, pos_ejercicio].Formula = formulaR;
-                    cells[posDetReal, pos_ejercicio].Calculate();
-                    
-                    
-                    string formulaP = String.Format("SUM({0}:{1})",
-                        cells[posDetProform, 5].Address, cells[posDetProform, 16].Address);
-                    cells[posDetProform, pos_ejercicio].Formula = formulaP;
-                    cells[posDetProform, pos_ejercicio].Calculate();
-                    
-                    
-            
-                    string formulaTotalR = String.Format("SUM({0}:{1})+{2}+{3}",
-                        cells[posDetReal, 5].Address, cells[posDetReal, 16].Address,
-                        cells[posDetReal, pos_aant].Address, cells[posDetReal, pos_anios_posteriores].Address);
-                    
-                    cells[posDetReal, pos_total].Formula = formulaTotalR;
-                    cells[posDetReal, pos_total].Calculate();
-                    
-                    string formulaTotalP = String.Format("SUM({0}:{1})+{2}+{3}",
-                        cells[posDetProform, 5].Address, cells[posDetProform, 16].Address,
-                        cells[posDetProform, pos_aant].Address, cells[posDetProform, pos_anios_posteriores].Address);
-                    
-                    cells[posDetProform, pos_total].Formula = formulaTotalP;
-                    cells[posDetProform, pos_total].Calculate();
-                    
-                    
+                    int posProf = entry.Value[TIPODETPROFORM];
+                    ApplyFormulaEjercicio(c, posReal, posColIni, posColFin);
+                    ApplyFormulaEjercicio(c, posProf, posColIni, posColFin);
+                    ApplyFormulaTotal(c, posReal,posColIni,posColFin);
+                    ApplyFormulaTotal(c, posProf,posColIni,posColFin);
                 }
-                //makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
-                
             }
-
-            cells.Worksheet.Calculate();
+            c.Worksheet.Calculate();
         }
-        private ExcelRangeBase makeCellValue(ExcelRange excelRange,int posY,int posX,object value)
+
+        private void buildFormulasPorcentajes(ExcelRange cells,
+            Dictionary<string, Dictionary<string, int>> paresProformaReal, int posRowTotalIngresos,
+            List<int> positionsTotales)
+        {
+            if (posRowTotalIngresos > 0)
+            {
+                foreach (var entry in paresProformaReal)
+                {
+                    int posReal = entry.Value[TIPODETPROREAL];
+                    if (entry.Value.ContainsKey(TIPODETPROREAL) && entry.Value.ContainsKey(TIPODETPROFORM))
+                    {
+                        int posProf = entry.Value[TIPODETPROFORM];
+
+                        listPosColsPorc.ForEach(posPorcentaje =>
+                        {
+                            ApplyFormulaPorcentaje(cells, posRowTotalIngresos, posReal, posPorcentaje - 1, posPorcentaje);
+                            ApplyFormulaPorcentaje(cells, posRowTotalIngresos, posProf, posPorcentaje - 1, posPorcentaje);
+                        });
+                    }
+                }
+                positionsTotales.ForEach(posrow =>
+                {
+                    listPosColsPorc.ForEach(posPorcentaje =>
+                    {
+                        ApplyFormulaPorcentaje(cells, posRowTotalIngresos, posrow, posPorcentaje - 1, posPorcentaje);
+                    });
+                });
+            }
+        }
+
+        private void ApplyFormulaEjercicio(ExcelRange c,int posRow,int posColIni,int posColFin)
+        {
+            string formula = $"SUM({_A(c[posRow, posColIni])}:{_A(c[posRow, posColFin])})";
+            ApplyFormula(c,posRow,pos_ejercicio,formula);
+        }
+        private void ApplyFormulaTotal(ExcelRange c,int posRow,int posColIni,int posColFin)
+        {
+            string formula =
+                $"SUM({_A(c[posRow, posColIni])}:{_A(c[posRow, posColFin])})+{_A(c[posRow, pos_aant])}+{_A(c[posRow, pos_apost])}";
+
+            ApplyFormula(c,posRow,pos_total,formula);
+        }
+        private void ApplyFormulaPorcentaje(ExcelRange c,int posRowIngresos,int posRow,int posCol,int posColTarget)
+        {
+            string formula =
+                $"{_A(c[posRow, posCol])}/{_A(c[posRowIngresos, posCol])}";
+
+            ApplyFormula(c,posRow,posColTarget,formula);
+            //ExcelRangeBase excelCell = c[posRow, posColTarget];
+        }
+
+
+        private void ApplyFormula(ExcelRange cells, int posRow, int posCol, string formula)
+        {
+            cells[posRow, posCol].Formula = formula;
+            cells[posRow, posCol].Calculate(); 
+        }
+       
+        private String _A(ExcelRange excelRange)
+        {
+            return excelRange.Address;
+        }
+
+        private ExcelRangeBase makeCellValue(ExcelRange excelRange, int posY, int posX, object value)
         {
             ExcelRangeBase excelCell = excelRange[posY, posX];
             ExcelStyle style = excelCell.Style;
-            if(value is String)
+            if (value is String)
             {
                 excelCell.Value = value.ToString();
             }
-            else if (value is Int64 )
+            else if (value is Int64)
             {
                 excelCell.Value = ToInt64(value);
-            }else if (value is Int32 )
+            }
+            else if (value is Int32)
             {
                 excelCell.Value = ToInt32(value);
-            }else if (value is Boolean )
+            }
+            else if (value is Boolean)
             {
                 excelCell.Value = ToBoolean(value);
-            }else
+            }
+            else
             {
                 excelCell.Value = ToDouble(value);
                 style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             }
-            
+
             return applyStyleDefault(excelCell);
         }
-        private ExcelRangeBase makeCellFormula(ExcelRange excelRange,int posY,int posX,string formula)
+
+        private ExcelRangeBase makeCellFormula(ExcelRange excelRange, int posY, int posX, string formula)
         {
             excelRange[posY, posX].Value = 0;
             excelRange[posY, posX].Formula = formula;
@@ -442,7 +535,7 @@ namespace AppGia.Helpers
             //return applyStyleDefault(excelRange[posY, posX]);
             return excelRange[posY, posX];
         }
-        
+
         private void makeEncabezado(ExcelRange cells, string[] nombresColumnas)
         {
             for (int i = 0; i < nombresColumnas.Length; i++)
@@ -465,38 +558,39 @@ namespace AppGia.Helpers
             applyStyleOculto(makeCellValue(cells, posY, pos_idInterno, det.idInterno));
             applyStyleOculto(makeCellValue(cells, posY, pos_clave_rubro, det.clave_rubro));
             applyStyleOculto(makeCellValue(cells, posY, pos_rubro_id, det.rubro_id));
-            applyStyleOculto(makeCellValue(cells, posY, pos_tipo, det.tipo==null?"":det.tipo));
-            applyStyleOculto(makeCellValue(cells, posY, pos_estilo,  det.estilo));
-            applyStyleOculto(makeCellValue(cells, posY, pos_aritmetica,  det.aritmetica==null?"":det.aritmetica));
+            applyStyleOculto(makeCellValue(cells, posY, pos_tipo, det.tipo == null ? "" : det.tipo));
+            applyStyleOculto(makeCellValue(cells, posY, pos_estilo, det.estilo));
+            applyStyleOculto(makeCellValue(cells, posY, pos_aritmetica, det.aritmetica == null ? "" : det.aritmetica));
             applyStyleOculto(makeCellValue(cells, posY, pos_id_detalle, det.id));
             applyStyleOculto(makeCellValue(cells, posY, pos_es_total_ingresos, det.es_total_ingresos));
-          
-
         }
 
         private ExcelRangeBase applyStyleDefault(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
-            style.Locked = true;//por defecto todas la columnas bloqueadas a edicion
+            style.Locked = true; //por defecto todas la columnas bloqueadas a edicion
             style.Font.Size = 11;
             style.Border.Top.Style = ExcelBorderStyle.Hair;
-            style.ShrinkToFit=true;
+            style.ShrinkToFit = true;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             setCellColor(style, Color.DimGray, ColorTranslator.FromHtml("#eaeded"));
             return excelCell;
-        } 
+        }
+
         private void applyStyleOculto(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
             setCellColor(style, Color.White, Color.White);
         }
+
         private void applyStyleEditable(ExcelRangeBase excelCell)
         {
             ExcelStyle style = excelCell.Style;
             style.Locked = false;
             setCellColor(style, Color.Black, ColorTranslator.FromHtml("#ffffff"));
         }
-        private void setCellColor(ExcelStyle style,Color fontColor,Color backColor)
+
+        private void setCellColor(ExcelStyle style, Color fontColor, Color backColor)
         {
             style.Font.Color.SetColor(fontColor);
             style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -505,13 +599,11 @@ namespace AppGia.Helpers
 
         private void setBordersInworkSheet(ExcelWorksheet ws)
         {
-            int numRows=ws.Dimension.End.Row;
-            setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data, numRows, pos_anios_posteriores]);
-            /*setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data,numRows, posrow_inicio_data]);
-            setBorderColor(ws.Cells[posrow_inicio_data, pos_aant,numRows, pos_aant]);
-            setBorderColor(ws.Cells[posrow_inicio_data, pos_ejercicio, numRows, pos_ejercicio]);
-            setBorderColor(ws.Cells[posrow_inicio_data, pos_anios_posteriores,numRows, pos_anios_posteriores]);*/
+            int numRows = ws.Dimension.End.Row;
+            setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data, numRows, pos_porcapost]);
+            
         }
+
         private void setBorderColor(ExcelRange Rng)
         {
             Rng.Style.Border.Left.Style = ExcelBorderStyle.Thin;
@@ -519,8 +611,8 @@ namespace AppGia.Helpers
             Rng.Style.Border.Right.Style = ExcelBorderStyle.Thin;
             Rng.Style.Border.Right.Color.SetColor(Color.Black);
         }
-        
- 
+
+
         private static Dictionary<string, Int32> getPonderacionCampos()
         {
             Dictionary<string, Int32> ponderacionCampos = new Dictionary<string, Int32>();

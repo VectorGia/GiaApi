@@ -103,6 +103,7 @@ namespace AppGia.Util
         public const string TIPODETPROREAL = "real";
         public const string ESTILODETHIJO = "hijo";
         public const string ESTILODETPADRE = "padre";
+        public const string ESTILODETPADREINGRESOS = "padreingresos";
 
         public const string claveMonedaMex = "MX";
         
