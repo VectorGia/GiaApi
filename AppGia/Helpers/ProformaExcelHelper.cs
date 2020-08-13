@@ -205,7 +205,7 @@ namespace AppGia.Helpers
                     if (detalle.estilo.Equals(ESTILODETHIJO))
                     {
                         renderDetalleHijo(cells, posRow, detalle,mesInicio,  paresProformaRealProfor);    
-                    }else if(detalle.estilo.Equals(ESTILODETPADRE))
+                    }else if(detalle.estilo.Contains(ESTILODETPADRE))
                     {
                         renderDetallePadre(cells,posRow,detalle,paresProformaRealProfor);
                         positionsTotales.Add(posRow);
@@ -218,7 +218,7 @@ namespace AppGia.Helpers
                 {
                     cells[i, pos_total].Calculate();
                 }
-                workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+                //workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                setBordersInworkSheet(workSheet);
                 /*for (int i = 1; i <= workSheet.Dimension.End.Column; i++)
                 {
@@ -246,13 +246,11 @@ namespace AppGia.Helpers
             Dictionary<string,int> par=paresProformaReal[det.clave_rubro];
             par.Add(TIPODETPROREAL,pos);
             
-            makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro).Style.Font.Bold=true;
-            setCellColor(cells[pos,pos_nrubro].Style,Color.Black,ColorTranslator.FromHtml("#FAFAD2"));
+            makeCellValue(cells, pos, pos_nrubro, det.nombre_rubro);
+            makeCellValue(cells, pos, pos_total, 0);
+            makeCellValue(cells, pos, pos_aant, det.acumulado_resultado);
+            makeCellValue(cells, pos, pos_ejercicio, 0);
             
-            makeCellValue(cells, pos, pos_total, 0).Style.Font.Bold=true;
-            makeCellValue(cells, pos, pos_aant, det.acumulado_resultado).Style.Font.Bold=true;
-            makeCellValue(cells, pos, pos_ejercicio, 0).Style.Font.Bold=true;
-           
             foreach (KeyValuePair<string, Int32> entry in getPonderacionCampos())
             {
                 int ponderacion = entry.Value;
@@ -260,11 +258,16 @@ namespace AppGia.Helpers
                 if (ponderacion > 0)
                 {
                     Object valorCelda = 0;
-                    makeCellValue(cells, pos, posicionCelda, valorCelda).Style.Font.Bold=true;
+                    makeCellValue(cells, pos, posicionCelda, valorCelda);
                 }
             }
 
-            makeCellValue(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado).Style.Font.Bold=true;
+            makeCellValue(cells, pos, pos_anios_posteriores, det.anios_posteriores_resultado);
+            for (int i = pos_nrubro; i <= pos_anios_posteriores; i++)
+            {
+                cells[pos, i].Style.Font.Bold = true;
+                setCellColor(cells[pos,i].Style,Color.Black,ColorTranslator.FromHtml("#adc6ea"));     
+            }
             renderDatosOcultos(cells,pos,det);
         }
         
@@ -370,19 +373,34 @@ namespace AppGia.Helpers
                 {
                     int posDetProform = entry.Value[TIPODETPROFORM];
                     
-                    string formula = String.Format("SUM({0}:{1})+SUM({2}:{3})",
-                        cells[posDetReal, 5].Address, cells[posDetReal, 16].Address, cells[posDetProform, 5].Address,
-                        cells[posDetProform, 16].Address);
-                    cells[posDetReal, pos_ejercicio].Formula = formula;
+                    string formulaR = String.Format("SUM({0}:{1})",
+                        cells[posDetReal, 5].Address, cells[posDetReal, 16].Address);
+                    cells[posDetReal, pos_ejercicio].Formula = formulaR;
                     cells[posDetReal, pos_ejercicio].Calculate();
                     
-                    /*formula = String.Format("SUM({0}:{1})", cells[posDetReal, pos_ejercicio].Address,
-                        cells[posDetReal, 3].Address);*/
-                    //cells[posDetReal, 3].Address
-
-                    formula=formula+"+"+cells[posDetReal, pos_aant].Address;
-                    cells[posDetReal, pos_total].Formula = formula;
+                    
+                    string formulaP = String.Format("SUM({0}:{1})",
+                        cells[posDetProform, 5].Address, cells[posDetProform, 16].Address);
+                    cells[posDetProform, pos_ejercicio].Formula = formulaP;
+                    cells[posDetProform, pos_ejercicio].Calculate();
+                    
+                    
+            
+                    string formulaTotalR = String.Format("SUM({0}:{1})+{2}+{3}",
+                        cells[posDetReal, 5].Address, cells[posDetReal, 16].Address,
+                        cells[posDetReal, pos_aant].Address, cells[posDetReal, pos_anios_posteriores].Address);
+                    
+                    cells[posDetReal, pos_total].Formula = formulaTotalR;
                     cells[posDetReal, pos_total].Calculate();
+                    
+                    string formulaTotalP = String.Format("SUM({0}:{1})+{2}+{3}",
+                        cells[posDetProform, 5].Address, cells[posDetProform, 16].Address,
+                        cells[posDetProform, pos_aant].Address, cells[posDetProform, pos_anios_posteriores].Address);
+                    
+                    cells[posDetProform, pos_total].Formula = formulaTotalP;
+                    cells[posDetProform, pos_total].Calculate();
+                    
+                    
                 }
                 //makeCellFormula(cells, pos, pos_total,  formula).Style.Font.Bold=true;
                 
@@ -412,6 +430,7 @@ namespace AppGia.Helpers
                 excelCell.Value = ToDouble(value);
                 style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             }
+            
             return applyStyleDefault(excelCell);
         }
         private ExcelRangeBase makeCellFormula(ExcelRange excelRange,int posY,int posX,string formula)
@@ -420,7 +439,8 @@ namespace AppGia.Helpers
             excelRange[posY, posX].Formula = formula;
             excelRange[posY, posX].Style.Numberformat.Format = "$ ###,###,###,###,###,##0.00";
             //excelRange[posY, posX].Style.Hidden = true;    //Hide the formula
-            return applyStyleDefault(excelRange[posY, posX]);
+            //return applyStyleDefault(excelRange[posY, posX]);
+            return excelRange[posY, posX];
         }
         
         private void makeEncabezado(ExcelRange cells, string[] nombresColumnas)
@@ -430,7 +450,7 @@ namespace AppGia.Helpers
                 int posicion = i + posrow_encabezado;
                 cells[posrow_encabezado, posicion].Value = nombresColumnas[i];
                 applyStyleDefault(cells[posrow_encabezado, posicion]).Style.Font.Bold = true;
-                setCellColor(cells[posrow_encabezado, posicion].Style, Color.Azure, Color.Blue);
+                setCellColor(cells[posrow_encabezado, posicion].Style, Color.Azure, Color.DarkBlue);
             }
         }
 
@@ -462,7 +482,7 @@ namespace AppGia.Helpers
             style.Border.Top.Style = ExcelBorderStyle.Hair;
             style.ShrinkToFit=true;
             style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-            setCellColor(style, Color.Black, ColorTranslator.FromHtml("#eaeded"));
+            setCellColor(style, Color.DimGray, ColorTranslator.FromHtml("#eaeded"));
             return excelCell;
         } 
         private void applyStyleOculto(ExcelRangeBase excelCell)
@@ -486,10 +506,11 @@ namespace AppGia.Helpers
         private void setBordersInworkSheet(ExcelWorksheet ws)
         {
             int numRows=ws.Dimension.End.Row;
-            setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data,numRows, posrow_inicio_data]);
+            setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data, numRows, pos_anios_posteriores]);
+            /*setBorderColor(ws.Cells[posrow_inicio_data, posrow_inicio_data,numRows, posrow_inicio_data]);
             setBorderColor(ws.Cells[posrow_inicio_data, pos_aant,numRows, pos_aant]);
             setBorderColor(ws.Cells[posrow_inicio_data, pos_ejercicio, numRows, pos_ejercicio]);
-            setBorderColor(ws.Cells[posrow_inicio_data, pos_anios_posteriores,numRows, pos_anios_posteriores]);
+            setBorderColor(ws.Cells[posrow_inicio_data, pos_anios_posteriores,numRows, pos_anios_posteriores]);*/
         }
         private void setBorderColor(ExcelRange Rng)
         {
