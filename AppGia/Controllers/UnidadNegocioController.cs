@@ -26,7 +26,6 @@ namespace AppGia.Controllers
         public List<UnidadNegocio> Get()
         {
             
-            _logger.LogInformation("prueba de logger");
             return objUnidadNeg.GetAllUnidadNegocio();
         }
 

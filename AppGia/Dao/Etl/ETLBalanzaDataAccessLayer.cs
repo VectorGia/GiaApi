@@ -39,7 +39,7 @@
             try
             {
                 DSN dsn = dsnConfig.crearDSN(idEmpresa);
-                logger.Debug("generando conexion odbc {0}",dsn.nombreDSN);
+                logger.Info("generando conexion odbc {0}",dsn.nombreDSN);
                 odbcCon = conex.ConexionSybaseodbc(dsn.nombreDSN);
                 odbcCon.Open();
                 layout.WriteLine(Constantes.HEADER_BALANZA_CSV);
@@ -59,7 +59,7 @@
                 {
                     consulta += "  where year between " + anioInicio + " and " + anioFin;
                 }
-                logger.Debug("Consultando sybase {0}",dsn.nombreDSN);
+                logger.Info("Consultando sybase {0}",dsn.nombreDSN);
                 OdbcCommand cmd = new OdbcCommand(consulta, odbcCon);
                 OdbcDataReader rdr = cmd.ExecuteReader();
                 

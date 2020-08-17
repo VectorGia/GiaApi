@@ -89,7 +89,7 @@ namespace AppGia.Dao
             {
                 String consulta = qry.getQuerySums(rubro, centroCostos, empresa, numRegistrosExistentes);
                 
-                logger.Debug("consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
+                logger.Info("consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
                     centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_id, rubro.id,consulta);
                 
                 DataTable sumaMontosDt = _queryExecuter.ExecuteQuery(consulta);
@@ -138,7 +138,7 @@ namespace AppGia.Dao
             {
                 GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
                 String consulta = qry.getQuerySemanalSums(rubro, centroCostos,empresa, numRegistrosExistentes);
-                logger.Debug("consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
+                logger.Info("consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",  
                     centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_flujo_id, rubro.id,consulta);
 
                 DataTable sumaMontos = _queryExecuter.ExecuteQuery(consulta);

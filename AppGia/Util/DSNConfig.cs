@@ -15,12 +15,12 @@
         
         public DSN crearDSN(Int64 idEmpresa)
         {
-            logger.Debug("Obteniendo datos empresa");
+            logger.Info("Obteniendo datos empresa");
             List<Empresa> lstCia = new EmpresaConexionDataAccessLayer().EmpresaConexionETL_List(idEmpresa);
             Empresa empresa = lstCia[0];
             //se deshabilita el cifrado de contrasenia
             //empresa.contrasenia_etl = Utilerias.DecryptStringFromBytes(empresa.contra_bytes, empresa.llave, empresa.apuntador);
-            logger.Debug("Contrasenia descifada '{0}'",empresa.contrasenia_etl);
+            logger.Info("Contrasenia descifada '{0}'",empresa.contrasenia_etl);
 
             bool trustedConnection = false;
 
@@ -69,7 +69,7 @@
                 {
                     sb.Append(key).Append(":'").Append(dsnKey.GetValue(key)).Append("',");
                 }
-                logger.Debug("%%%% dsnValues='{0}'",sb.Append("}").ToString().Replace(",}","}"));
+                logger.Info("%%%% dsnValues='{0}'",sb.Append("}").ToString().Replace(",}","}"));
                 
                 
 

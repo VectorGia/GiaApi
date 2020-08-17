@@ -38,7 +38,7 @@ namespace AppGia.Helpers
        
         public Dictionary<string, double> getTiposCambioContable(Int64 idCC, int anio)
         {
-            logger.Debug("tipos cambio contables <-- start");
+            logger.Info("tipos cambio contables <-- start");
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             Moneda moneda = findIdMonedaByCentroCosto(idCC);
             if (!esMonedaExtrangera(moneda))
@@ -69,13 +69,13 @@ namespace AppGia.Helpers
                     tipoCambio.Add("MXN FINAN", factorPesos);
                 }
             }
-            logger.Debug("'{0}' tipos de cambio encontrados",tipoCambio.Count);
+            logger.Info("'{0}' tipos de cambio encontrados",tipoCambio.Count);
             return tipoCambio;
         }
 
         public Dictionary<string, double> getTiposCambioFlujo(Int64 idCC, int anio)
         {
-            logger.Debug("tipos cambio flujo <-- start");
+            logger.Info("tipos cambio flujo <-- start");
             Dictionary<string, double> tipoCambio = new Dictionary<string, double>();
             Moneda moneda = findIdMonedaByCentroCosto(idCC);
             if (!esMonedaExtrangera(moneda))
@@ -99,7 +99,7 @@ namespace AppGia.Helpers
                 tipoCambio.Add("USD", factorDll);
                 tipoCambio.Add("MXN", factorPesos);
             }
-            logger.Debug("'{0}' tipos de cambio encontrados",tipoCambio.Count);
+            logger.Info("'{0}' tipos de cambio encontrados",tipoCambio.Count);
             return tipoCambio;
         }
         private Moneda findIdMonedaByCentroCosto(Int64 idCC)

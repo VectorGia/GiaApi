@@ -131,7 +131,7 @@ namespace AppGia.Helpers
                 aritmetica = "(" + aritmetica + ") * " + porcentaje;
             }
 
-            logger.Debug(" -> rubro='{0}',aritmetica='{1}'", rubroTotal.nombre, aritmetica);
+            logger.Info(" -> rubro='{0}',aritmetica='{1}'", rubroTotal.nombre, aritmetica);
             var aritmeticas = new Dictionary<string, string>();
             aritmeticas.Add("enero_monto", aritmetica);
             aritmeticas.Add("febrero_monto", aritmetica);
@@ -238,7 +238,7 @@ namespace AppGia.Helpers
 
         public List<ProformaDetalle> getAjustes(Int64 idCC, int anio, Int64 idTipoCaptura)
         {
-            logger.Debug("getAjustes <-- start");
+            logger.Info("getAjustes <-- start");
             List<ProformaDetalle> proformaDetalles = new List<ProformaDetalle>();
             if (idTipoCaptura == TipoCapturaContable) //Los ajustes solo son para contable
             {
@@ -285,7 +285,7 @@ namespace AppGia.Helpers
                     }
                 });
             }
-            logger.Debug("ajustes encotrados='{0}'",proformaDetalles.Count);
+            logger.Info("ajustes encotrados='{0}'",proformaDetalles.Count);
             return proformaDetalles;
         }
 
@@ -421,7 +421,7 @@ namespace AppGia.Helpers
             consulta += "	 and centro_costo_id = " + idCenCos;
             consulta += "	 and tipo_captura_id = " + idTipoCaptura;
             
-            logger.Debug("executing.... '{0}'",consulta);
+            logger.Info("executing.... '{0}'",consulta);
             Object objfecha = _queryExecuter.ExecuteQueryUniqueresult(consulta)["fecha"];
            
             if (objfecha != null && objfecha.ToString().Length>0)

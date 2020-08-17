@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using AppGia.Dao;
 using AppGia.Helpers;
 using AppGia.Models;
+using NLog;
 using Quartz;
 using Quartz.Impl;
 
@@ -11,6 +11,7 @@ namespace AppGia.Jobs
 {
     public class ExtraccionProcess
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static int timeOut = 3000;
         private static IScheduler _extraccionContableScheduler;
         private static IScheduler _extraccionFlujoScheduler;
@@ -48,7 +49,7 @@ namespace AppGia.Jobs
             {
                 finished= _extraccionContableScheduler.Shutdown().Wait(timeOut, default);
             }
-
+            logger.Info("rescheduleContable finished= '{0}'",finished);
             if (finished)
             {
                 ExtraccionContableSchedule(cronExp, idUsuario);
@@ -61,7 +62,7 @@ namespace AppGia.Jobs
             {
                 finished= _extraccionFlujoScheduler.Shutdown().Wait(timeOut, default);
             }
-
+            logger.Info("rescheduleFlujo finished= '{0}'",finished);
             if (finished)
             {
                 ExtraccionFlujoSchedule(cronExp, idUsuario);
@@ -78,6 +79,7 @@ namespace AppGia.Jobs
         }
         private static async void ExtraccionContableSchedule(String cronExp,Int64 idUsuario)
         {
+            logger.Info("ExtraccionContableSchedule ('{0}','{1}')",cronExp,idUsuario);
             new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
                 new ProgramacionProceso(ClaveExtraccionContable, null, cronExp, idUsuario));
             
@@ -109,6 +111,7 @@ namespace AppGia.Jobs
         }
         private static async void ExtraccionFlujoSchedule(String cronExp,Int64 idUsuario)
         {
+            logger.Info("ExtraccionFlujoSchedule ('{0}','{1}')",cronExp,idUsuario);
             new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
                 new ProgramacionProceso(ClaveExtraccionFlujo, null, cronExp, idUsuario));
 
@@ -132,33 +135,37 @@ namespace AppGia.Jobs
 
     internal class ExtraccionContableJob : IJob
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.Out.WriteLineAsync(".... ExtraccionContableJob start!");
+                logger.Info(".... ExtraccionContableJob start!");
                 new ETLHelper().extraeBalanzaAuto();
-                Console.Out.WriteLineAsync(".... ExtraccionContableJob end!");
+                logger.Info(".... ExtraccionContableJob end!");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLineAsync("#### Error en ExtraccionContableJob: " + e.Message + ", " + e.StackTrace);
+                logger.Error(e,"#### Error en ExtraccionContableJob: " );
             }
         }
     }
     internal class ExtraccionFlujoJob : IJob
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.Out.WriteLineAsync(".... ExtraccionFlujoJob start!");
+                logger.Info(".... ExtraccionFlujoJob start!");
                 new ETLHelper().extraeFlujoAuto();
-                Console.Out.WriteLineAsync(".... ExtraccionFlujoJob end!");
+                logger.Info(".... ExtraccionFlujoJob end!");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLineAsync("#### Error en ExtraccionFlujoJob: " + e.Message + ", " + e.StackTrace);
+                logger.Error(e, " Error en ExtraccionFlujoJob:  ");
             }
         }
     }

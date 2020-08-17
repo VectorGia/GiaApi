@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AppGia.Dao;
 using AppGia.Models;
+using NLog;
 using Quartz;
 using Quartz.Impl;
 
@@ -9,6 +10,7 @@ namespace AppGia.Jobs
 {
     public class MontosConsolidadosProcess
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static int timeOut = 3000;
         private static IScheduler _schedulerMontosContable;
         private static IScheduler _schedulerMontosFlujo;
@@ -48,7 +50,7 @@ namespace AppGia.Jobs
             {
                 finished= _schedulerMontosContable.Shutdown().Wait(timeOut, default);
             }
-
+            logger.Info("rescheduleContable finished= '{0}'",finished);
             if (finished)
             {
                 MontosContableSchedule(cronExp,idUsuario);
@@ -61,7 +63,7 @@ namespace AppGia.Jobs
             {
                 finished= _schedulerMontosFlujo.Shutdown().Wait(timeOut, default);
             }
-
+            logger.Info("rescheduleFlujo finished= '{0}'",finished);
             if (finished)
             {
                 MontosFlujoSchedule(cronExp,idUsuario);
@@ -78,6 +80,7 @@ namespace AppGia.Jobs
         }
         private static async void MontosContableSchedule(String cronExp,Int64 idUsuario)
         {
+            logger.Info("MontosContableSchedule ('{0}','{1}')",cronExp,idUsuario);
             new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
                 new ProgramacionProceso(ClaveMontosContable, null, cronExp, idUsuario));
 
@@ -107,6 +110,7 @@ namespace AppGia.Jobs
         }
         private static async void MontosFlujoSchedule(String cronExp,Int64 idUsuario)
         {
+            logger.Info("MontosFlujoSchedule ('{0}','{1}')",cronExp,idUsuario);
             new ProgramacionProcesoDataAccessLayer().manageProgramacionProceso(
                 new ProgramacionProceso(ClaveMontosFlujo, null, cronExp, idUsuario));
 
@@ -130,33 +134,35 @@ namespace AppGia.Jobs
 
     internal class MontosContableJob : IJob
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.Out.WriteLineAsync(".... MontosContableJob start!");
+                logger.Info(".... MontosContableJob start!");
                 new PreProformaDataAccessLayer().MontosConsolidados(true,false);
-                Console.Out.WriteLineAsync(".... MontosContableJob end!");
+                logger.Info(".... MontosContableJob end!");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLineAsync("#### Error en MontosContableJob: " + e.Message + ", " + e.StackTrace);
+                logger.Error(e,"#### Error en MontosContableJob " );
             }
         }
     }
     internal class MontosFlujoJob : IJob
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.Out.WriteLineAsync(".... MontosFlujoJob start!");
+                logger.Info(".... MontosFlujoJob start!");
                 new PreProformaDataAccessLayer().MontosConsolidados(false,true);
-                Console.Out.WriteLineAsync(".... MontosFlujoJob end!");
+                logger.Info(".... MontosFlujoJob end!");
             }
             catch (Exception e)
             {
-                Console.Error.WriteLineAsync("#### Error en MontosFlujoJob: " + e.Message + ", " + e.StackTrace);
+                logger.Error(e,"#### Error en MontosFlujoJob " );
             }
         }
     }
