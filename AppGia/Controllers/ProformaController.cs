@@ -35,8 +35,14 @@ namespace AppGia.Controllers
         {
             try
             {
-                return Ok(objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio,
-                    proforma.tipo_proforma_id, proforma.tipo_captura_id));
+                List<ProformaDetalle> proformaDetalles =
+                    objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio,
+                        proforma.tipo_proforma_id, proforma.tipo_captura_id);
+                proformaDetalles.ForEach(detalle =>
+                {
+                    detalle.unidad_id = proforma.unidad_id;
+                });
+                return Ok(proformaDetalles);
             }
             catch (Exception e)
             {

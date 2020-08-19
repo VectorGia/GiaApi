@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using AppGia.Util;
 using AppGia.Helpers;
 using AppGia.Models;
+using AppGia.Util;
 using NLog;
 using Npgsql;
 using static AppGia.Util.Constantes;
@@ -30,8 +30,8 @@ namespace AppGia.Dao
             string consulta = "";
             consulta += " select ";
             consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
-            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
-            consulta += " 		upper(concat(py.nombre, ' - ' , mm.nombre, ' - ', tip.nombre)) as nombre_proforma ";
+            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura,pf.fecha_actualizacion,pf.unidad_id, ";
+            consulta += " 		upper(concat(py.nombre, ' | ' , mm.nombre, ' | ', tip.nombre)) as nombre_proforma ";
             consulta += " from proforma pf ";
             consulta += " inner join modelo_negocio mm on mm.id = pf.modelo_negocio_id ";
             consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
@@ -52,25 +52,41 @@ namespace AppGia.Dao
             proforma.centro_costo_id = Convert.ToInt64(rdr["centro_costo_id"]);
             proforma.activo = Convert.ToBoolean(rdr["activo"]);
             proforma.usuario = Convert.ToInt64(rdr["usuario"]);
+            proforma.unidad_id = Convert.ToInt64(rdr["unidad_id"]);
             proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+            if (rdr["fecha_actualizacion"] != DBNull.Value)
+            {
+                proforma.fecha_actualizacion = Convert.ToDateTime(rdr["fecha_actualizacion"]);
+            }
+
             proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
             return proforma;
         }
 
         public List<Proforma> GetAllProformas()
         {
-            string consulta = "";
-            consulta += " select ";
-            consulta += " 		pf.id, pf.anio, pf.modelo_negocio_id, pf.tipo_captura_id, pf.tipo_proforma_id, ";
-            consulta += " 		pf.centro_costo_id, pf.activo, pf.usuario, pf.fecha_captura, ";
-            consulta += " 		upper(concat(pr.nombre, ' - ' , mn.nombre, ' - ',pf.anio,' - ', tp.nombre,' - ', tc.clave)) as nombre_proforma ";
-            consulta += " from proforma pf ";
-            consulta += " inner join modelo_negocio mn on mn.id = pf.modelo_negocio_id ";
-            consulta += " inner join centro_costo cc on cc.id = pf.centro_costo_id ";
-            consulta += " inner join proyecto pr on pr.id = cc.proyecto_id ";
-            consulta += " inner join tipo_proforma tp on pf.tipo_proforma_id = tp.id "; 
-            consulta += " join tipo_captura tc  on tc.id=pf.tipo_captura_id";
-            consulta += " where pf.activo = 'true' ";
+            string consulta =
+                " select pf.id," +
+                " upper(concat(pf.anio, ' | ', tp.nombre, ' | ', tc.clave, ' | ', '(', e.desc_id, ')', e.nombre, ' | '," +
+                "    un.descripcion, ' | ', '(', cc.desc_id, ')', cc.nombre)) as nombre_proforma," +
+                " pf.anio," +
+                " pf.modelo_negocio_id," +
+                " pf.tipo_captura_id," +
+                " pf.tipo_proforma_id," +
+                " pf.centro_costo_id," +
+                " pf.activo," +
+                " pf.usuario," +
+                " pf.fecha_captura," +
+                " pf.fecha_actualizacion" +
+                "    from proforma pf" +
+                " join unidad_negocio un on pf.unidad_id = un.id" +
+                " join empresa e on pf.empresa_id = e.id" +
+                " inner join modelo_negocio mn on mn.id = pf.modelo_negocio_id" +
+                " inner join centro_costo cc on cc.id = pf.centro_costo_id" +
+                " inner join proyecto pr on pr.id = cc.proyecto_id" +
+                " inner join tipo_proforma tp on pf.tipo_proforma_id = tp.id" +
+                " join tipo_captura tc on tc.id = pf.tipo_captura_id" +
+                " where pf.activo = 'true' order by pf.fecha_captura desc,pf.fecha_actualizacion desc";
 
             try
             {
@@ -91,6 +107,11 @@ namespace AppGia.Dao
                     proforma.activo = Convert.ToBoolean(rdr["activo"]);
                     proforma.usuario = Convert.ToInt64(rdr["usuario"]);
                     proforma.fecha_captura = Convert.ToDateTime(rdr["fecha_captura"]);
+                    if (rdr["fecha_actualizacion"] != DBNull.Value)
+                    {
+                        proforma.fecha_actualizacion = Convert.ToDateTime(rdr["fecha_actualizacion"]);
+                    }
+
                     proforma.nombre_proforma = Convert.ToString(rdr["nombre_proforma"]);
                     lstProforma.Add(proforma);
                 }
@@ -108,10 +129,10 @@ namespace AppGia.Dao
             string consulta = "";
             consulta += " insert into proforma ( ";
             consulta +=
-                " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura ";
+                " 	id, anio, modelo_negocio_id, tipo_captura_id, tipo_proforma_id, centro_costo_id, activo, usuario, fecha_captura,unidad_id,empresa_id ";
             consulta += " ) values ( ";
             consulta +=
-                " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura ";
+                " 	nextval('seq_proforma'), @anio, @modelo_negocio_id, @tipo_captura_id, @tipo_proforma_id, @centro_costo_id, @activo, @usuario, @fecha_captura,@unidad_id,@empresa_id ";
             consulta += " ) ";
 
             try
@@ -126,6 +147,8 @@ namespace AppGia.Dao
                 cmd.Parameters.AddWithValue("@activo", proforma.activo);
                 cmd.Parameters.AddWithValue("@usuario", proforma.usuario);
                 cmd.Parameters.AddWithValue("@fecha_captura", proforma.fecha_captura);
+                cmd.Parameters.AddWithValue("@unidad_id", proforma.unidad_id);
+                cmd.Parameters.AddWithValue("@empresa_id", proforma.empresa_id);
 
                 int regInsert = cmd.ExecuteNonQuery();
 
@@ -157,7 +180,7 @@ namespace AppGia.Dao
                 {
                     con.Open();
                     NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                    cmd.Parameters.AddWithValue("@fecha_actualizacion", new DateTime());
+                    cmd.Parameters.AddWithValue("@fecha_actualizacion", DateTime.Now);
                     int regActual = cmd.ExecuteNonQuery();
                     return regActual;
                 }
@@ -361,7 +384,7 @@ namespace AppGia.Dao
         public int GuardaProforma(List<ProformaDetalle> detalles)
         {
             Proforma proforma = new Proforma();
-            DateTime fechaProc = DateTime.Today;
+            DateTime fechaProc = DateTime.Now;
             proforma.activo = true;
             proforma.anio = detalles[0].anio;
             proforma.usuario = detalles[0].usuario;
@@ -369,6 +392,8 @@ namespace AppGia.Dao
             proforma.tipo_proforma_id = detalles[0].tipo_proforma_id;
             proforma.tipo_captura_id = detalles[0].tipo_captura_id;
             proforma.centro_costo_id = detalles[0].centro_costo_id;
+            proforma.unidad_id = detalles[0].unidad_id;
+            proforma.empresa_id = detalles[0].empresa_id;
             proforma.fecha_captura = fechaProc;
             _profHelper.setMotoRealesAndProform(detalles);
             AddProforma(proforma);

@@ -65,7 +65,10 @@ namespace AppGia.Models
         public string aritmetica { get; set; }
         //HNA: no persistible
         public Boolean es_total_ingresos  { get; set; }
-        
+        //HNA: no persistible
+        public Int64 unidad_id { get; set; }
+
+
         public double anios_posteriores_resultado { get; set; }
         
         //HNA: no persistible nos permitira saber desde que mes es proforma y que es real

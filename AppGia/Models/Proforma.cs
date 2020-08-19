@@ -17,8 +17,10 @@ namespace AppGia.Models
 		public bool activo { get; set; }
 		public DateTime fecha_captura { get; set; }
 		
-		public DateTime fecha_actualizacion { get; set; }//agregar este dato a la bd
+		public DateTime fecha_actualizacion { get; set; }
 		public string nombre_proforma { get; set; }
+		public Int64 unidad_id { get; set; }
+		public Int64 empresa_id { get; set; }
 
 	}
 }

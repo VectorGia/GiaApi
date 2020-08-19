@@ -108,6 +108,7 @@ namespace AppGia.Dao
                 detalle.tipo_proforma_id = pro.tipo_proforma_id;
                 detalle.tipo_captura_id = pro.tipo_captura_id;
                 detalle.empresa_id = idEmpresa;
+                detalle.unidad_id = pro.unidad_id;
                 detallesAniosPosteriores.ForEach(posterior =>
                 {
                     if (detalle.rubro_id == posterior.rubro_id)
