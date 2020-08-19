@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using AppGia.Controllers;
+using AppGia.Util;
 using AppGia.Models;
 using Npgsql;
 using NpgsqlTypes;

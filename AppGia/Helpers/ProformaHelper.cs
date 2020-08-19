@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using AppGia.Controllers;
 using AppGia.Dao;
 using AppGia.Models;
 using AppGia.Util;
@@ -400,14 +399,14 @@ namespace AppGia.Helpers
             if (idTipoCaptura == Constantes.TipoCapturaContable)
             {
                 consulta = "select max(fecha) as fecha from montos_consolidados where activo=true " +
-                           " and fecha >=date_trunc('MONTH',to_date('" + fechaHoy + "','DD/MM/YYYY')) " +
-                           " and fecha <= to_date('" + fechaHoy + "','DD/MM/YYYY') ";
+                           " and date_trunc('DAY',fecha) >=date_trunc('MONTH',to_date('" + fechaHoy + "','DD/MM/YYYY')) " +
+                           " and date_trunc('DAY',fecha) <= to_date('" + fechaHoy + "','DD/MM/YYYY') ";
             }
             else if (idTipoCaptura == TipoCapturaFlujo)
             {
                 consulta = "select max(fecha) as fecha from montos_consolidados where activo=true " +
-                           " and fecha >to_date('" + fechaHoy + "','DD/MM/YYYY')-7 " +
-                           " and fecha <= to_date('" + fechaHoy + "','DD/MM/YYYY') ";
+                           " and date_trunc('DAY',fecha) >to_date('" + fechaHoy + "','DD/MM/YYYY')-7 " +
+                           " and date_trunc('DAY',fecha) <= to_date('" + fechaHoy + "','DD/MM/YYYY') ";
             }
             else
             {

@@ -1,13 +1,11 @@
-﻿using AppGia.Models;
-using Npgsql;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.DirectoryServices;
 using System.Linq;
-using System.Web;
 using AppGia.Controllers;
+using AppGia.Models;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace AppGia.Dao
 {
@@ -221,14 +219,14 @@ namespace AppGia.Dao
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
 
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
+                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
                   
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -268,14 +266,14 @@ namespace AppGia.Dao
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
+                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
                 con.Open();
                 int cantFilas = cmd.ExecuteNonQuery();
                 con.Close();

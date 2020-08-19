@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using AppGia.Models;
 using Npgsql;
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using AppGia.Conexion;
-using AppGia.Controllers;
+using AppGia.Util;
 using static AppGia.Util.Constantes;
 
 namespace AppGia.Dao

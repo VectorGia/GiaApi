@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using AppGia.Controllers;
 using AppGia.Models;
 using AppGia.Util;
 using NLog;

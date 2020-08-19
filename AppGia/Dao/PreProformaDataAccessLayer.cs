@@ -2,9 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
-using AppGia.Controllers;
 using AppGia.Models;
 using AppGia.Util;
 using NLog;
@@ -17,228 +15,8 @@ namespace AppGia.Dao
     public class PreProformaDataAccessLayer
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-
-
-        private QueryExecuter _queryExecuter = new QueryExecuter();
-
-
-        public int MontosConsolidados()
-        {
-            return MontosConsolidados(true, true);
-        }
-
-        public int MontosConsolidados(Boolean contable, Boolean flujo)
-        {
-            DataTable centrosCostoDt = GetCentrosCostro();
-            DateTime fechaactual = DateTime.Today;
-            int numInserts = 0;
-
-            foreach (DataRow centrosCostoRow in centrosCostoDt.Rows)
-            {
-                CentroCostos centroCostos = new CentroCostos();
-                centroCostos.id = ToInt64(centrosCostoRow["id"]);
-                centroCostos.desc_id = centrosCostoRow["desc_id"].ToString();
-                centroCostos.empresa_id = ToInt64(centrosCostoRow["empresa_id"]);
-                centroCostos.proyecto_id = ToInt64(centrosCostoRow["proyecto_id"]);
-                centroCostos.modelo_negocio_id = ToInt64(centrosCostoRow["modelo_negocio_id"]);
-                centroCostos.modelo_negocio_flujo_id = ToInt64(centrosCostoRow["modelo_negocio_flujo_id"]);
-
-                Empresa empresa = new EmpresaDataAccessLayer().GetEmpresaData(centroCostos.empresa_id);
-                if (contable)
-                {
-                    numInserts += manageModeloContable(centroCostos, empresa, fechaactual);
-                }
-
-                if (flujo)
-                {
-                    numInserts += manageModeloFlujo(centroCostos, empresa, fechaactual);
-                }
-            }
-
-            return numInserts;
-        }
-
-        private int manageModeloContable(CentroCostos centroCostos, Empresa empresa, DateTime fechaactual)
-        {
-            StopWatch swGral = new StopWatch($"manageModeloContable cc={centroCostos.desc_id} emp={empresa.desc_id} fec={fechaactual}");
-            swGral.start("manageModeloContable");
-            int numInserts = 0;
-            Int64 modeloId = centroCostos.modelo_negocio_id;
-
-            Modelo_Negocio mn = new ModeloNegocioDataAccessLayer().GetModelo(modeloId.ToString());
-            if (!mn.activo)
-            {
-                return 0;
-            }
-
-            List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
-            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaContable);
-            GeneraQry qry = new GeneraQry("balanza", "cuenta_unificada", 12);
-            ConcurrentDictionary<Int32, byte> aniosDefecto = new ConcurrentDictionary<Int32, byte>();
-            ConcurrentQueue<Rubros> rubrosSinMontos = new ConcurrentQueue<Rubros>();
-            ConcurrentBag<Int32> numInsertsList = new ConcurrentBag<Int32>();
-
-            Parallel.ForEach(rubrosDeModelo, (rubro) =>
-            {
-                StopWatch sw=new StopWatch(
-                    $"consulta_contables cc.id='{centroCostos.id}',empr.id='{centroCostos.empresa_id}',proy.id='{centroCostos.proyecto_id}',modelo.id='{centroCostos.modelo_negocio_flujo_id}',rubro.id='{rubro.id}'");
-                sw.start("getQuerySums");
-                String consulta = qry.getQuerySums(rubro, centroCostos, empresa, numRegistrosExistentes);
-
-                logger.Info(
-                    "consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",
-                    centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_id,
-                    rubro.id, consulta);
-
-                DataTable sumaMontosDt = new QueryExecuter().ExecuteQuery(consulta);
-                sw.stop();
-                sw.start("BuildMontosConsolContable");
-
-                if (sumaMontosDt.Rows.Count > 0)
-                {
-                    foreach (DataRow rubroMontosRow in sumaMontosDt.Rows)
-                    {
-                        int numInsertsTmp = BuildMontosConsolContable(rubroMontosRow, centroCostos, modeloId, rubro.id,
-                            fechaactual);
-                        numInsertsList.Add(numInsertsTmp);
-                        aniosDefecto.TryAdd(ToInt32(rubroMontosRow["year"]), 1);
-                    }
-                }
-                else
-                {
-                    rubrosSinMontos.Enqueue(rubro);
-                }
-                sw.stop();
-                logger.Info(sw.prettyPrint());
-            });
-            numInserts += numInsertsList.Sum();
-            foreach (var rubro in rubrosSinMontos)
-            {
-                foreach (var anio in aniosDefecto.Keys)
-                {
-                    numInserts += BuildMontosConsolContable(centroCostos, modeloId, rubro.id,
-                        fechaactual, anio);
-                }
-            }
-            swGral.stop();
-            logger.Info(swGral.prettyPrint());
-            return numInserts;
-        }
-
-        private int manageModeloFlujo(CentroCostos centroCostos, Empresa empresa, DateTime fechaactual)
-        {
-            StopWatch swGral = new StopWatch($"manageModeloFlujo cc={centroCostos.desc_id} emp={empresa.desc_id} fec={fechaactual}");
-            swGral.start("manageModeloFlujo");
-            int numInserts = 0;
-            Int64 modeloId = centroCostos.modelo_negocio_flujo_id;
-            Modelo_Negocio mn = new ModeloNegocioDataAccessLayer().GetModelo(modeloId.ToString());
-            if (!mn.activo)
-            {
-                return 0;
-            }
-
-            List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
-            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaFlujo);
-            ConcurrentQueue<Rubros> rubrosSinMontos = new ConcurrentQueue<Rubros>();
-            ConcurrentDictionary<Int32, byte> aniosDefault = new ConcurrentDictionary<Int32, byte>();
-            ConcurrentBag<Int32> numInsertsList = new ConcurrentBag<Int32>();
-            Parallel.ForEach(rubrosDeModelo, (rubro) =>
-            {
-                StopWatch sw=new StopWatch(
-                    $"consulta_flujo cc.id='{centroCostos.id}',empr.id='{centroCostos.empresa_id}',proy.id='{centroCostos.proyecto_id}',modelo.id='{centroCostos.modelo_negocio_flujo_id}',rubro.id='{rubro.id}'");
-                sw.start("getQuerySemanalSums");
-                GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
-                String consulta = qry.getQuerySemanalSums(rubro, centroCostos, empresa, numRegistrosExistentes);
-                logger.Info(
-                    "consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",
-                    centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id,
-                    centroCostos.modelo_negocio_flujo_id, rubro.id, consulta);
-                  DataTable sumaMontos = new QueryExecuter().ExecuteQuery(consulta);
-                  sw.stop();
-                  sw.start("BuildMontosFujo");
-
-                if (sumaMontos.Rows.Count > 0)
-                {
-                    int numInsertsTmp = BuildMontosFujo(sumaMontos, centroCostos, modeloId, rubro.id, fechaactual,
-                        aniosDefault);
-                    numInsertsList.Add(numInsertsTmp);
-                }
-                else
-                {
-                    rubrosSinMontos.Enqueue(rubro);
-                }
-                sw.stop();
-                logger.Info(sw.prettyPrint());
-            });
-
-            numInserts += numInsertsList.Sum();
-            foreach (var rubro in rubrosSinMontos)
-            {
-                foreach (var anio in aniosDefault.Keys)
-                {
-                    MontosConsolidados montos = new MontosConsolidados();
-                    montos.anio = anio;
-                    montos.activo = true;
-                    montos.fecha = fechaactual;
-                    montos.mes = fechaactual.Month;
-                    montos.centro_costo_id = centroCostos.id;
-                    montos.empresa_id = centroCostos.empresa_id;
-                    montos.modelo_negocio_id = modeloId;
-                    montos.proyecto_id = centroCostos.proyecto_id;
-                    montos.rubro_id = rubro.id;
-                    montos.tipo_captura_id = TipoCapturaFlujo;
-                    numInserts += insertarMontos(montos);
-                }
-            }
-
-            swGral.stop();
-            logger.Info(swGral.prettyPrint());
-            return numInserts;
-        }
-
-        public DataTable findRubrosByIdModelo(Int64 modelo_id)
-        {
-            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE activo=true and tipo_id = " +
-                                               TipoRubroCuentas +
-                                               " AND id_modelo_neg = " +
-                                               modelo_id);
-        }
-
-        public List<Rubros> GetRubrosFromModeloId(Int64 modeloId)
-        {
-            List<Rubros> listaRubros = new List<Rubros>();
-            DataTable rubrosDt = findRubrosByIdModelo(modeloId);
-            foreach (DataRow rubrosRow in rubrosDt.Rows)
-            {
-                Rubros rubro = new Rubros();
-                rubro.id = ToInt64(rubrosRow["id"]);
-                rubro.activo = ToBoolean(rubrosRow["activo"]);
-                rubro.nombre = rubrosRow["nombre"].ToString();
-                rubro.aritmetica = rubrosRow["aritmetica"].ToString();
-                rubro.clave = rubrosRow["clave"].ToString();
-                rubro.rango_cuentas_excluidas = rubrosRow["rango_cuentas_excluidas"].ToString();
-                rubro.rangos_cuentas_incluidas = rubrosRow["rangos_cuentas_incluidas"].ToString();
-                rubro.tipo_id = ToInt64(rubrosRow["tipo_id"]);
-                rubro.id_modelo_neg = ToInt64(rubrosRow["id_modelo_neg"]);
-                rubro.hijos = rubrosRow["hijos"].ToString();
-                rubro.naturaleza = rubrosRow["naturaleza"].ToString();
-                listaRubros.Add(rubro);
-            }
-
-            return listaRubros;
-        }
-
-        public DataTable GetCentrosCostro()
-        {
-            return _queryExecuter.ExecuteQuery(
-                "SELECT * FROM centro_costo WHERE activo = true and modelo_negocio_id is not null and modelo_negocio_flujo_id is not null");
-        }
-
-
-        public int 
-            insertarMontos(MontosConsolidados montos)
-        {
-            string addBalanza = "INSERT INTO montos_consolidados(" +
+        private BatchExecuter _batchExecuter;
+        private static string insertMontosQUery = "INSERT INTO montos_consolidados(" +
                                 "id, activo, " +
                                 "enero_abono_resultado, enero_cargo_resultado, enero_total_resultado, " +
                                 "febrero_abono_resultado, febrero_cargo_resultado, febrero_total_resultado, " +
@@ -304,7 +82,229 @@ namespace AppGia.Dao
                                 "@rubro_id, " +
                                 "@tipo_captura_id)";
 
-            return new QueryExecuter().execute(addBalanza, new NpgsqlParameter("@activo", montos.activo),
+
+        private QueryExecuter _queryExecuter = new QueryExecuter();
+
+
+        public int MontosConsolidados()
+        {
+            return MontosConsolidados(true, true);
+        }
+
+        public int MontosConsolidados(Boolean contable, Boolean flujo)
+        {
+            _batchExecuter=new BatchExecuter(insertMontosQUery);
+            StopWatch sw= new StopWatch("MontosConsolidados");
+            sw.start("GetCentrosCostro");
+            DataTable centrosCostoDt = GetCentrosCostro();
+            sw.stop();
+            sw.start("Manejo de modelos");
+            DateTime fechaactual = DateTime.Now;
+            int numInserts = 0;
+
+            foreach (DataRow centrosCostoRow in centrosCostoDt.Rows)
+            {
+                CentroCostos centroCostos = new CentroCostos();
+                centroCostos.id = ToInt64(centrosCostoRow["id"]);
+                centroCostos.desc_id = centrosCostoRow["desc_id"].ToString();
+                centroCostos.empresa_id = ToInt64(centrosCostoRow["empresa_id"]);
+                centroCostos.proyecto_id = ToInt64(centrosCostoRow["proyecto_id"]);
+                centroCostos.modelo_negocio_id = ToInt64(centrosCostoRow["modelo_negocio_id"]);
+                centroCostos.modelo_negocio_flujo_id = ToInt64(centrosCostoRow["modelo_negocio_flujo_id"]);
+
+                Empresa empresa = new EmpresaDataAccessLayer().GetEmpresaData(centroCostos.empresa_id);
+                if (contable)
+                {
+                    manageModeloContable(centroCostos, empresa, fechaactual);
+                }
+
+                if (flujo)
+                {
+                    manageModeloFlujo(centroCostos, empresa, fechaactual);
+                }
+            }
+            sw.stop();
+            sw.start("inserts");
+            numInserts += _batchExecuter.executeCommands();
+            sw.stop();
+            logger.Info(sw.prettyPrint());
+            return numInserts;
+        }
+
+        private void manageModeloContable(CentroCostos centroCostos, Empresa empresa, DateTime fechaactual)
+        {
+            StopWatch swGral = new StopWatch($"manageModeloContable cc={centroCostos.desc_id} emp={empresa.desc_id} fec={fechaactual}");
+            swGral.start();
+            int numInserts = 0;
+            Int64 modeloId = centroCostos.modelo_negocio_id;
+
+            Modelo_Negocio mn = new ModeloNegocioDataAccessLayer().GetModelo(modeloId.ToString());
+            if (!mn.activo)
+            {
+                return ;
+            }
+
+            List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
+            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaContable);
+            GeneraQry qry = new GeneraQry("balanza", "cuenta_unificada", 12);
+            ConcurrentDictionary<Int32, byte> aniosDefecto = new ConcurrentDictionary<Int32, byte>();
+            ConcurrentQueue<Rubros> rubrosSinMontos = new ConcurrentQueue<Rubros>();
+
+            Parallel.ForEach(rubrosDeModelo, (rubro) =>
+            {
+                StopWatch sw=new StopWatch(
+                    $"consulta_contables cc.id='{centroCostos.id}',empr.id='{centroCostos.empresa_id}',proy.id='{centroCostos.proyecto_id}',modelo.id='{centroCostos.modelo_negocio_flujo_id}',rubro.id='{rubro.id}'");
+                sw.start("getQuerySums");
+                String consulta = qry.getQuerySums(rubro, centroCostos, empresa, numRegistrosExistentes);
+
+                logger.Debug(
+                    "consulta_contables cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",
+                    centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id, centroCostos.modelo_negocio_id,
+                    rubro.id, consulta);
+
+                DataTable sumaMontosDt = new QueryExecuter().ExecuteQuery(consulta);
+                sw.stop();
+                sw.start("BuildMontosConsolContable");
+
+                if (sumaMontosDt.Rows.Count > 0)
+                {
+                    foreach (DataRow rubroMontosRow in sumaMontosDt.Rows)
+                    {
+                        BuildMontosConsolContable(rubroMontosRow, centroCostos, modeloId, rubro.id,
+                            fechaactual);
+                        aniosDefecto.TryAdd(ToInt32(rubroMontosRow["year"]), 1);
+                    }
+                }
+                else
+                {
+                    rubrosSinMontos.Enqueue(rubro);
+                }
+                sw.stop();
+                logger.Info(sw.prettyPrint());
+            });
+            
+            foreach (var rubro in rubrosSinMontos)
+            {
+                foreach (var anio in aniosDefecto.Keys)
+                {
+                    BuildMontosConsolContable(centroCostos, modeloId, rubro.id,
+                        fechaactual, anio);
+                }
+            }
+            swGral.stop();
+            logger.Info(swGral.prettyPrint());
+        }
+
+        private void manageModeloFlujo(CentroCostos centroCostos, Empresa empresa, DateTime fechaactual)
+        {
+            StopWatch swGral = new StopWatch($"manageModeloFlujo cc={centroCostos.desc_id} emp={empresa.desc_id} fec={fechaactual}");
+            swGral.start();
+            int numInserts = 0;
+            Int64 modeloId = centroCostos.modelo_negocio_flujo_id;
+            Modelo_Negocio mn = new ModeloNegocioDataAccessLayer().GetModelo(modeloId.ToString());
+            if (!mn.activo)
+            {
+                return ;
+            }
+
+            List<Rubros> rubrosDeModelo = GetRubrosFromModeloId(modeloId);
+            Int64 numRegistrosExistentes = getNumMontosOfTipoCaptura(TipoCapturaFlujo);
+            ConcurrentQueue<Rubros> rubrosSinMontos = new ConcurrentQueue<Rubros>();
+            ConcurrentDictionary<Int32, byte> aniosDefault = new ConcurrentDictionary<Int32, byte>();
+            Parallel.ForEach(rubrosDeModelo, (rubro) =>
+            {
+                StopWatch sw=new StopWatch(
+                    $"consulta_flujo cc.id='{centroCostos.id}',empr.id='{centroCostos.empresa_id}',proy.id='{centroCostos.proyecto_id}',modelo.id='{centroCostos.modelo_negocio_flujo_id}',rubro.id='{rubro.id}'");
+                sw.start("getQuerySemanalSums");
+                GeneraQry qry = new GeneraQry("semanal", "itm::text", 2);
+                String consulta = qry.getQuerySemanalSums(rubro, centroCostos, empresa, numRegistrosExistentes);
+                logger.Debug(
+                    "consulta_flujo cc.id='{0}',empr.id='{1}',proy.id='{2}',modelo.id='{3}',rubro.id='{4}', ===>> '{5}'",
+                    centroCostos.id, centroCostos.empresa_id, centroCostos.proyecto_id,
+                    centroCostos.modelo_negocio_flujo_id, rubro.id, consulta);
+                  DataTable sumaMontos = new QueryExecuter().ExecuteQuery(consulta);
+                  sw.stop();
+                  sw.start("BuildMontosFujo");
+
+                if (sumaMontos.Rows.Count > 0)
+                {
+                     BuildMontosFujo(sumaMontos, centroCostos, modeloId, rubro.id, fechaactual,
+                        aniosDefault);
+                  
+                }
+                else
+                {
+                    rubrosSinMontos.Enqueue(rubro);
+                }
+                sw.stop();
+                logger.Info(sw.prettyPrint());
+            });
+
+            foreach (var rubro in rubrosSinMontos)
+            {
+                foreach (var anio in aniosDefault.Keys)
+                {
+                    MontosConsolidados montos = new MontosConsolidados();
+                    montos.anio = anio;
+                    montos.activo = true;
+                    montos.fecha = fechaactual;
+                    montos.mes = fechaactual.Month;
+                    montos.centro_costo_id = centroCostos.id;
+                    montos.empresa_id = centroCostos.empresa_id;
+                    montos.modelo_negocio_id = modeloId;
+                    montos.proyecto_id = centroCostos.proyecto_id;
+                    montos.rubro_id = rubro.id;
+                    montos.tipo_captura_id = TipoCapturaFlujo;
+                    insertarMontos(montos);
+                }
+            }
+            swGral.stop();
+            logger.Info(swGral.prettyPrint());
+        }
+
+        public DataTable findRubrosByIdModelo(Int64 modelo_id)
+        {
+            return _queryExecuter.ExecuteQuery("SELECT * FROM rubro WHERE activo=true and tipo_id = " +
+                                               TipoRubroCuentas +
+                                               " AND id_modelo_neg = " +
+                                               modelo_id);
+        }
+
+        public List<Rubros> GetRubrosFromModeloId(Int64 modeloId)
+        {
+            List<Rubros> listaRubros = new List<Rubros>();
+            DataTable rubrosDt = findRubrosByIdModelo(modeloId);
+            foreach (DataRow rubrosRow in rubrosDt.Rows)
+            {
+                Rubros rubro = new Rubros();
+                rubro.id = ToInt64(rubrosRow["id"]);
+                rubro.activo = ToBoolean(rubrosRow["activo"]);
+                rubro.nombre = rubrosRow["nombre"].ToString();
+                rubro.aritmetica = rubrosRow["aritmetica"].ToString();
+                rubro.clave = rubrosRow["clave"].ToString();
+                rubro.rango_cuentas_excluidas = rubrosRow["rango_cuentas_excluidas"].ToString();
+                rubro.rangos_cuentas_incluidas = rubrosRow["rangos_cuentas_incluidas"].ToString();
+                rubro.tipo_id = ToInt64(rubrosRow["tipo_id"]);
+                rubro.id_modelo_neg = ToInt64(rubrosRow["id_modelo_neg"]);
+                rubro.hijos = rubrosRow["hijos"].ToString();
+                rubro.naturaleza = rubrosRow["naturaleza"].ToString();
+                listaRubros.Add(rubro);
+            }
+
+            return listaRubros;
+        }
+
+        public DataTable GetCentrosCostro()
+        {
+            return _queryExecuter.ExecuteQuery(
+                "SELECT * FROM centro_costo WHERE activo = true and modelo_negocio_id is not null and modelo_negocio_flujo_id is not null");
+        }
+
+
+        public void insertarMontos(MontosConsolidados montos)
+        {
+            
+             _batchExecuter.addCommand( new NpgsqlParameter("@activo", montos.activo),
                 new NpgsqlParameter("@enero_abono_resultado", montos.enero_abono_resultado),
                 new NpgsqlParameter("@enero_cargo_resultado", montos.enero_cargo_resultado),
                 new NpgsqlParameter("@enero_total_resultado", montos.enero_total_resultado),
@@ -359,9 +359,7 @@ namespace AppGia.Dao
             return ToInt64(_queryExecuter.ExecuteQuery(consulta).Rows[0]["numregs"]);
         }
 
-        private int BuildMontosConsolContable(CentroCostos centroCostos, Int64 modeloId,
-            Int64 rubroId,
-            DateTime fechaactual, Int32 anio)
+        private void BuildMontosConsolContable(CentroCostos centroCostos, Int64 modeloId,Int64 rubroId, DateTime fechaactual, Int32 anio)
         {
             MontosConsolidados montos = new MontosConsolidados();
             montos.activo = true;
@@ -376,12 +374,10 @@ namespace AppGia.Dao
             montos.rubro_id = rubroId;
             montos.tipo_captura_id = TipoCapturaContable;
 
-            return insertarMontos(montos);
+             insertarMontos(montos);
         }
 
-        private int BuildMontosConsolContable(DataRow rubroMontosRow, CentroCostos centroCostos, Int64 modeloId,
-            Int64 rubroId,
-            DateTime fechaactual)
+        private void BuildMontosConsolContable(DataRow rubroMontosRow, CentroCostos centroCostos, Int64 modeloId, Int64 rubroId, DateTime fechaactual)
         {
             MontosConsolidados montos = new MontosConsolidados();
             montos.activo = true;
@@ -432,10 +428,10 @@ namespace AppGia.Dao
             montos.rubro_id = rubroId;
             montos.tipo_captura_id = TipoCapturaContable;
 
-            return insertarMontos(montos);
+            insertarMontos(montos);
         }
 
-        private int BuildMontosFujo(DataTable sumaMontos, CentroCostos centroCostos, Int64 modeloId, Int64 rubroId,
+        private void BuildMontosFujo(DataTable sumaMontos, CentroCostos centroCostos, Int64 modeloId, Int64 rubroId,
             DateTime fechaactual, ConcurrentDictionary<Int32, byte> aniosdefault)
         {
             int numInserts = 0;
@@ -509,10 +505,9 @@ namespace AppGia.Dao
                 montos.rubro_id = rubroId;
                 montos.tipo_captura_id = TipoCapturaFlujo;
 
-                numInserts += insertarMontos(montos);
+                 insertarMontos(montos);
             }
-
-            return numInserts;
+            
         }
     }
 }

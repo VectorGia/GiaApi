@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.Common;
 using Npgsql;
 
-namespace AppGia.Controllers
+namespace AppGia.Util
 {
     public class QueryExecuter
     {

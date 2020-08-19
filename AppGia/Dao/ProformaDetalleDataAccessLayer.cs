@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using AppGia.Controllers;
+using AppGia.Util;
 using AppGia.Helpers;
 using AppGia.Models;
 using NLog;
@@ -295,7 +295,7 @@ namespace AppGia.Dao
             consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
             consulta += "	 from montos_consolidados mon ";
             consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('DAY', fecha) = date_trunc('DAY', '" + fechaCarga.ToString("yyyy-MM-dd") + "'::date) ";
+            consulta += "	 where date_trunc('SECOND', fecha) = '" + fechaCarga.ToString("yyyy-MM-dd HH:mm:ss") + "'::timestamp ";
             consulta += "	 and anio = " + anio;
             consulta += "	 and empresa_id = " + idEmpresa;
             consulta += "	 and modelo_negocio_id = " + idModeloNegocio;
