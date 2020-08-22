@@ -67,7 +67,7 @@ namespace AppGia.Models
         public Boolean es_total_ingresos  { get; set; }
         //HNA: no persistible
         public Int64 unidad_id { get; set; }
-
+    
 
         public double anios_posteriores_resultado { get; set; }
         
@@ -83,6 +83,7 @@ namespace AppGia.Models
         public string tipo { get; set; }
         //HNA: no idetifica si es un detalle hijo o padre
         public string estilo { get; set; }
+        
         
         private string idInternoInternal;
         public String idInterno

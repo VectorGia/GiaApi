@@ -52,6 +52,11 @@ namespace AppGia.Util
 
         public void addCommand(params object[] parametros)
         {
+            addCommand(query, parametros);
+        }
+        
+        public void addCommand(String query,params object[] parametros)
+        {
             NpgsqlCommand cmd = new NpgsqlCommand(query, con);
             foreach (var parametro in parametros)
             {
@@ -60,5 +65,6 @@ namespace AppGia.Util
 
             _commands.Add(cmd);
         }
+        
     }
 }

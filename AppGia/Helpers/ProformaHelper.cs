@@ -45,14 +45,12 @@ namespace AppGia.Helpers
             List<Rubros> rubroses = GetRubrosFromModeloId(idModeloAproformar, false);
 
             List<ProformaDetalle> detallesAniosAnteriores = new List<ProformaDetalle>();
-            //--> se calculan anios anteriores solo cuando exista en balanza o polizas en caso de shadow y metodo esto no aplica
-            if (cc.proyeccion.Equals(ProyeccionBase))
-            {
-                ProformaDetalleDataAccessLayer detalleAccesLayer = new ProformaDetalleDataAccessLayer();
-                detallesAniosAnteriores =
-                    detalleAccesLayer.GetAcumuladoAnteriores(cc.id, cc.empresa_id, idModeloAproformar, cc.proyecto_id,
-                        anio, idTipoCaptura);
-            }
+
+            detallesAniosAnteriores =
+                new ProformaDetalleDataAccessLayer().GetAcumuladoAnteriores(cc.id, cc.empresa_id, idModeloAproformar,
+                    cc.proyecto_id,
+                    anio, idTipoCaptura);
+          
 
             List<ProformaDetalle> detallesAniosPosteriores =
                 new ProformaDetalleDataAccessLayer().GetEjercicioPosterior(anio, cc.id, idModeloAproformar,
@@ -72,7 +70,7 @@ namespace AppGia.Helpers
                         detalle.anios_posteriores_resultado = posterior.anios_posteriores_resultado;
                     }
                 }
-            }
+            }           
 
             return proformaDetalles;
         }

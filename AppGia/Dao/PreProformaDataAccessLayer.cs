@@ -82,6 +82,52 @@ namespace AppGia.Dao
                                 "@rubro_id, " +
                                 "@tipo_captura_id)";
 
+        public static string inactivateExistentesContableQuery =
+            "update " +
+            " montos_consolidados cns" +
+            " set activo= false" +
+            " where cns.fecha" +
+            " in (" +
+            " select fecha" +
+            " from montos_consolidados cns" +
+            "     where empresa_id = @empresa_id" +
+            " AND modelo_negocio_id = @modelo_negocio_id" +
+            " AND proyecto_id = @proyecto_id" +
+            " AND centro_costo_id = @centro_costo_id" +
+            " AND tipo_captura_id = @tipo_captura_id" +
+            " AND activo = true" +
+            " and date_trunc('DAY', fecha)::date >= date_trunc('MONTH',@fechaEjecucion)::date)" +
+            " and empresa_id = @empresa_id" +
+            " AND modelo_negocio_id = @modelo_negocio_id" +
+            " AND proyecto_id = @proyecto_id" +
+            " AND centro_costo_id = @centro_costo_id" +
+            " AND tipo_captura_id = @tipo_captura_id" +
+            " AND activo = true "+
+            " AND anio >=  @anioFechaEjecucion";
+
+        public static string inactivateExistentesFlujoQuery =
+            "update " +
+            " montos_consolidados cns" +
+            " set activo= false" +
+            " where cns.fecha" +
+            " in (" +
+            " select fecha" +
+            " from montos_consolidados cns" +
+            "     where empresa_id = @empresa_id" +
+            " AND modelo_negocio_id = @modelo_negocio_id" +
+            " AND proyecto_id = @proyecto_id" +
+            " AND centro_costo_id = @centro_costo_id" +
+            " AND tipo_captura_id = @tipo_captura_id" +
+            " AND activo = true" +
+            " and date_trunc('DAY', fecha)::date > date_trunc('DAY', @fechaEjecucion)::date - 7 )" +
+            " and empresa_id = @empresa_id" +
+            " AND modelo_negocio_id = @modelo_negocio_id" +
+            " AND proyecto_id = @proyecto_id" +
+            " AND centro_costo_id = @centro_costo_id" +
+            " AND tipo_captura_id = @tipo_captura_id" +
+            " AND activo = true"+
+            " AND anio >=  @anioFechaEjecucion";
+
 
         private QueryExecuter _queryExecuter = new QueryExecuter();
 
@@ -115,11 +161,29 @@ namespace AppGia.Dao
                 Empresa empresa = new EmpresaDataAccessLayer().GetEmpresaData(centroCostos.empresa_id);
                 if (contable)
                 {
+                    _batchExecuter.addCommand(inactivateExistentesContableQuery, 
+                        new NpgsqlParameter("@fechaEjecucion", DateTime.Now),
+                        new NpgsqlParameter("@empresa_id", centroCostos.empresa_id),
+                        new NpgsqlParameter("@modelo_negocio_id", centroCostos.modelo_negocio_id),
+                        new NpgsqlParameter("@proyecto_id",  centroCostos.proyecto_id),
+                        new NpgsqlParameter("@centro_costo_id", centroCostos.id),
+                        new NpgsqlParameter("@tipo_captura_id", TipoCapturaContable),
+                        new NpgsqlParameter("@aniofechaejecucion", DateTime.Now.Year)
+                        );
                     manageModeloContable(centroCostos, empresa, fechaactual);
                 }
 
                 if (flujo)
                 {
+                    _batchExecuter.addCommand(inactivateExistentesFlujoQuery, 
+                        new NpgsqlParameter("@fechaEjecucion", DateTime.Now),
+                        new NpgsqlParameter("@empresa_id", centroCostos.empresa_id),
+                        new NpgsqlParameter("@modelo_negocio_id", centroCostos.modelo_negocio_flujo_id),
+                        new NpgsqlParameter("@proyecto_id",  centroCostos.proyecto_id),
+                        new NpgsqlParameter("@centro_costo_id", centroCostos.id),
+                        new NpgsqlParameter("@tipo_captura_id", TipoCapturaFlujo),
+                        new NpgsqlParameter("@aniofechaejecucion", DateTime.Now.Year)
+                    );
                     manageModeloFlujo(centroCostos, empresa, fechaactual);
                 }
             }
@@ -355,7 +419,7 @@ namespace AppGia.Dao
 
         public Int64 getNumMontosOfTipoCaptura(Int64 captura)
         {
-            string consulta = "SELECT count(1) as numregs FROM montos_consolidados WHERE tipo_captura_id = " + captura;
+            string consulta = "SELECT count(1) as numregs FROM montos_consolidados WHERE activo=true and tipo_captura_id = " + captura;
             return ToInt64(_queryExecuter.ExecuteQuery(consulta).Rows[0]["numregs"]);
         }
 

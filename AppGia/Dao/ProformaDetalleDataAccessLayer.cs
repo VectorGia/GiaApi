@@ -394,69 +394,95 @@ namespace AppGia.Dao
         public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos, Int64 idEmpresa, Int64 idModeloNegocio,
             Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
-            string consulta = "";
-            consulta += " select  ";
-            consulta += "	 coalesce ( ";
-            consulta += "	 sum(cns.enero_total_resultado) + ";
-            consulta += "	 sum(cns.febrero_total_resultado) + ";
-            consulta += "	 sum(cns.marzo_total_resultado) + ";
-            consulta += "	 sum(cns.abril_total_resultado) + ";
-            consulta += "	 sum(cns.mayo_total_resultado) + ";
-            consulta += "	 sum(cns.junio_total_resultado) + ";
-            consulta += "	 sum(cns.julio_total_resultado) + ";
-            consulta += "	 sum(cns.agosto_total_resultado) + ";
-            consulta += "	 sum(cns.septiembre_total_resultado) + ";
-            consulta += "	 sum(cns.octubre_total_resultado) + ";
-            consulta += "	 sum(cns.noviembre_total_resultado) + ";
-            consulta += "	 sum(cns.diciembre_total_resultado) ";
-            consulta += "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro, rub.es_total_ingresos ";
-            consulta += "	 from montos_consolidados cns ";
-            consulta += "	 inner join rubro rub on cns.rubro_id = rub.id ";
-            consulta += "	 where cns.id in ( ";
-            consulta += "			 select max(id) as idMontoLast from montos_consolidados mon ";
-            consulta += "				 where mon.anio < " + anio; // Anio a proformar
-            consulta += "				 and mon.empresa_id = " + idEmpresa; // Empresa
-            consulta += "				 and mon.modelo_negocio_id = " + idModeloNegocio; // Modelo de Negocio
-            consulta += "				 and mon.proyecto_id = " + idProyecto; // Proyecto
-            consulta += "				 and mon.centro_costo_id = " + idCenCos; // Centro de costos
-            consulta += "				 and mon.tipo_captura_id = " + idTipoCaptura; // Tipo de captura
-            consulta += "				 and mon.activo = 'true' ";
-            consulta += "		 ) ";
-            consulta += "    AND  cns.anio < " + anio;
-            consulta += "    AND  cns.empresa_id=" + idEmpresa;
-            consulta += "    AND  cns.modelo_negocio_id=" + idModeloNegocio;
-            consulta += "    AND  cns.proyecto_id=" + idProyecto;
-            consulta += "    AND  cns.centro_costo_id=" + idCenCos;
-            consulta += "    AND  cns.tipo_captura_id=" + idTipoCaptura;
-            consulta += "    AND  cns.activo=true";
-            consulta += "	 group by cns.rubro_id, rub.nombre, rub.es_total_ingresos ";
-            consulta += "	 order by cns.rubro_id ";
+            String queryProformaAAnt =
+                " select" +
+                " total_resultado as acumulado_resultado," +
+                " rub.id as rubro_id," +
+                " rub.nombre as nombre_rubro," +
+                " rub.es_total_ingresos" +
+                "     from proforma pf" +
+                " join proforma_detalle pd on pd.id_proforma = pf.id" +
+                " join rubro rub on rub.id = pd.rubro_id" +
+                " join tipo_proforma tp on pf.tipo_proforma_id = tp.id" +
+                " where pf.activo = true" +
+                " and pf.anio = @anio" +
+                " and pf.empresa_id = @idEmpresa" +
+                " and pf.modelo_negocio_id = @idModeloNegocio" +
+                " and pf.centro_costo_id = @idCenCos" +
+                " and pf.tipo_captura_id = @idTipoCaptura" +
+                " and pf.id in (" +
+                "     select pf.id" +
+                "     from proforma pf" +
+                " join tipo_proforma tp on pf.tipo_proforma_id = tp.id" +
+                " where pf.activo = true" +
+                " and pf.anio = @anio" +
+                " and pf.empresa_id = @idEmpresa" +
+                " and pf.modelo_negocio_id = @idModeloNegocio" +
+                " and pf.centro_costo_id = @idCenCos" +
+                " and pf.tipo_captura_id = @idTipoCaptura" +
+                " order by tp.mes_inicio desc" +
+                " limit 1)";
 
-            try
+            string queryFromMontosAAnt =
+                " select  " +
+                "	 coalesce ( " +
+                "	 sum(cns.enero_total_resultado) + " +
+                "	 sum(cns.febrero_total_resultado) + " +
+                "	 sum(cns.marzo_total_resultado) + " +
+                "	 sum(cns.abril_total_resultado) + " +
+                "	 sum(cns.mayo_total_resultado) + " +
+                "	 sum(cns.junio_total_resultado) + " +
+                "	 sum(cns.julio_total_resultado) + " +
+                "	 sum(cns.agosto_total_resultado) + " +
+                "	 sum(cns.septiembre_total_resultado) + " +
+                "	 sum(cns.octubre_total_resultado) + " +
+                "	 sum(cns.noviembre_total_resultado) + " +
+                "	 sum(cns.diciembre_total_resultado) " +
+                "	 , 0) as acumulado_resultado, cns.rubro_id as rubro_id, rub.nombre as nombre_rubro, rub.es_total_ingresos " +
+                "	 from montos_consolidados cns " +
+                "	 inner join rubro rub on cns.rubro_id = rub.id " +
+                "    where  cns.anio < @anio" +
+                "    AND  cns.empresa_id=@idEmpresa" +
+                "    AND  cns.modelo_negocio_id=@idModeloNegocio" +
+                "    AND  cns.proyecto_id=@idProyecto" +
+                "    AND  cns.centro_costo_id=@idCenCos" +
+                "    AND  cns.tipo_captura_id=@idTipoCaptura" +
+                "    AND  cns.activo=true" +
+                "	 group by cns.rubro_id, rub.nombre, rub.es_total_ingresos " +
+                "	 order by cns.rubro_id ";
+
+            DataTable dataTable = _queryExecuter.ExecuteQuery(queryProformaAAnt.Trim(),
+                new NpgsqlParameter("@anio", anio-1),
+                new NpgsqlParameter("@idEmpresa", idEmpresa),
+                new NpgsqlParameter("@idModeloNegocio", idModeloNegocio),
+                new NpgsqlParameter("@idCenCos", idCenCos),
+                new NpgsqlParameter("@idTipoCaptura", idTipoCaptura)
+            );
+            if (dataTable.Rows.Count == 0)
             {
-                List<ProformaDetalle> lstProfDetalleEjercicioFinanc = new List<ProformaDetalle>();
-
-                con.Open();
-
-                NpgsqlCommand cmd = new NpgsqlCommand(consulta.Trim(), con);
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    ProformaDetalle proforma_detalle_ej_financ = new ProformaDetalle();
-                    proforma_detalle_ej_financ.acumulado_resultado = ToDouble(rdr["acumulado_resultado"]);
-                    proforma_detalle_ej_financ.rubro_id = ToInt64(rdr["rubro_id"]);
-                    proforma_detalle_ej_financ.nombre_rubro = rdr["nombre_rubro"].ToString();
-                    proforma_detalle_ej_financ.es_total_ingresos = ToBoolean(rdr["es_total_ingresos"]);
-                    lstProfDetalleEjercicioFinanc.Add(proforma_detalle_ej_financ);
-                }
-
-                return lstProfDetalleEjercicioFinanc;
+                dataTable = _queryExecuter.ExecuteQuery(queryFromMontosAAnt.Trim(),
+                    new NpgsqlParameter("@anio", anio),
+                    new NpgsqlParameter("@idEmpresa", idEmpresa),
+                    new NpgsqlParameter("@idModeloNegocio", idModeloNegocio),
+                    new NpgsqlParameter("@idProyecto", idProyecto),
+                    new NpgsqlParameter("@idCenCos", idCenCos),
+                    new NpgsqlParameter("@idTipoCaptura", idTipoCaptura)
+                );
             }
-            finally
+
+            List<ProformaDetalle> detallesAAnteriores = new List<ProformaDetalle>();
+
+            foreach (DataRow rdr in dataTable.Rows)
             {
-                con.Close();
+                ProformaDetalle detalle = new ProformaDetalle();
+                detalle.acumulado_resultado = ToDouble(rdr["acumulado_resultado"]);
+                detalle.rubro_id = ToInt64(rdr["rubro_id"]);
+                detalle.nombre_rubro = rdr["nombre_rubro"].ToString();
+                detalle.es_total_ingresos = ToBoolean(rdr["es_total_ingresos"]);
+                detallesAAnteriores.Add(detalle);
             }
+
+            return detallesAAnteriores;
         }
 
         //Calculo de años posteriores

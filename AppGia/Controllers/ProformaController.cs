@@ -41,6 +41,10 @@ namespace AppGia.Controllers
                 proformaDetalles.ForEach(detalle =>
                 {
                     detalle.unidad_id = proforma.unidad_id;
+                    if (detalle.empresa_id == 0)
+                    {
+                        detalle.empresa_id = proforma.empresa_id;
+                    }
                 });
                 return Ok(proformaDetalles);
             }
