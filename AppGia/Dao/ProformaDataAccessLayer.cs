@@ -413,7 +413,7 @@ namespace AppGia.Dao
             DateTime fechaProc = DateTime.Now;
             proforma.activo = true;
             proforma.usuario = detalles[0].usuario;
-            proforma.fecha_captura = fechaProc;
+            proforma.fecha_actualizacion = fechaProc;
             proforma.id = detalles[0].id_proforma;
             _profHelper.setMotoRealesAndProform(detalles);
             UpdateProforma(proforma);

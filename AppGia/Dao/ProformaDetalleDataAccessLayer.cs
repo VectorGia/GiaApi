@@ -394,6 +394,18 @@ namespace AppGia.Dao
         public List<ProformaDetalle> GetAcumuladoAnteriores(Int64 idCenCos, Int64 idEmpresa, Int64 idModeloNegocio,
             Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
+            string queryLastproformaAAnt =
+                "  select pf.id" +
+                "     from proforma pf" +
+                " join tipo_proforma tp on pf.tipo_proforma_id = tp.id" +
+                " where pf.activo = true" +
+                " and pf.anio = @anio" +
+                " and pf.empresa_id = @idEmpresa" +
+                " and pf.modelo_negocio_id = @idModeloNegocio" +
+                " and pf.centro_costo_id = @idCenCos" +
+                " and pf.tipo_captura_id = @idTipoCaptura" +
+                " order by tp.mes_inicio desc" +
+                " limit 1";
             String queryProformaAAnt =
                 " select" +
                 " total_resultado as acumulado_resultado," +
@@ -410,18 +422,7 @@ namespace AppGia.Dao
                 " and pf.modelo_negocio_id = @idModeloNegocio" +
                 " and pf.centro_costo_id = @idCenCos" +
                 " and pf.tipo_captura_id = @idTipoCaptura" +
-                " and pf.id in (" +
-                "     select pf.id" +
-                "     from proforma pf" +
-                " join tipo_proforma tp on pf.tipo_proforma_id = tp.id" +
-                " where pf.activo = true" +
-                " and pf.anio = @anio" +
-                " and pf.empresa_id = @idEmpresa" +
-                " and pf.modelo_negocio_id = @idModeloNegocio" +
-                " and pf.centro_costo_id = @idCenCos" +
-                " and pf.tipo_captura_id = @idTipoCaptura" +
-                " order by tp.mes_inicio desc" +
-                " limit 1)";
+                " and pf.id in (" +queryLastproformaAAnt+")";
 
             string queryFromMontosAAnt =
                 " select  " +
@@ -451,13 +452,28 @@ namespace AppGia.Dao
                 "	 group by cns.rubro_id, rub.nombre, rub.es_total_ingresos " +
                 "	 order by cns.rubro_id ";
 
-            DataTable dataTable = _queryExecuter.ExecuteQuery(queryProformaAAnt.Trim(),
-                new NpgsqlParameter("@anio", anio-1),
+
+            var res = _queryExecuter.ExecuteQueryUniqueresult(queryLastproformaAAnt,
+                new NpgsqlParameter("@anio", anio - 1),
                 new NpgsqlParameter("@idEmpresa", idEmpresa),
                 new NpgsqlParameter("@idModeloNegocio", idModeloNegocio),
                 new NpgsqlParameter("@idCenCos", idCenCos),
-                new NpgsqlParameter("@idTipoCaptura", idTipoCaptura)
-            );
+                new NpgsqlParameter("@idTipoCaptura", idTipoCaptura));
+            if (res != null)
+            {
+                List<ProformaDetalle> proformaDetalles =
+                    new ProformaDetalleDataAccessLayer().GetProformaDetalle(ToInt64(res["id"]));
+                new ProformaCalc().recalculateAll(proformaDetalles, true);
+                log.Info("Termino proceso");
+                new ProformaDataAccessLayer().ActualizaProforma(proformaDetalles);
+            }
+
+            DataTable dataTable = _queryExecuter.ExecuteQuery(queryProformaAAnt.Trim(),
+                new NpgsqlParameter("@anio", anio - 1),
+                new NpgsqlParameter("@idEmpresa", idEmpresa),
+                new NpgsqlParameter("@idModeloNegocio", idModeloNegocio),
+                new NpgsqlParameter("@idCenCos", idCenCos),
+                new NpgsqlParameter("@idTipoCaptura", idTipoCaptura));
             if (dataTable.Rows.Count == 0)
             {
                 dataTable = _queryExecuter.ExecuteQuery(queryFromMontosAAnt.Trim(),
