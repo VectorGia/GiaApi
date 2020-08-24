@@ -35,6 +35,7 @@ namespace AppGia.Controllers
         {
             try
             {
+                objProforma.validadNoDuplicateProforms(proforma);
                 List<ProformaDetalle> proformaDetalles =
                     objProforma.manageBuildProforma(proforma.centro_costo_id, proforma.anio,
                         proforma.tipo_proforma_id, proforma.tipo_captura_id);

@@ -380,6 +380,24 @@ namespace AppGia.Dao
             return detallesCalculados;
         }
 
+        public void validadNoDuplicateProforms(Proforma proforma)
+        {
+            var res=_queryExecuter.ExecuteQueryUniqueresult(
+                "select count(1) as numexist " +
+                " from proforma where activo=true " +
+                " and anio=@anio and tipo_proforma_id=@tipo_proforma_id " +
+                " and tipo_captura_id=@tipo_captura_id and empresa_id=@empresa_id  " +
+                " and centro_costo_id=@centro_costo_id",
+                new NpgsqlParameter("@anio", proforma.anio),
+                new NpgsqlParameter("@tipo_proforma_id", proforma.tipo_proforma_id),
+                new NpgsqlParameter("@tipo_captura_id", proforma.tipo_captura_id),
+                new NpgsqlParameter("@empresa_id", proforma.empresa_id),
+                new NpgsqlParameter("@centro_costo_id", proforma.centro_costo_id));
+            if (Convert.ToInt16(res["numexist"]) > 0)
+            {
+                throw new DataException("Ya existe la proforma, si desea modificarla, vaya al menu, consultela y editela  ");
+            }
+        }
         // Metodo para almacenar una proforma
         public int GuardaProforma(List<ProformaDetalle> detalles)
         {
@@ -395,6 +413,7 @@ namespace AppGia.Dao
             proforma.unidad_id = detalles[0].unidad_id;
             proforma.empresa_id = detalles[0].empresa_id;
             proforma.fecha_captura = fechaProc;
+            validadNoDuplicateProforms(proforma);
             _profHelper.setMotoRealesAndProform(detalles);
             AddProforma(proforma);
             detalles.ForEach(detalle =>
