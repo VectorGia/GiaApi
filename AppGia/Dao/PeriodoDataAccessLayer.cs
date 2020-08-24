@@ -2,8 +2,10 @@
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using AppGia.Util;
 
 namespace AppGia.Dao
 {
@@ -97,6 +99,21 @@ namespace AppGia.Dao
             }
         }
 
+        public void validateNoDuplicatePeridodos(Periodo periodo)
+        {
+            var res=new QueryExecuter().ExecuteQueryUniqueresult(
+                "select count(1) numexistentes from periodo where activo=true " +
+                " and anio_periodo=@anio_periodo " +
+                " and tipo_captura_id=@tipo_captura_id " +
+                " and tipo_proforma_id=@tipo_proforma_id",
+                new NpgsqlParameter("@anio_periodo", periodo.anio_periodo),
+                new NpgsqlParameter("@tipo_captura_id", periodo.tipo_captura_id),
+                new NpgsqlParameter("@tipo_proforma_id", periodo.tipo_proforma_id))["numexistentes"];
+            if (Convert.ToInt32(res) > 0)
+            {
+                throw new DataException("Ya existe el periodo, revise por favor");
+            }
+        }
         public int AddPeriodo(Periodo periodo)
         {
             string add = "INSERT INTO periodo(" +

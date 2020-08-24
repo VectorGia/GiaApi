@@ -1,52 +1,93 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AppGia.Dao;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
+using Microsoft.AspNetCore.Mvc;
+using NLog;
+
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PeriodoController : ControllerBase
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         PeriodoDataAccessLayer objperiodo = new PeriodoDataAccessLayer();
+
         // GET: api/Periodo
         [HttpGet]
-        public IEnumerable<Periodo> Get()
+        public IActionResult Get()
         {
-            return objperiodo.GetAllPeriodos();
+            try
+            {
+                return Ok(objperiodo.GetAllPeriodos());
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error en GetAllPeriodos");
+                return BadRequest(e.Message);
+            }
         }
 
         // GET: api/Periodo/5
         [HttpGet("{id}", Name = "GetPeriodo")]
-        public Periodo Get(string id)
+        public IActionResult Get(string id)
         {
-            return objperiodo.GetPeriodoData(id);
+            try
+            {
+                return Ok(objperiodo.GetPeriodoData(id));
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error en GetPeriodoData");
+                return BadRequest(e.Message);
+            }
         }
 
         // POST: api/Periodo
         [HttpPost]
-        public int Post([FromBody] Periodo periodo)
+        public IActionResult Post([FromBody] Periodo periodo)
         {
-            return objperiodo.AddPeriodo(periodo);
+            try
+            {
+                objperiodo.validateNoDuplicatePeridodos(periodo);
+                return Ok(objperiodo.AddPeriodo(periodo));
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error en AddPeriodo");
+                return BadRequest(e.Message);
+            }
         }
 
         // PUT: api/Periodo/5
         [HttpPut("{id}")]
-        public int Put(string id, [FromBody] Periodo periodo)
+        public IActionResult Put(string id, [FromBody] Periodo periodo)
         {
-            return objperiodo.updatePeriodo(id, periodo);
+            try
+            {
+                return Ok(objperiodo.updatePeriodo(id, periodo));
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error en updatePeriodo");
+                return BadRequest(e.Message);
+            }
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public int Delete(string id)
+        public IActionResult Delete(string id)
         {
-            return objperiodo.deletePeriodo(id);
+            try
+            {
+                return Ok(objperiodo.deletePeriodo(id));
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Error en deletePeriodo");
+                return BadRequest(e.Message);
+            }
         }
     }
 }
