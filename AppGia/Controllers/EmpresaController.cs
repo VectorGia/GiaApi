@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using AppGia.Dao;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AppGia.Controllers
 {
@@ -53,8 +51,8 @@ namespace AppGia.Controllers
         }
 
         public static string Base64Encode(string plainText) {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
         // POST: api/Empresa
         [HttpPost]
