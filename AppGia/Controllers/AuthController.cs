@@ -1,4 +1,5 @@
 using System;
+using System.DirectoryServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -7,55 +8,60 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
 
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController] 
-    public class AuthController : ControllerBase    
-    {    
-        private IConfiguration _config;    
-    
-        public AuthController(IConfiguration config)    
-        {    
-            _config = config;    
-        }    
-        [AllowAnonymous]    
-        [HttpPost]
-        public IActionResult Login([FromBody]UserModel login)    
-        {    
-            IActionResult response = Unauthorized();    
-            var user = AuthenticateUser(login);    
-    
-            if (user != null)    
-            {    
-                var tokenString = GenerateJSONWebToken(user);    
-                response = Ok(new { token = tokenString });    
-            }    
-    
-            return response;    
-        }    
-    
-        private string GenerateJSONWebToken(UserModel userInfo)    
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private IConfiguration _config;
+
+
+        public AuthController(IConfiguration config)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));    
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);    
-    
-            var claims = new[] {    
-                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),    
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress)   
-            };    
-    
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],    
-                _config["Jwt:Issuer"],    
-                claims,    
-                expires: DateTime.Now.AddDays(1),    
-                signingCredentials: credentials);    
-    
-            return new JwtSecurityTokenHandler().WriteToken(token); 
-        }    
-    
-        private UserModel AuthenticateUser(UserModel login)    
+            _config = config;
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult Login([FromBody] UserModel login)
+        {
+            IActionResult response = Unauthorized();
+            var user = AuthenticateUserDummy(login);
+
+            if (user != null)
+            {
+                var tokenString = GenerateJSONWebToken(user);
+                response = Ok(new {token = tokenString});
+            }
+
+            return response;
+        }
+
+        private string GenerateJSONWebToken(UserModel userInfo)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress)
+            };
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                _config["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private UserModel AuthenticateUserDummy(UserModel login)    
         {    
             UserModel user = null;    
  
@@ -64,6 +70,62 @@ namespace AppGia.Controllers
                 user = new UserModel { Username = "HNA", EmailAddress = "hna@gmail.com" };    
             }    
             return user;    
-        }    
-    }    
+        } 
+        /*public UserModel AuthenticateUser(UserModel userModel)
+        {
+            string dominio = "infogia";
+            string path = "LDAP://ServerOmnisys/CN=users, DC=Infogia, DC=local";
+            string domainAndUsername = dominio + @"\" + userModel.Username;
+            DirectoryEntry entry = new DirectoryEntry(path, domainAndUsername, userModel.Password);
+            try
+            {
+                DirectorySearcher dirSearcher = new DirectorySearcher(entry);
+                //dirSearcher.Filter = "(&(objectClass=user)(objectCategory=person))";
+                dirSearcher.FindOne();
+                //Relacion relacion = new Relacion();
+                //bool existe = new LoginDataAccessLayer().validacionLoginUsuario(relacion, lg);
+                return userModel;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error de autenticacion");
+                return null;
+            }
+        }*/
+
+        private UserModel AuthenticateUserAD(UserModel userModel)
+        {
+            
+            // DirectoryEntry entry = new DirectoryEntry("LDAP://" + domain, userModel.Username, userModel.Password);
+            
+            string dominio = _config["AD:Dominio"];
+            string path = _config["AD:Path"];;
+            string domainAndUsername = dominio + @"\" + userModel.Username;
+            
+            DirectoryEntry entry = new DirectoryEntry(path, domainAndUsername, userModel.Password);
+            try
+            {
+                object obj = entry.NativeObject;
+                DirectorySearcher search = new DirectorySearcher(entry);
+                search.Filter = "(SAMAccountName=" + userModel.Username + ")";
+                search.PropertiesToLoad.Add("cn");
+                SearchResult result = search.FindOne();
+                
+                //Relacion relacion = new Relacion();
+                //bool existe = new LoginDataAccessLayer().validacionLoginUsuario(relacion, lg);
+                
+                if (null == result)
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex,"Error en autenticacion");
+                return null;
+            }
+
+            return userModel;
+        }
+    }
 }

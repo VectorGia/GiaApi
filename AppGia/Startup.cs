@@ -39,10 +39,10 @@ namespace AppGia
                 });       
             services.AddMvc(config =>
             {
-                var policy = new AuthorizationPolicyBuilder()
+                /*var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
+                config.Filters.Add(new AuthorizeFilter(policy));*/
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
 
