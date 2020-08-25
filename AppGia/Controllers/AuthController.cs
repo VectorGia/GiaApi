@@ -49,7 +49,7 @@ namespace AppGia.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress)
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress ?? "")
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
@@ -65,9 +65,9 @@ namespace AppGia.Controllers
         {    
             UserModel user = null;    
  
-            if (login.Username.Length > 0 )    
-            {    
-                user = new UserModel { Username = "HNA", EmailAddress = "hna@gmail.com" };    
+            if (login.Username.Length >= 5 )
+            {
+                return login;
             }    
             return user;    
         } 
