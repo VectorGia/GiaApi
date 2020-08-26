@@ -17,6 +17,7 @@ namespace AppGia.Controllers
     public class AuthController : ControllerBase
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static Int64 MINS_TO_EXPIRIRE = 5;
         private IConfiguration _config;
 
 
@@ -34,8 +35,8 @@ namespace AppGia.Controllers
 
             if (user != null)
             {
-                var tokenString = GenerateJSONWebToken(user);
-                response = Ok(new {token = tokenString});
+                var token = GenerateJSONWebToken(user);
+                response = Ok(new {token = token, minutes = MINS_TO_EXPIRIRE});
             }
 
             return response;
@@ -51,26 +52,26 @@ namespace AppGia.Controllers
                 new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
                 new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress ?? "")
             };
-
+            DateTime expires = DateTime.Now.AddMinutes(MINS_TO_EXPIRIRE);
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
                 _config["Jwt:Issuer"],
                 claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: expires,
                 signingCredentials: credentials);
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private UserModel AuthenticateUserDummy(UserModel login)    
-        {    
-            UserModel user = null;    
- 
-            if (login.Username.Length >= 5 )
+        private UserModel AuthenticateUserDummy(UserModel login)
+        {
+            UserModel user = null;
+
+            if (login.Username.Length >= 5)
             {
                 return login;
-            }    
-            return user;    
-        } 
+            }
+
+            return user;
+        }
         /*public UserModel AuthenticateUser(UserModel userModel)
         {
             string dominio = "infogia";
@@ -95,13 +96,13 @@ namespace AppGia.Controllers
 
         private UserModel AuthenticateUserAD(UserModel userModel)
         {
-            
             // DirectoryEntry entry = new DirectoryEntry("LDAP://" + domain, userModel.Username, userModel.Password);
-            
+
             string dominio = _config["AD:Dominio"];
-            string path = _config["AD:Path"];;
+            string path = _config["AD:Path"];
+            ;
             string domainAndUsername = dominio + @"\" + userModel.Username;
-            
+
             DirectoryEntry entry = new DirectoryEntry(path, domainAndUsername, userModel.Password);
             try
             {
@@ -110,10 +111,10 @@ namespace AppGia.Controllers
                 search.Filter = "(SAMAccountName=" + userModel.Username + ")";
                 search.PropertiesToLoad.Add("cn");
                 SearchResult result = search.FindOne();
-                
+
                 //Relacion relacion = new Relacion();
                 //bool existe = new LoginDataAccessLayer().validacionLoginUsuario(relacion, lg);
-                
+
                 if (null == result)
                 {
                     return null;
@@ -121,7 +122,7 @@ namespace AppGia.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex,"Error en autenticacion");
+                logger.Error(ex, "Error en autenticacion");
                 return null;
             }
 
