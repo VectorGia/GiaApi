@@ -17,7 +17,7 @@ namespace AppGia.Controllers
     public class AuthController : ControllerBase
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private static Int64 MINS_TO_EXPIRIRE = 5;
+        private static Int64 MINS_TO_EXPIRIRE = 600;
         private IConfiguration _config;
 
 

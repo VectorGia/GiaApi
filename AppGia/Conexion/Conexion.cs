@@ -18,19 +18,20 @@ namespace AppGia.Conexion
         AseConnection sysCon;
         OdbcConnection odbcCon;
         SqlConnection sqlCon;
+        private static IConfigurationRoot _configurationRoot = GetConfiguration();
 
-        public IConfigurationRoot GetConfiguration()
+        public static IConfigurationRoot GetConfiguration()
         {
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             return builder.Build();
         }
 
         public NpgsqlConnection ConnexionDB()
 
         {
-            var configuration = GetConfiguration();
             // con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionString").Value);
-            con = new NpgsqlConnection(configuration.GetSection("Data").GetSection("ConnectionStringLocal").Value);
+            con = new NpgsqlConnection(_configurationRoot.GetSection("Data").GetSection("ConnectionStringLocal").Value);
 
             return con;
         }
@@ -71,10 +72,8 @@ namespace AppGia.Conexion
 
         public SqlConnection ConexionSQL()
         {
-            var configuration = GetConfiguration();
-            sqlCon = new SqlConnection(configuration.GetSection("Data").GetSection("ConnectionStringSQL").Value);
+            sqlCon = new SqlConnection(_configurationRoot.GetSection("Data").GetSection("ConnectionStringSQL").Value);
             return sqlCon;
         }
     }
 }
-
