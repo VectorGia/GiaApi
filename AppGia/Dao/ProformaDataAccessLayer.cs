@@ -196,34 +196,31 @@ namespace AppGia.Dao
         {
             CentroCostos cc = ObtenerDatosCC(idCC);
             string proyeccion = cc.proyeccion;
-            List<ProformaDetalle> detalles = null;
+            List<ProformaDetalle> detalles;
             if (proyeccion.Equals(ProyeccionBase))
             {
                 detalles = GeneraProforma(idCC, anio, idTipoProforma, idTipoCaptura);
                 detalles = _profHelper.reorderConceptos(detalles);
             }
-
-            if (proyeccion.Equals(ProyeccionMetodo))
+            else if (proyeccion.Equals(ProyeccionMetodo))
             {
                 detalles = _profHelper.BuildProformaFromModeloAsTemplate(cc, anio, idTipoProforma, idTipoCaptura);
             }
-
-            if (proyeccion.Equals(ProyeccionShadow))
+            else if (proyeccion.Equals(ProyeccionShadow))
             {
                 Int64 idTipoProforma012 = getIdTipoProformaByClave(ClaveProforma012);
                 detalles = _profHelper.BuildProformaFromModeloAsTemplate(cc, anio, idTipoProforma012, idTipoCaptura);
+            }
+            else
+            {
+                throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
             }
 
             Boolean hayPeriodoActivo=_profHelper.existePeridodoActivo( anio,  idTipoProforma,  idTipoCaptura);
             detalles.ForEach(detalle => { detalle.editable = hayPeriodoActivo;});
             
+            return _profHelper.setIdInterno(detalles);
 
-            if (detalles != null)
-            {
-                return _profHelper.setIdInterno(detalles);
-            }
-
-            throw new ArgumentException("La proyeccion '" + proyeccion + "' no es soportada");
         }
         
         
@@ -354,6 +351,12 @@ namespace AppGia.Dao
             log.Info("Calculando proforma ....");
             List<ProformaDetalle> detallesCalculados = detalleAccesLayer.GetProformaCalculada(idCenCos, mesInicio, idEmpresa,
                 idModeloNeg, idProyecto, anio, idTipoCaptura);
+            //en ocasiones no hay montos para ciertos rubros, eso nos obliga a llenar con 0 el detalle de ese rubro
+            List<ProformaDetalle> detallesFromModel = _profHelper.buildProformaFromTemplate(
+                _profHelper.GetRubrosFromModeloId(idModeloNeg, false), idCenCos, anio, idTipoProforma, idTipoCaptura);
+            List<ProformaDetalle> mergeDetalle=mergeDetallesMontosVsDetallesModelo(detallesFromModel,detallesCalculados);
+
+            
             // Obtiene lista de sumatorias para el acumulado
             List<ProformaDetalle> detallesAniosAnteriores = detalleAccesLayer.GetAcumuladoAnteriores(idCenCos, idEmpresa, idModeloNeg,
                 idProyecto, anio, idTipoCaptura);
@@ -362,10 +365,10 @@ namespace AppGia.Dao
                 detalleAccesLayer.GetEjercicioPosterior(anio, idCenCos, idModeloNeg, idTipoCaptura, idTipoProforma);
 
             //--> se colocan los anios anteriores
-            _profHelper.manageAniosAnteriores(detallesCalculados,detallesAniosAnteriores);
+            _profHelper.manageAniosAnteriores(mergeDetalle,detallesAniosAnteriores);
             
             // Genera una lista para almacenar la informacion consultada
-            foreach (ProformaDetalle detalleCalculado in detallesCalculados)
+            foreach (ProformaDetalle detalleCalculado in mergeDetalle)
             {
                 foreach (ProformaDetalle detalleAnioPost in detalleAniosPosteriores)
                 {
@@ -376,8 +379,33 @@ namespace AppGia.Dao
                     }
                 }
             }
+            
+            return mergeDetalle;
+        }
 
-            return detallesCalculados;
+        private List<ProformaDetalle> mergeDetallesMontosVsDetallesModelo(List<ProformaDetalle> detallesFromModel,
+            List<ProformaDetalle> detallesFromMontos)
+        {
+            List<ProformaDetalle> mergeDetalle = new List<ProformaDetalle>();
+            detallesFromModel.ForEach(detalleModel =>
+            {
+                if (detalleModel.aritmetica.Length == 0)
+                {
+                    var found = detallesFromMontos.Find(detalleMonto =>
+                    {
+                        return detalleModel.rubro_id == detalleMonto.rubro_id;
+                    });
+                    if (found != null)
+                    {
+                        mergeDetalle.Add(found);
+                    }
+                    else
+                    {
+                        mergeDetalle.Add(detalleModel);
+                    }
+                }
+            });
+            return mergeDetalle;
         }
 
         public void validadNoDuplicateProforms(Proforma proforma)

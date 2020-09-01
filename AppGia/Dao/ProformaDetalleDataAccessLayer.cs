@@ -282,62 +282,72 @@ namespace AppGia.Dao
         public List<ProformaDetalle> GetProformaCalculada(Int64 idCenCos, int mesInicio, Int64 idEmpresa,
             Int64 idModeloNegocio, Int64 idProyecto, int anio, Int64 idTipoCaptura)
         {
-            DateTime fechaCarga = _profHelper.getLastFechaMontosConsol(anio, idEmpresa, idModeloNegocio, idProyecto,
-                idCenCos, idTipoCaptura);
-            string consulta = "";
-            consulta += " select ";
-            consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
-            consulta += "	 mon.centro_costo_id, mon.activo, ";
-            consulta += "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, rub.hijos as hijos, rub.es_total_ingresos ,";
-
-            consulta += BuildMontosFieldsQuery(mesInicio);
-            consulta += BuildEjercicioFieldQuery(mesInicio);
-
-            consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
-            consulta += "	 from montos_consolidados mon ";
-            consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
-            consulta += "	 where date_trunc('SECOND', fecha) = '" + fechaCarga.ToString("yyyy-MM-dd HH:mm:ss") + "'::timestamp ";
-            consulta += "	 and anio = " + anio;
-            consulta += "	 and empresa_id = " + idEmpresa;
-            consulta += "	 and modelo_negocio_id = " + idModeloNegocio;
-            consulta += "	 and proyecto_id = " + idProyecto;
-            consulta += "	 and centro_costo_id = " + idCenCos;
-            consulta += "	 and tipo_captura_id = " + idTipoCaptura;
-            consulta += "	 and mon.activo = 'true' ";
-            consulta += "	 order by rub.id ";
-            
-            log.Info("ejecutando query:'{0}'",consulta);
-
-
-            DataTable dataTable = _queryExecuter.ExecuteQuery(consulta.Trim());
-            List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
-            foreach (DataRow rdr in dataTable.Rows)
+            try
             {
-                ProformaDetalle proforma_detalle = new ProformaDetalle();
-                proforma_detalle.mes_inicio = mesInicio;
-                proforma_detalle.id_proforma = ToInt64(rdr["id"]);
-                proforma_detalle.anio = ToInt32(rdr["anio"]);
-                proforma_detalle.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
-                proforma_detalle.empresa_id = ToInt64(rdr["empresa_id"]);
-                proforma_detalle.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
-                proforma_detalle.activo = ToBoolean(rdr["activo"]);
-                proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
-                proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
-                proforma_detalle.hijos = (rdr["hijos"]).ToString().Trim();
-                
-                foreach (var entry in ProformaHelper.getPonderacionMeses())
+                DateTime fechaCarga = _profHelper.getLastFechaMontosConsol(anio, idEmpresa, idModeloNegocio, idProyecto,
+                    idCenCos, idTipoCaptura);
+                string consulta = "";
+                consulta += " select ";
+                consulta += "	 mon.id, anio, mes, empresa_id, modelo_negocio_id, ";
+                consulta += "	 mon.centro_costo_id, mon.activo, ";
+                consulta +=
+                    "	 proyecto_id, rub.id as rubro_id, rub.nombre as nombre_rubro, rub.hijos as hijos, rub.es_total_ingresos ,";
+
+                consulta += BuildMontosFieldsQuery(mesInicio);
+                consulta += BuildEjercicioFieldQuery(mesInicio);
+
+                consulta += "	 coalesce(valor_tipo_cambio_resultado, 0) as valor_tipo_cambio_resultado ";
+                consulta += "	 from montos_consolidados mon ";
+                consulta += "	 inner join rubro rub on mon.rubro_id = rub.id ";
+                consulta += "	 where date_trunc('SECOND', fecha) = '" + fechaCarga.ToString("yyyy-MM-dd HH:mm:ss") +
+                            "'::timestamp ";
+                consulta += "	 and anio = " + anio;
+                consulta += "	 and empresa_id = " + idEmpresa;
+                consulta += "	 and modelo_negocio_id = " + idModeloNegocio;
+                consulta += "	 and proyecto_id = " + idProyecto;
+                consulta += "	 and centro_costo_id = " + idCenCos;
+                consulta += "	 and tipo_captura_id = " + idTipoCaptura;
+                consulta += "	 and mon.activo = 'true' ";
+                consulta += "	 order by rub.id ";
+
+                log.Info("ejecutando query:'{0}'", consulta);
+
+
+                DataTable dataTable = _queryExecuter.ExecuteQuery(consulta.Trim());
+                List<ProformaDetalle> lstProformaDetalle = new List<ProformaDetalle>();
+                foreach (DataRow rdr in dataTable.Rows)
                 {
-                    string nombreCampo = entry.Value;
-                    proforma_detalle[nombreCampo] = ToDouble(rdr[nombreCampo]);
+                    ProformaDetalle proforma_detalle = new ProformaDetalle();
+                    proforma_detalle.mes_inicio = mesInicio;
+                    proforma_detalle.id_proforma = ToInt64(rdr["id"]);
+                    proforma_detalle.anio = ToInt32(rdr["anio"]);
+                    proforma_detalle.modelo_negocio_id = ToInt64(rdr["modelo_negocio_id"]);
+                    proforma_detalle.empresa_id = ToInt64(rdr["empresa_id"]);
+                    proforma_detalle.centro_costo_id = ToInt64(rdr["centro_costo_id"]);
+                    proforma_detalle.activo = ToBoolean(rdr["activo"]);
+                    proforma_detalle.rubro_id = ToInt64(rdr["rubro_id"]);
+                    proforma_detalle.nombre_rubro = (rdr["nombre_rubro"]).ToString().Trim();
+                    proforma_detalle.hijos = (rdr["hijos"]).ToString().Trim();
+
+                    foreach (var entry in ProformaHelper.getPonderacionMeses())
+                    {
+                        string nombreCampo = entry.Value;
+                        proforma_detalle[nombreCampo] = ToDouble(rdr[nombreCampo]);
+                    }
+
+                    proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
+
+                    lstProformaDetalle.Add(proforma_detalle);
                 }
-                
-                proforma_detalle.ejercicio_resultado = ToDouble(rdr["ejercicio_resultado"]);
 
-                lstProformaDetalle.Add(proforma_detalle);
+                return lstProformaDetalle;
             }
-
-            return lstProformaDetalle;
-        }
+            catch (ApplicationException e)
+            {
+                log.Warn(e,"Parece que no hay datos de montos");
+                return new List<ProformaDetalle>();
+            }
+    }
 
         private string BuildMontosFieldsQuery(int mesInicio)
         {

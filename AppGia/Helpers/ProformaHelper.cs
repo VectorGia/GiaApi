@@ -191,7 +191,7 @@ namespace AppGia.Helpers
             return mesInicio;
         }
 
-        private List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
+        public List<ProformaDetalle> buildProformaFromTemplate(List<Rubros> rubroses, Int64 idCC, int anio,
             Int64 idTipoProforma, Int64 idTipoCaptura)
         {
             List<Rubros> rubrosesreoder = reorderConceptos(rubroses);
@@ -320,7 +320,7 @@ namespace AppGia.Helpers
             return detRubros;
         }
 
-        private List<Rubros> GetRubrosFromModeloId(Int64 idModelo, Boolean totales)
+        public List<Rubros> GetRubrosFromModeloId(Int64 idModelo, Boolean totales)
         {
             string consulta = "";
             consulta += " select rub.* ";
