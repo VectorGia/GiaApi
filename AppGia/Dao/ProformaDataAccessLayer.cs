@@ -280,6 +280,10 @@ namespace AppGia.Dao
                 detalle.modelo_negocio_id = idModeloNeg;
             });
             listDetProformaCalc.ForEach(detalle => { detalle.mes_inicio = mesInicio;});
+            if (idTipoCaptura == TipoCapturaContable)
+            {
+                ProformaCalc.roundMontosInDetalles(lstProformaCompleta);
+            }
             return lstProformaCompleta;
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+//TODO: HNA borrar ya que ya no tiene funcion
 namespace AppGia.Models
 {
     public class RelacionModeloCta

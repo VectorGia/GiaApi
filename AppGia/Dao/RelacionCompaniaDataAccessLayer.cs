@@ -24,7 +24,7 @@ namespace AppGia.Dao
         public IEnumerable<RelacionCompania> GetAllRelacionesCompania()
         {
             RelacionCompania relacionCompania = new RelacionCompania();
-            string cadena = "SELECT *FROM " + cod + "TAB_RELACION_COMPANIA" + cod;
+            string cadena = "SELECT * FROM " + cod + "TAB_RELACION_COMPANIA" + cod;
             try
             {
                 List<RelacionCompania> lstRelacion = new List<RelacionCompania>();

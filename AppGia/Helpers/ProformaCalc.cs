@@ -155,5 +155,31 @@ namespace AppGia.Helpers
 
             return evaluado;
         }
+
+        public static void roundMontosInDetalles(List<ProformaDetalle> detalles)
+        {
+            roundMontosInDetalles(detalles, new[]
+            {
+                "total_resultado", "anios_posteriores_resultado", "acumulado_resultado",
+                "ejercicio_resultado", "enero_monto_resultado",
+                "febrero_monto_resultado", "marzo_monto_resultado", "abril_monto_resultado",
+                "mayo_monto_resultado", "junio_monto_resultado", "julio_monto_resultado", "agosto_monto_resultado",
+                "septiembre_monto_resultado", "octubre_monto_resultado", "noviembre_monto_resultado",
+                "diciembre_monto_resultado"
+            });
+        }
+        public  static void roundMontosInDetalles(List<ProformaDetalle> detalles, string[] columnsNames)
+        {
+            /*detalles.ForEach(detalle =>
+            {
+                for (var j = 0; j < columnsNames.Length; j++)
+                {
+                    var colName = columnsNames[j];
+                    logger.Trace("'{0}':{1}->{2}",colName,detalle[colName],Math.Round(ToDouble(detalle[colName])));
+                    detalle[colName]= Math.Round(ToDouble(detalle[colName]));
+                } 
+            });*/
+            
+        }
     }
 }
