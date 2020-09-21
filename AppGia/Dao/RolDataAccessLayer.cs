@@ -9,21 +9,48 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        char cod = '"';
 
-        public RolDataAccessLayer() {
 
+        public RolDataAccessLayer()
+        {
             con = conex.ConnexionDB();
+        }
+
+        public Rol GetRolById(string id)
+        {
+            string cadena = "SELECT * FROM CAT_ROL where BOOL_ESTATUS_LOGICO_ROL=true and INT_IDROL_P=" + id;
+            try
+            {
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
+                    con.Open();
+                    NpgsqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        Rol rol = new Rol();
+                        rol.STR_NOMBRE_ROL = rdr["STR_NOMBRE_ROL"].ToString().Trim();
+                        rol.INT_IDROL_P = Convert.ToInt32(rdr["INT_IDROL_P"]);
+                        return rol;
+                    }
+                }
+
+                return null;
+            }
+            finally
+            {
+                con.Close();
+            }
         }
 
         public IEnumerable<Rol> GetAllRoles()
         {
-            string cadena = "SELECT * FROM" + cod + "CAT_ROL" + cod + "";
+            string cadena = "SELECT * FROM CAT_ROL where BOOL_ESTATUS_LOGICO_ROL=true";
             try
             {
                 List<Rol> lstrol = new List<Rol>();
 
-              
+
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(cadena, con);
                     con.Open();
@@ -37,6 +64,7 @@ namespace AppGia.Dao
 
                         lstrol.Add(rol);
                     }
+
                     con.Close();
                 }
 
@@ -55,18 +83,18 @@ namespace AppGia.Dao
 
         public int addRol(Rol rol)
         {
-            string add = "INSERT INTO" + cod + 
-                "CAT_ROL" + cod + 
-                "("+cod+"STR_NOMBRE_ROL"          +cod+ 
-                ","+cod+"BOOL_ESTATUS_LOGICO_ROL" +cod+ 
-                ","+cod+"FEC_MODIF_ROL"           +cod+
-                ") VALUES " +
-                "(@STR_NOMBRE_ROL,@BOOL_ESTATUS_LOGICO_ROL,@FEC_MODIF_ROL)";
+            string add = "INSERT INTO" +
+                         " CAT_ROL" +
+                         "(STR_NOMBRE_ROL" +
+                         ",BOOL_ESTATUS_LOGICO_ROL" +
+                         ",FEC_MODIF_ROL" +
+                         ") VALUES " +
+                         "(@STR_NOMBRE_ROL,@BOOL_ESTATUS_LOGICO_ROL,@FEC_MODIF_ROL)";
             try
-            {    
+            {
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(add, con);
-                   
+
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
@@ -90,13 +118,10 @@ namespace AppGia.Dao
 
         public int update(Rol rol)
         {
-
-            string update = "UPDATE " + cod + "CAT_ROL" + cod + "SET"
-
-          + cod + "STR_NOMBRE_ROL" + cod + " = '" + rol.STR_NOMBRE_ROL + "' ,"
-          + cod + "BOOL_ESTATUS_LOGICO_ROL" + cod + " = '" + rol.BOOL_ESTATUS_LOGICO_ROL + "' ,"
-          + cod + "FEC_MODIF_ROL" + cod + " = '" + rol.FEC_MODIF_ROL + "' "
-          + " WHERE" + cod + "INT_IDROL_P" + cod + "=" + rol.INT_IDROL_P;
+            string update = "UPDATE CAT_ROL SET " +
+                            "STR_NOMBRE_ROL = @STR_NOMBRE_ROL ," +
+                            "FEC_MODIF_ROL  = @FEC_MODIF_ROL " +
+                            " WHERE INT_IDROL_P=@INT_IDROL_P";
 
 
             try
@@ -107,14 +132,14 @@ namespace AppGia.Dao
 
                     cmd.Parameters.AddWithValue("@STR_NOMBRE_ROL", rol.STR_NOMBRE_ROL.Trim());
                     cmd.Parameters.AddWithValue("@FEC_MODIF_ROL", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_ROL", rol.BOOL_ESTATUS_LOGICO_ROL);
+                    cmd.Parameters.AddWithValue("@INT_IDROL_P", rol.INT_IDROL_P);
+
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
                     con.Close();
                     return cantFilAfec;
                 }
-
             }
             catch
             {
@@ -129,14 +154,11 @@ namespace AppGia.Dao
 
         public int Delete(Rol rol)
         {
-
-            string delete = "UPDATE " + cod + "CAT_ROL" + cod + "SET" + cod + "BOOL_ESTATUS_ROL" + cod + "='" + rol.BOOL_ESTATUS_LOGICO_ROL + "' WHERE" + cod + "INT_IDROL_P" + cod + "='" + rol.INT_IDROL_P + "'";
+            string delete = "UPDATE CAT_ROL SET BOOL_ESTATUS_LOGICO_ROL=false WHERE INT_IDROL_P=" + rol.INT_IDROL_P;
             try
             {
-         
                 {
                     NpgsqlCommand cmd = new NpgsqlCommand(delete, con);
-                    cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_COMPANIA", rol.BOOL_ESTATUS_LOGICO_ROL);
 
                     con.Open();
                     int cantFilAfec = cmd.ExecuteNonQuery();
@@ -148,7 +170,6 @@ namespace AppGia.Dao
             {
                 con.Close();
                 throw;
-
             }
             finally
             {
