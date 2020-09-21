@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AppGia.Dao;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using AppGia.Models;
+using Microsoft.AspNetCore.Mvc;
+
 namespace AppGia.Controllers
 {
     [Route("api/[controller]")]
@@ -13,6 +10,7 @@ namespace AppGia.Controllers
     public class RelacionUsuarioController : ControllerBase
     {
         RelacionUsuarioDataAccessLayer objrelacionUsuario = new RelacionUsuarioDataAccessLayer();
+
         // GET: api/RelacionUsuario
         [HttpGet]
         public IEnumerable<Relacion_Usuario> Get()
@@ -44,6 +42,19 @@ namespace AppGia.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            objrelacionUsuario.delete(id);
+        }
+
+        [HttpGet("permisos")]
+        public List<Dictionary<string, string>> getPermisos()
+        {
+            return SeguridadConstantes.getPermisos();
+        }
+
+        [HttpGet("pantallas")]
+        public List<Dictionary<string, string>> getPantallas()
+        {
+            return SeguridadConstantes.getPantallas();
         }
     }
 }

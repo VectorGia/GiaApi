@@ -109,6 +109,8 @@ namespace AppGia.Util
         
         public const string NATACREEDORA = "ACREEDORA";
         public const string NATDEUDORA = "DEUDORA";
+        
+        
 
     }
 }
