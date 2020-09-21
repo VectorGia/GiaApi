@@ -30,7 +30,7 @@ namespace AppGia.Dao
         /// <returns></returns>
         public IEnumerable<Usuario> GetAllUsuarios()
         {
-            string cadena = "select * from" + "tab_usuario" + "where "  + "estatus_logico" + "=" + true; 
+            string cadena = "select * from tab_usuario where  estatus = true order by fech_modificacion  desc"; 
             try
             {
                 List<Usuario> lstusuario = new List<Usuario>();
@@ -43,7 +43,7 @@ namespace AppGia.Dao
                         Usuario usuario = new Usuario();
                         usuario.id = Convert.ToInt32(rdr["id"]);
                         usuario.nombre = rdr["nombre"].ToString().Trim();
-                        usuario.user_name = rdr["username"].ToString().Trim();
+                        usuario.user_name = rdr["user_name"].ToString().Trim();
                         usuario.puesto = rdr["puesto"].ToString().Trim();
                         usuario.email= rdr["email"].ToString().Trim();
                         usuario.password = rdr["password"].ToString().Trim();
@@ -66,7 +66,7 @@ namespace AppGia.Dao
         }
         public Usuario GetUsuario(string id)
         {
-            string cadena = "select * from" +  "tab_usuario" +  "where"  + "usuario_id" + "=" + id;
+            string cadena = "select * from tab_usuario where id = " + id;
             try
             {
                 Usuario usuario = new Usuario();
@@ -82,7 +82,7 @@ namespace AppGia.Dao
                         usuario.user_name= rdr["user_name"].ToString().Trim();
                         usuario.puesto = rdr["puesto"].ToString().Trim();
                         usuario.email = rdr["email"].ToString().Trim();
-                        usuario.password = rdr["password"].ToString().Trim();
+                        /*usuario.password = rdr["password"].ToString().Trim();*/
 
 
                     }
@@ -193,14 +193,13 @@ namespace AppGia.Dao
         }
         public int addUsuario(Usuario usuario)
         {
-            string add = " insert into " + "usuario" +
+            string add = " insert into tab_usuario " +
                        "("  + "user_name" + ","
                         + "password" + ","
                         + "email" + ","
-                        + "estatus_logico" +  ","
+                        + "estatus" +  ","
                         + "puesto" + ","
                         + "nombre" +  ","
-                        + "user_name_interno" + ","
                         + "fech_modificacion" + ")"
                         + " values ( @user_name" + ","
                         + "@password" + ","
@@ -208,7 +207,6 @@ namespace AppGia.Dao
                         + "@estatus" + ","
                         + "@puesto" + ","
                         + "@nombre" + ","
-                        + "@user_name_interno" + ","
                         + "@fech_modificacion"
                         + ")";
 
@@ -221,7 +219,7 @@ namespace AppGia.Dao
 
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
+                   // cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
@@ -251,27 +249,26 @@ namespace AppGia.Dao
 
         public int updateUsuario(string id, Usuario usuario)
         {
-            string update = "update " +  "usuario"  +
+            string update = "update tab_usuario "  +
                 " set "
-                + "user_name_interno" + "= "+ "@user_name_interno" + ","
-                + "password" + "= "+"@password"+","
-                + "email"    + "= "+"@email"   +","
-                + "puesto"   + "= "+"@puesto"          +","
-                + "nombre"   +"= "+"@nombre"  +","
-                + "user_name_interno" + "= " + "@user_name_interno" + ","
-                + "fech_modificacion"    + "= "+ "@fech_modificacion"
-                + " where " + "id" + " = " + id;
+                /*+ "user_name_interno=@user_name_interno,"*/
+                + "password=@password,"
+                + "email=@email,"
+                + "puesto=@puesto,"
+                + "nombre=@nombre,"
+                + "fech_modificacion=@fech_modificacion"
+                + " where id = " + id;
 
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(update, con);
 
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@nombre", Value = usuario.nombre.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
+                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
+                //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
                 con.Open();
@@ -289,10 +286,10 @@ namespace AppGia.Dao
 
         public int DeleteUser(string id)
         {
-            bool status = false;
-            string add = "update " + "usuario"  +
-                " set "  + "estatus" + " = " + status +
-                " where " + "id" + cod + " = " + id;
+            
+            string add = "update tab_usuario "  +
+                " set estatus=false " + 
+                " where id = " + id;
             try
             {
                 con.Open();
@@ -319,10 +316,10 @@ namespace AppGia.Dao
         public bool validacionUsuario(Usuario usuario)
         {
 
-            string consulta = "select " + 1 
+            string consulta = "select 1" 
                 + " from " 
-                + "usuario" + " where "  
-                + "user_name" + " = " + "'" 
+                + "tab_usuario where "  
+                + "user_name = '" 
                 + usuario.user_name_interno.Trim() + "'";
 
             try
@@ -350,7 +347,7 @@ namespace AppGia.Dao
         public DataTable Dat_getObtieneUsuarios(Usuario usuario)
         {
 
-            string select = "select " + cod + "user_name" + cod + " from" + cod + "usuario" ;
+            string select = "select user_name from tab_usuario" ;
 
             try
             {

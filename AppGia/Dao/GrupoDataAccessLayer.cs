@@ -11,7 +11,7 @@ namespace AppGia.Dao
     {
         NpgsqlConnection con;
         Conexion.Conexion conex = new Conexion.Conexion();
-        char cod = '"';
+        char cod = ' ';
 
         public GrupoDataAccessLayer()
         {
@@ -87,7 +87,7 @@ namespace AppGia.Dao
 
         {
            
-            string add = "INSERT INTO" + cod + "TAB_GRUPO" + cod + "(" + cod + "STR_NOMBRE_GRUPO" + cod + "," + cod + "BOOL_ESTATUS_LOGICO_GRUPO"+cod+","+cod+ "FEC_MODIF_GRUPO"+cod+") VALUES " +
+            string add = "INSERT INTO" +  " TAB_GRUPO " +  "(" +  "STR_NOMBRE_GRUPO" +  "," +  "BOOL_ESTATUS_LOGICO_GRUPO"+","+ "FEC_MODIF_GRUPO"+") VALUES " +
                 "(@STR_NOMBRE_GRUPO,@BOOL_ESTATUS_LOGICO_GRUPO,@FEC_MODIF_GRUPO)";
             try
             {
