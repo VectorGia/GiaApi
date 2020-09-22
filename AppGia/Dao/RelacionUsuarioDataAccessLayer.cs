@@ -22,8 +22,12 @@ namespace AppGia.Dao
 
         public IEnumerable<Relacion_Usuario> GetAllRelacionUsuario()
         {
-            Relacion_Usuario relacionusuario = new Relacion_Usuario();
-            string cadena = "SELECT * FROM TAB_RELACION_USUARIO where BOOL_ESTATUS_LOGICO_RELUSU=true";
+            string cadena = "SELECT usr.user_name as usuario, rol.str_nombre_rol as rol, tg.str_nombre_grupo as grupo, rel.* " +
+                            " FROM TAB_RELACION_USUARIO rel " +
+                            " join tab_usuario usr on usr.id = rel.int_idusuario_p" +
+                            " join tab_grupo tg on rel.int_idgrupo_p = tg.int_idgrupo_p" +
+                            " join cat_rol rol on rol.int_idrol_p = rel.int_idrol_p " +
+                            " where BOOL_ESTATUS_LOGICO_RELUSU = true;";
             try
             {
                 List<Relacion_Usuario> lstRelacionUsuario = new List<Relacion_Usuario>();
@@ -34,6 +38,7 @@ namespace AppGia.Dao
 
                     while (rdr.Read())
                     {
+                        Relacion_Usuario relacionusuario = new Relacion_Usuario();
                         relacionusuario.SERIAL_IDRELACIONUSU_P = Convert.ToInt32(rdr["SERIAL_IDRELACIONUSU_P"]);
                         relacionusuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
                         relacionusuario.INT_IDGRUPO_P = Convert.ToInt32(rdr["INT_IDGRUPO_P"]);
@@ -41,8 +46,10 @@ namespace AppGia.Dao
                         relacionusuario.pantalla = Convert.ToString(rdr["pantalla"]);
                         relacionusuario.permiso = Convert.ToString(rdr["permiso"]);
                         relacionusuario.FEC_MODIF_RELUSU = Convert.ToDateTime(rdr["FEC_MODIF_RELUSU"]);
-                        relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU =
-                            Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_RELUSU"]);
+                        relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_RELUSU"]);
+                        relacionusuario.usuario= Convert.ToString(rdr["usuario"]);
+                        relacionusuario.grupo= Convert.ToString(rdr["grupo"]);
+                        relacionusuario.rol= Convert.ToString(rdr["rol"]);
 
                         lstRelacionUsuario.Add(relacionusuario);
                     }
@@ -143,7 +150,7 @@ namespace AppGia.Dao
         public int delete(Int32 id)
         {
             string add = "UPDATE " + cod + "TAB_RELACION_USUARIO" + cod +
-                         " SET " + cod + "BOOL_ESTATUS_LOGICO_RELUSU" + cod + "= " + "true" + ","
+                         " SET " + cod + "BOOL_ESTATUS_LOGICO_RELUSU" + cod + "= " + "false" + ","
                          + cod + "FEC_MODIF_RELUSU" + cod + "= " + "@FEC_MODIF_RELUSU"
                          + " WHERE " + cod + "SERIAL_IDRELACIONUSU_P" + cod + " = " + "@SERIAL_IDRELACIONUSU_P";
 

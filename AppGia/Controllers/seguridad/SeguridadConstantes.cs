@@ -7,10 +7,10 @@ namespace AppGia.Controllers
         public static List<Dictionary<string, string>> getPermisos()
         {
             List<Dictionary<string, string>> permisos = new List<Dictionary<string, string>>();
-            permisos.Add(kv("A", "ALTA"));
-            permisos.Add(kv("B", "BAJA"));
-            permisos.Add(kv("E", "MODIFICAR"));
-            permisos.Add(kv("ALL", "TODOS"));
+            permisos.Add(kv("ALTA", "ALTA"));
+            permisos.Add(kv("BAJA", "BAJA"));
+            permisos.Add(kv("MODIF", "MODIFICAR"));
+            permisos.Add(kv("TODOS", "TODOS"));
             return permisos;
         }
 
@@ -25,18 +25,18 @@ namespace AppGia.Controllers
         public static List<Dictionary<string, string>> getPantallas()
         {
             List<Dictionary<string, string>> pantallas = new List<Dictionary<string, string>>();
-            pantallas.Add(kv("USR", "USUARIOS"));
-            pantallas.Add(kv("GRU", "GRUPOS"));
-            pantallas.Add(kv("ROL", "ROLES"));
-            pantallas.Add(kv("REL", "RELACIONES"));
-            pantallas.Add(kv("EMP", "EMPRESAS"));
-            pantallas.Add(kv("MOD", "MODELOS"));
-            pantallas.Add(kv("PROY", "PROYECTOS"));
-            pantallas.Add(kv("CPROF", "CPROFORMAS"));
-            pantallas.Add(kv("PROF", "PROFORMAS"));
-            pantallas.Add(kv("REP", "REPORTES"));
-            pantallas.Add(kv("PER", "PERIODOS"));
-            pantallas.Add(kv("EXTR", "EXRACCION"));
+            pantallas.Add(kv("USUARIOS", "USUARIOS"));
+            pantallas.Add(kv("GRUPOS", "GRUPOS"));
+            pantallas.Add(kv("ROLES", "ROLES"));
+            pantallas.Add(kv("RELACIONES", "RELACIONES"));
+            pantallas.Add(kv("EMPRESAS", "EMPRESAS"));
+            pantallas.Add(kv("MODELOS", "MODELOS"));
+            pantallas.Add(kv("PROYECTOS", "PROYECTOS"));
+            pantallas.Add(kv("CON PROFORMAS", "CONSULTA DE PROFORMAS"));
+            pantallas.Add(kv("PROFORMAS", "PROFORMAS"));
+            pantallas.Add(kv("REPORTES", "REPORTES"));
+            pantallas.Add(kv("PERIODOS", "PERIODOS"));
+            pantallas.Add(kv("EXRACCION", "EXRACCION"));
 
             return pantallas;
         }
