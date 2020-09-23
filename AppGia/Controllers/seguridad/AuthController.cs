@@ -1,14 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.DirectoryServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AppGia.Dao;
 using AppGia.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
+using NLog.Fluent;
+using Novell.Directory.Ldap;
 
 namespace AppGia.Controllers
 {
@@ -36,7 +40,8 @@ namespace AppGia.Controllers
             if (user != null)
             {
                 var token = GenerateJSONWebToken(user);
-                response = Ok(new {token = token, minutes = MINS_TO_EXPIRIRE});
+                List<Dictionary<string,string>> relaciones=new RelacionUsuarioDataAccessLayer().getRelacionesByUserName(user.Username);
+                response = Ok(new {token = token, minutes = MINS_TO_EXPIRIRE,relaciones=relaciones});
             }
 
             return response;
@@ -72,28 +77,28 @@ namespace AppGia.Controllers
 
             return user;
         }
-        /*public UserModel AuthenticateUser(UserModel userModel)
+
+        private UserModel AuthenticateUserNew(UserModel userModel)
         {
-            string dominio = "infogia";
-            string path = "LDAP://ServerOmnisys/CN=users, DC=Infogia, DC=local";
-            string domainAndUsername = dominio + @"\" + userModel.Username;
-            DirectoryEntry entry = new DirectoryEntry(path, domainAndUsername, userModel.Password);
             try
             {
-                DirectorySearcher dirSearcher = new DirectorySearcher(entry);
-                //dirSearcher.Filter = "(&(objectClass=user)(objectCategory=person))";
-                dirSearcher.FindOne();
-                //Relacion relacion = new Relacion();
-                //bool existe = new LoginDataAccessLayer().validacionLoginUsuario(relacion, lg);
+                var cn = new LdapConnection();
+                cn.Connect("10.10.0.102", 389);
+                logger.Info("Active directory connected='{0}'", cn.Connected);
+                String loginDN = ".\\vector.uno";
+                String password1 = "V3ct0r202005*";
+
+                cn.Bind(loginDN, password1);
+                cn.Disconnect();
                 return userModel;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                logger.Error(ex, "Error de autenticacion");
-                return null;
+                logger.Error(e, "Error en autenticacion de active directory");
+                throw;
             }
-        }*/
-
+           
+        }
         private UserModel AuthenticateUserAD(UserModel userModel)
         {
             // DirectoryEntry entry = new DirectoryEntry("LDAP://" + domain, userModel.Username, userModel.Password);
@@ -128,5 +133,27 @@ namespace AppGia.Controllers
 
             return userModel;
         }
+        
+        /*public UserModel AuthenticateUser(UserModel userModel)
+       {
+           string dominio = "infogia";
+           string path = "LDAP://ServerOmnisys/CN=users, DC=Infogia, DC=local";
+           string domainAndUsername = dominio + @"\" + userModel.Username;
+           DirectoryEntry entry = new DirectoryEntry(path, domainAndUsername, userModel.Password);
+           try
+           {
+               DirectorySearcher dirSearcher = new DirectorySearcher(entry);
+               //dirSearcher.Filter = "(&(objectClass=user)(objectCategory=person))";
+               dirSearcher.FindOne();
+               //Relacion relacion = new Relacion();
+               //bool existe = new LoginDataAccessLayer().validacionLoginUsuario(relacion, lg);
+               return userModel;
+           }
+           catch (Exception ex)
+           {
+               logger.Error(ex, "Error de autenticacion");
+               return null;
+           }
+       }*/
     }
 }

@@ -29,9 +29,11 @@ namespace AppGia.Controllers
             pantallas.Add(kv("GRUPOS", "GRUPOS"));
             pantallas.Add(kv("ROLES", "ROLES"));
             pantallas.Add(kv("RELACIONES", "RELACIONES"));
+            
             pantallas.Add(kv("EMPRESAS", "EMPRESAS"));
             pantallas.Add(kv("MODELOS", "MODELOS"));
             pantallas.Add(kv("PROYECTOS", "PROYECTOS"));
+            
             pantallas.Add(kv("CON PROFORMAS", "CONSULTA DE PROFORMAS"));
             pantallas.Add(kv("PROFORMAS", "PROFORMAS"));
             pantallas.Add(kv("REPORTES", "REPORTES"));

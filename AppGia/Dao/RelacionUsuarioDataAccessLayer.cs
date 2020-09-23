@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Npgsql;
+using System.Data;
 using AppGia.Models;
+using AppGia.Util;
+using Npgsql;
+using NpgsqlTypes;
 
 namespace AppGia.Dao
 {
@@ -22,12 +23,13 @@ namespace AppGia.Dao
 
         public IEnumerable<Relacion_Usuario> GetAllRelacionUsuario()
         {
-            string cadena = "SELECT usr.user_name as usuario, rol.str_nombre_rol as rol, tg.str_nombre_grupo as grupo, rel.* " +
-                            " FROM TAB_RELACION_USUARIO rel " +
-                            " join tab_usuario usr on usr.id = rel.int_idusuario_p" +
-                            " join tab_grupo tg on rel.int_idgrupo_p = tg.int_idgrupo_p" +
-                            " join cat_rol rol on rol.int_idrol_p = rel.int_idrol_p " +
-                            " where BOOL_ESTATUS_LOGICO_RELUSU = true;";
+            string cadena =
+                "SELECT usr.user_name as usuario, rol.str_nombre_rol as rol, tg.str_nombre_grupo as grupo, rel.* " +
+                " FROM TAB_RELACION_USUARIO rel " +
+                " join tab_usuario usr on usr.id = rel.int_idusuario_p" +
+                " join tab_grupo tg on rel.int_idgrupo_p = tg.int_idgrupo_p" +
+                " join cat_rol rol on rol.int_idrol_p = rel.int_idrol_p " +
+                " where BOOL_ESTATUS_LOGICO_RELUSU = true;";
             try
             {
                 List<Relacion_Usuario> lstRelacionUsuario = new List<Relacion_Usuario>();
@@ -46,10 +48,11 @@ namespace AppGia.Dao
                         relacionusuario.pantalla = Convert.ToString(rdr["pantalla"]);
                         relacionusuario.permiso = Convert.ToString(rdr["permiso"]);
                         relacionusuario.FEC_MODIF_RELUSU = Convert.ToDateTime(rdr["FEC_MODIF_RELUSU"]);
-                        relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU = Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_RELUSU"]);
-                        relacionusuario.usuario= Convert.ToString(rdr["usuario"]);
-                        relacionusuario.grupo= Convert.ToString(rdr["grupo"]);
-                        relacionusuario.rol= Convert.ToString(rdr["rol"]);
+                        relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU =
+                            Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_RELUSU"]);
+                        relacionusuario.usuario = Convert.ToString(rdr["usuario"]);
+                        relacionusuario.grupo = Convert.ToString(rdr["grupo"]);
+                        relacionusuario.rol = Convert.ToString(rdr["rol"]);
 
                         lstRelacionUsuario.Add(relacionusuario);
                     }
@@ -89,42 +92,42 @@ namespace AppGia.Dao
 
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@SERIAL_IDRELACIONUSU_P",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@SERIAL_IDRELACIONUSU_P",
                         Value = relacionusuario.SERIAL_IDRELACIONUSU_P
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDUSUARIO_P",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@INT_IDUSUARIO_P",
                         Value = relacionusuario.INT_IDUSUARIO_P
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@INT_IDGRUPO_P",
                         Value = relacionusuario.INT_IDGRUPO_P
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_P",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_P",
                         Value = relacionusuario.INT_IDROL_P
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@pantalla",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@pantalla",
                         Value = relacionusuario.pantalla
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@permiso",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@permiso",
                         Value = relacionusuario.permiso
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_RELUSU",
+                        NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_RELUSU",
                         Value = relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_RELUSU",
+                        NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_RELUSU",
                         Value = DateTime.Now
                     });
 
@@ -161,12 +164,12 @@ namespace AppGia.Dao
 
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Integer, ParameterName = "@SERIAL_IDRELACIONUSU_P",
+                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@SERIAL_IDRELACIONUSU_P",
                         Value = id
                     });
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
-                        NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_RELUSU",
+                        NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@FEC_MODIF_RELUSU",
                         Value = DateTime.Now
                     });
 
@@ -232,6 +235,34 @@ namespace AppGia.Dao
             {
                 con.Close();
             }
+        }
+
+        public List<Dictionary<string, string>> getRelacionesByUserName(string username)
+        {
+            string query =
+                "SELECT " +
+                " pantalla, " +
+                " permiso, " +
+                " rol.str_nombre_rol as rol," +
+                " tg.str_nombre_grupo as grupo " +
+                " FROM TAB_RELACION_USUARIO rel join tab_usuario usr on usr.id = rel.int_idusuario_p " +
+                " join tab_grupo tg on rel.int_idgrupo_p = tg.int_idgrupo_p" +
+                " join cat_rol rol on rol.int_idrol_p = rel.int_idrol_p" +
+                " where BOOL_ESTATUS_LOGICO_RELUSU = true" +
+                " and usr.user_name = @user_name";
+            DataTable dataTable = new QueryExecuter().ExecuteQuery(query, new NpgsqlParameter("@user_name", username));
+            List<Dictionary<string, string>> relaciones = new List<Dictionary<string, string>>();
+            foreach (DataRow rdr in dataTable.Rows)
+            {
+               Dictionary<string,string> dictionary=new Dictionary<string, string>();
+               dictionary.Add("pantalla",rdr["pantalla"].ToString());
+               dictionary.Add("permiso",rdr["permiso"].ToString());
+               dictionary.Add("rol",rdr["rol"].ToString());
+               dictionary.Add("grupo",rdr["grupo"].ToString());
+               relaciones.Add(dictionary);
+            }
+
+            return relaciones;
         }
     }
 }
