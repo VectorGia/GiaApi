@@ -30,6 +30,30 @@ namespace AppGia.Dao
             return result;
         }
 
+        public List<RelacionUsrEmprUniCentro> findRelacionesByUsername(string username)
+        {
+            List<RelacionUsrEmprUniCentro> result = new List<RelacionUsrEmprUniCentro>();
+            DataTable dataTable = _queryExecuter.ExecuteQuery(
+                "select rel.* from relacion_usr_emp_uni_cc rel " +
+                " join tab_usuario tu on rel.id_usuario = tu.id " +
+                " where rel.activo = true " +
+                " and tu.user_name=@username",
+                new NpgsqlParameter("@username", username));
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                RelacionUsrEmprUniCentro relacionUsrEmprUniCentro = new RelacionUsrEmprUniCentro();
+                relacionUsrEmprUniCentro.id = Convert.ToInt32(dataRow["id"]);
+                relacionUsrEmprUniCentro.activo = Convert.ToBoolean(dataRow["activo"]);
+                relacionUsrEmprUniCentro.id_usuario = Convert.ToInt32(dataRow["id_usuario"]);
+                relacionUsrEmprUniCentro.id_empresa = Convert.ToInt64(dataRow["id_empresa"]);
+                relacionUsrEmprUniCentro.id_unidad = Convert.ToInt64(dataRow["id_unidad"]);
+                relacionUsrEmprUniCentro.id_centrocosto = Convert.ToInt64(dataRow["id_centrocosto"]);
+                result.Add(relacionUsrEmprUniCentro);
+            }
+
+            return result;
+        }
+
         public RelacionUsrEmprUniCentro findById(Int32 id)
         {
             DataRow row = _queryExecuter.ExecuteQueryUniqueresult("select * from relacion_usr_emp_uni_cc where id=@id",

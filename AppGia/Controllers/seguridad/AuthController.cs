@@ -34,15 +34,21 @@ namespace AppGia.Controllers
         public IActionResult Login([FromBody] UserModel login)
         {
             IActionResult response = Unauthorized();
-            var user = AuthenticateUserAD(login);
-            //var user = AuthenticateUserDummy(login);
+            //var user = AuthenticateUserAD(login);
+            var user = AuthenticateUserDummy(login);
 
             if (user != null)
             {
                 var token = GenerateJSONWebToken(user);
                 List<Dictionary<string, string>> relaciones =
                     new RelacionUsuarioDataAccessLayer().getRelacionesByUserName(user.Username);
-                response = Ok(new {token = token, minutes = MINS_TO_EXPIRIRE, relaciones = relaciones});
+                List<RelacionUsrEmprUniCentro> relacionesusremprunicentros =
+                    new RelacionUsrEmprUniCentroDataAccessLayer().findRelacionesByUsername(user.Username);
+                response = Ok(new
+                {
+                    token = token, minutes = MINS_TO_EXPIRIRE, relaciones = relaciones,
+                    relacionesusremprunicentros = relacionesusremprunicentros
+                });
             }
 
             return response;
@@ -83,14 +89,15 @@ namespace AppGia.Controllers
         private UserModel AuthenticateUserAD(UserModel userModel)
         {
             string dominio = _config["AD:Dominio"];
-            string path =_config["AD:Path"];
+            string path = _config["AD:Path"];
             string domainAndUsername = dominio + @"\" + userModel.Username;
-            logger.Info("Conectando con ldap. Datos conexion path='{0}',domainAndUsername='{1}' ",path,domainAndUsername);
+            logger.Info("Conectando con ldap. Datos conexion path='{0}',domainAndUsername='{1}' ", path,
+                domainAndUsername);
             DirectoryEntry entry = new DirectoryEntry(path, domainAndUsername, userModel.Password);
             logger.Info("Conexion ldap OK");
             try
             {
-                logger.Info("Autenticando domainAndUsername='{0}'",domainAndUsername);
+                logger.Info("Autenticando domainAndUsername='{0}'", domainAndUsername);
                 object obj = entry.NativeObject;
                 logger.Info("Autenticacion ldap OK");
                 return userModel;
