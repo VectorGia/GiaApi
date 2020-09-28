@@ -16,12 +16,17 @@ namespace AppGia.Dao
         {
             List<RelacionUsrEmprUniCentro> result = new List<RelacionUsrEmprUniCentro>();
             DataTable dataTable = _queryExecuter.ExecuteQuery(
-                "select rel.*,usr.user_name,emp.nombre as empresa,un.descripcion as unidad,cc.nombre as centro" +
-                " from relacion_usr_emp_uni_cc rel join tab_usuario usr on usr.id=rel.id_usuario" +
-                " join empresa emp on emp.id=rel.id_empresa" +
-                " join unidad_negocio un on un.id=rel.id_unidad" +
-                " join centro_costo cc on cc.id=rel.id_centrocosto" +
-                " where rel.activo=true");
+                "select rel.*," +
+                " usr.user_name," +
+                " '(' || emp.desc_id || ')' || emp.nombre as empresa," +
+                " un.descripcion                          as unidad," +
+                " '(' || cc.desc_id || ')' || cc.nombre   as centro" +
+                " from relacion_usr_emp_uni_cc rel" +
+                " join tab_usuario usr on usr.id = rel.id_usuario" +
+                " join empresa emp on emp.id = rel.id_empresa" +
+                " join unidad_negocio un on un.id = rel.id_unidad" +
+                " join centro_costo cc on cc.id = rel.id_centrocosto" +
+                " where rel.activo = true");
             foreach (DataRow row in dataTable.Rows)
             {
                 result.Add(transform(row));

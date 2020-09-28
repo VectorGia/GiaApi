@@ -195,14 +195,14 @@ namespace AppGia.Dao
         {
             string add = " insert into tab_usuario " +
                        "("  + "user_name" + ","
-                        + "password" + ","
+                        /*+ "password" + ","*/
                         + "email" + ","
                         + "estatus" +  ","
                         + "puesto" + ","
                         + "nombre" +  ","
                         + "fech_modificacion" + ")"
                         + " values ( @user_name" + ","
-                        + "@password" + ","
+                        /*+ "@password" + ","*/
                         + "@email" + ","
                         + "@estatus" + ","
                         + "@puesto" + ","
@@ -221,7 +221,7 @@ namespace AppGia.Dao
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
                    // cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
-                    cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
+                   // cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
                     cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });
@@ -252,7 +252,7 @@ namespace AppGia.Dao
             string update = "update tab_usuario "  +
                 " set "
                 /*+ "user_name_interno=@user_name_interno,"*/
-                + "password=@password,"
+                /*+ "password=@password,"*/
                 + "email=@email,"
                 + "puesto=@puesto,"
                 + "nombre=@nombre,"
@@ -267,7 +267,7 @@ namespace AppGia.Dao
                 //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name_interno", Value = usuario.user_name_interno.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@user_name", Value = usuario.user_name.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@email", Value = usuario.email.Trim() });
-                cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
+                // cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@password", Value = usuario.password.Trim() });
                 //cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@estatus", Value = usuario.estatus });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Text, ParameterName = "@puesto", Value = usuario.puesto.Trim() });
                 cmd.Parameters.Add(new NpgsqlParameter() { NpgsqlDbType = NpgsqlDbType.Date, ParameterName = "@fech_modificacion", Value = DateTime.Now });

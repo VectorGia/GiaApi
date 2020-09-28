@@ -34,8 +34,8 @@ namespace AppGia.Controllers
         public IActionResult Login([FromBody] UserModel login)
         {
             IActionResult response = Unauthorized();
-            //var user = AuthenticateUserAD(login);
-            var user = AuthenticateUserDummy(login);
+            var user = AuthenticateUserAD(login);
+            //var user = AuthenticateUserDummy(login);
 
             if (user != null)
             {
