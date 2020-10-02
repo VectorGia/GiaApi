@@ -45,8 +45,6 @@ namespace AppGia.Dao
                         relacionusuario.INT_IDUSUARIO_P = Convert.ToInt32(rdr["INT_IDUSUARIO_P"]);
                         relacionusuario.INT_IDGRUPO_P = Convert.ToInt32(rdr["INT_IDGRUPO_P"]);
                         relacionusuario.INT_IDROL_P = Convert.ToInt32(rdr["INT_IDROL_P"]);
-                        relacionusuario.pantalla = Convert.ToString(rdr["pantalla"]);
-                        relacionusuario.permiso = Convert.ToString(rdr["permiso"]);
                         relacionusuario.FEC_MODIF_RELUSU = Convert.ToDateTime(rdr["FEC_MODIF_RELUSU"]);
                         relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU =
                             Convert.ToBoolean(rdr["BOOL_ESTATUS_LOGICO_RELUSU"]);
@@ -79,8 +77,6 @@ namespace AppGia.Dao
                          " SET " + cod + "INT_IDUSUARIO_P" + cod + "= " + "@INT_IDUSUARIO_P" + ","
                          + cod + "INT_IDGRUPO_P" + cod + "= " + "@INT_IDGRUPO_P" + ","
                          + cod + "INT_IDROL_P" + cod + "= " + "@INT_IDROL_P" + ","
-                         + cod + "INT_IDPANTALLA_P" + cod + "= " + "@INT_IDPANTALLA_P" + ","
-                         + cod + "INT_IDPERMISO_P" + cod + "= " + "@INT_IDPERMISO_P" + ","
                          + cod + "BOOL_ESTATUS_LOGICO_RELUSU" + cod + "= " + "@BOOL_ESTATUS_LOGICO_RELUSU" + ","
                          + cod + "FEC_MODIF_RELUSU" + cod + "= " + "@FEC_MODIF_RELUSU"
                          + " WHERE " + cod + "SERIAL_IDRELACIONUSU_P" + cod + " = " + "@SERIAL_IDRELACIONUSU_P";
@@ -110,16 +106,7 @@ namespace AppGia.Dao
                         NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@INT_IDROL_P",
                         Value = relacionusuario.INT_IDROL_P
                     });
-                    cmd.Parameters.Add(new NpgsqlParameter()
-                    {
-                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@pantalla",
-                        Value = relacionusuario.pantalla
-                    });
-                    cmd.Parameters.Add(new NpgsqlParameter()
-                    {
-                        NpgsqlDbType = NpgsqlDbType.Integer, ParameterName = "@permiso",
-                        Value = relacionusuario.permiso
-                    });
+                  
                     cmd.Parameters.Add(new NpgsqlParameter()
                     {
                         NpgsqlDbType = NpgsqlDbType.Boolean, ParameterName = "@BOOL_ESTATUS_LOGICO_RELUSU",
@@ -199,14 +186,12 @@ namespace AppGia.Dao
                          + cod + "INT_IDUSUARIO_P" + cod + ","
                          + cod + "INT_IDGRUPO_P" + cod + ","
                          + cod + "INT_IDROL_P" + cod + ","
-                         + cod + "pantalla" + cod + ","
-                         + cod + "permiso" + cod + ","
                          + cod + "BOOL_ESTATUS_LOGICO_RELUSU" + cod + ","
                          + cod + "FEC_MODIF_RELUSU" + cod + ") " +
                          "VALUES " +
                          "(@INT_IDUSUARIO_P,@INT_IDGRUPO_P," +
-                         "@INT_IDROL_P,@pantalla," +
-                         "@permiso,@BOOL_ESTATUS_LOGICO_RELUSU,@FEC_MODIF_RELUSU)";
+                         "@INT_IDROL_P," +
+                         "@BOOL_ESTATUS_LOGICO_RELUSU,@FEC_MODIF_RELUSU)";
             try
             {
                 {
@@ -216,8 +201,6 @@ namespace AppGia.Dao
                     cmd.Parameters.AddWithValue("@INT_IDUSUARIO_P", relacionusuario.INT_IDUSUARIO_P);
                     cmd.Parameters.AddWithValue("@INT_IDGRUPO_P", relacionusuario.INT_IDGRUPO_P);
                     cmd.Parameters.AddWithValue("@INT_IDROL_P", relacionusuario.INT_IDROL_P);
-                    cmd.Parameters.AddWithValue("@pantalla", relacionusuario.pantalla);
-                    cmd.Parameters.AddWithValue("@permiso", relacionusuario.permiso);
                     cmd.Parameters.AddWithValue("@BOOL_ESTATUS_LOGICO_RELUSU",
                         relacionusuario.BOOL_ESTATUS_LOGICO_RELUSU);
                     cmd.Parameters.AddWithValue("@FEC_MODIF_RELUSU", DateTime.Now);
@@ -241,8 +224,6 @@ namespace AppGia.Dao
         {
             string query =
                 "SELECT " +
-                " pantalla, " +
-                " permiso, " +
                 " rol.str_nombre_rol as rol," +
                 " tg.str_nombre_grupo as grupo " +
                 " FROM TAB_RELACION_USUARIO rel join tab_usuario usr on usr.id = rel.int_idusuario_p " +
@@ -255,8 +236,8 @@ namespace AppGia.Dao
             foreach (DataRow rdr in dataTable.Rows)
             {
                Dictionary<string,string> dictionary=new Dictionary<string, string>();
-               dictionary.Add("pantalla",rdr["pantalla"].ToString());
-               dictionary.Add("permiso",rdr["permiso"].ToString());
+               dictionary.Add("pantalla","NA");
+               dictionary.Add("permiso","NA");
                dictionary.Add("rol",rdr["rol"].ToString());
                dictionary.Add("grupo",rdr["grupo"].ToString());
                relaciones.Add(dictionary);

@@ -29,6 +29,7 @@ namespace AppGia.Controllers
             pantallas.Add(kv("GRUPOS", "GRUPOS"));
             pantallas.Add(kv("ROLES", "ROLES"));
             pantallas.Add(kv("RELACIONES", "RELACIONES"));
+            pantallas.Add(kv("RELACIONES-ROL", "RELACIONES ROL"));
             pantallas.Add(kv("USUARIO_EMPR_CENTRO", "USUARIO EMPRESA CENTRO"));
             
             pantallas.Add(kv("EMPRESAS", "EMPRESAS"));

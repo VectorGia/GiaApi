@@ -35,13 +35,13 @@ namespace AppGia.Controllers
         {
             IActionResult response = Unauthorized();
             var user = AuthenticateUserAD(login);
-            //var user = AuthenticateUserDummy(login);
+            //var user = AuthenticateUserDummy(login);;
 
             if (user != null)
             {
                 var token = GenerateJSONWebToken(user);
                 List<Dictionary<string, string>> relaciones =
-                    new RelacionUsuarioDataAccessLayer().getRelacionesByUserName(user.Username);
+                    new RelacionRolDataAccessLayer().getRelacionesByUserName(user.Username);
                 List<RelacionUsrEmprUniCentro> relacionesusremprunicentros =
                     new RelacionUsrEmprUniCentroDataAccessLayer().findRelacionesByUsername(user.Username);
                 response = Ok(new
@@ -77,7 +77,7 @@ namespace AppGia.Controllers
         {
             UserModel user = null;
 
-            if (login.Username.Length >= 5)
+            if (login.Username.Length >= 4)
             {
                 return login;
             }
