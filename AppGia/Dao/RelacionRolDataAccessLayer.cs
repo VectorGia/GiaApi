@@ -31,8 +31,8 @@ namespace AppGia.Dao
                 relacionRol.nombreRol = Convert.ToString(rdr["nombrerol"]);
                 relacionRol.estatus = Convert.ToBoolean(rdr["estatus_logico"]);
                 relacionRol.fecModif = Convert.ToDateTime(rdr["fec_modif"]);
-                relacionRol.permiso = Convert.ToString(rdr["pantalla"]);
-                relacionRol.pantalla = Convert.ToString(rdr["permiso"]);
+                relacionRol.permiso = Convert.ToString(rdr["permiso"]);
+                relacionRol.pantalla = Convert.ToString(rdr["pantalla"]);
                 lstRelacionRol.Add(relacionRol);
             }
 
